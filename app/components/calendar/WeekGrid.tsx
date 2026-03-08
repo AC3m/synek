@@ -1,5 +1,5 @@
 import { DayColumn } from './DayColumn';
-import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type SessionsByDay } from '~/types/training';
+import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type SessionsByDay, type AthleteSessionUpdate } from '~/types/training';
 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
@@ -11,6 +11,7 @@ interface WeekGridProps {
   onDeleteSession?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
@@ -24,6 +25,7 @@ export function WeekGrid({
   onDeleteSession,
   onToggleComplete,
   onUpdateNotes,
+  onUpdatePerformance,
   onUpdateCoachPostFeedback,
 }: WeekGridProps) {
   return (
@@ -41,6 +43,7 @@ export function WeekGrid({
           onToggleComplete={onToggleComplete}
           weekStart={weekStart}
           onUpdateNotes={onUpdateNotes}
+          onUpdatePerformance={onUpdatePerformance}
           onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
         />
       ))}

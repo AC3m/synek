@@ -250,4 +250,10 @@ export interface AthleteSessionUpdate {
   id: string;
   isCompleted?: boolean;
   athleteNotes?: string | null;
+  actualDurationMinutes?: number | null;
+  actualDistanceKm?: number | null;
+  actualPace?: string | null;
+  avgHeartRate?: number | null;
+  maxHeartRate?: number | null;
+  rpe?: number | null;
 }

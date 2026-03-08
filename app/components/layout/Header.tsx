@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Activity } from 'lucide-react';
 import { LanguageToggle } from './LanguageToggle';
+import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
 import { useAuth } from '~/lib/context/AuthContext';
 
@@ -15,8 +16,9 @@ export function Header() {
           <Activity className="h-5 w-5 text-primary" />
           <span className="font-semibold">{t('appName')}</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {user && <UserMenu />}
+          <ThemeToggle />
           <LanguageToggle />
         </div>
       </div>
