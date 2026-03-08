@@ -4,8 +4,8 @@
     "title": "Week Summary",
     "loadType": "Week Load",
     "plannedKm": "Planned KM",
-    "description": "Training Focus",
-    "descriptionPlaceholder": "Describe the training focus for this week...",
+    "actualRunKm": "Run KM",
+    "totalTime": "Total Time",
     "coachComments": "Coach Notes",
     "coachCommentsPlaceholder": "Add notes for the athlete..."
   },

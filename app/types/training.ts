@@ -10,6 +10,7 @@ export const TRAINING_TYPES = [
   'mobility',
   'swimming',
   'rest_day',
+  'other',
 ] as const;
 
 export type TrainingType = (typeof TRAINING_TYPES)[number];
@@ -100,13 +101,18 @@ export interface RestDayData {
   activity_suggestion?: string;
 }
 
+export interface OtherData {
+  type: 'other';
+}
+
 export type TypeSpecificData =
   | RunData
   | CyclingData
   | StrengthData
   | YogaMobilityData
   | SwimmingData
-  | RestDayData;
+  | RestDayData
+  | OtherData;
 
 // ============================================================
 // Core domain types
@@ -122,6 +128,7 @@ export interface WeekPlan {
   totalPlannedKm: number | null;
   description: string | null;
   coachComments: string | null;
+  actualTotalKm: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -139,6 +146,13 @@ export interface TrainingSession {
   typeSpecificData: TypeSpecificData;
   isCompleted: boolean;
   completedAt: string | null;
+  actualDurationMinutes: number | null;
+  actualDistanceKm: number | null;
+  actualPace: string | null;
+  avgHeartRate: number | null;
+  maxHeartRate: number | null;
+  rpe: number | null;
+  coachPostFeedback: string | null;
   athleteNotes: string | null;
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
@@ -158,6 +172,8 @@ export interface WeekStats {
   totalPlannedKm: number;
   totalCompletedKm: number;
   completionPercentage: number;
+  totalActualDurationMinutes: number;
+  totalActualRunKm: number;
 }
 
 export interface WeekViewData {
@@ -187,6 +203,7 @@ export interface UpdateWeekPlanInput {
   totalPlannedKm?: number | null;
   description?: string | null;
   coachComments?: string | null;
+  actualTotalKm?: number | null;
 }
 
 export interface CreateSessionInput {
@@ -199,6 +216,16 @@ export interface CreateSessionInput {
   plannedDistanceKm?: number;
   typeSpecificData?: TypeSpecificData;
   sortOrder?: number;
+  actualDurationMinutes?: number;
+  actualDistanceKm?: number;
+  actualPace?: string;
+  avgHeartRate?: number;
+  maxHeartRate?: number;
+  rpe?: number;
+  coachPostFeedback?: string;
+  isCompleted?: boolean;
+  completedAt?: string;
+  athleteNotes?: string;
 }
 
 export interface UpdateSessionInput {
@@ -210,6 +237,13 @@ export interface UpdateSessionInput {
   plannedDistanceKm?: number | null;
   typeSpecificData?: TypeSpecificData;
   sortOrder?: number;
+  actualDurationMinutes?: number | null;
+  actualDistanceKm?: number | null;
+  actualPace?: string | null;
+  avgHeartRate?: number | null;
+  maxHeartRate?: number | null;
+  rpe?: number | null;
+  coachPostFeedback?: string | null;
 }
 
 export interface AthleteSessionUpdate {
