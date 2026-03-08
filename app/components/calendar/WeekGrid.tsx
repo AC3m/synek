@@ -4,7 +4,7 @@ import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type SessionsByDay 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
   readonly?: boolean;
-  traineeMode?: boolean;
+  athleteMode?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
   onEditSession?: (session: TrainingSession) => void;
   onDeleteSession?: (sessionId: string) => void;
@@ -15,7 +15,7 @@ interface WeekGridProps {
 export function WeekGrid({
   sessionsByDay,
   readonly = false,
-  traineeMode = false,
+  athleteMode = false,
   onAddSession,
   onEditSession,
   onDeleteSession,
@@ -30,7 +30,7 @@ export function WeekGrid({
           day={day}
           sessions={sessionsByDay[day] ?? []}
           readonly={readonly}
-          traineeMode={traineeMode}
+          athleteMode={athleteMode}
           onAddSession={onAddSession}
           onEditSession={onEditSession}
           onDeleteSession={onDeleteSession}

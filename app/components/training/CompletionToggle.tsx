@@ -8,7 +8,7 @@ interface CompletionToggleProps {
 }
 
 export function CompletionToggle({ isCompleted, onChange }: CompletionToggleProps) {
-  const { t } = useTranslation('trainee');
+  const { t } = useTranslation('athlete');
 
   return (
     <label className="flex items-center gap-1.5 cursor-pointer group/toggle">

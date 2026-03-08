@@ -114,6 +114,7 @@ export type TypeSpecificData =
 
 export interface WeekPlan {
   id: string;
+  athleteId: string;
   weekStart: string;
   year: number;
   weekNumber: number;
@@ -138,7 +139,7 @@ export interface TrainingSession {
   typeSpecificData: TypeSpecificData;
   isCompleted: boolean;
   completedAt: string | null;
-  traineeNotes: string | null;
+  athleteNotes: string | null;
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
   createdAt: string;
@@ -170,6 +171,7 @@ export interface WeekViewData {
 // ============================================================
 
 export interface CreateWeekPlanInput {
+  athleteId: string;
   weekStart: string;
   year: number;
   weekNumber: number;
@@ -210,8 +212,8 @@ export interface UpdateSessionInput {
   sortOrder?: number;
 }
 
-export interface TraineeSessionUpdate {
+export interface AthleteSessionUpdate {
   id: string;
   isCompleted?: boolean;
-  traineeNotes?: string | null;
+  athleteNotes?: string | null;
 }

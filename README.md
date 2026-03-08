@@ -1,6 +1,6 @@
 # Synek
 
-Athlete training planning platform with coach and trainee roles. Coaches create ISO-week training plans; trainees view and complete sessions.
+Athlete training planning platform with coach and athlete roles. Coaches create ISO-week training plans; athletes view and complete sessions.
 
 ## Tech Stack
 
@@ -78,7 +78,7 @@ app/
 └── routes/
     ├── home.tsx
     ├── coach/        # week.$weekId.tsx
-    └── trainee/      # week.$weekId.tsx
+    └── athlete/      # week.$weekId.tsx
 
 supabase/
 └── migrations/       # SQL migrations (week_plans, training_sessions, strava tables)
@@ -89,7 +89,7 @@ supabase/
 | Role | Access |
 |---|---|
 | Coach | Create and edit ISO-week training plans; add/remove sessions per day |
-| Trainee | View the plan for the current week; mark sessions complete |
+| Athlete | View the plan for the current week; mark sessions complete |
 
 Use the role switcher in the header to toggle between roles during development.
 

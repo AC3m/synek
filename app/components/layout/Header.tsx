@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Activity } from 'lucide-react';
 import { LanguageToggle } from './LanguageToggle';
-import { RoleSwitcher } from './RoleSwitcher';
+import { UserMenu } from './UserMenu';
+import { useAuth } from '~/lib/context/AuthContext';
 
 export function Header() {
   const { t } = useTranslation();
+  const { user } = useAuth();
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -14,7 +16,7 @@ export function Header() {
           <span className="font-semibold">{t('appName')}</span>
         </div>
         <div className="flex items-center gap-4">
-          <RoleSwitcher />
+          {user && <UserMenu />}
           <LanguageToggle />
         </div>
       </div>

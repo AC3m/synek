@@ -1,7 +1,7 @@
 import 'i18next';
 import type common from './resources/en/common.json';
 import type coach from './resources/en/coach.json';
-import type trainee from './resources/en/trainee.json';
+import type athlete from './resources/en/athlete.json';
 import type training from './resources/en/training.json';
 
 declare module 'i18next' {
@@ -10,7 +10,7 @@ declare module 'i18next' {
     resources: {
       common: typeof common;
       coach: typeof coach;
-      trainee: typeof trainee;
+      athlete: typeof athlete;
       training: typeof training;
     };
   }

@@ -15,6 +15,7 @@ import type {
 function toWeekPlan(row: Record<string, unknown>): WeekPlan {
   return {
     id: row.id as string,
+    athleteId: row.athlete_id as string,
     weekStart: row.week_start as string,
     year: row.year as number,
     weekNumber: row.week_number as number,
@@ -28,13 +29,15 @@ function toWeekPlan(row: Record<string, unknown>): WeekPlan {
 }
 
 export async function fetchWeekPlanByDate(
-  weekStart: string
+  weekStart: string,
+  athleteId: string
 ): Promise<WeekPlan | null> {
-  if (isMockMode) return mockFetchWeekPlanByDate(weekStart);
+  if (isMockMode) return mockFetchWeekPlanByDate(weekStart, athleteId);
   const { data, error } = await supabase
     .from('week_plans')
     .select('*')
     .eq('week_start', weekStart)
+    .eq('athlete_id', athleteId)
     .maybeSingle();
 
   if (error) throw error;
@@ -48,6 +51,7 @@ export async function createWeekPlan(
   const { data, error } = await supabase
     .from('week_plans')
     .insert({
+      athlete_id: input.athleteId,
       week_start: input.weekStart,
       year: input.year,
       week_number: input.weekNumber,
@@ -89,10 +93,12 @@ export async function updateWeekPlan(
 export async function getOrCreateWeekPlan(
   weekStart: string,
   year: number,
-  weekNumber: number
+  weekNumber: number,
+  athleteId: string
 ): Promise<WeekPlan> {
-  if (isMockMode) return mockGetOrCreateWeekPlan(weekStart, year, weekNumber);
-  const existing = await fetchWeekPlanByDate(weekStart);
+  if (isMockMode)
+    return mockGetOrCreateWeekPlan(weekStart, year, weekNumber, athleteId);
+  const existing = await fetchWeekPlanByDate(weekStart, athleteId);
   if (existing) return existing;
-  return createWeekPlan({ weekStart, year, weekNumber });
+  return createWeekPlan({ weekStart, year, weekNumber, athleteId });
 }

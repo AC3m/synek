@@ -15,7 +15,7 @@ import {
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
-import { TraineeFeedback } from '~/components/training/TraineeFeedback';
+import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { StravaDataPlaceholder } from '~/components/training/StravaDataPlaceholder';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import type { TrainingSession } from '~/types/training';
@@ -34,8 +34,8 @@ interface SessionCardProps {
   session: TrainingSession;
   /** Coach mode: edit/delete buttons */
   readonly?: boolean;
-  /** Trainee mode: completion + feedback */
-  traineeMode?: boolean;
+  /** Athlete mode: completion + feedback */
+  athleteMode?: boolean;
   onEdit?: (session: TrainingSession) => void;
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
@@ -45,7 +45,7 @@ interface SessionCardProps {
 export function SessionCard({
   session,
   readonly = false,
-  traineeMode = false,
+  athleteMode = false,
   onEdit,
   onDelete,
   onToggleComplete,
@@ -76,7 +76,7 @@ export function SessionCard({
           </Badge>
         </div>
 
-        {!readonly && !traineeMode && (
+        {!readonly && !athleteMode && (
           <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               variant="ghost"
@@ -123,8 +123,8 @@ export function SessionCard({
         )}
       </div>
 
-      {/* Trainee-specific features */}
-      {traineeMode && !isRestDay && (
+      {/* Athlete-specific features */}
+      {athleteMode && !isRestDay && (
         <div className="mt-2 pt-1.5 border-t border-dashed space-y-1">
           <CompletionToggle
             isCompleted={session.isCompleted}
@@ -133,8 +133,8 @@ export function SessionCard({
             }
           />
 
-          <TraineeFeedback
-            notes={session.traineeNotes}
+          <AthleteFeedback
+            notes={session.athleteNotes}
             onChange={(notes) => onUpdateNotes?.(session.id, notes)}
           />
 

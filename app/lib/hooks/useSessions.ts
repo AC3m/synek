@@ -6,12 +6,12 @@ import {
   createSession,
   updateSession,
   deleteSession,
-  updateTraineeSession,
+  updateAthleteSession,
 } from '~/lib/queries/sessions';
 import type {
   CreateSessionInput,
   UpdateSessionInput,
-  TraineeSessionUpdate,
+  AthleteSessionUpdate,
   TrainingSession,
 } from '~/types/training';
 
@@ -125,11 +125,11 @@ export function useDeleteSession() {
   });
 }
 
-export function useUpdateTraineeSession() {
+export function useUpdateAthleteSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: TraineeSessionUpdate) => updateTraineeSession(input),
+    mutationFn: (input: AthleteSessionUpdate) => updateAthleteSession(input),
     onMutate: async (input) => {
       const allQueries = queryClient.getQueriesData<TrainingSession[]>({
         queryKey: queryKeys.sessions.all,
@@ -151,8 +151,8 @@ export function useUpdateTraineeSession() {
             isCompleted: input.isCompleted,
             completedAt: input.isCompleted ? new Date().toISOString() : null,
           }),
-          ...(input.traineeNotes !== undefined && {
-            traineeNotes: input.traineeNotes,
+          ...(input.athleteNotes !== undefined && {
+            athleteNotes: input.athleteNotes,
           }),
         };
         queryClient.setQueryData(key, updated);

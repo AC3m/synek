@@ -1,11 +1,11 @@
 # Scaffold a new route
 
-Scaffold a new page route. Arguments: `$ARGUMENTS` (e.g. `coach/analytics` or `trainee/history`).
+Scaffold a new page route. Arguments: `$ARGUMENTS` (e.g. `coach/analytics` or `athlete/history`).
 
 ## Steps
 
 1. Parse the argument to determine:
-   - Role: `coach` or `trainee`
+   - Role: `coach` or `athlete`
    - Page slug (kebab-case)
    - Whether this is a parameterized route (contains `:param` or `$param`)
 

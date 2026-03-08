@@ -7,8 +7,8 @@ export function RoleSwitcher() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentRole = location.pathname.startsWith('/trainee')
-    ? 'trainee'
+  const currentRole = location.pathname.startsWith('/athlete')
+    ? 'athlete'
     : 'coach';
 
   const handleRoleChange = (role: string) => {
@@ -21,7 +21,7 @@ export function RoleSwitcher() {
     <Tabs value={currentRole} onValueChange={handleRoleChange}>
       <TabsList>
         <TabsTrigger value="coach">{t('nav.coach')}</TabsTrigger>
-        <TabsTrigger value="trainee">{t('nav.trainee')}</TabsTrigger>
+        <TabsTrigger value="athlete">{t('nav.athlete')}</TabsTrigger>
       </TabsList>
     </Tabs>
   );

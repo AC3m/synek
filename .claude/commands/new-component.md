@@ -8,7 +8,7 @@ Create a new component for this project. Arguments: `$ARGUMENTS` (e.g. `calendar
 
 2. Determine which i18n namespace applies:
    - `layout/` → `common`
-   - `calendar/` → `coach` or `trainee`
+   - `calendar/` → `coach` or `athlete`
    - `training/` → `training`
    - Unsure → `common`
 

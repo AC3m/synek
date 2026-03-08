@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
 import { Header } from '~/components/layout/Header';
+import { AuthProvider } from '~/lib/context/AuthContext';
 
 import type { Route } from './+types/root';
 import './app.css';
@@ -66,15 +67,17 @@ export function HydrateFallback() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <div className="min-h-screen bg-background">
-          <Header />
-          <main className="container mx-auto px-4 py-6">
-            <Outlet />
-          </main>
-        </div>
-        <Toaster position="bottom-right" richColors />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <div className="min-h-screen bg-background">
+            <Header />
+            <main className="container mx-auto px-4 py-6">
+              <Outlet />
+            </main>
+          </div>
+          <Toaster position="bottom-right" richColors />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

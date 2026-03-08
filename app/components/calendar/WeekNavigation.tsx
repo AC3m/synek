@@ -12,7 +12,7 @@ import {
 
 interface WeekNavigationProps {
   weekId: string;
-  basePath: 'coach' | 'trainee';
+  basePath: 'coach' | 'athlete';
 }
 
 export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {

@@ -5,7 +5,7 @@ Audit all translation keys across all namespaces and ensure both EN and PL are i
 ## Steps
 
 1. Read all JSON files in `app/i18n/resources/en/` and `app/i18n/resources/pl/`
-   - Namespaces: `common`, `coach`, `trainee`, `training`
+   - Namespaces: `common`, `coach`, `athlete`, `training`
 
 2. For each namespace, do a deep comparison:
    - Keys present in EN but missing in PL → mark as **missing PL**

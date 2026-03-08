@@ -6,36 +6,36 @@ import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
 import { useWeekPlan } from '~/lib/hooks/useWeekPlan';
-import { useSessions, useUpdateTraineeSession } from '~/lib/hooks/useSessions';
+import { useSessions, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
 import { weekIdToMonday } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
 
-export default function TraineeWeekView() {
+export default function AthleteWeekView() {
   const { weekId } = useParams();
-  const { t } = useTranslation('trainee');
+  const { t } = useTranslation('athlete');
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
 
   // Queries
   const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
   const { data: sessions = [] } = useSessions(weekPlan?.id);
-  const updateTrainee = useUpdateTraineeSession();
+  const updateAthlete = useUpdateAthleteSession();
 
   const sessionsByDay = groupSessionsByDay(sessions);
   const stats = computeWeekStats(sessions);
 
   const handleToggleComplete = useCallback(
     (sessionId: string, completed: boolean) => {
-      updateTrainee.mutate({ id: sessionId, isCompleted: completed });
+      updateAthlete.mutate({ id: sessionId, isCompleted: completed });
     },
-    [updateTrainee]
+    [updateAthlete]
   );
 
   const handleUpdateNotes = useCallback(
     (sessionId: string, notes: string | null) => {
-      updateTrainee.mutate({ id: sessionId, traineeNotes: notes });
+      updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
     },
-    [updateTrainee]
+    [updateAthlete]
   );
 
   if (!weekId) return null;
@@ -49,7 +49,7 @@ export default function TraineeWeekView() {
       <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <h1 className="text-xl sm:text-2xl font-bold">{t('title')}</h1>
-          <WeekNavigation weekId={weekId} basePath="trainee" />
+          <WeekNavigation weekId={weekId} basePath="athlete" />
         </div>
         <div className="text-center py-20 text-muted-foreground">
           {t('noTrainingPlan')}
@@ -63,16 +63,16 @@ export default function TraineeWeekView() {
       {/* Header with navigation */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <h1 className="text-xl sm:text-2xl font-bold">{t('title')}</h1>
-        <WeekNavigation weekId={weekId} basePath="trainee" />
+        <WeekNavigation weekId={weekId} basePath="athlete" />
       </div>
 
       {/* Week Summary (readonly with progress bar) */}
       <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
 
-      {/* Week Grid (trainee mode: completion + feedback) */}
+      {/* Week Grid (athlete mode: completion + feedback) */}
       <WeekGrid
         sessionsByDay={sessionsByDay}
-        traineeMode
+        athleteMode
         onToggleComplete={handleToggleComplete}
         onUpdateNotes={handleUpdateNotes}
       />

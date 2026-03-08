@@ -2,7 +2,7 @@
   "appName": "Synek",
   "nav": {
     "coach": "Trener",
-    "trainee": "Zawodnik"
+    "athlete": "Zawodnik"
   },
   "days": {
     "monday": "Poniedzialek",
@@ -58,5 +58,21 @@
   "errors": {
     "generic": "Cos poszlo nie tak",
     "goHome": "Strona glowna"
+  },
+  "auth": {
+    "signIn": "Zaloguj sie",
+    "signingIn": "Logowanie…",
+    "signInSubtitle": "Zaloguj sie na swoje konto",
+    "signOut": "Wyloguj",
+    "email": "Email",
+    "password": "Haslo",
+    "showPassword": "Pokaz haslo",
+    "hidePassword": "Ukryj haslo",
+    "invalidCredentials": "Nieprawidlowy email lub haslo",
+    "demoCredentials": "Dane testowe"
+  },
+  "roles": {
+    "coach": "Trener",
+    "athlete": "Zawodnik"
   }
 }

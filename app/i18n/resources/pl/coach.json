@@ -23,5 +23,14 @@
     "duration": "Czas trwania (min)",
     "distance": "Dystans (km)",
     "markRestDay": "Oznacz jako Dzien Odpoczynku"
-  }
+  },
+  "athletePicker": {
+    "title": "Wybierz zawodnika",
+    "subtitle": "Wybierz, czyim planem treningowym chcesz zarzadzac",
+    "viewPlan": "Zobacz plan",
+    "noAthletes": "Nie masz jeszcze przypisanych zawodnikow.",
+    "noAthletesHint": "Zawodnicy sa przypisywani do konta przez administratora."
+  },
+  "managing": "Zarzadzasz:",
+  "switchAthlete": "Zmien zawodnika"
 }
