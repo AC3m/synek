@@ -1,0 +1,27 @@
+{
+  "title": "Coach View",
+  "weekSummary": {
+    "title": "Week Summary",
+    "loadType": "Week Load",
+    "plannedKm": "Planned KM",
+    "description": "Training Focus",
+    "descriptionPlaceholder": "Describe the training focus for this week...",
+    "coachComments": "Coach Notes",
+    "coachCommentsPlaceholder": "Add notes for the trainee..."
+  },
+  "session": {
+    "add": "Add Session",
+    "edit": "Edit Session",
+    "create": "Create Session",
+    "delete": "Delete Session",
+    "deleteConfirm": "Are you sure you want to delete this session?",
+    "type": "Training Type",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the training...",
+    "coachComments": "Coach Notes",
+    "coachCommentsPlaceholder": "Add notes for the trainee...",
+    "duration": "Duration (min)",
+    "distance": "Distance (km)",
+    "markRestDay": "Mark as Rest Day"
+  }
+}

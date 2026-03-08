@@ -1,0 +1,68 @@
+{
+  "run": {
+    "paceTarget": "Docelowe Tempo",
+    "hrZone": "Strefa Tetna",
+    "intervals": "Interwaly",
+    "terrain": "Teren",
+    "terrainOptions": {
+      "road": "Szosa",
+      "trail": "Teren",
+      "track": "Bieznia stadionowa",
+      "treadmill": "Bieznia"
+    },
+    "elevationGain": "Przewyzszenie (m)"
+  },
+  "cycling": {
+    "avgSpeedTarget": "Docelowa Srednia Predkosc (km/h)",
+    "hrZone": "Strefa Tetna",
+    "terrain": "Teren",
+    "terrainOptions": {
+      "road": "Szosa",
+      "gravel": "Gravel",
+      "mtb": "MTB",
+      "indoor": "Trenażer"
+    },
+    "elevationGain": "Przewyzszenie (m)",
+    "powerTarget": "Docelowa Moc (W)"
+  },
+  "strength": {
+    "exercises": "Cwiczenia",
+    "muscleGroups": "Partie Miesniowe",
+    "equipment": "Sprzet",
+    "exercise": {
+      "name": "Nazwa Cwiczenia",
+      "sets": "Serie",
+      "reps": "Powtorzenia",
+      "weight": "Ciezar (kg)",
+      "rest": "Odpoczynek (s)",
+      "notes": "Notatki"
+    }
+  },
+  "yogaMobility": {
+    "focusArea": "Obszar Skupienia",
+    "style": "Styl",
+    "poses": "Pozycje / Cwiczenia"
+  },
+  "swimming": {
+    "laps": "Dlugosci",
+    "poolLength": "Dlug. Basenu (m)",
+    "strokeType": "Styl Plywacki",
+    "strokeOptions": {
+      "freestyle": "Kraul",
+      "backstroke": "Grzbietowy",
+      "breaststroke": "Klasyczny",
+      "butterfly": "Motylkowy",
+      "mixed": "Zmienny"
+    },
+    "drillDescription": "Opis Cwiczen"
+  },
+  "restDay": {
+    "activitySuggestion": "Sugerowana Aktywnosc"
+  },
+  "units": {
+    "km": "km",
+    "min": "min",
+    "bpm": "ud/min",
+    "perKm": "/km"
+  }
+}

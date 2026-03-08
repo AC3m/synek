@@ -1,0 +1,62 @@
+{
+  "appName": "Synek",
+  "nav": {
+    "coach": "Trener",
+    "trainee": "Zawodnik"
+  },
+  "days": {
+    "monday": "Poniedzialek",
+    "tuesday": "Wtorek",
+    "wednesday": "Sroda",
+    "thursday": "Czwartek",
+    "friday": "Piatek",
+    "saturday": "Sobota",
+    "sunday": "Niedziela"
+  },
+  "daysShort": {
+    "monday": "Pon",
+    "tuesday": "Wt",
+    "wednesday": "Sr",
+    "thursday": "Czw",
+    "friday": "Pt",
+    "saturday": "Sob",
+    "sunday": "Ndz"
+  },
+  "actions": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "delete": "Usun",
+    "edit": "Edytuj",
+    "add": "Dodaj",
+    "close": "Zamknij"
+  },
+  "loadType": {
+    "easy": "Lekki",
+    "medium": "Sredni",
+    "hard": "Ciezki"
+  },
+  "language": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "week": "Tydzien",
+  "today": "Dzisiaj",
+  "trainingTypes": {
+    "run": "Bieg",
+    "cycling": "Kolarstwo",
+    "strength": "Silownia",
+    "yoga": "Joga",
+    "mobility": "Mobilnosc",
+    "swimming": "Plywanie",
+    "rest_day": "Dzien Odpoczynku"
+  },
+  "stats": {
+    "sessions": "Treningi",
+    "completed": "Ukonczone",
+    "progress": "Postep"
+  },
+  "errors": {
+    "generic": "Cos poszlo nie tak",
+    "goHome": "Strona glowna"
+  }
+}

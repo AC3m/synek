@@ -1,0 +1,26 @@
+{
+  "title": "Widok Zawodnika",
+  "noTrainingPlan": "Brak planu treningowego na ten tydzien.",
+  "completion": {
+    "markComplete": "Oznacz jako ukonczone",
+    "completed": "Ukonczone",
+    "progress": "{{completed}}/{{total}} treningow ukonczone"
+  },
+  "feedback": {
+    "addNotes": "Dodaj notatki",
+    "placeholder": "Jak sie czules? Uwagi..."
+  },
+  "strava": {
+    "comingSoon": "Integracja ze Strava",
+    "connectHint": "Polacz Strave aby synchronizowac aktywnosci",
+    "fields": {
+      "trainingTime": "Czas Treningu",
+      "avgHR": "Srednie Tetno",
+      "maxHR": "Max Tetno",
+      "fatigue": "Zmeczenie",
+      "distance": "Dystans",
+      "pace": "Tempo",
+      "duration": "Czas"
+    }
+  }
+}

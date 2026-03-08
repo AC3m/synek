@@ -1,0 +1,62 @@
+{
+  "appName": "Synek",
+  "nav": {
+    "coach": "Coach",
+    "trainee": "Trainee"
+  },
+  "days": {
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
+  },
+  "daysShort": {
+    "monday": "Mon",
+    "tuesday": "Tue",
+    "wednesday": "Wed",
+    "thursday": "Thu",
+    "friday": "Fri",
+    "saturday": "Sat",
+    "sunday": "Sun"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close"
+  },
+  "loadType": {
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "language": {
+    "en": "English",
+    "pl": "Polski"
+  },
+  "week": "Week",
+  "today": "Today",
+  "trainingTypes": {
+    "run": "Run",
+    "cycling": "Cycling",
+    "strength": "Strength",
+    "yoga": "Yoga",
+    "mobility": "Mobility",
+    "swimming": "Swimming",
+    "rest_day": "Rest Day"
+  },
+  "stats": {
+    "sessions": "Sessions",
+    "completed": "Completed",
+    "progress": "Progress"
+  },
+  "errors": {
+    "generic": "Something went wrong",
+    "goHome": "Go Home"
+  }
+}

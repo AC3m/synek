@@ -1,0 +1,26 @@
+{
+  "title": "Trainee View",
+  "noTrainingPlan": "No training plan for this week yet.",
+  "completion": {
+    "markComplete": "Mark as completed",
+    "completed": "Completed",
+    "progress": "{{completed}}/{{total}} sessions completed"
+  },
+  "feedback": {
+    "addNotes": "Add your notes",
+    "placeholder": "How did you feel? Any feedback..."
+  },
+  "strava": {
+    "comingSoon": "Strava Integration",
+    "connectHint": "Connect Strava to sync your activities",
+    "fields": {
+      "trainingTime": "Training Time",
+      "avgHR": "Avg HR",
+      "maxHR": "Max HR",
+      "fatigue": "Fatigue",
+      "distance": "Distance",
+      "pace": "Pace",
+      "duration": "Duration"
+    }
+  }
+}

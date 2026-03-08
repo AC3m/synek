@@ -1,0 +1,68 @@
+{
+  "run": {
+    "paceTarget": "Pace Target",
+    "hrZone": "HR Zone",
+    "intervals": "Intervals",
+    "terrain": "Terrain",
+    "terrainOptions": {
+      "road": "Road",
+      "trail": "Trail",
+      "track": "Track",
+      "treadmill": "Treadmill"
+    },
+    "elevationGain": "Elevation Gain (m)"
+  },
+  "cycling": {
+    "avgSpeedTarget": "Avg Speed Target (km/h)",
+    "hrZone": "HR Zone",
+    "terrain": "Terrain",
+    "terrainOptions": {
+      "road": "Road",
+      "gravel": "Gravel",
+      "mtb": "MTB",
+      "indoor": "Indoor"
+    },
+    "elevationGain": "Elevation Gain (m)",
+    "powerTarget": "Power Target (W)"
+  },
+  "strength": {
+    "exercises": "Exercises",
+    "muscleGroups": "Muscle Groups",
+    "equipment": "Equipment",
+    "exercise": {
+      "name": "Exercise Name",
+      "sets": "Sets",
+      "reps": "Reps",
+      "weight": "Weight (kg)",
+      "rest": "Rest (s)",
+      "notes": "Notes"
+    }
+  },
+  "yogaMobility": {
+    "focusArea": "Focus Area",
+    "style": "Style",
+    "poses": "Poses / Exercises"
+  },
+  "swimming": {
+    "laps": "Laps",
+    "poolLength": "Pool Length (m)",
+    "strokeType": "Stroke Type",
+    "strokeOptions": {
+      "freestyle": "Freestyle",
+      "backstroke": "Backstroke",
+      "breaststroke": "Breaststroke",
+      "butterfly": "Butterfly",
+      "mixed": "Mixed"
+    },
+    "drillDescription": "Drill Description"
+  },
+  "restDay": {
+    "activitySuggestion": "Activity Suggestion"
+  },
+  "units": {
+    "km": "km",
+    "min": "min",
+    "bpm": "bpm",
+    "perKm": "/km"
+  }
+}
