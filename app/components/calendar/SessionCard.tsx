@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Footprints,
@@ -7,6 +8,7 @@ import {
   StretchHorizontal,
   Waves,
   Moon,
+  Activity,
   Pencil,
   Trash2,
   Clock,
@@ -14,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
+import { Textarea } from '~/components/ui/textarea';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { StravaDataPlaceholder } from '~/components/training/StravaDataPlaceholder';
@@ -28,6 +31,7 @@ const iconMap: Record<string, React.ElementType> = {
   StretchHorizontal,
   Waves,
   Moon,
+  Activity,
 };
 
 interface SessionCardProps {
@@ -40,6 +44,7 @@ interface SessionCardProps {
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
 export function SessionCard({
@@ -50,8 +55,14 @@ export function SessionCard({
   onDelete,
   onToggleComplete,
   onUpdateNotes,
+  onUpdateCoachPostFeedback,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
+  const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
+
+  useEffect(() => {
+    setCoachFeedback(session.coachPostFeedback ?? '');
+  }, [session.id, session.coachPostFeedback]);
   const config = trainingTypeConfig[session.trainingType];
   const Icon = iconMap[config.icon] ?? Footprints;
 
@@ -122,6 +133,99 @@ export function SessionCard({
           </span>
         )}
       </div>
+
+      {/* Actual performance chips — shown when completed and at least one field is set */}
+      {session.isCompleted &&
+        (session.actualDurationMinutes != null ||
+          session.actualDistanceKm != null ||
+          session.actualPace != null ||
+          session.avgHeartRate != null ||
+          session.maxHeartRate != null ||
+          session.rpe != null) && (
+          <div className="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-dashed">
+            {session.actualDurationMinutes != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.duration')}: {session.actualDurationMinutes}{' '}
+                {t('training:units.min')}
+              </span>
+            )}
+            {session.actualDistanceKm != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.distance')}: {session.actualDistanceKm}{' '}
+                {t('training:units.km')}
+              </span>
+            )}
+            {session.actualPace != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.pace')}: {session.actualPace}{' '}
+                {t('training:units.perKm')}
+              </span>
+            )}
+            {session.avgHeartRate != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.avgHr')}: {session.avgHeartRate}{' '}
+                {t('training:units.bpm')}
+              </span>
+            )}
+            {session.maxHeartRate != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.maxHr')}: {session.maxHeartRate}{' '}
+                {t('training:units.bpm')}
+              </span>
+            )}
+            {session.rpe != null && (
+              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+                {t('training:actualPerformance.rpe')}: {session.rpe}/10
+              </span>
+            )}
+          </div>
+        )}
+
+      {/* Athlete notes — shown to coach when the athlete has left notes */}
+      {!athleteMode && session.athleteNotes && (
+        <div className="mt-1.5 pt-1.5 border-t border-dashed">
+          <p className="text-[10px] font-medium text-muted-foreground mb-0.5">
+            {t('training:athleteNotes.label')}
+          </p>
+          <p className="text-[10px] italic">{session.athleteNotes}</p>
+        </div>
+      )}
+
+      {/* Coach post-training feedback — shown when completed */}
+      {session.isCompleted && (
+        <div className="mt-1.5 pt-1.5 border-t border-dashed">
+          {!athleteMode ? (
+            <div>
+              <p className="text-[10px] font-medium text-muted-foreground mb-0.5">
+                {t('training:coachPostFeedback.label')}
+              </p>
+              <Textarea
+                value={coachFeedback}
+                placeholder={t('training:coachPostFeedback.placeholder')}
+                rows={2}
+                className="text-[10px] min-h-0 resize-none"
+                onChange={(e) => setCoachFeedback(e.target.value)}
+                onBlur={() => {
+                  const val = coachFeedback || null;
+                  if (val !== session.coachPostFeedback) {
+                    onUpdateCoachPostFeedback?.(session.id, val);
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            session.coachPostFeedback ? (
+              <p className="text-[10px] text-muted-foreground italic">
+                {session.coachPostFeedback}
+              </p>
+            ) : (
+              <p className="text-[10px] text-muted-foreground/50 italic">
+                {t('training:coachPostFeedback.empty')}
+              </p>
+            )
+          )}
+        </div>
+      )}
 
       {/* Athlete-specific features */}
       {athleteMode && !isRestDay && (

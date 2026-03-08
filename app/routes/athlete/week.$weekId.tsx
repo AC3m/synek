@@ -72,6 +72,7 @@ export default function AthleteWeekView() {
       {/* Week Grid (athlete mode: completion + feedback) */}
       <WeekGrid
         sessionsByDay={sessionsByDay}
+        weekStart={weekStart}
         athleteMode
         onToggleComplete={handleToggleComplete}
         onUpdateNotes={handleUpdateNotes}

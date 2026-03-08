@@ -48,7 +48,8 @@
     "yoga": "Joga",
     "mobility": "Mobilnosc",
     "swimming": "Plywanie",
-    "rest_day": "Dzien Odpoczynku"
+    "rest_day": "Dzien Odpoczynku",
+    "other": "Inne"
   },
   "stats": {
     "sessions": "Treningi",

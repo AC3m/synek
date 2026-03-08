@@ -94,13 +94,20 @@ export default function CoachWeekView() {
   const handleWeekUpdate = useCallback(
     (
       updates: Partial<
-        Pick<WeekPlan, 'loadType' | 'totalPlannedKm' | 'description' | 'coachComments'>
+        Pick<WeekPlan, 'loadType' | 'totalPlannedKm' | 'actualTotalKm' | 'coachComments'>
       >
     ) => {
       if (!weekPlan) return;
       updateWeek.mutate({ id: weekPlan.id, ...updates });
     },
     [weekPlan, updateWeek]
+  );
+
+  const handleUpdateCoachPostFeedback = useCallback(
+    (sessionId: string, feedback: string | null) => {
+      updateSession.mutate({ id: sessionId, coachPostFeedback: feedback });
+    },
+    [updateSession]
   );
 
   if (!weekId) return null;
@@ -132,9 +139,11 @@ export default function CoachWeekView() {
       {/* Week Grid */}
       <WeekGrid
         sessionsByDay={sessionsByDay}
+        weekStart={weekStart}
         onAddSession={handleAddSession}
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
+        onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
       />
 
       {/* Session Form Sheet */}

@@ -59,6 +59,23 @@
   "restDay": {
     "activitySuggestion": "Activity Suggestion"
   },
+  "actualPerformance": {
+    "title": "Actual Performance",
+    "duration": "Duration",
+    "distance": "Distance",
+    "pace": "Pace",
+    "avgHr": "Avg HR",
+    "maxHr": "Max HR",
+    "rpe": "RPE"
+  },
+  "coachPostFeedback": {
+    "label": "Post-Training Coach Notes",
+    "placeholder": "Add post-training feedback...",
+    "empty": "No post-training feedback yet."
+  },
+  "athleteNotes": {
+    "label": "Athlete Notes"
+  },
   "units": {
     "km": "km",
     "min": "min",
