@@ -4,8 +4,8 @@
     "title": "Podsumowanie Tygodnia",
     "loadType": "Obciazenie Tygodnia",
     "plannedKm": "Planowane KM",
-    "description": "Cel Treningowy",
-    "descriptionPlaceholder": "Opisz cel treningowy na ten tydzien...",
+    "actualRunKm": "Zrealizowane KM",
+    "totalTime": "Łączny Czas",
     "coachComments": "Notatki Trenera",
     "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika..."
   },
