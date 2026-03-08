@@ -1,7 +1,7 @@
 # Synek — Claude Code Instructions
 
 ## What This App Is
-An **athlete training planning platform** with coach/trainee roles. Coaches create ISO-week training plans; trainees view and complete sessions. Built SPA (no SSR).
+An **athlete training planning platform** with coach/athlete roles. Coaches create ISO-week training plans; athletes view and complete sessions. Built SPA (no SSR).
 
 ## Tech Stack (versions matter)
 - **React 19** + **React Router 7** (file-based routing, SPA mode — `ssr: false`)
@@ -10,7 +10,7 @@ An **athlete training planning platform** with coach/trainee roles. Coaches crea
 - **TanStack Query 5** — all server state via hooks, no `useEffect` fetching
 - **Supabase** (`@supabase/supabase-js 2`) — mock mode auto-activates when credentials are placeholders
 - **shadcn/ui** (New York style) + **Radix UI** — only add components via `pnpm dlx shadcn@latest add`
-- **i18next** + **react-i18next** — EN/PL, namespaces: `common`, `coach`, `trainee`, `training`
+- **i18next** + **react-i18next** — EN/PL, namespaces: `common`, `coach`, `athlete`, `training`
 - **Zod 4** for schema validation
 - **pnpm** (always, never npm or yarn)
 - **date-fns 4** for all date operations
@@ -41,7 +41,7 @@ app/
 │   └── utils/       # date.ts | week-view.ts | training-types.ts
 ├── types/           # training.ts (domain models) | strava.ts
 ├── i18n/            # config.ts + resources/en/ + resources/pl/
-└── routes/          # coach/ + trainee/ page components
+└── routes/          # coach/ + athlete/ page components
 ```
 
 ### Data Flow
@@ -161,7 +161,7 @@ export async function fetchMyData(id: string): Promise<MyType | null> {
 
 ### 6. New Route
 ```typescript
-// app/routes/coach/my-page.tsx  (or trainee/)
+// app/routes/coach/my-page.tsx  (or athlete/)
 import { useTranslation } from 'react-i18next'
 
 export default function MyPage() {

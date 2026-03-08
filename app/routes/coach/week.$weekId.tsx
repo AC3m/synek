@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
@@ -38,11 +38,19 @@ export default function CoachWeekView() {
   const updateSession = useUpdateSession();
   const deleteSessionMut = useDeleteSession();
 
-  // Auto-create week plan if it doesn't exist
+  // Auto-create week plan if it doesn't exist.
+  // Use a ref to guard against repeated calls — the mutation object changes
+  // reference every render, so it must not be in the dependency array.
+  const mutatingRef = useRef(false);
   useEffect(() => {
-    if (!weekId || weekLoading || weekPlan || getOrCreate.isPending) return;
-    getOrCreate.mutate({ weekStart, year, weekNumber });
-  }, [weekId, weekLoading, weekPlan, weekStart, year, weekNumber, getOrCreate]);
+    if (!weekId || weekLoading || weekPlan || mutatingRef.current) return;
+    mutatingRef.current = true;
+    getOrCreate.mutate(
+      { weekStart, year, weekNumber },
+      { onSettled: () => { mutatingRef.current = false; } }
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
 
   // Form state
   const [formOpen, setFormOpen] = useState(false);

@@ -7,6 +7,8 @@ import {
 } from '@react-router/dev/routes';
 
 export default [
+  route('login', 'routes/login.tsx'),
+
   index('routes/home.tsx'),
 
   ...prefix('coach', [
@@ -16,10 +18,10 @@ export default [
     ]),
   ]),
 
-  ...prefix('trainee', [
-    layout('routes/trainee/layout.tsx', [
-      index('routes/trainee/week.tsx'),
-      route('week/:weekId', 'routes/trainee/week.$weekId.tsx'),
+  ...prefix('athlete', [
+    layout('routes/athlete/layout.tsx', [
+      index('routes/athlete/week.tsx'),
+      route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
     ]),
   ]),
 ] satisfies RouteConfig;

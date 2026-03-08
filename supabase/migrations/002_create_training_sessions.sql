@@ -14,7 +14,7 @@ CREATE TABLE training_sessions (
   -- Type-specific data as JSONB
   type_specific_data JSONB DEFAULT '{}',
 
-  -- Trainee execution
+  -- Athlete execution
   is_completed    BOOLEAN DEFAULT FALSE,
   completed_at    TIMESTAMPTZ,
   trainee_notes   TEXT,

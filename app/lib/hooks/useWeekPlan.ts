@@ -5,18 +5,21 @@ import {
   getOrCreateWeekPlan,
   updateWeekPlan,
 } from '~/lib/queries/weeks';
+import { useAuth } from '~/lib/context/AuthContext';
 import type { UpdateWeekPlanInput, WeekPlan } from '~/types/training';
 
 export function useWeekPlan(weekStart: string) {
+  const { effectiveAthleteId } = useAuth();
   return useQuery({
-    queryKey: queryKeys.weeks.byId(weekStart),
-    queryFn: () => fetchWeekPlanByDate(weekStart),
-    enabled: !!weekStart,
+    queryKey: queryKeys.weeks.byId(weekStart, effectiveAthleteId ?? ''),
+    queryFn: () => fetchWeekPlanByDate(weekStart, effectiveAthleteId!),
+    enabled: !!weekStart && !!effectiveAthleteId,
   });
 }
 
 export function useGetOrCreateWeekPlan() {
   const queryClient = useQueryClient();
+  const { effectiveAthleteId } = useAuth();
 
   return useMutation({
     mutationFn: ({
@@ -27,9 +30,12 @@ export function useGetOrCreateWeekPlan() {
       weekStart: string;
       year: number;
       weekNumber: number;
-    }) => getOrCreateWeekPlan(weekStart, year, weekNumber),
+    }) => getOrCreateWeekPlan(weekStart, year, weekNumber, effectiveAthleteId!),
     onSuccess: (data) => {
-      queryClient.setQueryData(queryKeys.weeks.byId(data.weekStart), data);
+      queryClient.setQueryData(
+        queryKeys.weeks.byId(data.weekStart, data.athleteId),
+        data
+      );
     },
   });
 }
@@ -40,7 +46,6 @@ export function useUpdateWeekPlan() {
   return useMutation({
     mutationFn: (input: UpdateWeekPlanInput) => updateWeekPlan(input),
     onMutate: async (input) => {
-      // Find the current cache entry
       const queries = queryClient.getQueriesData<WeekPlan>({
         queryKey: queryKeys.weeks.all,
       });

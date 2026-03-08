@@ -6,3 +6,7 @@
 # React Router
 /.react-router/
 /build/
+
+# Supabase seed files (contain personal accounts / credentials)
+supabase/seed.ts
+supabase/seed.sql

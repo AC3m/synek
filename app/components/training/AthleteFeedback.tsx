@@ -4,13 +4,13 @@ import { ChevronDown, ChevronUp, MessageSquare } from 'lucide-react';
 import { Textarea } from '~/components/ui/textarea';
 import { Button } from '~/components/ui/button';
 
-interface TraineeFeedbackProps {
+interface AthleteFeedbackProps {
   notes: string | null;
   onChange: (notes: string | null) => void;
 }
 
-export function TraineeFeedback({ notes, onChange }: TraineeFeedbackProps) {
-  const { t } = useTranslation('trainee');
+export function AthleteFeedback({ notes, onChange }: AthleteFeedbackProps) {
+  const { t } = useTranslation('athlete');
   const [expanded, setExpanded] = useState(!!notes);
   const [value, setValue] = useState(notes ?? '');
 

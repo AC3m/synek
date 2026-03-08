@@ -8,7 +8,7 @@ interface DayColumnProps {
   day: DayOfWeek;
   sessions: TrainingSession[];
   readonly?: boolean;
-  traineeMode?: boolean;
+  athleteMode?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
   onEditSession?: (session: TrainingSession) => void;
   onDeleteSession?: (sessionId: string) => void;
@@ -20,7 +20,7 @@ export function DayColumn({
   day,
   sessions,
   readonly = false,
-  traineeMode = false,
+  athleteMode = false,
   onAddSession,
   onEditSession,
   onDeleteSession,
@@ -41,7 +41,7 @@ export function DayColumn({
         <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {t(`daysShort.${day}`)}
         </h3>
-        {!readonly && !traineeMode && (
+        {!readonly && !athleteMode && (
           <Button
             variant="ghost"
             size="icon"
@@ -59,7 +59,7 @@ export function DayColumn({
             key={session.id}
             session={session}
             readonly={readonly}
-            traineeMode={traineeMode}
+            athleteMode={athleteMode}
             onEdit={onEditSession}
             onDelete={onDeleteSession}
             onToggleComplete={onToggleComplete}
@@ -67,7 +67,7 @@ export function DayColumn({
           />
         ))}
 
-        {sessions.length === 0 && !readonly && !traineeMode && (
+        {sessions.length === 0 && !readonly && !athleteMode && (
           <button
             onClick={() => onAddSession?.(day)}
             className="flex-1 flex items-center justify-center border border-dashed rounded-md text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors min-h-[60px]"
@@ -77,7 +77,7 @@ export function DayColumn({
           </button>
         )}
 
-        {sessions.length === 0 && (readonly || traineeMode) && (
+        {sessions.length === 0 && (readonly || athleteMode) && (
           <div className="flex-1 flex items-center justify-center text-[10px] text-muted-foreground min-h-[60px]">
             -
           </div>

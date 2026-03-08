@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Link2 } from 'lucide-react';
 
 export function StravaDataPlaceholder() {
-  const { t } = useTranslation('trainee');
+  const { t } = useTranslation('athlete');
 
   return (
     <div className="mt-1.5 rounded border border-dashed p-1.5 bg-muted/20">

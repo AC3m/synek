@@ -2,7 +2,7 @@
   "appName": "Synek",
   "nav": {
     "coach": "Coach",
-    "trainee": "Trainee"
+    "athlete": "Athlete"
   },
   "days": {
     "monday": "Monday",
@@ -58,5 +58,21 @@
   "errors": {
     "generic": "Something went wrong",
     "goHome": "Go Home"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "signInSubtitle": "Sign in to your account",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "invalidCredentials": "Invalid email or password",
+    "demoCredentials": "Demo credentials"
+  },
+  "roles": {
+    "coach": "Coach",
+    "athlete": "Athlete"
   }
 }

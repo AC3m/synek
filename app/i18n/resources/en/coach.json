@@ -7,7 +7,7 @@
     "description": "Training Focus",
     "descriptionPlaceholder": "Describe the training focus for this week...",
     "coachComments": "Coach Notes",
-    "coachCommentsPlaceholder": "Add notes for the trainee..."
+    "coachCommentsPlaceholder": "Add notes for the athlete..."
   },
   "session": {
     "add": "Add Session",
@@ -19,9 +19,18 @@
     "description": "Description",
     "descriptionPlaceholder": "Describe the training...",
     "coachComments": "Coach Notes",
-    "coachCommentsPlaceholder": "Add notes for the trainee...",
+    "coachCommentsPlaceholder": "Add notes for the athlete...",
     "duration": "Duration (min)",
     "distance": "Distance (km)",
     "markRestDay": "Mark as Rest Day"
-  }
+  },
+  "athletePicker": {
+    "title": "Select an athlete",
+    "subtitle": "Choose whose training plan you want to manage",
+    "viewPlan": "View plan",
+    "noAthletes": "You have no athletes assigned yet.",
+    "noAthletesHint": "Athletes are linked to your account by an administrator."
+  },
+  "managing": "Managing:",
+  "switchAthlete": "Switch athlete"
 }

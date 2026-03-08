@@ -4,13 +4,13 @@ import {
   mockCreateSession,
   mockUpdateSession,
   mockDeleteSession,
-  mockUpdateTraineeSession,
+  mockUpdateAthleteSession,
 } from '~/lib/mock-data';
 import type {
   TrainingSession,
   CreateSessionInput,
   UpdateSessionInput,
-  TraineeSessionUpdate,
+  AthleteSessionUpdate,
   TypeSpecificData,
 } from '~/types/training';
 
@@ -30,7 +30,7 @@ function toSession(row: Record<string, unknown>): TrainingSession {
     }) as TypeSpecificData,
     isCompleted: row.is_completed as boolean,
     completedAt: row.completed_at as string | null,
-    traineeNotes: row.trainee_notes as string | null,
+    athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
     createdAt: row.created_at as string,
@@ -115,17 +115,17 @@ export async function deleteSession(sessionId: string): Promise<void> {
   if (error) throw error;
 }
 
-export async function updateTraineeSession(
-  input: TraineeSessionUpdate
+export async function updateAthleteSession(
+  input: AthleteSessionUpdate
 ): Promise<TrainingSession> {
-  if (isMockMode) return mockUpdateTraineeSession(input);
+  if (isMockMode) return mockUpdateAthleteSession(input);
   const updates: Record<string, unknown> = {};
   if (input.isCompleted !== undefined) {
     updates.is_completed = input.isCompleted;
     updates.completed_at = input.isCompleted ? new Date().toISOString() : null;
   }
-  if (input.traineeNotes !== undefined)
-    updates.trainee_notes = input.traineeNotes;
+  if (input.athleteNotes !== undefined)
+    updates.trainee_notes = input.athleteNotes;
 
   const { data, error } = await supabase
     .from('training_sessions')
