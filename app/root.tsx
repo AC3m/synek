@@ -11,6 +11,7 @@ import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
 import { Header } from '~/components/layout/Header';
 import { AuthProvider } from '~/lib/context/AuthContext';
+import { ThemeProvider } from '~/lib/context/ThemeContext';
 
 import type { Route } from './+types/root';
 import './app.css';
@@ -44,6 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');})();` }} />
         <Meta />
         <Links />
       </head>
@@ -67,6 +69,7 @@ export function HydrateFallback() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <AuthProvider>
         <TooltipProvider>
           <div className="min-h-screen bg-background">
@@ -78,6 +81,7 @@ export default function App() {
           <Toaster position="bottom-right" richColors />
         </TooltipProvider>
       </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

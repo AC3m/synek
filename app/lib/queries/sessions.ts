@@ -155,6 +155,18 @@ export async function updateAthleteSession(
   }
   if (input.athleteNotes !== undefined)
     updates.trainee_notes = input.athleteNotes;
+  if (input.actualDurationMinutes !== undefined)
+    updates.actual_duration_minutes = input.actualDurationMinutes;
+  if (input.actualDistanceKm !== undefined)
+    updates.actual_distance_km = input.actualDistanceKm;
+  if (input.actualPace !== undefined)
+    updates.actual_pace = input.actualPace;
+  if (input.avgHeartRate !== undefined)
+    updates.avg_heart_rate = input.avgHeartRate;
+  if (input.maxHeartRate !== undefined)
+    updates.max_heart_rate = input.maxHeartRate;
+  if (input.rpe !== undefined)
+    updates.rpe = input.rpe;
 
   const { data, error } = await supabase
     .from('training_sessions')

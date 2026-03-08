@@ -999,6 +999,12 @@ export async function mockUpdateAthleteSession(
       completedAt: input.isCompleted ? new Date().toISOString() : null,
     }),
     ...(input.athleteNotes !== undefined && { athleteNotes: input.athleteNotes }),
+    ...(input.actualDurationMinutes !== undefined && { actualDurationMinutes: input.actualDurationMinutes }),
+    ...(input.actualDistanceKm !== undefined && { actualDistanceKm: input.actualDistanceKm }),
+    ...(input.actualPace !== undefined && { actualPace: input.actualPace }),
+    ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
+    ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
+    ...(input.rpe !== undefined && { rpe: input.rpe }),
     updatedAt: new Date().toISOString(),
   };
   sessions.set(updated.id, updated);

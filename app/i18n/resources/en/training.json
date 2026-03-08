@@ -61,12 +61,14 @@
   },
   "actualPerformance": {
     "title": "Actual Performance",
+    "logButton": "Log performance",
     "duration": "Duration",
     "distance": "Distance",
     "pace": "Pace",
     "avgHr": "Avg HR",
     "maxHr": "Max HR",
-    "rpe": "RPE"
+    "rpe": "RPE",
+    "rpeHint": "1–10"
   },
   "coachPostFeedback": {
     "label": "Post-Training Coach Notes",

@@ -151,9 +151,13 @@ export function useUpdateAthleteSession() {
             isCompleted: input.isCompleted,
             completedAt: input.isCompleted ? new Date().toISOString() : null,
           }),
-          ...(input.athleteNotes !== undefined && {
-            athleteNotes: input.athleteNotes,
-          }),
+          ...(input.athleteNotes !== undefined && { athleteNotes: input.athleteNotes }),
+          ...(input.actualDurationMinutes !== undefined && { actualDurationMinutes: input.actualDurationMinutes }),
+          ...(input.actualDistanceKm !== undefined && { actualDistanceKm: input.actualDistanceKm }),
+          ...(input.actualPace !== undefined && { actualPace: input.actualPace }),
+          ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
+          ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
+          ...(input.rpe !== undefined && { rpe: input.rpe }),
         };
         queryClient.setQueryData(key, updated);
       }

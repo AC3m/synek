@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { addDays, format, parseISO } from 'date-fns';
 import { Button } from '~/components/ui/button';
 import { SessionCard } from './SessionCard';
-import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession } from '~/types/training';
+import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type AthleteSessionUpdate } from '~/types/training';
 
 interface DayColumnProps {
   day: DayOfWeek;
@@ -16,6 +16,7 @@ interface DayColumnProps {
   onDeleteSession?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
@@ -30,6 +31,7 @@ export function DayColumn({
   onDeleteSession,
   onToggleComplete,
   onUpdateNotes,
+  onUpdatePerformance,
   onUpdateCoachPostFeedback,
 }: DayColumnProps) {
   const { t } = useTranslation();
@@ -76,6 +78,7 @@ export function DayColumn({
             onDelete={onDeleteSession}
             onToggleComplete={onToggleComplete}
             onUpdateNotes={onUpdateNotes}
+            onUpdatePerformance={onUpdatePerformance}
             onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
           />
         ))}

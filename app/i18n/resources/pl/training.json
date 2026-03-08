@@ -61,12 +61,14 @@
   },
   "actualPerformance": {
     "title": "Rzeczywiste Wyniki",
+    "logButton": "Zaloguj wyniki",
     "duration": "Czas",
     "distance": "Dystans",
     "pace": "Tempo",
     "avgHr": "Sr. Tetno",
     "maxHr": "Maks. Tetno",
-    "rpe": "RPE"
+    "rpe": "RPE",
+    "rpeHint": "1–10"
   },
   "coachPostFeedback": {
     "label": "Komentarz Trenera po Treningu",

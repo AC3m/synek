@@ -19,9 +19,10 @@ import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
+import { PerformanceEntry } from '~/components/training/PerformanceEntry';
 import { StravaDataPlaceholder } from '~/components/training/StravaDataPlaceholder';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
-import type { TrainingSession } from '~/types/training';
+import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
 
 const iconMap: Record<string, React.ElementType> = {
   Footprints,
@@ -44,6 +45,7 @@ interface SessionCardProps {
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
@@ -55,6 +57,7 @@ export function SessionCard({
   onDelete,
   onToggleComplete,
   onUpdateNotes,
+  onUpdatePerformance,
   onUpdateCoachPostFeedback,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
@@ -72,7 +75,7 @@ export function SessionCard({
     <div
       className={`group rounded-md border p-2 transition-colors hover:shadow-sm ${
         session.isCompleted
-          ? 'bg-green-50 border-green-200'
+          ? 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-900'
           : config.bgColor
       }`}
     >
@@ -144,37 +147,37 @@ export function SessionCard({
           session.rpe != null) && (
           <div className="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-dashed">
             {session.actualDurationMinutes != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.duration')}: {session.actualDurationMinutes}{' '}
                 {t('training:units.min')}
               </span>
             )}
             {session.actualDistanceKm != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.distance')}: {session.actualDistanceKm}{' '}
                 {t('training:units.km')}
               </span>
             )}
             {session.actualPace != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.pace')}: {session.actualPace}{' '}
                 {t('training:units.perKm')}
               </span>
             )}
             {session.avgHeartRate != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.avgHr')}: {session.avgHeartRate}{' '}
                 {t('training:units.bpm')}
               </span>
             )}
             {session.maxHeartRate != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.maxHr')}: {session.maxHeartRate}{' '}
                 {t('training:units.bpm')}
               </span>
             )}
             {session.rpe != null && (
-              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.rpe')}: {session.rpe}/10
               </span>
             )}
@@ -236,6 +239,13 @@ export function SessionCard({
               onToggleComplete?.(session.id, completed)
             }
           />
+
+          {session.isCompleted && (
+            <PerformanceEntry
+              session={session}
+              onChange={(update) => onUpdatePerformance?.(session.id, update)}
+            />
+          )}
 
           <AthleteFeedback
             notes={session.athleteNotes}

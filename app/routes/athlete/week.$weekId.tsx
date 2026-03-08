@@ -9,6 +9,7 @@ import { useWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useSessions, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
 import { weekIdToMonday } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import type { AthleteSessionUpdate } from '~/types/training';
 
 export default function AthleteWeekView() {
   const { weekId } = useParams();
@@ -34,6 +35,13 @@ export default function AthleteWeekView() {
   const handleUpdateNotes = useCallback(
     (sessionId: string, notes: string | null) => {
       updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
+    },
+    [updateAthlete]
+  );
+
+  const handleUpdatePerformance = useCallback(
+    (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => {
+      updateAthlete.mutate({ id: sessionId, ...update });
     },
     [updateAthlete]
   );
@@ -76,6 +84,7 @@ export default function AthleteWeekView() {
         athleteMode
         onToggleComplete={handleToggleComplete}
         onUpdateNotes={handleUpdateNotes}
+        onUpdatePerformance={handleUpdatePerformance}
       />
     </div>
   );

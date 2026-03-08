@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Checkbox } from '~/components/ui/checkbox';
 import { CheckCircle2 } from 'lucide-react';
+import { cn } from '~/lib/utils';
 
 interface CompletionToggleProps {
   isCompleted: boolean;
@@ -15,12 +16,16 @@ export function CompletionToggle({ isCompleted, onChange }: CompletionToggleProp
       <Checkbox
         checked={isCompleted}
         onCheckedChange={(checked) => onChange(checked === true)}
-        className="h-3.5 w-3.5"
+        className={cn(
+          'h-3.5 w-3.5',
+          'data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600',
+          'dark:data-[state=checked]:bg-green-500 dark:data-[state=checked]:border-green-500',
+        )}
       />
       <span
         className={`text-[10px] font-medium transition-colors ${
           isCompleted
-            ? 'text-green-700'
+            ? 'text-green-700 dark:text-green-400'
             : 'text-muted-foreground group-hover/toggle:text-foreground'
         }`}
       >
