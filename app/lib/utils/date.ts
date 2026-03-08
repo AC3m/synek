@@ -59,7 +59,7 @@ export function getWeekDateRange(weekId: string): {
   return {
     start: monday,
     end: sunday,
-    formatted: `${format(monday, 'MMM d')} - ${format(sunday, 'MMM d')}`,
+    formatted: `${format(monday, 'MMM d')} - ${format(sunday, 'MMM d yyyy')}`,
   };
 }
 

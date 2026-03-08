@@ -65,6 +65,19 @@ export function SessionForm({
   const [typeData, setTypeData] = useState<Partial<TypeSpecificData>>(
     session?.typeSpecificData ?? { type: 'run' }
   );
+  const [actualDuration, setActualDuration] = useState(
+    session?.actualDurationMinutes?.toString() ?? ''
+  );
+  const [actualDistance, setActualDistance] = useState(
+    session?.actualDistanceKm?.toString() ?? ''
+  );
+  const [actualPace, setActualPace] = useState(session?.actualPace ?? '');
+  const [avgHr, setAvgHr] = useState(session?.avgHeartRate?.toString() ?? '');
+  const [maxHr, setMaxHr] = useState(session?.maxHeartRate?.toString() ?? '');
+  const [rpe, setRpe] = useState(session?.rpe?.toString() ?? '');
+  const [coachPostFeedback, setCoachPostFeedback] = useState(
+    session?.coachPostFeedback ?? ''
+  );
 
   useEffect(() => {
     if (session) {
@@ -74,6 +87,13 @@ export function SessionForm({
       setDurationMinutes(session.plannedDurationMinutes?.toString() ?? '');
       setDistanceKm(session.plannedDistanceKm?.toString() ?? '');
       setTypeData(session.typeSpecificData ?? { type: session.trainingType });
+      setActualDuration(session.actualDurationMinutes?.toString() ?? '');
+      setActualDistance(session.actualDistanceKm?.toString() ?? '');
+      setActualPace(session.actualPace ?? '');
+      setAvgHr(session.avgHeartRate?.toString() ?? '');
+      setMaxHr(session.maxHeartRate?.toString() ?? '');
+      setRpe(session.rpe?.toString() ?? '');
+      setCoachPostFeedback(session.coachPostFeedback ?? '');
     } else {
       setTrainingType('run');
       setDescription('');
@@ -81,6 +101,13 @@ export function SessionForm({
       setDurationMinutes('');
       setDistanceKm('');
       setTypeData({ type: 'run' });
+      setActualDuration('');
+      setActualDistance('');
+      setActualPace('');
+      setAvgHr('');
+      setMaxHr('');
+      setRpe('');
+      setCoachPostFeedback('');
     }
   }, [session, open]);
 
@@ -97,17 +124,26 @@ export function SessionForm({
   const handleSubmit = () => {
     const typeSpecificData = { ...typeData, type: trainingType } as TypeSpecificData;
 
+    const actualFields = {
+      actualDurationMinutes: actualDuration ? parseInt(actualDuration) : null,
+      actualDistanceKm: actualDistance ? parseFloat(actualDistance) : null,
+      actualPace: actualPace || null,
+      avgHeartRate: avgHr ? parseInt(avgHr) : null,
+      maxHeartRate: maxHr ? parseInt(maxHr) : null,
+      rpe: rpe ? parseInt(rpe) : null,
+      coachPostFeedback: coachPostFeedback || null,
+    };
+
     if (isEditing && session) {
       onSubmit({
         id: session.id,
         trainingType,
         description: description || null,
         coachComments: coachComments || null,
-        plannedDurationMinutes: durationMinutes
-          ? parseInt(durationMinutes)
-          : null,
+        plannedDurationMinutes: durationMinutes ? parseInt(durationMinutes) : null,
         plannedDistanceKm: distanceKm ? parseFloat(distanceKm) : null,
         typeSpecificData,
+        ...actualFields,
       } satisfies UpdateSessionInput);
     } else {
       onSubmit({
@@ -116,11 +152,12 @@ export function SessionForm({
         trainingType,
         description: description || undefined,
         coachComments: coachComments || undefined,
-        plannedDurationMinutes: durationMinutes
-          ? parseInt(durationMinutes)
-          : undefined,
+        plannedDurationMinutes: durationMinutes ? parseInt(durationMinutes) : undefined,
         plannedDistanceKm: distanceKm ? parseFloat(distanceKm) : undefined,
         typeSpecificData,
+        ...Object.fromEntries(
+          Object.entries(actualFields).map(([k, v]) => [k, v ?? undefined])
+        ),
       } satisfies CreateSessionInput);
     }
     onClose();
@@ -246,6 +283,101 @@ export function SessionForm({
               </div>
             </>
           ) : null}
+
+          {/* Actual Performance */}
+          <Separator />
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold">
+              {t('training:actualPerformance.title')}
+            </h4>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-sm font-medium">
+                  {t('training:actualPerformance.duration')} ({t('training:units.min')})
+                </label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={actualDuration}
+                  onChange={(e) => setActualDuration(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  {t('training:actualPerformance.distance')} ({t('training:units.km')})
+                </label>
+                <Input
+                  type="number"
+                  step="0.01"
+                  placeholder="0"
+                  value={actualDistance}
+                  onChange={(e) => setActualDistance(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">
+                {t('training:actualPerformance.pace')} ({t('training:units.perKm')})
+              </label>
+              <Input
+                placeholder="5:30"
+                value={actualPace}
+                onChange={(e) => setActualPace(e.target.value)}
+              />
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="text-sm font-medium">
+                  {t('training:actualPerformance.avgHr')} ({t('training:units.bpm')})
+                </label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={avgHr}
+                  onChange={(e) => setAvgHr(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  {t('training:actualPerformance.maxHr')} ({t('training:units.bpm')})
+                </label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={maxHr}
+                  onChange={(e) => setMaxHr(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">
+                  {t('training:actualPerformance.rpe')} (1–10)
+                </label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="10"
+                  placeholder="–"
+                  value={rpe}
+                  onChange={(e) => setRpe(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">
+                {t('training:coachPostFeedback.label')}
+              </label>
+              <Textarea
+                placeholder={t('training:coachPostFeedback.placeholder')}
+                value={coachPostFeedback}
+                onChange={(e) => setCoachPostFeedback(e.target.value)}
+                rows={2}
+              />
+            </div>
+          </div>
         </div>
 
         <SheetFooter>

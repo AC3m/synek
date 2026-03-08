@@ -3,6 +3,7 @@ import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type SessionsByDay 
 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
+  weekStart?: string;
   readonly?: boolean;
   athleteMode?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
@@ -10,10 +11,12 @@ interface WeekGridProps {
   onDeleteSession?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
 export function WeekGrid({
   sessionsByDay,
+  weekStart,
   readonly = false,
   athleteMode = false,
   onAddSession,
@@ -21,6 +24,7 @@ export function WeekGrid({
   onDeleteSession,
   onToggleComplete,
   onUpdateNotes,
+  onUpdateCoachPostFeedback,
 }: WeekGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
@@ -35,7 +39,9 @@ export function WeekGrid({
           onEditSession={onEditSession}
           onDeleteSession={onDeleteSession}
           onToggleComplete={onToggleComplete}
+          weekStart={weekStart}
           onUpdateNotes={onUpdateNotes}
+          onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
         />
       ))}
     </div>

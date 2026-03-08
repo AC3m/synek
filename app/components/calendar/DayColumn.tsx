@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
+import { addDays, format, parseISO } from 'date-fns';
 import { Button } from '~/components/ui/button';
 import { SessionCard } from './SessionCard';
-import type { DayOfWeek, TrainingSession } from '~/types/training';
+import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession } from '~/types/training';
 
 interface DayColumnProps {
   day: DayOfWeek;
   sessions: TrainingSession[];
+  weekStart?: string;
   readonly?: boolean;
   athleteMode?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
@@ -14,11 +16,13 @@ interface DayColumnProps {
   onDeleteSession?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
 }
 
 export function DayColumn({
   day,
   sessions,
+  weekStart,
   readonly = false,
   athleteMode = false,
   onAddSession,
@@ -26,10 +30,15 @@ export function DayColumn({
   onDeleteSession,
   onToggleComplete,
   onUpdateNotes,
+  onUpdateCoachPostFeedback,
 }: DayColumnProps) {
   const { t } = useTranslation();
 
   const isWeekend = day === 'saturday' || day === 'sunday';
+
+  const dayDate = weekStart
+    ? addDays(parseISO(weekStart), DAYS_OF_WEEK.indexOf(day))
+    : null;
 
   return (
     <div
@@ -40,6 +49,9 @@ export function DayColumn({
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {t(`daysShort.${day}`)}
+          {dayDate && (
+            <span className="ml-1 normal-case">{format(dayDate, 'dd-MM-yy')}</span>
+          )}
         </h3>
         {!readonly && !athleteMode && (
           <Button
@@ -64,6 +76,7 @@ export function DayColumn({
             onDelete={onDeleteSession}
             onToggleComplete={onToggleComplete}
             onUpdateNotes={onUpdateNotes}
+            onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
           />
         ))}
 

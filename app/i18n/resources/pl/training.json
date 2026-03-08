@@ -59,6 +59,23 @@
   "restDay": {
     "activitySuggestion": "Sugerowana Aktywnosc"
   },
+  "actualPerformance": {
+    "title": "Rzeczywiste Wyniki",
+    "duration": "Czas",
+    "distance": "Dystans",
+    "pace": "Tempo",
+    "avgHr": "Sr. Tetno",
+    "maxHr": "Maks. Tetno",
+    "rpe": "RPE"
+  },
+  "coachPostFeedback": {
+    "label": "Komentarz Trenera po Treningu",
+    "placeholder": "Dodaj komentarz po treningu...",
+    "empty": "Brak komentarza po treningu."
+  },
+  "athleteNotes": {
+    "label": "Notatki Zawodnika"
+  },
   "units": {
     "km": "km",
     "min": "min",

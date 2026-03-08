@@ -30,6 +30,13 @@ function toSession(row: Record<string, unknown>): TrainingSession {
     }) as TypeSpecificData,
     isCompleted: row.is_completed as boolean,
     completedAt: row.completed_at as string | null,
+    actualDurationMinutes: row.actual_duration_minutes as number | null,
+    actualDistanceKm: row.actual_distance_km as number | null,
+    actualPace: row.actual_pace as string | null,
+    avgHeartRate: row.avg_heart_rate as number | null,
+    maxHeartRate: row.max_heart_rate as number | null,
+    rpe: row.rpe as number | null,
+    coachPostFeedback: row.coach_post_feedback as string | null,
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
@@ -68,6 +75,16 @@ export async function createSession(
       planned_distance_km: input.plannedDistanceKm ?? null,
       type_specific_data: input.typeSpecificData ?? { type: input.trainingType },
       sort_order: input.sortOrder ?? 0,
+      actual_duration_minutes: input.actualDurationMinutes ?? null,
+      actual_distance_km: input.actualDistanceKm ?? null,
+      actual_pace: input.actualPace ?? null,
+      avg_heart_rate: input.avgHeartRate ?? null,
+      max_heart_rate: input.maxHeartRate ?? null,
+      rpe: input.rpe ?? null,
+      coach_post_feedback: input.coachPostFeedback ?? null,
+      is_completed: input.isCompleted ?? false,
+      completed_at: input.completedAt ?? null,
+      trainee_notes: input.athleteNotes ?? null,
     })
     .select()
     .single();
@@ -93,6 +110,18 @@ export async function updateSession(
   if (input.typeSpecificData !== undefined)
     updates.type_specific_data = input.typeSpecificData;
   if (input.sortOrder !== undefined) updates.sort_order = input.sortOrder;
+  if (input.actualDurationMinutes !== undefined)
+    updates.actual_duration_minutes = input.actualDurationMinutes;
+  if (input.actualDistanceKm !== undefined)
+    updates.actual_distance_km = input.actualDistanceKm;
+  if (input.actualPace !== undefined) updates.actual_pace = input.actualPace;
+  if (input.avgHeartRate !== undefined)
+    updates.avg_heart_rate = input.avgHeartRate;
+  if (input.maxHeartRate !== undefined)
+    updates.max_heart_rate = input.maxHeartRate;
+  if (input.rpe !== undefined) updates.rpe = input.rpe;
+  if (input.coachPostFeedback !== undefined)
+    updates.coach_post_feedback = input.coachPostFeedback;
 
   const { data, error } = await supabase
     .from('training_sessions')

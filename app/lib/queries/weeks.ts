@@ -23,6 +23,7 @@ function toWeekPlan(row: Record<string, unknown>): WeekPlan {
     totalPlannedKm: row.total_planned_km as number | null,
     description: row.description as string | null,
     coachComments: row.coach_comments as string | null,
+    actualTotalKm: row.actual_total_km as number | null,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
@@ -78,6 +79,8 @@ export async function updateWeekPlan(
   if (input.description !== undefined) updates.description = input.description;
   if (input.coachComments !== undefined)
     updates.coach_comments = input.coachComments;
+  if (input.actualTotalKm !== undefined)
+    updates.actual_total_km = input.actualTotalKm;
 
   const { data, error } = await supabase
     .from('week_plans')

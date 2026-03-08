@@ -35,6 +35,11 @@ export const trainingTypeConfig: Record<
     bgColor: 'bg-gray-100',
     icon: 'Moon',
   },
+  other: {
+    color: 'text-slate-600',
+    bgColor: 'bg-slate-100',
+    icon: 'Activity',
+  },
 };
 
 export const loadTypeConfig: Record<

@@ -48,7 +48,8 @@
     "yoga": "Yoga",
     "mobility": "Mobility",
     "swimming": "Swimming",
-    "rest_day": "Rest Day"
+    "rest_day": "Rest Day",
+    "other": "Other"
   },
   "stats": {
     "sessions": "Sessions",
