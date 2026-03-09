@@ -13,6 +13,9 @@ export default [
   // Login is public and outside the locale wrapper
   route('login', 'routes/login.tsx'),
 
+  // Invite landing page — public, no locale prefix
+  route('invite/:token', 'routes/invite.$token.tsx'),
+
   // All authenticated routes live under /:locale (pl or en)
   route(':locale', 'routes/locale-layout.tsx', [
     index('routes/home.tsx'),

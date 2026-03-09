@@ -17,4 +17,9 @@ export const queryKeys = {
     all: ['stravaConnection'] as const,
     byUser: (userId: string) => ['stravaConnection', userId] as const,
   },
+  invites: {
+    all: ['invites'] as const,
+    byCoach: (coachId: string) => ['invites', coachId] as const,
+    preview: (token: string) => ['invites', 'preview', token] as const,
+  },
 };

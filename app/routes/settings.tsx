@@ -9,6 +9,7 @@ import { queryKeys } from '~/lib/queries/keys';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { UserTab } from '~/components/settings/UserTab';
 import { IntegrationsTab } from '~/components/settings/IntegrationsTab';
+import { AthletesTab } from '~/components/settings/AthletesTab';
 import { getCurrentWeekId, weekIdToMonday } from '~/lib/utils/date';
 
 const STRAVA_CSRF_KEY = 'strava_oauth_state';
@@ -158,6 +159,9 @@ export default function SettingsPage() {
           {user?.role === 'athlete' && (
             <TabsTrigger value="integrations">{t('settings.tabs.integrations')}</TabsTrigger>
           )}
+          {user?.role === 'coach' && (
+            <TabsTrigger value="athletes">{t('settings.tabs.athletes')}</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="user">
@@ -170,6 +174,12 @@ export default function SettingsPage() {
               onConnectStrava={handleConnectStrava}
               currentWeekStart={currentWeekStart}
             />
+          </TabsContent>
+        )}
+
+        {user?.role === 'coach' && (
+          <TabsContent value="athletes">
+            <AthletesTab />
           </TabsContent>
         )}
       </Tabs>

@@ -5,18 +5,18 @@
     "athlete": "Zawodnik"
   },
   "days": {
-    "monday": "Poniedzialek",
+    "monday": "Poniedziałek",
     "tuesday": "Wtorek",
-    "wednesday": "Sroda",
+    "wednesday": "Środa",
     "thursday": "Czwartek",
-    "friday": "Piatek",
+    "friday": "Piątek",
     "saturday": "Sobota",
     "sunday": "Niedziela"
   },
   "daysShort": {
     "monday": "Pon",
     "tuesday": "Wt",
-    "wednesday": "Sr",
+    "wednesday": "Śr",
     "thursday": "Czw",
     "friday": "Pt",
     "saturday": "Sob",
@@ -25,54 +25,78 @@
   "actions": {
     "save": "Zapisz",
     "cancel": "Anuluj",
-    "delete": "Usun",
+    "delete": "Usuń",
     "edit": "Edytuj",
     "add": "Dodaj",
     "close": "Zamknij"
   },
   "loadType": {
     "easy": "Lekki",
-    "medium": "Sredni",
-    "hard": "Ciezki"
+    "medium": "Średni",
+    "hard": "Ciężki"
   },
   "language": {
     "en": "English",
     "pl": "Polski"
   },
-  "week": "Tydzien",
+  "week": "Tydzień",
   "today": "Dzisiaj",
   "trainingTypes": {
     "run": "Bieg",
     "cycling": "Kolarstwo",
-    "strength": "Silownia",
+    "strength": "Siłownia",
     "yoga": "Joga",
-    "mobility": "Mobilnosc",
-    "swimming": "Plywanie",
+    "mobility": "Mobilność",
+    "swimming": "Pływanie",
     "walk": "Spacer",
-    "hike": "Wedrówka",
-    "rest_day": "Dzien Odpoczynku",
+    "hike": "Wędrówka",
+    "rest_day": "Dzień Odpoczynku",
     "other": "Inne"
   },
   "stats": {
     "sessions": "Treningi",
-    "completed": "Ukonczone",
-    "progress": "Postep"
+    "completed": "Ukończone",
+    "progress": "Postęp"
   },
   "errors": {
-    "generic": "Cos poszlo nie tak",
-    "goHome": "Strona glowna"
+    "generic": "Coś poszło nie tak",
+    "goHome": "Strona główna"
   },
   "auth": {
-    "signIn": "Zaloguj sie",
+    "signIn": "Zaloguj się",
     "signingIn": "Logowanie…",
-    "signInSubtitle": "Zaloguj sie na swoje konto",
+    "signInSubtitle": "Zaloguj się na swoje konto",
     "signOut": "Wyloguj",
     "email": "Email",
-    "password": "Haslo",
-    "showPassword": "Pokaz haslo",
-    "hidePassword": "Ukryj haslo",
-    "invalidCredentials": "Nieprawidlowy email lub haslo",
-    "demoCredentials": "Dane testowe"
+    "password": "Hasło",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "invalidCredentials": "Nieprawidłowy email lub hasło",
+    "demoCredentials": "Dane testowe",
+    "registerAsCoach": "Zarejestruj się jako trener",
+    "registerAsCoachSubtitle": "Utwórz konto trenera",
+    "fullName": "Imię i nazwisko",
+    "createAccount": "Utwórz konto",
+    "creatingAccount": "Tworzenie konta…",
+    "alreadyHaveAccount": "Masz już konto?",
+    "signInInstead": "Zaloguj się",
+    "passwordRequirements": "Min. 8 znaków, co najmniej jedna wielka litera i jedna cyfra",
+    "privacyNotice": "Polityka Prywatności",
+    "privacyNoticeAgree": "Rejestrując się akceptujesz naszą <1>{{link}}</1>.",
+    "coachLimitReached": "Dzienny limit rejestracji trenerów został osiągnięty. Spróbuj ponownie jutro."
+  },
+  "invite": {
+    "invalidTitle": "To zaproszenie jest nieprawidłowe",
+    "invalidUsed": "To zaproszenie zostało już wykorzystane.",
+    "invalidRevoked": "To zaproszenie zostało cofnięte.",
+    "invalidExpired": "To zaproszenie wygasło.",
+    "invalidNotFound": "To zaproszenie nie istnieje.",
+    "askNewInvite": "Poproś trenera o nowy link z zaproszeniem.",
+    "welcomeTitle": "Zostałeś zaproszony przez {{coachName}}",
+    "welcomeSubtitle": "Utwórz konto zawodnika, aby zacząć.",
+    "createAccount": "Utwórz konto",
+    "creatingAccount": "Tworzenie konta…",
+    "alreadySignedIn": "Jesteś już zalogowany. To zaproszenie jest tylko dla nowych kont."
   },
   "roles": {
     "coach": "Trener",
@@ -82,36 +106,48 @@
     "title": "Ustawienia",
     "back": "Wróć do pulpitu",
     "tabs": {
-      "user": "Uzytkownik",
-      "integrations": "Integracje"
+      "user": "Użytkownik",
+      "integrations": "Integracje",
+      "athletes": "Zawodnicy"
+    },
+    "deleteAccount": {
+      "dangerZone": "Strefa niebezpieczeństwa",
+      "title": "Usuń konto",
+      "description": "Trwale usuń swoje konto i wszystkie powiązane dane. Tej operacji nie można cofnąć.",
+      "cta": "Usuń konto",
+      "confirmStep": "Potwierdź usunięcie",
+      "typeUsername": "Wpisz swoją nazwę użytkownika, aby potwierdzić",
+      "typeUsernamePlaceholder": "Twoja nazwa użytkownika",
+      "submit": "Usuń moje konto",
+      "deleting": "Usuwanie…"
     },
     "user": {
-      "name": "Nazwa wyswietlana",
-      "avatar": "Zdjecie profilowe",
+      "name": "Nazwa wyświetlana",
+      "avatar": "Zdjęcie profilowe",
       "avatarHint": "JPEG, PNG lub WebP, maks. 5 MB",
-      "changePassword": "Zmien haslo",
-      "currentPassword": "Obecne haslo",
-      "newPassword": "Nowe haslo",
-      "confirmPassword": "Potwierdz nowe haslo",
+      "changePassword": "Zmień hasło",
+      "currentPassword": "Obecne hasło",
+      "newPassword": "Nowe hasło",
+      "confirmPassword": "Potwierdź nowe hasło",
       "saveChanges": "Zapisz zmiany",
       "saved": "Zapisano!",
-      "passwordMismatch": "Hasla nie sa zgodne",
-      "passwordTooShort": "Haslo musi miec co najmniej 8 znakow",
-      "wrongPassword": "Obecne haslo jest nieprawidlowe"
+      "passwordMismatch": "Hasła nie są zgodne",
+      "passwordTooShort": "Hasło musi mieć co najmniej 8 znaków",
+      "wrongPassword": "Obecne hasło jest nieprawidłowe"
     }
   },
   "strava": {
-    "connect": "Polacz ze Strava",
-    "connected": "Polaczono",
-    "connectedAs": "Polaczono jako {{name}}",
-    "disconnect": "Rozlacz",
-    "disconnectConfirm": "Rozlaczyc konto Strava?",
-    "description": "Polacz konto Strava, aby automatycznie uzupelniac dane treningowe (czas, dystans, tempo, tetno) po zakonczeniu treningu.",
+    "connect": "Połącz ze Stravą",
+    "connected": "Połączono",
+    "connectedAs": "Połączono jako {{name}}",
+    "disconnect": "Rozłącz",
+    "disconnectConfirm": "Rozłączyć konto Strava?",
+    "description": "Połącz konto Strava, aby automatycznie uzupełniać dane treningowe (czas, dystans, tempo, tętno) po zakończeniu treningu.",
     "syncing": "Synchronizowanie…",
     "syncNow": "Synchronizuj",
     "lastSynced": "Ostatnia synchronizacja {{time}}",
-    "connectedSince": "Polaczono {{date}}",
-    "notConnected": "Nie polaczono",
+    "connectedSince": "Połączono {{date}}",
+    "notConnected": "Nie połączono",
     "syncedBadge": "Dane ze Strava"
   }
 }
