@@ -27,9 +27,7 @@ const resources = {
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: typeof window !== 'undefined'
-    ? localStorage.getItem('language') || 'en'
-    : 'en',
+  lng: 'pl',
   fallbackLng: 'en',
   defaultNS: 'common',
   ns: ['common', 'coach', 'athlete', 'training'],

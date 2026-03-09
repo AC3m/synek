@@ -227,7 +227,7 @@ Use namespace prefix in `useTranslation`: `useTranslation('training')` → `t('k
 
 ## Mock Mode
 Mock mode activates automatically when Supabase credentials are missing/placeholder.
-- Mock data lives in `app/lib/mock-data.ts`
+- Mock data lives in `app/lib/mock-data/` (split by domain: sessions, weeks, profile, strava)
 - Both real and mock implementations live in the same query file
 - When adding new DB features: implement mock version first, then real Supabase version
 
@@ -297,6 +297,11 @@ When writing new migrations, place in `supabase/migrations/` with prefix `00N_`.
 - Supabase (PostgreSQL) — `training_sessions` and `week_plans` tables extended (001-sheets-data-migration)
 - TypeScript 5 (strict) + React 19 + React Router 7 (SPA), TanStack Query 5, Supabase JS 2, shadcn/ui (New York), i18next, Zod 4, date-fns 4 (004-settings-strava)
 - PostgreSQL via Supabase; Supabase Storage for avatars; Supabase Edge Functions for Strava OAuth (004-settings-strava)
+- TypeScript 5 (strict), React 19 + React Router 7 (SPA, `ssr: false`), TanStack Query 5, Supabase JS 2, i18next + react-i18next, Zod 4, date-fns 4 (005-tests-refactor)
+- Vitest 4, @testing-library/react 16, jsdom — test suite covering unit + integration layers (005-tests-refactor)
+- release-it + @release-it/conventional-changelog — automated versioning and CHANGELOG on merge to main (005-tests-refactor)
+- URL-based locale routing (`/:locale/...`), Polish default (`pl`), English toggle (`en`) (005-tests-refactor)
+- Supabase (PostgreSQL) — mock mode used in all tests (005-tests-refactor)
 
 ## Recent Changes
 - 001-sheets-data-migration: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only)

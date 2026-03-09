@@ -24,7 +24,8 @@ export default function LoginPage() {
   // Redirect when user becomes authenticated
   useEffect(() => {
     if (user) {
-      const target = user.role === 'coach' ? '/coach' : '/athlete';
+      const locale = localStorage.getItem('locale') ?? 'pl';
+      const target = user.role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
       navigate(target, { replace: true });
     }
   }, [user, navigate]);

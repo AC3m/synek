@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 import { useAuth } from '~/lib/context/AuthContext';
 
 export function meta() {
@@ -10,11 +10,12 @@ export function meta() {
 
 export default function Home() {
   const { user, isLoading } = useAuth();
+  const { locale = 'pl' } = useParams<{ locale?: string }>();
 
   if (isLoading) return null;
 
   if (!user) return <Navigate to="/login" replace />;
 
-  const target = user.role === 'coach' ? '/coach' : '/athlete';
+  const target = user.role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
   return <Navigate to={target} replace />;
 }

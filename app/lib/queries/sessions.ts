@@ -14,7 +14,7 @@ import type {
   TypeSpecificData,
 } from '~/types/training';
 
-function toSession(row: Record<string, unknown>): TrainingSession {
+export function toSession(row: Record<string, unknown>): TrainingSession {
   return {
     id: row.id as string,
     weekPlanId: row.week_plan_id as string,

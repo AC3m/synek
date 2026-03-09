@@ -1,31 +1,30 @@
-import type {
-  WeekPlan,
-  TrainingSession,
-  CreateWeekPlanInput,
-  UpdateWeekPlanInput,
-  CreateSessionInput,
-  UpdateSessionInput,
-  AthleteSessionUpdate,
-  TypeSpecificData,
-} from '~/types/training';
+/**
+ * Private shared state for mock data modules.
+ * Not exported from the barrel — import directly within mock-data/ only.
+ */
+import type { WeekPlan, TrainingSession } from '~/types/training';
 
 // ---------------------------------------------------------------------------
 // In-memory data stores (keyed by athleteId → weekStart → WeekPlan)
 // ---------------------------------------------------------------------------
 
-const weekPlans = new Map<string, Map<string, WeekPlan>>();
-const sessions = new Map<string, TrainingSession>();
+export const weekPlans = new Map<string, Map<string, WeekPlan>>();
+export const sessions = new Map<string, TrainingSession>();
 
 let idCounter = 100;
-function nextId() {
+export function nextId() {
   return `mock-${++idCounter}`;
 }
 
-function getAthleteMap(athleteId: string): Map<string, WeekPlan> {
+export function getAthleteMap(athleteId: string): Map<string, WeekPlan> {
   if (!weekPlans.has(athleteId)) {
     weekPlans.set(athleteId, new Map());
   }
   return weekPlans.get(athleteId)!;
+}
+
+export function delay(ms = 150): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 // ---------------------------------------------------------------------------
@@ -239,7 +238,6 @@ function seedAlice() {
       stravaSyncedAt: null,
     },
   ];
-
   for (const s of w09Sessions) {
     sessions.set(s.id, { ...s, createdAt: w09.createdAt, updatedAt: w09.updatedAt } as TrainingSession);
   }
@@ -456,7 +454,6 @@ function seedAlice() {
       stravaSyncedAt: null,
     },
   ];
-
   for (const s of w10Sessions) {
     sessions.set(s.id, { ...s, createdAt: w10.createdAt, updatedAt: w10.updatedAt } as TrainingSession);
   }
@@ -656,7 +653,6 @@ function seedAlice() {
       stravaSyncedAt: null,
     },
   ];
-
   for (const s of w11Sessions) {
     sessions.set(s.id, { ...s, createdAt: w11.createdAt, updatedAt: w11.updatedAt } as TrainingSession);
   }
@@ -792,221 +788,11 @@ function seedBob() {
       stravaSyncedAt: null,
     },
   ];
-
   for (const s of w10Sessions) {
     sessions.set(s.id, { ...s, createdAt: w10.createdAt, updatedAt: w10.updatedAt } as TrainingSession);
   }
 }
 
-// Run seed once
+// Run seed once at module load
 seedAlice();
 seedBob();
-
-// ---------------------------------------------------------------------------
-// Mock query implementations
-// ---------------------------------------------------------------------------
-
-function delay(ms = 150): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
-// --- Week Plans ---
-
-export async function mockFetchWeekPlanByDate(
-  weekStart: string,
-  athleteId: string
-): Promise<WeekPlan | null> {
-  await delay();
-  return weekPlans.get(athleteId)?.get(weekStart) ?? null;
-}
-
-export async function mockCreateWeekPlan(
-  input: CreateWeekPlanInput
-): Promise<WeekPlan> {
-  await delay();
-  const plan: WeekPlan = {
-    id: nextId(),
-    athleteId: input.athleteId,
-    weekStart: input.weekStart,
-    year: input.year,
-    weekNumber: input.weekNumber,
-    loadType: input.loadType ?? null,
-    totalPlannedKm: input.totalPlannedKm ?? null,
-    description: input.description ?? null,
-    coachComments: input.coachComments ?? null,
-    actualTotalKm: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  const map = getAthleteMap(input.athleteId);
-  map.set(plan.weekStart, plan);
-  return plan;
-}
-
-export async function mockUpdateWeekPlan(
-  input: UpdateWeekPlanInput
-): Promise<WeekPlan> {
-  await delay();
-  // Find the plan across all athletes
-  let found: WeekPlan | undefined;
-  for (const athleteMap of weekPlans.values()) {
-    for (const wp of athleteMap.values()) {
-      if (wp.id === input.id) {
-        found = wp;
-        break;
-      }
-    }
-    if (found) break;
-  }
-  if (!found) throw new Error(`Week plan ${input.id} not found`);
-
-  const updated: WeekPlan = {
-    ...found,
-    ...(input.loadType !== undefined && { loadType: input.loadType }),
-    ...(input.totalPlannedKm !== undefined && {
-      totalPlannedKm: input.totalPlannedKm,
-    }),
-    ...(input.description !== undefined && { description: input.description }),
-    ...(input.coachComments !== undefined && {
-      coachComments: input.coachComments,
-    }),
-    ...(input.actualTotalKm !== undefined && {
-      actualTotalKm: input.actualTotalKm,
-    }),
-    updatedAt: new Date().toISOString(),
-  };
-  const map = getAthleteMap(updated.athleteId);
-  map.set(updated.weekStart, updated);
-  return updated;
-}
-
-export async function mockGetOrCreateWeekPlan(
-  weekStart: string,
-  year: number,
-  weekNumber: number,
-  athleteId: string
-): Promise<WeekPlan> {
-  const existing = await mockFetchWeekPlanByDate(weekStart, athleteId);
-  if (existing) return existing;
-  return mockCreateWeekPlan({ weekStart, year, weekNumber, athleteId });
-}
-
-// --- Sessions ---
-
-export async function mockFetchSessionsByWeekPlan(
-  weekPlanId: string
-): Promise<TrainingSession[]> {
-  await delay();
-  const result: TrainingSession[] = [];
-  for (const s of sessions.values()) {
-    if (s.weekPlanId === weekPlanId) result.push(s);
-  }
-  return result.sort((a, b) => a.sortOrder - b.sortOrder);
-}
-
-export async function mockCreateSession(
-  input: CreateSessionInput
-): Promise<TrainingSession> {
-  await delay();
-  const session: TrainingSession = {
-    id: nextId(),
-    weekPlanId: input.weekPlanId,
-    dayOfWeek: input.dayOfWeek,
-    sortOrder: input.sortOrder ?? 0,
-    trainingType: input.trainingType,
-    description: input.description ?? null,
-    coachComments: input.coachComments ?? null,
-    plannedDurationMinutes: input.plannedDurationMinutes ?? null,
-    plannedDistanceKm: input.plannedDistanceKm ?? null,
-    typeSpecificData:
-      input.typeSpecificData ?? ({ type: input.trainingType } as TypeSpecificData),
-    isCompleted: input.isCompleted ?? false,
-    completedAt: input.completedAt ?? null,
-    actualDurationMinutes: input.actualDurationMinutes ?? null,
-    actualDistanceKm: input.actualDistanceKm ?? null,
-    actualPace: input.actualPace ?? null,
-    avgHeartRate: input.avgHeartRate ?? null,
-    maxHeartRate: input.maxHeartRate ?? null,
-    rpe: input.rpe ?? null,
-    coachPostFeedback: input.coachPostFeedback ?? null,
-    athleteNotes: input.athleteNotes ?? null,
-    stravaActivityId: null,
-    stravaSyncedAt: null,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  sessions.set(session.id, session);
-  return session;
-}
-
-export async function mockUpdateSession(
-  input: UpdateSessionInput
-): Promise<TrainingSession> {
-  await delay();
-  const existing = sessions.get(input.id);
-  if (!existing) throw new Error(`Session ${input.id} not found`);
-
-  const updated: TrainingSession = {
-    ...existing,
-    ...(input.trainingType !== undefined && { trainingType: input.trainingType }),
-    ...(input.description !== undefined && { description: input.description }),
-    ...(input.coachComments !== undefined && { coachComments: input.coachComments }),
-    ...(input.plannedDurationMinutes !== undefined && {
-      plannedDurationMinutes: input.plannedDurationMinutes,
-    }),
-    ...(input.plannedDistanceKm !== undefined && {
-      plannedDistanceKm: input.plannedDistanceKm,
-    }),
-    ...(input.typeSpecificData !== undefined && {
-      typeSpecificData: input.typeSpecificData,
-    }),
-    ...(input.sortOrder !== undefined && { sortOrder: input.sortOrder }),
-    ...(input.actualDurationMinutes !== undefined && {
-      actualDurationMinutes: input.actualDurationMinutes,
-    }),
-    ...(input.actualDistanceKm !== undefined && {
-      actualDistanceKm: input.actualDistanceKm,
-    }),
-    ...(input.actualPace !== undefined && { actualPace: input.actualPace }),
-    ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
-    ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
-    ...(input.rpe !== undefined && { rpe: input.rpe }),
-    ...(input.coachPostFeedback !== undefined && {
-      coachPostFeedback: input.coachPostFeedback,
-    }),
-    updatedAt: new Date().toISOString(),
-  };
-  sessions.set(updated.id, updated);
-  return updated;
-}
-
-export async function mockDeleteSession(sessionId: string): Promise<void> {
-  await delay();
-  sessions.delete(sessionId);
-}
-
-export async function mockUpdateAthleteSession(
-  input: AthleteSessionUpdate
-): Promise<TrainingSession> {
-  await delay();
-  const existing = sessions.get(input.id);
-  if (!existing) throw new Error(`Session ${input.id} not found`);
-
-  const updated: TrainingSession = {
-    ...existing,
-    ...(input.isCompleted !== undefined && {
-      isCompleted: input.isCompleted,
-      completedAt: input.isCompleted ? new Date().toISOString() : null,
-    }),
-    ...(input.athleteNotes !== undefined && { athleteNotes: input.athleteNotes }),
-    ...(input.actualDurationMinutes !== undefined && { actualDurationMinutes: input.actualDurationMinutes }),
-    ...(input.actualDistanceKm !== undefined && { actualDistanceKm: input.actualDistanceKm }),
-    ...(input.actualPace !== undefined && { actualPace: input.actualPace }),
-    ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
-    ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
-    ...(input.rpe !== undefined && { rpe: input.rpe }),
-    updatedAt: new Date().toISOString(),
-  };
-  sessions.set(updated.id, updated);
-  return updated;
-}

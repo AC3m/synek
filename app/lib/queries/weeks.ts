@@ -12,7 +12,7 @@ import type {
 } from '~/types/training';
 
 // DB row → app type mapper
-function toWeekPlan(row: Record<string, unknown>): WeekPlan {
+export function toWeekPlan(row: Record<string, unknown>): WeekPlan {
   return {
     id: row.id as string,
     athleteId: row.athlete_id as string,
