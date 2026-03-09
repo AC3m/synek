@@ -117,7 +117,7 @@ export default function SettingsPage() {
     const state = crypto.randomUUID();
     localStorage.setItem(STRAVA_CSRF_KEY, state);
 
-    const redirectUri = `${window.location.origin}/settings?tab=integrations`;
+    const redirectUri = `${import.meta.env.VITE_APP_URL ?? window.location.origin}/settings?tab=integrations`;
     const params = new URLSearchParams({
       client_id: import.meta.env.VITE_STRAVA_CLIENT_ID ?? '',
       redirect_uri: redirectUri,
