@@ -1,20 +1,20 @@
 {
   "run": {
     "paceTarget": "Docelowe Tempo",
-    "hrZone": "Strefa Tetna",
-    "intervals": "Interwaly",
+    "hrZone": "Strefa Tętna",
+    "intervals": "Interwały",
     "terrain": "Teren",
     "terrainOptions": {
       "road": "Szosa",
       "trail": "Teren",
-      "track": "Bieznia stadionowa",
-      "treadmill": "Bieznia"
+      "track": "Bieżnia stadionowa",
+      "treadmill": "Bieżnia"
     },
-    "elevationGain": "Przewyzszenie (m)"
+    "elevationGain": "Przewyższenie (m)"
   },
   "cycling": {
-    "avgSpeedTarget": "Docelowa Srednia Predkosc (km/h)",
-    "hrZone": "Strefa Tetna",
+    "avgSpeedTarget": "Docelowa Średnia Prędkość (km/h)",
+    "hrZone": "Strefa Tętna",
     "terrain": "Teren",
     "terrainOptions": {
       "road": "Szosa",
@@ -22,18 +22,18 @@
       "mtb": "MTB",
       "indoor": "Trenażer"
     },
-    "elevationGain": "Przewyzszenie (m)",
+    "elevationGain": "Przewyższenie (m)",
     "powerTarget": "Docelowa Moc (W)"
   },
   "strength": {
-    "exercises": "Cwiczenia",
-    "muscleGroups": "Partie Miesniowe",
-    "equipment": "Sprzet",
+    "exercises": "Ćwiczenia",
+    "muscleGroups": "Partie Mięśniowe",
+    "equipment": "Sprzęt",
     "exercise": {
-      "name": "Nazwa Cwiczenia",
+      "name": "Nazwa Ćwiczenia",
       "sets": "Serie",
-      "reps": "Powtorzenia",
-      "weight": "Ciezar (kg)",
+      "reps": "Powtórzenia",
+      "weight": "Ciężar (kg)",
       "rest": "Odpoczynek (s)",
       "notes": "Notatki"
     }
@@ -41,12 +41,12 @@
   "yogaMobility": {
     "focusArea": "Obszar Skupienia",
     "style": "Styl",
-    "poses": "Pozycje / Cwiczenia"
+    "poses": "Pozycje / Ćwiczenia"
   },
   "swimming": {
-    "laps": "Dlugosci",
-    "poolLength": "Dlug. Basenu (m)",
-    "strokeType": "Styl Plywacki",
+    "laps": "Długości",
+    "poolLength": "Dług. Basenu (m)",
+    "strokeType": "Styl Pływacki",
     "strokeOptions": {
       "freestyle": "Kraul",
       "backstroke": "Grzbietowy",
@@ -54,7 +54,7 @@
       "butterfly": "Motylkowy",
       "mixed": "Zmienny"
     },
-    "drillDescription": "Opis Cwiczen"
+    "drillDescription": "Opis Ćwiczeń"
   },
   "walkHike": {
     "terrain": "Teren",
@@ -63,10 +63,10 @@
       "trail": "Szlak",
       "urban": "Miasto"
     },
-    "elevationGain": "Przewyzszenie (m)"
+    "elevationGain": "Przewyższenie (m)"
   },
   "restDay": {
-    "activitySuggestion": "Sugerowana Aktywnosc"
+    "activitySuggestion": "Sugerowana Aktywność"
   },
   "actualPerformance": {
     "title": "Rzeczywiste Wyniki",
@@ -74,8 +74,8 @@
     "duration": "Czas",
     "distance": "Dystans",
     "pace": "Tempo",
-    "avgHr": "Sr. Tetno",
-    "maxHr": "Maks. Tetno",
+    "avgHr": "Śr. Tętno",
+    "maxHr": "Maks. Tętno",
     "rpe": "RPE",
     "rpeHint": "1–10"
   },

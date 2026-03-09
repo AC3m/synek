@@ -18,9 +18,9 @@
   "session": {
     "add": "Dodaj Trening",
     "edit": "Edytuj Trening",
-    "create": "Utworz Trening",
-    "delete": "Usun Trening",
-    "deleteConfirm": "Czy na pewno chcesz usunac ten trening?",
+    "create": "Utwórz Trening",
+    "delete": "Usuń Trening",
+    "deleteConfirm": "Czy na pewno chcesz usunąć ten trening?",
     "type": "Typ Treningu",
     "description": "Opis",
     "descriptionPlaceholder": "Opisz trening...",
@@ -28,36 +28,36 @@
     "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika...",
     "duration": "Czas trwania (min)",
     "distance": "Dystans (km)",
-    "markRestDay": "Oznacz jako Dzien Odpoczynku"
+    "markRestDay": "Oznacz jako Dzień Odpoczynku"
   },
   "athletePicker": {
     "title": "Wybierz zawodnika",
-    "subtitle": "Wybierz, czyim planem treningowym chcesz zarzadzac",
+    "subtitle": "Wybierz, czyim planem treningowym chcesz zarządzać",
     "viewPlan": "Zobacz plan",
-    "noAthletes": "Nie masz jeszcze przypisanych zawodnikow.",
+    "noAthletes": "Nie masz jeszcze przypisanych zawodników.",
     "noAthletesHint": "Zaproś pierwszego zawodnika w Ustawieniach."
   },
-  "managing": "Zarzadzasz:",
-  "switchAthlete": "Zmien zawodnika",
+  "managing": "Zarządzasz:",
+  "switchAthlete": "Zmień zawodnika",
   "athletes": {
     "title": "Zawodnicy",
-    "inviteSection": "Zapraszaj zawodnikow",
+    "inviteSection": "Zapraszaj zawodników",
     "generateLink": "Generuj link zaproszenia",
     "generating": "Generowanie…",
     "copyLink": "Kopiuj link",
     "copied": "Skopiowano!",
-    "dailyLimit": "{{used}} z {{limit}} zaproszen wykorzystanych dzisiaj",
-    "resetsAt": "Resetuje sie o {{time}}",
-    "limitReached": "Osiagniety dzienny limit zaproszen",
+    "dailyLimit": "{{used}} z {{limit}} zaproszeń wykorzystanych dzisiaj",
+    "resetsAt": "Resetuje się o {{time}}",
+    "limitReached": "Osiągnięty dzienny limit zaproszeń",
     "revokeInvite": "Cofnij",
-    "revokeConfirm": "Cofnac ten link zaproszenia?",
+    "revokeConfirm": "Cofnąć ten link zaproszenia?",
     "inviteList": {
-      "empty": "Brak linkow zaproszen. Wygeneruj pierwszy powyzej.",
+      "empty": "Brak linków zaproszeń. Wygeneruj pierwszy powyżej.",
       "status": {
-        "pending": "Oczekujace",
+        "pending": "Oczekujące",
         "used": "Wykorzystane",
-        "revoked": "Cofniete",
-        "expired": "Wygasle"
+        "revoked": "Cofnięte",
+        "expired": "Wygasłe"
       },
       "expiresAt": "Wygasa {{time}}",
       "createdAt": "Utworzone {{date}}"
