@@ -1,12 +1,15 @@
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { useAuth } from '~/lib/context/AuthContext';
+import { useLocalePath } from '~/lib/hooks/useLocalePath';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 
 export function AthletePicker() {
   const { athletes, selectAthlete } = useAuth();
   const { t } = useTranslation('coach');
+  const localePath = useLocalePath();
 
   if (athletes.length === 0) {
     return (
@@ -15,9 +18,12 @@ export function AthletePicker() {
         <p className="text-muted-foreground">
           {t('athletePicker.noAthletes')}
         </p>
-        <p className="text-sm text-muted-foreground/70">
+        <Link
+          to={localePath('/settings?tab=athletes')}
+          className="text-sm text-primary underline hover:text-primary/80"
+        >
           {t('athletePicker.noAthletesHint')}
-        </p>
+        </Link>
       </div>
     );
   }

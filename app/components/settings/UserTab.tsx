@@ -5,6 +5,7 @@ import { useUpdateProfileName, useUploadAvatar, useChangePassword } from '~/lib/
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Separator } from '~/components/ui/separator';
+import { DeleteAccountDialog } from '~/components/settings/DeleteAccountDialog';
 import { cn } from '~/lib/utils';
 
 interface UserTabProps {
@@ -162,6 +163,18 @@ export function UserTab({ className }: UserTabProps) {
           {passwordSaved ? t('settings.user.saved') : t('settings.user.changePassword')}
         </Button>
       </form>
+
+      <Separator className="my-8" />
+
+      <div className="space-y-3">
+        <h3 className="text-sm font-medium text-destructive">
+          {t('settings.deleteAccount.dangerZone')}
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {t('settings.deleteAccount.description')}
+        </p>
+        <DeleteAccountDialog />
+      </div>
     </div>
   );
 }

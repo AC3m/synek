@@ -35,8 +35,32 @@
     "subtitle": "Choose whose training plan you want to manage",
     "viewPlan": "View plan",
     "noAthletes": "You have no athletes assigned yet.",
-    "noAthletesHint": "Athletes are linked to your account by an administrator."
+    "noAthletesHint": "Invite your first athlete in Settings."
   },
   "managing": "Managing:",
-  "switchAthlete": "Switch athlete"
+  "switchAthlete": "Switch athlete",
+  "athletes": {
+    "title": "Athletes",
+    "inviteSection": "Invite Athletes",
+    "generateLink": "Generate Invite Link",
+    "generating": "Generating…",
+    "copyLink": "Copy link",
+    "copied": "Copied!",
+    "dailyLimit": "{{used}} of {{limit}} invites used today",
+    "resetsAt": "Resets at {{time}}",
+    "limitReached": "Daily invite limit reached",
+    "revokeInvite": "Revoke",
+    "revokeConfirm": "Revoke this invite link?",
+    "inviteList": {
+      "empty": "No invite links yet. Generate your first one above.",
+      "status": {
+        "pending": "Pending",
+        "used": "Used",
+        "revoked": "Revoked",
+        "expired": "Expired"
+      },
+      "expiresAt": "Expires {{time}}",
+      "createdAt": "Created {{date}}"
+    }
+  }
 }

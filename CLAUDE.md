@@ -141,7 +141,7 @@ export async function fetchMyData(id: string): Promise<MyType | null> {
   if (isMockMode) return mockFetchMyData(id)
   const { data, error } = await supabase
     .from('my_table')
-    .select('*')
+    .select('id, my_field')  // never use select('*') — list columns explicitly
     .eq('id', id)
     .maybeSingle()
   if (error) throw error
@@ -151,6 +151,7 @@ export async function fetchMyData(id: string): Promise<MyType | null> {
 - Every query file MUST have both real and mock implementations
 - Use `toMyType()` row mappers for DB → TS transformation (snake → camel)
 - Export mock functions so they can be unit-tested independently
+- Never use `select('*')` — always list columns explicitly
 
 ### 5. New Training Type (sport-specific fields)
 1. Add variant to `TypeSpecificData` in `app/types/training.ts`
@@ -170,6 +171,8 @@ export default function MyPage() {
 }
 ```
 Register in `app/routes.ts` under the correct layout.
+- Routes inside `/:locale` layout get locale prefix automatically (`/pl/coach/...`)
+- Public routes that must work without locale (e.g. invite pages) register at the **top level** alongside `login`, outside the `':locale'` layout wrapper
 Run `pnpm typecheck` after adding routes to generate types.
 
 ### 7. Adding Translations
@@ -199,6 +202,12 @@ Use namespace prefix in `useTranslation`: `useTranslation('training')` → `t('k
 - Never use `any` — use `unknown` and narrow
 - Use `as const` on query keys
 - Import types with `import type { }` syntax
+- `import.meta.env.VITE_X` — use directly, no casting required (Vite types it automatically)
+- Dynamic i18n template literal keys that TypeScript cannot verify: cast to `as never`
+  ```typescript
+  t(`invite.invalid${capitalize(reason)}` as never)
+  ```
+- **Zod 4**: use `.issues[0]?.message` (not `.errors[0].message` — `.errors` was removed in v4)
 
 ---
 
@@ -230,6 +239,113 @@ Mock mode activates automatically when Supabase credentials are missing/placehol
 - Mock data lives in `app/lib/mock-data/` (split by domain: sessions, weeks, profile, strava)
 - Both real and mock implementations live in the same query file
 - When adding new DB features: implement mock version first, then real Supabase version
+- Each mock-data module exports a `resetMockX()` function; call it in `beforeEach` to prevent state bleed between tests
+- Mock store must use **deep clones** on reset: `SEED.map(i => ({ ...i }))` — shallow copies leave shared object references that mutate across tests
+
+---
+
+## Testing Patterns
+
+### File Organisation
+- `app/test/unit/` — pure function / mapper tests (no React, no mocks of modules)
+- `app/test/integration/` — hook and component tests (render + TanStack Query wrapper)
+
+### Mocking Supabase / Query Modules
+```typescript
+// ✅ Use vi.fn() inside the factory — avoids hoisting ReferenceError
+vi.mock('~/lib/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn(),
+      signInWithPassword: vi.fn(),
+    },
+  },
+  isMockMode: true,
+}))
+
+// Then assign return values in beforeEach (not at module scope)
+beforeEach(() => {
+  vi.mocked(supabase.auth.getSession).mockResolvedValue({ data: { session: { access_token: 'tok' } } } as never)
+})
+```
+- Never reference top-level variables inside `vi.mock()` factories — they run before initialisation
+- Use `vi.spyOn(module, 'fn').mockRejectedValueOnce(...)` for per-test overrides; `vi.doMock` does not affect already-loaded modules
+
+### Mock Context
+```typescript
+// Module-level variable, read by the mock
+let mockUser: AuthUser | null = null
+
+vi.mock('~/lib/context/AuthContext', () => ({
+  useAuth: () => ({ user: mockUser, logout: vi.fn() }),
+}))
+
+// In tests, set before render:
+mockUser = { id: '1', role: 'coach', name: 'Jane' }
+```
+
+### Interacting with `aria-hidden` Fields
+`userEvent.type` skips elements with `aria-hidden="true"` (e.g. honeypot inputs).
+Use `fireEvent.change` instead:
+```typescript
+fireEvent.change(screen.getByRole('...'), { target: { value: 'value' } })
+// or by querySelector for hidden elements:
+fireEvent.change(container.querySelector('[name="website"]')!, { target: { value: 'bot' } })
+```
+
+### TDD Approach
+1. Write the test → confirm it **fails** (red)
+2. Implement the minimal code → confirm it **passes** (green)
+3. Refactor if needed
+
+---
+
+## Supabase Edge Functions
+
+Pattern: follow `supabase/functions/strava-auth/index.ts` exactly.
+
+```typescript
+// supabase/functions/my-function/index.ts
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+}
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+  })
+}
+
+serve(async (req) => {
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS_HEADERS })
+  // ...
+})
+```
+- Verify caller JWT via `anonClient.auth.getUser(jwt)` (not service role) before any mutation
+- Use service role client only for admin operations (`createUser`, `deleteUser`, etc.)
+- Always handle `OPTIONS` preflight for CORS
+
+## Security Conventions
+
+### Forms
+- Add a honeypot field to all public-facing registration forms:
+  ```tsx
+  <input name="website" tabIndex={-1} className="sr-only" aria-hidden="true"
+         value={honeypot} onChange={(e) => setHoneypot(e.target.value)} />
+  ```
+  Silently reject submissions where honeypot is non-empty.
+
+### Auth
+- After invite-based registration, always call `signInWithPassword` to issue a **fresh session** (prevents session fixation — discards any state from the invite page).
+- Two-step destructive actions (e.g. account deletion): step 1 explains consequences, step 2 requires typing exact confirmation value before enabling submit.
+
+### Database FK Design
+- Prefer `ON DELETE SET NULL` over `ON DELETE CASCADE` for audit-sensitive FKs to preserve history after user deletion.
 
 ---
 
@@ -245,6 +361,10 @@ Mock mode activates automatically when Supabase credentials are missing/placehol
 - **No CSS modules or styled-components** — Tailwind only
 - **No date manipulation outside `date-fns`** — never use `new Date()` arithmetic directly
 - **No `npm` or `yarn`** — always `pnpm`
+- **No `select('*')` in Supabase queries** — always list columns explicitly
+- **No top-level variable references inside `vi.mock()` factories** — use `vi.fn()` inside factory, assign values in `beforeEach`
+- **No `vi.doMock` for per-test overrides** — use `vi.spyOn` instead
+- **No shallow array copy in mock resets** — use `.map(i => ({ ...i }))` deep clone to prevent mutation bleed
 
 ---
 
@@ -302,6 +422,8 @@ When writing new migrations, place in `supabase/migrations/` with prefix `00N_`.
 - release-it + @release-it/conventional-changelog — automated versioning and CHANGELOG on merge to main (005-tests-refactor)
 - URL-based locale routing (`/:locale/...`), Polish default (`pl`), English toggle (`en`) (005-tests-refactor)
 - Supabase (PostgreSQL) — mock mode used in all tests (005-tests-refactor)
+- TypeScript 5 stric + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, shadcn/ui, i18next, Zod 4 (006-coach-athlete-invite)
+- Supabase PostgreSQL — new `invites` table; no schema changes to existing tables (006-coach-athlete-invite)
 
 ## Recent Changes
 - 001-sheets-data-migration: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only)

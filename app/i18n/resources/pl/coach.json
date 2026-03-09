@@ -35,8 +35,32 @@
     "subtitle": "Wybierz, czyim planem treningowym chcesz zarzadzac",
     "viewPlan": "Zobacz plan",
     "noAthletes": "Nie masz jeszcze przypisanych zawodnikow.",
-    "noAthletesHint": "Zawodnicy sa przypisywani do konta przez administratora."
+    "noAthletesHint": "Zaproś pierwszego zawodnika w Ustawieniach."
   },
   "managing": "Zarzadzasz:",
-  "switchAthlete": "Zmien zawodnika"
+  "switchAthlete": "Zmien zawodnika",
+  "athletes": {
+    "title": "Zawodnicy",
+    "inviteSection": "Zapraszaj zawodnikow",
+    "generateLink": "Generuj link zaproszenia",
+    "generating": "Generowanie…",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano!",
+    "dailyLimit": "{{used}} z {{limit}} zaproszen wykorzystanych dzisiaj",
+    "resetsAt": "Resetuje sie o {{time}}",
+    "limitReached": "Osiagniety dzienny limit zaproszen",
+    "revokeInvite": "Cofnij",
+    "revokeConfirm": "Cofnac ten link zaproszenia?",
+    "inviteList": {
+      "empty": "Brak linkow zaproszen. Wygeneruj pierwszy powyzej.",
+      "status": {
+        "pending": "Oczekujace",
+        "used": "Wykorzystane",
+        "revoked": "Cofniete",
+        "expired": "Wygasle"
+      },
+      "expiresAt": "Wygasa {{time}}",
+      "createdAt": "Utworzone {{date}}"
+    }
+  }
 }

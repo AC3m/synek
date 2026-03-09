@@ -72,7 +72,31 @@
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "invalidCredentials": "Invalid email or password",
-    "demoCredentials": "Demo credentials"
+    "demoCredentials": "Demo credentials",
+    "registerAsCoach": "Register as Coach",
+    "registerAsCoachSubtitle": "Create your coach account",
+    "fullName": "Full Name",
+    "createAccount": "Create Account",
+    "creatingAccount": "Creating account…",
+    "alreadyHaveAccount": "Already have an account?",
+    "signInInstead": "Sign in instead",
+    "passwordRequirements": "Min. 8 characters, at least one uppercase letter and one number",
+    "privacyNotice": "Privacy Notice",
+    "privacyNoticeAgree": "By registering you agree to our <1>{{link}}</1>.",
+    "coachLimitReached": "Coach registration limit reached for today. Please try again tomorrow."
+  },
+  "invite": {
+    "invalidTitle": "This invite is not valid",
+    "invalidUsed": "This invite has already been used.",
+    "invalidRevoked": "This invite has been revoked.",
+    "invalidExpired": "This invite has expired.",
+    "invalidNotFound": "This invite does not exist.",
+    "askNewInvite": "Ask your coach for a new invite link.",
+    "welcomeTitle": "You've been invited by {{coachName}}",
+    "welcomeSubtitle": "Create your athlete account to get started.",
+    "createAccount": "Create Account",
+    "creatingAccount": "Creating account…",
+    "alreadySignedIn": "You're already signed in. This invite is for new accounts only."
   },
   "roles": {
     "coach": "Coach",
@@ -83,7 +107,19 @@
     "back": "Back to dashboard",
     "tabs": {
       "user": "User",
-      "integrations": "Integrations"
+      "integrations": "Integrations",
+      "athletes": "Athletes"
+    },
+    "deleteAccount": {
+      "dangerZone": "Danger Zone",
+      "title": "Delete Account",
+      "description": "Permanently delete your account and all associated data. This action cannot be undone.",
+      "cta": "Delete Account",
+      "confirmStep": "Confirm deletion",
+      "typeUsername": "Type your username to confirm",
+      "typeUsernamePlaceholder": "Your username",
+      "submit": "Delete My Account",
+      "deleting": "Deleting…"
     },
     "user": {
       "name": "Display Name",

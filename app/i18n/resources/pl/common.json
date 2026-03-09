@@ -72,7 +72,31 @@
     "showPassword": "Pokaz haslo",
     "hidePassword": "Ukryj haslo",
     "invalidCredentials": "Nieprawidlowy email lub haslo",
-    "demoCredentials": "Dane testowe"
+    "demoCredentials": "Dane testowe",
+    "registerAsCoach": "Zarejestruj sie jako trener",
+    "registerAsCoachSubtitle": "Utworz konto trenera",
+    "fullName": "Imie i nazwisko",
+    "createAccount": "Utworz konto",
+    "creatingAccount": "Tworzenie konta…",
+    "alreadyHaveAccount": "Masz juz konto?",
+    "signInInstead": "Zaloguj sie",
+    "passwordRequirements": "Min. 8 znakow, co najmniej jedna wielka litera i jedna cyfra",
+    "privacyNotice": "Polityka Prywatnosci",
+    "privacyNoticeAgree": "Rejestrujac sie akceptujesz nasza <1>{{link}}</1>.",
+    "coachLimitReached": "Dzienny limit rejestracji trenerow zostal osiagniety. Sprobuj ponownie jutro."
+  },
+  "invite": {
+    "invalidTitle": "To zaproszenie jest nieprawidlowe",
+    "invalidUsed": "To zaproszenie zostalo juz wykorzystane.",
+    "invalidRevoked": "To zaproszenie zostalo cofniete.",
+    "invalidExpired": "To zaproszenie wygaslo.",
+    "invalidNotFound": "To zaproszenie nie istnieje.",
+    "askNewInvite": "Popros trenera o nowy link z zaproszeniem.",
+    "welcomeTitle": "Zostales zaproszony przez {{coachName}}",
+    "welcomeSubtitle": "Utworz konto zawodnika, aby zaczac.",
+    "createAccount": "Utworz konto",
+    "creatingAccount": "Tworzenie konta…",
+    "alreadySignedIn": "Jestes juz zalogowany. To zaproszenie jest tylko dla nowych kont."
   },
   "roles": {
     "coach": "Trener",
@@ -83,7 +107,19 @@
     "back": "Wróć do pulpitu",
     "tabs": {
       "user": "Uzytkownik",
-      "integrations": "Integracje"
+      "integrations": "Integracje",
+      "athletes": "Zawodnicy"
+    },
+    "deleteAccount": {
+      "dangerZone": "Strefa niebezpieczenstwa",
+      "title": "Usun konto",
+      "description": "Trwale usun swoje konto i wszystkie powiazane dane. Tej operacji nie mozna cofnac.",
+      "cta": "Usun konto",
+      "confirmStep": "Potwierdz usuniecie",
+      "typeUsername": "Wpisz swoja nazwe uzytkownika, aby potwierdzic",
+      "typeUsernamePlaceholder": "Twoja nazwa uzytkownika",
+      "submit": "Usun moje konto",
+      "deleting": "Usuwanie…"
     },
     "user": {
       "name": "Nazwa wyswietlana",

@@ -65,6 +65,24 @@ const COACH_ATHLETES: Record<string, string[]> = {
 // Mock auth functions
 // ============================================================
 
+export function mockRegisterCoach(
+  email: string,
+  _password: string,
+  name: string
+): AuthUser {
+  const newUser: AuthUser & { password: string } = {
+    id: crypto.randomUUID(),
+    email,
+    password: _password,
+    role: 'coach',
+    name,
+    avatarUrl: null,
+  };
+  MOCK_USERS.push(newUser);
+  const { password: _pw, ...authUser } = newUser;
+  return authUser;
+}
+
 export async function mockLogin(
   email: string,
   password: string
