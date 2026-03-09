@@ -41,7 +41,9 @@ Deno.serve(async (req) => {
     });
 
     if (!tokenRes.ok) {
-      return json({ error: 'exchange_failed' }, 400);
+      const errBody = await tokenRes.text().catch(() => '');
+      console.error(`Strava token exchange failed (${tokenRes.status}):`, errBody);
+      return json({ error: 'exchange_failed', detail: errBody, status: tokenRes.status }, 400);
     }
 
     const tokenData = await tokenRes.json() as {
