@@ -295,6 +295,8 @@ When writing new migrations, place in `supabase/migrations/` with prefix `00N_`.
 ## Active Technologies
 - TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only) (001-sheets-data-migration)
 - Supabase (PostgreSQL) — `training_sessions` and `week_plans` tables extended (001-sheets-data-migration)
+- TypeScript 5 (strict) + React 19 + React Router 7 (SPA), TanStack Query 5, Supabase JS 2, shadcn/ui (New York), i18next, Zod 4, date-fns 4 (004-settings-strava)
+- PostgreSQL via Supabase; Supabase Storage for avatars; Supabase Edge Functions for Strava OAuth (004-settings-strava)
 
 ## Recent Changes
 - 001-sheets-data-migration: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only)

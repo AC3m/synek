@@ -9,6 +9,8 @@ export const TRAINING_TYPES = [
   'yoga',
   'mobility',
   'swimming',
+  'walk',
+  'hike',
   'rest_day',
   'other',
 ] as const;
@@ -101,6 +103,18 @@ export interface RestDayData {
   activity_suggestion?: string;
 }
 
+export interface WalkData {
+  type: 'walk';
+  terrain?: 'road' | 'trail' | 'urban';
+  elevation_gain_m?: number;
+}
+
+export interface HikeData {
+  type: 'hike';
+  terrain?: 'road' | 'trail' | 'urban';
+  elevation_gain_m?: number;
+}
+
 export interface OtherData {
   type: 'other';
 }
@@ -111,6 +125,8 @@ export type TypeSpecificData =
   | StrengthData
   | YogaMobilityData
   | SwimmingData
+  | WalkData
+  | HikeData
   | RestDayData
   | OtherData;
 

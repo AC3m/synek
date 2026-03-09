@@ -19,6 +19,7 @@ import { StrengthFields } from './type-fields/StrengthFields';
 import { YogaMobilityFields } from './type-fields/YogaMobilityFields';
 import { SwimmingFields } from './type-fields/SwimmingFields';
 import { RestDayFields } from './type-fields/RestDayFields';
+import { WalkHikeFields } from './type-fields/WalkHikeFields';
 import {
   TRAINING_TYPES,
   type TrainingType,
@@ -176,6 +177,9 @@ export function SessionForm({
         return <YogaMobilityFields data={typeData as Partial<import('~/types/training').YogaMobilityData>} onChange={setTypeData} />;
       case 'swimming':
         return <SwimmingFields data={typeData as Partial<import('~/types/training').SwimmingData>} onChange={setTypeData} />;
+      case 'walk':
+      case 'hike':
+        return <WalkHikeFields data={typeData as Partial<import('~/types/training').WalkData>} onChange={setTypeData} />;
       case 'rest_day':
         return <RestDayFields data={typeData as Partial<import('~/types/training').RestDayData>} onChange={setTypeData} />;
       default:

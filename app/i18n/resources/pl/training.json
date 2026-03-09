@@ -56,6 +56,15 @@
     },
     "drillDescription": "Opis Cwiczen"
   },
+  "walkHike": {
+    "terrain": "Teren",
+    "terrainOptions": {
+      "road": "Szosa",
+      "trail": "Szlak",
+      "urban": "Miasto"
+    },
+    "elevationGain": "Przewyzszenie (m)"
+  },
   "restDay": {
     "activitySuggestion": "Sugerowana Aktywnosc"
   },

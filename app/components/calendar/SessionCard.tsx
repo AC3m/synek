@@ -13,6 +13,7 @@ import {
   Trash2,
   Clock,
   MapPin,
+  Zap,
 } from 'lucide-react';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
@@ -179,6 +180,16 @@ export function SessionCard({
             {session.rpe != null && (
               <span className="text-[10px] bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 px-1.5 py-0.5 rounded">
                 {t('training:actualPerformance.rpe')}: {session.rpe}/10
+              </span>
+            )}
+            {session.stravaActivityId != null && (
+              <span
+                title={t('strava.syncedBadge')}
+                className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded"
+                style={{ backgroundColor: '#FDEBD0', color: '#FC4C02' }}
+              >
+                <Zap className="h-2.5 w-2.5" />
+                Strava
               </span>
             )}
           </div>

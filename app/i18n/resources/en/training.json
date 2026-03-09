@@ -56,6 +56,15 @@
     },
     "drillDescription": "Drill Description"
   },
+  "walkHike": {
+    "terrain": "Terrain",
+    "terrainOptions": {
+      "road": "Road",
+      "trail": "Trail",
+      "urban": "Urban"
+    },
+    "elevationGain": "Elevation Gain (m)"
+  },
   "restDay": {
     "activitySuggestion": "Activity Suggestion"
   },

@@ -36,6 +36,7 @@ interface AuthContextValue {
   logout: () => void;
   selectAthlete: (athleteId: string) => void;
   clearSelectedAthlete: () => void;
+  updateProfile: (name: string, avatarUrl: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -111,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
           const { data: profile, error } = await supabase
             .from('profiles')
-            .select('id, name, role')
+            .select('id, name, role, avatar_url')
             .eq('id', session.user.id)
             .single();
 
@@ -128,6 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               email: session.user.email!,
               role: profile.role,
               name: profile.name,
+              avatarUrl: (profile.avatar_url as string | null) ?? null,
             };
             setUser(authUser);
             loadAthletes(authUser);
@@ -176,7 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.user) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id, name, role')
+        .select('id, name, role, avatar_url')
         .eq('id', data.user.id)
         .single();
 
@@ -186,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: data.user.email!,
           role: profile.role,
           name: profile.name,
+          avatarUrl: (profile.avatar_url as string | null) ?? null,
         };
         setUser(authUser);
         persistUserId(authUser.id);
@@ -205,6 +208,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!isMockMode) {
       supabase.auth.signOut();
     }
+  }, []);
+
+  const updateProfile = useCallback((name: string, avatarUrl: string | null) => {
+    setUser((prev) => (prev ? { ...prev, name, avatarUrl } : prev));
   }, []);
 
   const selectAthlete = useCallback((athleteId: string) => {
@@ -232,6 +239,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         selectAthlete,
         clearSelectedAthlete,
+        updateProfile,
       }}
     >
       {children}

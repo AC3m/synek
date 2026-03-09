@@ -30,6 +30,16 @@ export const trainingTypeConfig: Record<
     bgColor: 'bg-cyan-100 dark:bg-cyan-900',
     icon: 'Waves',
   },
+  walk: {
+    color: 'text-amber-700 dark:text-amber-300',
+    bgColor: 'bg-amber-100 dark:bg-amber-900',
+    icon: 'PersonStanding',
+  },
+  hike: {
+    color: 'text-lime-700 dark:text-lime-300',
+    bgColor: 'bg-lime-100 dark:bg-lime-900',
+    icon: 'Mountain',
+  },
   rest_day: {
     color: 'text-gray-500 dark:text-gray-400',
     bgColor: 'bg-gray-100 dark:bg-gray-800',

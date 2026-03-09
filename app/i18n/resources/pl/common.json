@@ -48,6 +48,8 @@
     "yoga": "Joga",
     "mobility": "Mobilnosc",
     "swimming": "Plywanie",
+    "walk": "Spacer",
+    "hike": "Wedrówka",
     "rest_day": "Dzien Odpoczynku",
     "other": "Inne"
   },
@@ -75,5 +77,40 @@
   "roles": {
     "coach": "Trener",
     "athlete": "Zawodnik"
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "tabs": {
+      "user": "Uzytkownik",
+      "integrations": "Integracje"
+    },
+    "user": {
+      "name": "Nazwa wyswietlana",
+      "avatar": "Zdjecie profilowe",
+      "avatarHint": "JPEG, PNG lub WebP, maks. 5 MB",
+      "changePassword": "Zmien haslo",
+      "currentPassword": "Obecne haslo",
+      "newPassword": "Nowe haslo",
+      "confirmPassword": "Potwierdz nowe haslo",
+      "saveChanges": "Zapisz zmiany",
+      "saved": "Zapisano!",
+      "passwordMismatch": "Hasla nie sa zgodne",
+      "passwordTooShort": "Haslo musi miec co najmniej 8 znakow",
+      "wrongPassword": "Obecne haslo jest nieprawidlowe"
+    }
+  },
+  "strava": {
+    "connect": "Polacz ze Strava",
+    "connected": "Polaczono",
+    "connectedAs": "Polaczono jako {{name}}",
+    "disconnect": "Rozlacz",
+    "disconnectConfirm": "Rozlaczyc konto Strava?",
+    "description": "Polacz konto Strava, aby automatycznie uzupelniac dane treningowe (czas, dystans, tempo, tetno) po zakonczeniu treningu.",
+    "syncing": "Synchronizowanie…",
+    "syncNow": "Synchronizuj",
+    "lastSynced": "Ostatnia synchronizacja {{time}}",
+    "connectedSince": "Polaczono {{date}}",
+    "notConnected": "Nie polaczono",
+    "syncedBadge": "Dane ze Strava"
   }
 }
