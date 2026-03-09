@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { useAuth } from '~/lib/context/AuthContext';
@@ -9,6 +10,13 @@ import {
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { cn } from '~/lib/utils';
+import {
+  mondayToWeekId,
+  getPrevWeekId,
+  getNextWeekId,
+  weekIdToMonday,
+  getWeekDateRange,
+} from '~/lib/utils/date';
 
 const STRAVA_ORANGE = '#FC4C02';
 
@@ -22,6 +30,8 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
   const { t } = useTranslation('common');
   const { user } = useAuth();
 
+  const [selectedWeekStart, setSelectedWeekStart] = useState(currentWeekStart ?? '');
+
   const { data: status, isLoading } = useStravaConnectionStatus(user?.id ?? '');
   const disconnect = useStravaDisconnect();
   const sync = useStravaSync();
@@ -33,8 +43,16 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
   }
 
   function handleSync() {
-    if (!user || !currentWeekStart) return;
-    sync.mutate({ userId: user.id, weekStart: currentWeekStart });
+    if (!user || !selectedWeekStart) return;
+    sync.mutate({ userId: user.id, weekStart: selectedWeekStart });
+  }
+
+  function handlePrevWeek() {
+    setSelectedWeekStart(weekIdToMonday(getPrevWeekId(mondayToWeekId(selectedWeekStart))));
+  }
+
+  function handleNextWeek() {
+    setSelectedWeekStart(weekIdToMonday(getNextWeekId(mondayToWeekId(selectedWeekStart))));
   }
 
   if (isLoading) {
@@ -72,8 +90,23 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
                 })}
               </p>
             )}
-            <div className="flex gap-2">
-              {currentWeekStart && (
+            {currentWeekStart && selectedWeekStart && (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={handlePrevWeek} aria-label="Previous week">
+                  {'<'}
+                </Button>
+                <span className="text-sm tabular-nums">
+                  {getWeekDateRange(mondayToWeekId(selectedWeekStart)).formatted}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleNextWeek}
+                  disabled={selectedWeekStart >= currentWeekStart}
+                  aria-label="Next week"
+                >
+                  {'>'}
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
@@ -82,17 +115,17 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
                 >
                   {sync.isPending ? t('strava.syncing') : t('strava.syncNow')}
                 </Button>
-              )}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleDisconnect}
-                disabled={disconnect.isPending}
-                className="text-destructive hover:text-destructive"
-              >
-                {t('strava.disconnect')}
-              </Button>
-            </div>
+              </div>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDisconnect}
+              disabled={disconnect.isPending}
+              className="text-destructive hover:text-destructive"
+            >
+              {t('strava.disconnect')}
+            </Button>
           </div>
         ) : (
           <div className="space-y-3">

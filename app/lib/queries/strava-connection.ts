@@ -87,6 +87,8 @@ export async function syncStrava(
 ): Promise<{ synced: number; lastSyncedAt: string }> {
   if (isMockMode) return mockSyncStrava(weekStart);
 
+  // Ensure the access token is fresh before invoking the edge function.
+  // getSession() returns a cached token; refreshSession() forces a new one.
   const res = await supabase.functions.invoke('strava-sync', {
     body: { userId, weekStart },
   });

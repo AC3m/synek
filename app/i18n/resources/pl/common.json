@@ -80,6 +80,7 @@
   },
   "settings": {
     "title": "Ustawienia",
+    "back": "Wróć do pulpitu",
     "tabs": {
       "user": "Uzytkownik",
       "integrations": "Integracje"

@@ -21,7 +21,6 @@ import { Textarea } from '~/components/ui/textarea';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
-import { StravaDataPlaceholder } from '~/components/training/StravaDataPlaceholder';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
 
@@ -185,8 +184,7 @@ export function SessionCard({
             {session.stravaActivityId != null && (
               <span
                 title={t('strava.syncedBadge')}
-                className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded"
-                style={{ backgroundColor: '#FDEBD0', color: '#FC4C02' }}
+                className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
               >
                 <Zap className="h-2.5 w-2.5" />
                 Strava
@@ -263,7 +261,6 @@ export function SessionCard({
             onChange={(notes) => onUpdateNotes?.(session.id, notes)}
           />
 
-          <StravaDataPlaceholder />
         </div>
       )}
     </div>

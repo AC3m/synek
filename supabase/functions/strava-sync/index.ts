@@ -145,11 +145,14 @@ Deno.serve(async (req) => {
       return json({ synced: 0, lastSyncedAt: new Date().toISOString() });
     }
 
-    const { data: sessions } = await supabase
+    const { data: sessionsData } = await supabase
       .from('training_sessions')
       .select('id, day_of_week, training_type, strava_activity_id')
       .eq('week_plan_id', weekPlan.id)
       .is('strava_activity_id', null);
+
+    // Mutable copy so matched sessions are removed and can't be double-matched
+    const sessions = [...(sessionsData ?? [])];
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let synced = 0;
@@ -161,13 +164,20 @@ Deno.serve(async (req) => {
       const dayName = days[dayIndex];
 
       // Find matching unsynced session
-      const match = (sessions ?? []).find(
+      const matchIdx = sessions.findIndex(
         (s) => s.day_of_week === dayName && s.training_type === synerType
       );
-      if (!match) continue;
+      if (matchIdx === -1) continue;
+      const match = sessions[matchIdx];
+      // Remove from pool so a second activity of the same type/day matches the next session
+      sessions.splice(matchIdx, 1);
 
       const distanceKm = activity.distance > 0 ? Math.round(activity.distance / 10) / 100 : null;
       const durationMin = activity.moving_time > 0 ? Math.round(activity.moving_time / 60) : null;
+
+      // Round HR floats to integers (Strava returns floats; DB column is INTEGER)
+      const avgHr = activity.average_heartrate != null ? Math.round(activity.average_heartrate) : null;
+      const maxHr = activity.max_heartrate != null ? Math.round(activity.max_heartrate) : null;
 
       // Compute pace string (min/km)
       let pace: string | null = null;
@@ -179,7 +189,7 @@ Deno.serve(async (req) => {
       }
 
       // Upsert strava_activities
-      const { data: stravaActivity } = await supabase
+      const { error: upsertErr } = await supabase
         .from('strava_activities')
         .upsert(
           {
@@ -194,8 +204,8 @@ Deno.serve(async (req) => {
             total_elevation_gain: activity.total_elevation_gain,
             average_speed: activity.average_speed,
             max_speed: activity.max_speed,
-            average_heartrate: activity.average_heartrate ?? null,
-            max_heartrate: activity.max_heartrate ?? null,
+            average_heartrate: avgHr,
+            max_heartrate: maxHr,
             average_cadence: activity.average_cadence ?? null,
             calories: activity.calories ?? null,
             suffer_score: activity.suffer_score ?? null,
@@ -203,25 +213,32 @@ Deno.serve(async (req) => {
             raw_data: activity,
           },
           { onConflict: 'strava_id' }
-        )
-        .select('id')
-        .single();
+        );
+
+      if (upsertErr) {
+        console.error(`strava_activities upsert failed for strava_id=${activity.id}:`, JSON.stringify(upsertErr));
+        continue;
+      }
 
       // Update training session with actual performance
-      await supabase
+      const { error: updateErr } = await supabase
         .from('training_sessions')
         .update({
           actual_duration_minutes: durationMin,
           actual_distance_km: distanceKm,
           actual_pace: pace,
-          avg_heart_rate: activity.average_heartrate ?? null,
-          max_heart_rate: activity.max_heartrate ?? null,
+          avg_heart_rate: avgHr,
+          max_heart_rate: maxHr,
           strava_activity_id: activity.id,
           strava_synced_at: new Date().toISOString(),
         })
         .eq('id', match.id);
 
-      void stravaActivity;
+      if (updateErr) {
+        console.error(`training_sessions update failed for session=${match.id}:`, JSON.stringify(updateErr));
+        continue;
+      }
+
       synced++;
     }
 

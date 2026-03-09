@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router';
+import { useNavigate, useSearchParams, Link } from 'react-router';
+import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '~/lib/context/AuthContext';
@@ -134,8 +135,17 @@ export default function SettingsPage() {
 
   const currentWeekStart = weekIdToMonday(getCurrentWeekId());
 
+  const backHref = user.role === 'coach' ? '/coach' : '/athlete';
+
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
+      <Link
+        to={backHref}
+        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t('settings.back')}
+      </Link>
       <h1 className="mb-6 text-2xl font-semibold">{t('settings.title')}</h1>
 
       <Tabs
@@ -144,19 +154,23 @@ export default function SettingsPage() {
       >
         <TabsList className="mb-6">
           <TabsTrigger value="user">{t('settings.tabs.user')}</TabsTrigger>
-          <TabsTrigger value="integrations">{t('settings.tabs.integrations')}</TabsTrigger>
+          {user?.role === 'athlete' && (
+            <TabsTrigger value="integrations">{t('settings.tabs.integrations')}</TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="user">
           <UserTab />
         </TabsContent>
 
-        <TabsContent value="integrations">
-          <IntegrationsTab
-            onConnectStrava={handleConnectStrava}
-            currentWeekStart={currentWeekStart}
-          />
-        </TabsContent>
+        {user?.role === 'athlete' && (
+          <TabsContent value="integrations">
+            <IntegrationsTab
+              onConnectStrava={handleConnectStrava}
+              currentWeekStart={currentWeekStart}
+            />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   );

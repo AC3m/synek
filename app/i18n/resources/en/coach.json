@@ -2,10 +2,16 @@
   "title": "Coach View",
   "weekSummary": {
     "title": "Week Summary",
+    "plan": "Plan",
+    "performance": "Performance",
     "loadType": "Week Load",
     "plannedKm": "Planned KM",
+    "plannedSessions": "Planned Sessions",
     "actualRunKm": "Run KM",
+    "ranKm": "Ran KM",
+    "completedSessions": "Completed Sessions",
     "totalTime": "Total Time",
+    "progress": "Progress",
     "coachComments": "Coach Notes",
     "coachCommentsPlaceholder": "Add notes for the athlete..."
   },
