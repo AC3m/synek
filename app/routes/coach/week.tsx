@@ -1,6 +1,7 @@
-import { Navigate } from 'react-router';
+import { Navigate, useParams } from 'react-router';
 import { getCurrentWeekId } from '~/lib/utils/date';
 
 export default function CoachWeekIndex() {
-  return <Navigate to={`/coach/week/${getCurrentWeekId()}`} replace />;
+  const { locale = 'pl' } = useParams<{ locale?: string }>();
+  return <Navigate to={`/${locale}/coach/week/${getCurrentWeekId()}`} replace />;
 }

@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router';
+import { Navigate, Outlet, useParams } from 'react-router';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
@@ -9,6 +9,7 @@ export default function CoachLayout() {
   const { user, isLoading, selectedAthleteId, athletes, clearSelectedAthlete } =
     useAuth();
   const { t } = useTranslation('coach');
+  const { locale = 'pl' } = useParams<{ locale?: string }>();
 
   if (isLoading) return null;
 
@@ -16,7 +17,7 @@ export default function CoachLayout() {
   if (!user) return <Navigate to="/login" replace />;
 
   // FR-005: Athletes cannot access coach routes
-  if (user.role !== 'coach') return <Navigate to="/athlete" replace />;
+  if (user.role !== 'coach') return <Navigate to={`/${locale}/athlete`} replace />;
 
   // FR-007: Coach must select an athlete before seeing the workspace
   if (!selectedAthleteId) {

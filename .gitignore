@@ -11,3 +11,9 @@
 # Supabase seed files (contain personal accounts / credentials)
 supabase/seed.ts
 supabase/seed.sql
+
+# Test coverage
+/coverage/
+
+# Logs
+*.log

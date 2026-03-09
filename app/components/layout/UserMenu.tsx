@@ -2,6 +2,7 @@ import { LogOut, Settings, User } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
+import { useLocalePath } from '~/lib/hooks/useLocalePath';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +17,7 @@ export function UserMenu() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const localePath = useLocalePath();
 
   if (!user) return null;
 
@@ -47,7 +49,7 @@ export function UserMenu() {
           <p className="text-xs text-muted-foreground">{user.email}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => navigate('/settings')}>
+        <DropdownMenuItem onClick={() => navigate(localePath('/settings'))}>
           <Settings className="mr-2 h-4 w-4" />
           {t('settings.title')}
         </DropdownMenuItem>

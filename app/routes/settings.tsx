@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router';
+import { useNavigate, useSearchParams, useParams, Link } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
@@ -20,6 +20,7 @@ export default function SettingsPage() {
   const { t } = useTranslation('common');
   const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { locale = 'pl' } = useParams<{ locale?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const qc = useQueryClient();
 
@@ -117,7 +118,7 @@ export default function SettingsPage() {
     const state = crypto.randomUUID();
     localStorage.setItem(STRAVA_CSRF_KEY, state);
 
-    const redirectUri = `${import.meta.env.VITE_APP_URL ?? window.location.origin}/settings?tab=integrations`;
+    const redirectUri = `${import.meta.env.VITE_APP_URL ?? window.location.origin}/${locale}/settings?tab=integrations`;
     const params = new URLSearchParams({
       client_id: import.meta.env.VITE_STRAVA_CLIENT_ID ?? '',
       redirect_uri: redirectUri,
@@ -135,7 +136,7 @@ export default function SettingsPage() {
 
   const currentWeekStart = weekIdToMonday(getCurrentWeekId());
 
-  const backHref = user.role === 'coach' ? '/coach' : '/athlete';
+  const backHref = user.role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
