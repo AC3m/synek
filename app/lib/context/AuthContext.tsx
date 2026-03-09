@@ -36,6 +36,7 @@ interface AuthContextValue {
   logout: () => void;
   selectAthlete: (athleteId: string) => void;
   clearSelectedAthlete: () => void;
+  updateProfile: (name: string, avatarUrl: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -104,46 +105,59 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Real Supabase mode — use onAuthStateChange as the single source of truth.
     // It fires INITIAL_SESSION on mount (replaces the need for a separate getSession call)
     // and handles all subsequent auth events.
+    //
+    // IMPORTANT: Supabase JS v2 awaits this callback while holding the auth lock.
+    // Making supabase client calls (supabase.from, getSession) inside the callback
+    // directly causes a deadlock. Async profile loading is deferred via setTimeout
+    // to release the auth lock before any follow-up supabase calls are made.
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
-        try {
-          const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('id, name, role')
-            .eq('id', session.user.id)
-            .single();
+        const userId = session.user.id;
+        const userEmail = session.user.email!;
 
-          if (error) {
-            // profiles table missing or other error — sign out cleanly
-            console.warn('[Auth] Could not load profile:', error.message);
-            await supabase.auth.signOut();
-            setUser(null);
-            setAthletes([]);
-            setSelectedAthleteId(null);
-          } else if (profile) {
-            const authUser: AuthUser = {
-              id: profile.id,
-              email: session.user.email!,
-              role: profile.role,
-              name: profile.name,
-            };
-            setUser(authUser);
-            loadAthletes(authUser);
-            if (authUser.role === 'coach') {
-              setSelectedAthleteId(restoreSelectedAthlete());
+        setTimeout(async () => {
+          try {
+            const { data: profile, error } = await supabase
+              .from('profiles')
+              .select('id, name, role, avatar_url')
+              .eq('id', userId)
+              .single();
+
+            if (error) {
+              // profiles table missing or other error — sign out cleanly
+              console.warn('[Auth] Could not load profile:', error.message);
+              await supabase.auth.signOut();
+              setUser(null);
+              setAthletes([]);
+              setSelectedAthleteId(null);
+            } else if (profile) {
+              const authUser: AuthUser = {
+                id: profile.id,
+                email: userEmail,
+                role: profile.role,
+                name: profile.name,
+                avatarUrl: (profile.avatar_url as string | null) ?? null,
+              };
+              setUser(authUser);
+              loadAthletes(authUser);
+              if (authUser.role === 'coach') {
+                setSelectedAthleteId(restoreSelectedAthlete());
+              }
             }
+          } catch (err) {
+            console.warn('[Auth] Profile load failed:', err);
+          } finally {
+            setIsLoading(false);
           }
-        } catch (err) {
-          console.warn('[Auth] Profile load failed:', err);
-        }
+        }, 0);
       } else {
         setUser(null);
         setAthletes([]);
         setSelectedAthleteId(null);
+        setIsLoading(false);
       }
-      setIsLoading(false);
     });
 
     return () => subscription.unsubscribe();
@@ -176,7 +190,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (data.user) {
       const { data: profile } = await supabase
         .from('profiles')
-        .select('id, name, role')
+        .select('id, name, role, avatar_url')
         .eq('id', data.user.id)
         .single();
 
@@ -186,6 +200,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           email: data.user.email!,
           role: profile.role,
           name: profile.name,
+          avatarUrl: (profile.avatar_url as string | null) ?? null,
         };
         setUser(authUser);
         persistUserId(authUser.id);
@@ -205,6 +220,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!isMockMode) {
       supabase.auth.signOut();
     }
+  }, []);
+
+  const updateProfile = useCallback((name: string, avatarUrl: string | null) => {
+    setUser((prev) => (prev ? { ...prev, name, avatarUrl } : prev));
   }, []);
 
   const selectAthlete = useCallback((athleteId: string) => {
@@ -232,6 +251,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         logout,
         selectAthlete,
         clearSelectedAthlete,
+        updateProfile,
       }}
     >
       {children}

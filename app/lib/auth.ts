@@ -9,6 +9,7 @@ export interface AuthUser {
   email: string;
   role: UserRole;
   name: string;
+  avatarUrl: string | null;
 }
 
 export interface MockAthlete {
@@ -35,6 +36,7 @@ const MOCK_USERS: (AuthUser & { password: string })[] = [
     password: 'coach123',
     role: 'coach',
     name: 'Coach',
+    avatarUrl: null,
   },
   {
     id: 'athlete-1',
@@ -42,6 +44,7 @@ const MOCK_USERS: (AuthUser & { password: string })[] = [
     password: 'alice123',
     role: 'athlete',
     name: 'Alice Johnson',
+    avatarUrl: null,
   },
   {
     id: 'athlete-2',
@@ -49,6 +52,7 @@ const MOCK_USERS: (AuthUser & { password: string })[] = [
     password: 'bob123',
     role: 'athlete',
     name: 'Bob Smith',
+    avatarUrl: null,
   },
 ];
 

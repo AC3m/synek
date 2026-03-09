@@ -30,11 +30,8 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
     .filter((s) => s.isCompleted)
     .reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
   const totalActualDurationMinutes = sessions
-    .filter((s) => s.trainingType !== 'rest_day')
-    .reduce(
-      (sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0),
-      0
-    );
+    .filter((s) => s.trainingType !== 'rest_day' && s.isCompleted)
+    .reduce((sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0), 0);
   const totalActualRunKm = sessions
     .filter((s) => s.trainingType === 'run')
     .reduce((sum, s) => sum + (s.actualDistanceKm ?? 0), 0);

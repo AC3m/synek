@@ -2,10 +2,16 @@
   "title": "Widok Trenera",
   "weekSummary": {
     "title": "Podsumowanie Tygodnia",
-    "loadType": "Obciazenie Tygodnia",
+    "plan": "Plan",
+    "performance": "Realizacja",
+    "loadType": "Obciążenie Tygodnia",
     "plannedKm": "Planowane KM",
+    "plannedSessions": "Planowane Treningi",
     "actualRunKm": "Zrealizowane KM",
+    "ranKm": "Przebiegnięte KM",
+    "completedSessions": "Ukończone Treningi",
     "totalTime": "Łączny Czas",
+    "progress": "Postęp",
     "coachComments": "Notatki Trenera",
     "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika..."
   },

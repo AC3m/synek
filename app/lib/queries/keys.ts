@@ -9,4 +9,12 @@ export const queryKeys = {
     byWeek: (weekPlanId: string) => ['sessions', 'week', weekPlanId] as const,
     byId: (sessionId: string) => ['sessions', sessionId] as const,
   },
+  profile: {
+    all: ['profile'] as const,
+    byId: (userId: string) => ['profile', userId] as const,
+  },
+  stravaConnection: {
+    all: ['stravaConnection'] as const,
+    byUser: (userId: string) => ['stravaConnection', userId] as const,
+  },
 };

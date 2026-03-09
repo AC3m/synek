@@ -48,6 +48,8 @@
     "yoga": "Yoga",
     "mobility": "Mobility",
     "swimming": "Swimming",
+    "walk": "Walk",
+    "hike": "Hike",
     "rest_day": "Rest Day",
     "other": "Other"
   },
@@ -75,5 +77,41 @@
   "roles": {
     "coach": "Coach",
     "athlete": "Athlete"
+  },
+  "settings": {
+    "title": "Settings",
+    "back": "Back to dashboard",
+    "tabs": {
+      "user": "User",
+      "integrations": "Integrations"
+    },
+    "user": {
+      "name": "Display Name",
+      "avatar": "Profile Picture",
+      "avatarHint": "JPEG, PNG or WebP, max 5 MB",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "saveChanges": "Save Changes",
+      "saved": "Saved!",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "wrongPassword": "Current password is incorrect"
+    }
+  },
+  "strava": {
+    "connect": "Connect with Strava",
+    "connected": "Connected",
+    "connectedAs": "Connected as {{name}}",
+    "disconnect": "Disconnect",
+    "disconnectConfirm": "Disconnect Strava account?",
+    "description": "Connect your Strava account to automatically fill in actual performance data (duration, distance, pace, heart rate) after your workouts.",
+    "syncing": "Syncing…",
+    "syncNow": "Sync Now",
+    "lastSynced": "Last synced {{time}}",
+    "connectedSince": "Connected since {{date}}",
+    "notConnected": "Not connected",
+    "syncedBadge": "Data from Strava"
   }
 }

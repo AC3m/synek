@@ -20,6 +20,27 @@ export interface StravaActivity {
   rawData: Record<string, unknown>;
 }
 
+export interface StravaToken {
+  id: string;
+  userId: string;
+  stravaAthleteId: number;
+  stravaAthleteName: string | null;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
+  connectedAt: string;
+  lastSyncedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StravaConnectionStatus {
+  connected: boolean;
+  stravaAthleteName: string | null;
+  connectedAt: string | null;
+  lastSyncedAt: string | null;
+}
+
 export interface StravaDataPlaceholder {
   trainingTime: string | null;
   avgHR: number | null;

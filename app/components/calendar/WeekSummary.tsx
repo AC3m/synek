@@ -33,29 +33,21 @@ export function WeekSummary({
   const [isExpanded, setIsExpanded] = useState(true);
 
   const [coachComments, setCoachComments] = useState(weekPlan.coachComments ?? '');
-  const [plannedKm, setPlannedKm] = useState(
-    weekPlan.totalPlannedKm?.toString() ?? ''
-  );
+  const [plannedKm, setPlannedKm] = useState(weekPlan.totalPlannedKm?.toString() ?? '');
+
   useEffect(() => {
     setCoachComments(weekPlan.coachComments ?? '');
     setPlannedKm(weekPlan.totalPlannedKm?.toString() ?? '');
   }, [weekPlan]);
 
-  const handleBlur = (
-    field: 'coachComments' | 'totalPlannedKm',
-    value: string
-  ) => {
+  const handleBlur = (field: 'coachComments' | 'totalPlannedKm', value: string) => {
     if (readonly) return;
     if (field === 'totalPlannedKm') {
       const num = value ? parseFloat(value) : null;
-      if (num !== weekPlan.totalPlannedKm) {
-        onUpdate?.({ totalPlannedKm: num });
-      }
+      if (num !== weekPlan.totalPlannedKm) onUpdate?.({ totalPlannedKm: num });
     } else {
       const val = value || null;
-      if (val !== weekPlan[field]) {
-        onUpdate?.({ [field]: val });
-      }
+      if (val !== weekPlan[field]) onUpdate?.({ [field]: val });
     }
   };
 
@@ -63,9 +55,7 @@ export function WeekSummary({
     <Card>
       <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-base">
-            {t('coach:weekSummary.title')}
-          </CardTitle>
+          <CardTitle className="text-base">{t('coach:weekSummary.title')}</CardTitle>
           <Button
             variant="ghost"
             size="icon"
@@ -76,122 +66,154 @@ export function WeekSummary({
           </Button>
         </div>
       </CardHeader>
+
       {isExpanded && (
-        <CardContent className="space-y-4">
-          {/* Load type selector */}
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-              {t('coach:weekSummary.loadType')}
-            </label>
-            <div className="flex gap-2">
-              {LOAD_TYPES.map((lt) => {
-                const config = loadTypeConfig[lt];
-                const isSelected = weekPlan.loadType === lt;
-                return (
-                  <Button
-                    key={lt}
-                    variant={isSelected ? 'default' : 'outline'}
-                    size="sm"
-                    disabled={readonly}
-                    className={isSelected ? `${config.bgColor} ${config.color} border-0 hover:opacity-80` : ''}
-                    onClick={() => {
-                      const newVal = isSelected ? null : lt;
-                      onUpdate?.({ loadType: newVal });
-                    }}
-                  >
-                    {t(`common:loadType.${lt}`)}
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
+        <CardContent className="p-0">
+          <div className="grid grid-cols-2 divide-x divide-border">
 
-          {/* Planned KM + Run KM */}
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                {t('coach:weekSummary.plannedKm')}
-              </label>
-              <Input
-                type="number"
-                step="0.1"
-                placeholder="0"
-                value={plannedKm}
-                disabled={readonly}
-                onChange={(e) => setPlannedKm(e.target.value)}
-                onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
-                className="w-32"
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-                {t('coach:weekSummary.actualRunKm')}
-              </label>
-              <p className="text-sm pt-1">{stats.totalActualRunKm.toFixed(1)} km</p>
-            </div>
-          </div>
+            {/* ── LEFT: Plan ── */}
+            <div className="px-6 pb-6 space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+                {t('coach:weekSummary.plan')}
+              </p>
 
-          {/* Coach Comments */}
-          <div>
-            <label className="text-sm font-medium text-muted-foreground mb-1.5 block">
-              {t('coach:weekSummary.coachComments')}
-            </label>
-            <Textarea
-              placeholder={t('coach:weekSummary.coachCommentsPlaceholder')}
-              value={coachComments}
-              disabled={readonly}
-              onChange={(e) => setCoachComments(e.target.value)}
-              onBlur={() => handleBlur('coachComments', coachComments)}
-              rows={2}
-            />
-          </div>
-
-          {/* Stats + Progress Bar */}
-          <div className="pt-2 border-t space-y-3">
-            <div className="flex gap-4">
-              <div className="text-center">
-                <p className="text-lg font-semibold">{stats.totalSessions}</p>
-                <p className="text-xs text-muted-foreground">{t('common:stats.sessions')}</p>
+              {/* Week Load */}
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground">
+                  {t('coach:weekSummary.loadType')}
+                </p>
+                {readonly ? (
+                  weekPlan.loadType ? (
+                    <span className={`inline-flex items-center h-7 text-xs px-2.5 rounded-md font-medium ${loadTypeConfig[weekPlan.loadType].bgColor} ${loadTypeConfig[weekPlan.loadType].color}`}>
+                      {t(`common:loadType.${weekPlan.loadType}`)}
+                    </span>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">—</p>
+                  )
+                ) : (
+                  <div className="flex flex-wrap gap-1.5">
+                    {LOAD_TYPES.map((lt) => {
+                      const config = loadTypeConfig[lt];
+                      const isSelected = weekPlan.loadType === lt;
+                      return (
+                        <Button
+                          key={lt}
+                          variant={isSelected ? 'default' : 'outline'}
+                          size="sm"
+                          className={`h-7 text-xs px-2.5 ${isSelected ? `${config.bgColor} ${config.color} border-0 hover:opacity-80` : ''}`}
+                          onClick={() => onUpdate?.({ loadType: isSelected ? null : lt })}
+                        >
+                          {t(`common:loadType.${lt}`)}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-              <div className="text-center">
-                <p className="text-lg font-semibold">{stats.completedSessions}</p>
-                <p className="text-xs text-muted-foreground">{t('common:stats.completed')}</p>
-              </div>
-              {stats.totalActualDurationMinutes > 0 && (
-                <div className="text-center">
-                  <p className="text-lg font-semibold">
-                    {formatDuration(stats.totalActualDurationMinutes)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">{t('coach:weekSummary.totalTime')}</p>
-                </div>
-              )}
-              {stats.completionPercentage > 0 && (
-                <div className="text-center">
-                  <p className="text-lg font-semibold">
-                    {Math.round(stats.completionPercentage)}%
-                  </p>
-                  <p className="text-xs text-muted-foreground">{t('common:stats.progress')}</p>
-                </div>
-              )}
-            </div>
 
-            {/* Progress bar */}
-            {stats.totalSessions > 0 && (
-              <div>
-                <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                  <span>
-                    {stats.completedSessions}/{stats.totalSessions}
-                  </span>
-                  <span>{Math.round(stats.completionPercentage)}%</span>
+              {/* Planned KM + Planned Sessions */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t('coach:weekSummary.plannedKm')}
+                  </p>
+                  {readonly ? (
+                    <p className="text-sm font-semibold">
+                      {weekPlan.totalPlannedKm != null ? `${weekPlan.totalPlannedKm} km` : '—'}
+                    </p>
+                  ) : (
+                    <Input
+                      type="number"
+                      step="0.1"
+                      placeholder="0"
+                      value={plannedKm}
+                      onChange={(e) => setPlannedKm(e.target.value)}
+                      onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
+                      className="h-8 w-24 text-sm"
+                    />
+                  )}
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-green-500 rounded-full transition-all duration-500"
-                    style={{ width: `${stats.completionPercentage}%` }}
+                <div className="space-y-1.5">
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t('coach:weekSummary.plannedSessions')}
+                  </p>
+                  <p className="text-sm font-semibold">{stats.totalSessions}</p>
+                </div>
+              </div>
+
+              {/* Coach Notes */}
+              <div className="space-y-1.5">
+                <p className="text-xs font-medium text-muted-foreground">
+                  {t('coach:weekSummary.coachComments')}
+                </p>
+                {readonly ? (
+                  weekPlan.coachComments ? (
+                    <p className="text-sm">{weekPlan.coachComments}</p>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">—</p>
+                  )
+                ) : (
+                  <Textarea
+                    placeholder={t('coach:weekSummary.coachCommentsPlaceholder')}
+                    value={coachComments}
+                    onChange={(e) => setCoachComments(e.target.value)}
+                    onBlur={() => handleBlur('coachComments', coachComments)}
+                    rows={2}
+                    className="text-sm resize-none"
                   />
+                )}
+              </div>
+            </div>
+
+            {/* ── RIGHT: Performance ── */}
+            <div className="px-6 pb-6 space-y-4">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+                {t('coach:weekSummary.performance')}
+              </p>
+
+              {/* Stat grid */}
+              <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+                <div>
+                  <p className="text-xl font-bold">{stats.totalActualRunKm.toFixed(1)}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('coach:weekSummary.ranKm')}</p>
+                </div>
+                <div>
+                  <p className="text-xl font-bold">{stats.completedSessions}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('coach:weekSummary.completedSessions')}</p>
+                </div>
+                <div>
+                  <p className="text-xl font-bold">
+                    {stats.totalActualDurationMinutes > 0
+                      ? formatDuration(stats.totalActualDurationMinutes)
+                      : '—'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('coach:weekSummary.totalTime')}</p>
+                </div>
+                <div>
+                  <p className="text-xl font-bold">
+                    {stats.totalSessions > 0 ? `${Math.round(stats.completionPercentage)}%` : '—'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('coach:weekSummary.progress')}</p>
                 </div>
               </div>
-            )}
+
+              {/* Progress bar */}
+              {stats.totalSessions > 0 && (
+                <div className="pt-1">
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1.5">
+                    <span>{stats.completedSessions}/{stats.totalSessions}</span>
+                    <span>{Math.round(stats.completionPercentage)}%</span>
+                  </div>
+                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-green-500 rounded-full transition-all duration-500"
+                      style={{ width: `${stats.completionPercentage}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
         </CardContent>
       )}

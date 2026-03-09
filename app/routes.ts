@@ -24,4 +24,6 @@ export default [
       route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
     ]),
   ]),
+
+  route('settings', 'routes/settings.tsx'),
 ] satisfies RouteConfig;

@@ -20,7 +20,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
     session.maxHeartRate != null ||
     session.rpe != null;
 
-  const [expanded, setExpanded] = useState(hasData);
+  const [expanded, setExpanded] = useState(false);
   const [duration, setDuration] = useState(session.actualDurationMinutes?.toString() ?? '');
   const [distance, setDistance] = useState(session.actualDistanceKm?.toString() ?? '');
   const [pace, setPace] = useState(session.actualPace ?? '');
