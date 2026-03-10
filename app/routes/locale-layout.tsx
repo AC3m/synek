@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Navigate, Outlet, useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Header } from '~/components/layout/Header';
 
 const SUPPORTED_LOCALES = ['pl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -27,5 +28,12 @@ export default function LocaleLayout() {
     return <Navigate to={`/pl${pathAfterLocale}`} replace />;
   }
 
-  return <Outlet />;
+  return (
+    <>
+      <Header />
+      <main className="container mx-auto px-4 py-6">
+        <Outlet />
+      </main>
+    </>
+  );
 }

@@ -1,0 +1,103 @@
+{
+  "nav": {
+    "getStarted": "Get Started",
+    "whySynek": "Why Synek",
+    "features": "Features",
+    "logIn": "Log In",
+    "joinBeta": "Join Beta",
+    "contact": "Contact"
+  },
+  "hero": {
+    "badge": "Public Beta — Free Account",
+    "headline": "Effortless training management for coaches and athletes",
+    "subheadline": "The Synek app gives coaches a structured way to plan weekly training, and athletes can easily track and update their progress.",
+    "ctaJoinBeta": "Join the Beta — It's Free",
+    "ctaLogIn": "Already have an account?",
+    "betaNote": "We're in beta and your feedback shapes what we build next."
+  },
+  "whySynek": {
+    "title": "Why synek.app?",
+    "subtitle": "Simple and intuitive. Built from real collaboration between coaches and athletes.",
+    "card1": {
+      "title": "Structured weekly planning",
+      "desc": "Plan each week as a whole — load, type, and daily sessions — not just a list of workouts."
+    },
+    "card2": {
+      "title": "Full coach visibility",
+      "desc": "Coaches see what athletes complete, how they feel, and where the plan needs adjusting."
+    },
+    "card3": {
+      "title": "Athlete autonomy",
+      "desc": "Athletes can self-plan and log notes on every session."
+    },
+    "card4": {
+      "title": "Beta built by users",
+      "desc": "We're actively building with early users. Your feedback directly drives what we add next."
+    }
+  },
+  "features": {
+    "title": "What's inside",
+    "subtitle": "Everything you need to run a structured training programme — nothing you don't.",
+    "item1": {
+      "title": "Weekly training planning",
+      "desc": "Plans are organised by training week. Add sessions by day, set load, and leave coaching notes."
+    },
+    "item2": {
+      "title": "Sport-specific sessions",
+      "desc": "Run, cycling, strength, yoga, swimming, mobility, and rest — each with relevant fields."
+    },
+    "item3": {
+      "title": "Coach & athlete roles",
+      "desc": "Coaches manage multiple athletes. Each athlete sees only their own plan."
+    },
+    "item4": {
+      "title": "Self-planning mode",
+      "desc": "Coaches can enable athletes to plan their own weeks — useful for experienced athletes."
+    },
+    "item5": {
+      "title": "Strava sync",
+      "desc": "Connect Strava to pull completed activities directly into your training log."
+    }
+  },
+  "login": {
+    "title": "Log in to Synek",
+    "subtitle": "Pick up where you left off.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Log In",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "New here?",
+    "noAccountCta": "Join the beta →"
+  },
+  "beta": {
+    "title": "Join the Beta",
+    "subtitle": "Free access during beta. No credit card. No expiry.",
+    "badge": "Beta — Free",
+    "betaNote": "You're joining during our public beta. That means free access and a direct line to the team — we read every piece of feedback.",
+    "roleLabel": "I am a...",
+    "roleCoach": "Coach",
+    "roleAthlete": "Athlete",
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters, one uppercase, one number",
+    "submit": "Create free account",
+    "selectRole": "Please select Coach or Athlete before continuing",
+    "emailAlreadyRegistered": "This email is already registered. Try logging in instead.",
+    "alreadyHaveAccount": "Already have an account?",
+    "alreadyHaveAccountCta": "Log in →",
+    "cta": "Join the beta"
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "Got feedback, a question, or an idea? We're a small team and we read everything.",
+    "betaNote": "This is the fastest way to shape what we build next.",
+    "name": "Your name",
+    "email": "Your email",
+    "message": "Your message",
+    "messagePlaceholder": "Tell us what you think, what's missing, or what could be better...",
+    "submit": "Send message",
+    "submitSuccess": "Message sent — thank you! We'll get back to you soon.",
+    "submitError": "Something went wrong. Please try again in a moment."
+  }
+}

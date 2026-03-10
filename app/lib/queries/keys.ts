@@ -25,4 +25,7 @@ export const queryKeys = {
   selfPlan: {
     byAthlete: (athleteId: string) => ['selfPlan', athleteId] as const,
   },
+  feedback: {
+    all: ['feedback'] as const,
+  },
 };

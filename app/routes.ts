@@ -7,11 +7,14 @@ import {
 } from '@react-router/dev/routes';
 
 export default [
-  // Bare / redirects to /${locale} using stored preference
-  index('routes/root-redirect.tsx'),
+  // Public landing page — no auth required
+  index('routes/landing.tsx'),
 
   // Login is public and outside the locale wrapper
   route('login', 'routes/login.tsx'),
+
+  // Register is public and outside the locale wrapper
+  route('register', 'routes/register.tsx'),
 
   // Invite landing page — public, no locale prefix
   route('invite/:token', 'routes/invite.$token.tsx'),

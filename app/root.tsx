@@ -9,7 +9,6 @@ import {
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
-import { Header } from '~/components/layout/Header';
 import { AuthProvider } from '~/lib/context/AuthContext';
 import { ThemeProvider } from '~/lib/context/ThemeContext';
 
@@ -72,12 +71,7 @@ export default function App() {
       <ThemeProvider>
       <AuthProvider>
         <TooltipProvider>
-          <div className="min-h-screen bg-background">
-            <Header />
-            <main className="container mx-auto px-4 py-6">
-              <Outlet />
-            </main>
-          </div>
+          <Outlet />
           <Toaster position="bottom-right" richColors />
         </TooltipProvider>
       </AuthProvider>

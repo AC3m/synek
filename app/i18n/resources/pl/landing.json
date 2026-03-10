@@ -1,0 +1,103 @@
+{
+  "nav": {
+    "getStarted": "Zacznij",
+    "whySynek": "Dlaczego Synek",
+    "features": "Funkcje",
+    "logIn": "Zaloguj się",
+    "joinBeta": "Dołącz do Bety",
+    "contact": "Kontakt"
+  },
+  "hero": {
+    "badge": "Publiczna Beta - Bezpłatne Konto",
+    "headline": "Wygodne prowadzenie treningów dla trenerów i zawodników",
+    "subheadline": "Aplikacja Synek daje trenerom ustrukturyzowany sposób planowania tygodniowych treningów, a zawodnicy mogą z łatwością aktualizować swoje postępy.",
+    "ctaJoinBeta": "Dołącz do Bety — To Bezpłatne",
+    "ctaLogIn": "Masz już konto?",
+    "betaNote": "Jesteśmy w fazie beta i Twoje opinie kształtują to, co budujemy."
+  },
+  "whySynek": {
+    "title": "Dlaczego synek.app?",
+    "subtitle": "Prosty i intuicyjny. Zbudowany na podstawie współpracy trenerów i zawodników.",
+    "card1": {
+      "title": "Ustrukturyzowane planowanie tygodniowe",
+      "desc": "Planuj każdy tydzień jako całość — obciążenie, typ i dzienne sesje — nie tylko listę treningów."
+    },
+    "card2": {
+      "title": "Pełna widoczność trenera",
+      "desc": "Trenerzy widzą co zawodnicy wykonują, jak się czują i gdzie plan wymaga korekty."
+    },
+    "card3": {
+      "title": "Autonomia zawodnika",
+      "desc": "Zawodnicy mogą samodzielnie planować i dodawać notatki do każdej sesji."
+    },
+    "card4": {
+      "title": "Beta budowana przez użytkowników",
+      "desc": "Aktywnie budujemy z wczesnymi użytkownikami. Twoje opinie bezpośrednio wpływają na to, co dodajemy."
+    }
+  },
+  "features": {
+    "title": "Co znajdziesz w środku",
+    "subtitle": "Wszystko czego potrzebujesz do prowadzenia ustrukturyzowanego programu treningowego — nic więcej.",
+    "item1": {
+      "title": "Planowanie treningów tygodniowo",
+      "desc": "Plany są zorganizowane wg tygodnia treningowego. Dodawaj sesje według dnia, ustaw obciążenie i zostaw notatki."
+    },
+    "item2": {
+      "title": "Sesje specyficzne dla sportu",
+      "desc": "Bieg, kolarstwo, siłownia, joga, pływanie, mobilność i odpoczynek — każde z odpowiednimi polami."
+    },
+    "item3": {
+      "title": "Role trenera i zawodnika",
+      "desc": "Trenerzy zarządzają wieloma zawodnikami. Każdy zawodnik widzi tylko swój plan."
+    },
+    "item4": {
+      "title": "Tryb samodzielnego planowania",
+      "desc": "Trenerzy mogą umożliwić zawodnikom planowanie własnych tygodni — przydatne dla doświadczonych."
+    },
+    "item5": {
+      "title": "Synchronizacja ze Stravą",
+      "desc": "Połącz Stravę, aby pobierać ukończone aktywności bezpośrednio do dziennika treningowego."
+    }
+  },
+  "login": {
+    "title": "Zaloguj się do Synek",
+    "subtitle": "Wróć tam, gdzie skończyłeś.",
+    "email": "E-mail",
+    "password": "Hasło",
+    "submit": "Zaloguj się",
+    "forgotPassword": "Nie pamiętasz hasła?",
+    "noAccount": "Nowy tutaj?",
+    "noAccountCta": "Dołącz do bety →"
+  },
+  "beta": {
+    "title": "Dołącz do Bety",
+    "subtitle": "Bezpłatny dostęp przez cały czas trwania bety. Bez karty. Bez wygaśnięcia.",
+    "badge": "Beta — Bezpłatna",
+    "betaNote": "Dołączasz w trakcie publicznej bety. Oznacza to bezpłatny dostęp i bezpośredni kontakt z zespołem — czytamy każdą opinię.",
+    "roleLabel": "Jestem...",
+    "roleCoach": "Trenerem",
+    "roleAthlete": "Zawodnikiem",
+    "name": "Imię i nazwisko",
+    "email": "E-mail",
+    "password": "Hasło",
+    "passwordHint": "Co najmniej 8 znaków, jedna wielka litera, jedna cyfra",
+    "submit": "Utwórz bezpłatne konto",
+    "selectRole": "Wybierz Trener lub Zawodnik przed kontynuowaniem",
+    "emailAlreadyRegistered": "Ten e-mail jest już zarejestrowany. Spróbuj się zalogować.",
+    "alreadyHaveAccount": "Masz już konto?",
+    "alreadyHaveAccountCta": "Zaloguj się →",
+    "cta": "Dołącz do bety"
+  },
+  "contact": {
+    "title": "Skontaktuj się",
+    "subtitle": "Masz opinię, pytanie lub pomysł? Jesteśmy małym zespołem i czytamy wszystko.",
+    "betaNote": "To najszybszy sposób na wpłynięcie na to, co budujemy.",
+    "name": "Twoje imię",
+    "email": "Twój e-mail",
+    "message": "Twoja wiadomość",
+    "messagePlaceholder": "Powiedz nam co myślisz, czego brakuje lub co można poprawić...",
+    "submit": "Wyślij wiadomość",
+    "submitSuccess": "Wiadomość wysłana — dziękujemy! Odpiszemy wkrótce.",
+    "submitError": "Coś poszło nie tak. Spróbuj ponownie za chwilę."
+  }
+}

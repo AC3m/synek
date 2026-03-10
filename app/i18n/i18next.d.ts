@@ -3,6 +3,7 @@ import type common from './resources/en/common.json';
 import type coach from './resources/en/coach.json';
 import type athlete from './resources/en/athlete.json';
 import type training from './resources/en/training.json';
+import type landing from './resources/en/landing.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -12,6 +13,7 @@ declare module 'i18next' {
       coach: typeof coach;
       athlete: typeof athlete;
       training: typeof training;
+      landing: typeof landing;
     };
   }
 }
