@@ -27,11 +27,11 @@ export function HeroSection({ className }: HeroSectionProps) {
           {t('hero.badge')}
         </span>
 
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
           {t('hero.headline')}
         </h1>
 
-        <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl">
+        <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-xl">
           {t('hero.subheadline')}
         </p>
 

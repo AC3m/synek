@@ -131,7 +131,7 @@ export default function RegisterPage() {
             <p className="mt-1 text-sm text-muted-foreground">{t('beta.subtitle')}</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border bg-background p-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border bg-background p-6 shadow-sm sm:p-8">
             {/* Beta note */}
             <p className="rounded-lg bg-primary/5 p-3 text-sm text-muted-foreground">
               {t('beta.betaNote')}

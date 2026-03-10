@@ -21,7 +21,7 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
   return (
     <section
       id="why-synek"
-      className={cn('bg-muted/40 px-4 py-24', className)}
+      className={cn('bg-muted/40 px-4 py-16 sm:py-24', className)}
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
