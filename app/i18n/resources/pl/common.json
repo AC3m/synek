@@ -50,7 +50,7 @@
     "swimming": "Pływanie",
     "walk": "Spacer",
     "hike": "Wędrówka",
-    "rest_day": "Dzień Odpoczynku",
+    "rest_day": "Dzień Wolny",
     "other": "Inne"
   },
   "stats": {
@@ -148,6 +148,7 @@
     "lastSynced": "Ostatnia synchronizacja {{time}}",
     "connectedSince": "Połączono {{date}}",
     "notConnected": "Nie połączono",
-    "syncedBadge": "Dane ze Strava"
+    "syncedBadge": "Dane ze Strava",
+    "sync": "Synchronizuj"
   }
 }

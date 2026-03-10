@@ -13,6 +13,8 @@ interface WeekGridProps {
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
+  stravaConnected?: boolean;
+  onSyncStrava?: () => void;
 }
 
 export function WeekGrid({
@@ -27,6 +29,8 @@ export function WeekGrid({
   onUpdateNotes,
   onUpdatePerformance,
   onUpdateCoachPostFeedback,
+  stravaConnected,
+  onSyncStrava,
 }: WeekGridProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
@@ -45,6 +49,8 @@ export function WeekGrid({
           onUpdateNotes={onUpdateNotes}
           onUpdatePerformance={onUpdatePerformance}
           onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
+          stravaConnected={stravaConnected}
+          onSyncStrava={onSyncStrava}
         />
       ))}
     </div>

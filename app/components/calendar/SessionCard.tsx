@@ -41,24 +41,28 @@ interface SessionCardProps {
   readonly?: boolean;
   /** Athlete mode: completion + feedback */
   athleteMode?: boolean;
+  stravaConnected?: boolean;
   onEdit?: (session: TrainingSession) => void;
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
+  onSyncStrava?: () => void;
 }
 
 export function SessionCard({
   session,
   readonly = false,
   athleteMode = false,
+  stravaConnected = false,
   onEdit,
   onDelete,
   onToggleComplete,
   onUpdateNotes,
   onUpdatePerformance,
   onUpdateCoachPostFeedback,
+  onSyncStrava,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
@@ -254,6 +258,16 @@ export function SessionCard({
               session={session}
               onChange={(update) => onUpdatePerformance?.(session.id, update)}
             />
+          )}
+
+          {session.isCompleted && !session.stravaActivityId && stravaConnected && (
+            <button
+              onClick={onSyncStrava}
+              className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-400"
+            >
+              <Zap className="h-2.5 w-2.5" />
+              {t('common:strava.sync')}
+            </button>
           )}
 
           <AthleteFeedback

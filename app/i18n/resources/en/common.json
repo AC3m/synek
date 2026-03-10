@@ -148,6 +148,7 @@
     "lastSynced": "Last synced {{time}}",
     "connectedSince": "Connected since {{date}}",
     "notConnected": "Not connected",
-    "syncedBadge": "Data from Strava"
+    "syncedBadge": "Data from Strava",
+    "sync": "Sync"
   }
 }
