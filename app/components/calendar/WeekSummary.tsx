@@ -112,7 +112,7 @@ export function WeekSummary({
               </div>
 
               {/* Planned KM + Planned Sessions */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
                   <p className="text-xs font-medium text-muted-foreground">
                     {t('coach:weekSummary.plannedKm')}
@@ -129,7 +129,7 @@ export function WeekSummary({
                       value={plannedKm}
                       onChange={(e) => setPlannedKm(e.target.value)}
                       onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
-                      className="h-8 w-24 text-sm"
+                      className="h-8 w-full sm:w-24 text-sm"
                     />
                   )}
                 </div>
