@@ -5,10 +5,12 @@ import enCommon from './resources/en/common.json';
 import enCoach from './resources/en/coach.json';
 import enAthlete from './resources/en/athlete.json';
 import enTraining from './resources/en/training.json';
+import enLanding from './resources/en/landing.json';
 import plCommon from './resources/pl/common.json';
 import plCoach from './resources/pl/coach.json';
 import plAthlete from './resources/pl/athlete.json';
 import plTraining from './resources/pl/training.json';
+import plLanding from './resources/pl/landing.json';
 
 const resources = {
   en: {
@@ -16,12 +18,14 @@ const resources = {
     coach: enCoach,
     athlete: enAthlete,
     training: enTraining,
+    landing: enLanding,
   },
   pl: {
     common: plCommon,
     coach: plCoach,
     athlete: plAthlete,
     training: plTraining,
+    landing: plLanding,
   },
 };
 
@@ -30,7 +34,7 @@ i18n.use(initReactI18next).init({
   lng: 'pl',
   fallbackLng: 'en',
   defaultNS: 'common',
-  ns: ['common', 'coach', 'athlete', 'training'],
+  ns: ['common', 'coach', 'athlete', 'training', 'landing'],
   interpolation: {
     escapeValue: false,
   },

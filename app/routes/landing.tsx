@@ -1,0 +1,41 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router'
+import { useAuth } from '~/lib/context/AuthContext'
+import { LandingNav } from '~/components/landing/LandingNav'
+import { HeroSection } from '~/components/landing/HeroSection'
+import { WhySynekSection } from '~/components/landing/WhySynekSection'
+import { FeaturesSection } from '~/components/landing/FeaturesSection'
+import { JoinBetaSection } from '~/components/landing/JoinBetaSection'
+import { ContactSection } from '~/components/landing/ContactSection'
+
+export function meta() {
+  return [
+    { title: 'Synek — Training planning for coaches and athletes' },
+    { name: 'description', content: 'Synek gives coaches a structured way to plan weekly training and gives athletes full visibility into what\'s ahead. Free during public beta.' },
+  ]
+}
+
+export default function LandingPage() {
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (user) {
+      const locale = localStorage.getItem('locale') ?? 'pl'
+      navigate(`/${locale}/${user.role}`, { replace: true })
+    }
+  }, [user, navigate])
+
+  return (
+    <div className="min-h-screen bg-background">
+      <LandingNav />
+      <main>
+        <HeroSection />
+        <WhySynekSection />
+        <FeaturesSection />
+        <JoinBetaSection />
+        <ContactSection />
+      </main>
+    </div>
+  )
+}

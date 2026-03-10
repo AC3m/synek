@@ -70,11 +70,20 @@ export function mockRegisterCoach(
   _password: string,
   name: string
 ): AuthUser {
+  return mockRegisterUser(email, _password, name, 'coach');
+}
+
+export function mockRegisterUser(
+  email: string,
+  _password: string,
+  name: string,
+  role: UserRole
+): AuthUser {
   const newUser: AuthUser & { password: string } = {
     id: crypto.randomUUID(),
     email,
     password: _password,
-    role: 'coach',
+    role,
     name,
     avatarUrl: null,
   };

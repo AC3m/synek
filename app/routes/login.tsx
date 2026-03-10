@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { LandingNav } from '~/components/landing/LandingNav';
 import { Activity, Eye, EyeOff } from 'lucide-react';
 import { useTranslation, Trans } from 'react-i18next';
 import { z } from 'zod';
@@ -118,7 +119,9 @@ export default function LoginPage() {
   const privacyNoticeUrl = import.meta.env.VITE_PRIVACY_NOTICE_URL ?? '/privacy';
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="min-h-screen bg-background">
+      <LandingNav />
+      <main className="flex min-h-screen items-center justify-center px-4 pt-14">
       <div className="w-full max-w-sm space-y-8">
         {/* Logo */}
         <div className="flex flex-col items-center gap-2">
@@ -329,6 +332,7 @@ export default function LoginPage() {
           </div>
         )}
       </div>
+      </main>
     </div>
   );
 }
