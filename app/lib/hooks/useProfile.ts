@@ -1,6 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '~/lib/context/AuthContext';
-import { updateProfileName, uploadAvatar, changePassword } from '~/lib/queries/profile';
+import {
+  updateProfileName,
+  uploadAvatar,
+  changePassword,
+  fetchSelfPlanPermission,
+  updateSelfPlanPermission,
+} from '~/lib/queries/profile';
+import { queryKeys } from '~/lib/queries/keys';
 
 export function useUpdateProfileName() {
   const { user, updateProfile } = useAuth();
@@ -38,5 +45,35 @@ export function useChangePassword() {
   return useMutation({
     mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) =>
       changePassword(currentPassword, newPassword),
+  });
+}
+
+export function useSelfPlanPermission(athleteId: string) {
+  return useQuery({
+    queryKey: queryKeys.selfPlan.byAthlete(athleteId),
+    queryFn: () => fetchSelfPlanPermission(athleteId),
+    enabled: !!athleteId,
+  });
+}
+
+export function useUpdateSelfPlanPermission() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ athleteId, value }: { athleteId: string; value: boolean }) =>
+      updateSelfPlanPermission(athleteId, value),
+    onMutate: async ({ athleteId, value }) => {
+      await qc.cancelQueries({ queryKey: queryKeys.selfPlan.byAthlete(athleteId) });
+      const prev = qc.getQueryData<boolean>(queryKeys.selfPlan.byAthlete(athleteId));
+      qc.setQueryData(queryKeys.selfPlan.byAthlete(athleteId), value);
+      return { prev, athleteId };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev !== undefined) {
+        qc.setQueryData(queryKeys.selfPlan.byAthlete(ctx.athleteId), ctx.prev);
+      }
+    },
+    onSettled: (_data, _err, { athleteId }) => {
+      qc.invalidateQueries({ queryKey: queryKeys.selfPlan.byAthlete(athleteId) });
+    },
   });
 }

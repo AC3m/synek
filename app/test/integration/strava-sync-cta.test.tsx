@@ -65,11 +65,24 @@ vi.mock('~/lib/hooks/useWeekPlan', () => ({
     },
     isLoading: false,
   }),
+  useGetOrCreateWeekPlan: () => ({ mutate: vi.fn(), isPending: false }),
+  useUpdateWeekPlan: () => ({ mutate: vi.fn() }),
 }));
 
 vi.mock('~/lib/hooks/useSessions', () => ({
   useSessions: () => ({ data: [] }),
   useUpdateAthleteSession: () => ({ mutate: vi.fn() }),
+  useCreateSession: () => ({ mutate: vi.fn() }),
+  useUpdateSession: () => ({ mutate: vi.fn() }),
+  useDeleteSession: () => ({ mutate: vi.fn() }),
+}));
+
+vi.mock('~/lib/hooks/useProfile', () => ({
+  useSelfPlanPermission: () => ({ data: true }),
+  useUpdateSelfPlanPermission: () => ({ mutate: vi.fn() }),
+  useUpdateProfileName: () => ({ mutate: vi.fn() }),
+  useUploadAvatar: () => ({ mutate: vi.fn() }),
+  useChangePassword: () => ({ mutate: vi.fn() }),
 }));
 
 vi.mock('react-router', async () => {

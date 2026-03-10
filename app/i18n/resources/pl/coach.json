@@ -35,10 +35,18 @@
     "subtitle": "Wybierz, czyim planem treningowym chcesz zarządzać",
     "viewPlan": "Zobacz plan",
     "noAthletes": "Nie masz jeszcze przypisanych zawodników.",
-    "noAthletesHint": "Zaproś pierwszego zawodnika w Ustawieniach."
+    "noAthletesHint": "Zaproś pierwszego zawodnika w Ustawieniach.",
+    "myself": "Ja",
+    "myselfBadge": "Ty",
+    "myselfSubtitle": "Twój własny plan treningowy"
   },
   "managing": "Zarządzasz:",
+  "myPlan": "Mój plan treningowy",
   "switchAthlete": "Zmień zawodnika",
+  "selfPlan": {
+    "label": "Zezwól na samodzielne planowanie",
+    "hint": "Zawodnik może dodawać i edytować własne treningi"
+  },
   "athletes": {
     "title": "Zawodnicy",
     "inviteSection": "Zapraszaj zawodników",

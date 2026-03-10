@@ -37,10 +37,11 @@ const iconMap: Record<string, React.ElementType> = {
 
 interface SessionCardProps {
   session: TrainingSession;
-  /** Coach mode: edit/delete buttons */
   readonly?: boolean;
-  /** Athlete mode: completion + feedback */
+  /** Athlete mode: controls feedback UI direction (coach textarea vs athlete read-only) */
   athleteMode?: boolean;
+  /** Show completion/notes/performance controls regardless of athleteMode (e.g. coach viewing own plan) */
+  showAthleteControls?: boolean;
   stravaConnected?: boolean;
   onEdit?: (session: TrainingSession) => void;
   onDelete?: (sessionId: string) => void;
@@ -55,6 +56,7 @@ export function SessionCard({
   session,
   readonly = false,
   athleteMode = false,
+  showAthleteControls = false,
   stravaConnected = false,
   onEdit,
   onDelete,
@@ -94,24 +96,28 @@ export function SessionCard({
           </Badge>
         </div>
 
-        {!readonly && !athleteMode && (
+        {!readonly && (onEdit || onDelete) && (
           <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-5 w-5"
-              onClick={() => onEdit?.(session)}
-            >
-              <Pencil className="h-3 w-3" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-5 w-5 text-destructive"
-              onClick={() => onDelete?.(session.id)}
-            >
-              <Trash2 className="h-3 w-3" />
-            </Button>
+            {onEdit && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5"
+                onClick={() => onEdit(session)}
+              >
+                <Pencil className="h-3 w-3" />
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-5 w-5 text-destructive"
+                onClick={() => onDelete(session.id)}
+              >
+                <Trash2 className="h-3 w-3" />
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -244,7 +250,7 @@ export function SessionCard({
       )}
 
       {/* Athlete-specific features */}
-      {athleteMode && !isRestDay && (
+      {(athleteMode || showAthleteControls) && !isRestDay && (
         <div className="mt-2 pt-1.5 border-t border-dashed space-y-1">
           <CompletionToggle
             isCompleted={session.isCompleted}

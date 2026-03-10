@@ -6,6 +6,8 @@ interface WeekGridProps {
   weekStart?: string;
   readonly?: boolean;
   athleteMode?: boolean;
+  /** Show completion/notes/performance controls even when athleteMode is false */
+  showAthleteControls?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
   onEditSession?: (session: TrainingSession) => void;
   onDeleteSession?: (sessionId: string) => void;
@@ -22,6 +24,7 @@ export function WeekGrid({
   weekStart,
   readonly = false,
   athleteMode = false,
+  showAthleteControls = false,
   onAddSession,
   onEditSession,
   onDeleteSession,
@@ -41,6 +44,7 @@ export function WeekGrid({
           sessions={sessionsByDay[day] ?? []}
           readonly={readonly}
           athleteMode={athleteMode}
+          showAthleteControls={showAthleteControls}
           onAddSession={onAddSession}
           onEditSession={onEditSession}
           onDeleteSession={onDeleteSession}

@@ -10,6 +10,10 @@
     "addNotes": "Add your notes",
     "placeholder": "How did you feel? Any feedback..."
   },
+  "selfPlan": {
+    "label": "Self-planning",
+    "hint": "Plan your own training sessions"
+  },
   "strava": {
     "comingSoon": "Strava Integration",
     "connectHint": "Connect Strava to sync your activities",

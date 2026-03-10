@@ -1,10 +1,17 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
-import { useUpdateProfileName, useUploadAvatar, useChangePassword } from '~/lib/hooks/useProfile';
+import {
+  useUpdateProfileName,
+  useUploadAvatar,
+  useChangePassword,
+  useSelfPlanPermission,
+  useUpdateSelfPlanPermission,
+} from '~/lib/hooks/useProfile';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Separator } from '~/components/ui/separator';
+import { Switch } from '~/components/ui/switch';
 import { DeleteAccountDialog } from '~/components/settings/DeleteAccountDialog';
 import { cn } from '~/lib/utils';
 
@@ -14,6 +21,7 @@ interface UserTabProps {
 
 export function UserTab({ className }: UserTabProps) {
   const { t } = useTranslation('common');
+  const { t: tAthlete } = useTranslation('athlete');
   const { user } = useAuth();
 
   const [name, setName] = useState(user?.name ?? '');
@@ -30,6 +38,10 @@ export function UserTab({ className }: UserTabProps) {
   const updateName = useUpdateProfileName();
   const uploadAvatar = useUploadAvatar();
   const changePassword = useChangePassword();
+  const { data: canSelfPlan = true } = useSelfPlanPermission(
+    user?.role === 'athlete' ? (user?.id ?? '') : ''
+  );
+  const updateSelfPlan = useUpdateSelfPlanPermission();
 
   async function handleSaveName(e: React.FormEvent) {
     e.preventDefault();
@@ -163,6 +175,26 @@ export function UserTab({ className }: UserTabProps) {
           {passwordSaved ? t('settings.user.saved') : t('settings.user.changePassword')}
         </Button>
       </form>
+
+      {user?.role === 'athlete' && (
+        <>
+          <Separator />
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">{tAthlete('selfPlan.label')}</p>
+                <p className="text-xs text-muted-foreground">{tAthlete('selfPlan.hint')}</p>
+              </div>
+              <Switch
+                checked={canSelfPlan}
+                onCheckedChange={(value) =>
+                  updateSelfPlan.mutate({ athleteId: user.id, value })
+                }
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       <Separator className="my-8" />
 

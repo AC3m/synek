@@ -7,7 +7,8 @@ import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
 import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
-import { useSessions, useCreateSession, useUpdateSession, useDeleteSession } from '~/lib/hooks/useSessions';
+import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
+import { useAuth } from '~/lib/context/AuthContext';
 import { weekIdToMonday, parseWeekId } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
 import type {
@@ -15,12 +16,16 @@ import type {
   TrainingSession,
   CreateSessionInput,
   UpdateSessionInput,
+  AthleteSessionUpdate,
   WeekPlan,
 } from '~/types/training';
 
 export default function CoachWeekView() {
   const { weekId } = useParams();
   const { t } = useTranslation('coach');
+  const { user, effectiveAthleteId } = useAuth();
+
+  const isViewingSelf = !!effectiveAthleteId && effectiveAthleteId === user?.id;
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
   const { year, weekNumber } = weekId
@@ -37,6 +42,7 @@ export default function CoachWeekView() {
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const deleteSessionMut = useDeleteSession();
+  const updateAthlete = useUpdateAthleteSession();
 
   // Auto-create week plan if it doesn't exist.
   // Use a ref to guard against repeated calls — the mutation object changes
@@ -110,6 +116,27 @@ export default function CoachWeekView() {
     [updateSession]
   );
 
+  const handleToggleComplete = useCallback(
+    (sessionId: string, completed: boolean) => {
+      updateAthlete.mutate({ id: sessionId, isCompleted: completed });
+    },
+    [updateAthlete]
+  );
+
+  const handleUpdateNotes = useCallback(
+    (sessionId: string, notes: string | null) => {
+      updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
+    },
+    [updateAthlete]
+  );
+
+  const handleUpdatePerformance = useCallback(
+    (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => {
+      updateAthlete.mutate({ id: sessionId, ...update });
+    },
+    [updateAthlete]
+  );
+
   if (!weekId) return null;
 
   if (weekLoading || (getOrCreate.isPending && !weekPlan)) {
@@ -144,6 +171,12 @@ export default function CoachWeekView() {
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+        {...(isViewingSelf && {
+          showAthleteControls: true,
+          onToggleComplete: handleToggleComplete,
+          onUpdateNotes: handleUpdateNotes,
+          onUpdatePerformance: handleUpdatePerformance,
+        })}
       />
 
       {/* Session Form Sheet */}

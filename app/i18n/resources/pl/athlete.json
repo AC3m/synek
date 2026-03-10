@@ -10,6 +10,10 @@
     "addNotes": "Dodaj notatki",
     "placeholder": "Jak się czułeś? Uwagi..."
   },
+  "selfPlan": {
+    "label": "Samodzielne planowanie",
+    "hint": "Planuj własne sesje treningowe"
+  },
   "strava": {
     "comingSoon": "Integracja ze Stravą",
     "connectHint": "Połącz Stravę, aby synchronizować aktywności",

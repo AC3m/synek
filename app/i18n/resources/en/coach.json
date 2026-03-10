@@ -35,10 +35,18 @@
     "subtitle": "Choose whose training plan you want to manage",
     "viewPlan": "View plan",
     "noAthletes": "You have no athletes assigned yet.",
-    "noAthletesHint": "Invite your first athlete in Settings."
+    "noAthletesHint": "Invite your first athlete in Settings.",
+    "myself": "Myself",
+    "myselfBadge": "You",
+    "myselfSubtitle": "Your own training plan"
   },
   "managing": "Managing:",
+  "myPlan": "My training plan",
   "switchAthlete": "Switch athlete",
+  "selfPlan": {
+    "label": "Allow self-planning",
+    "hint": "Athlete can add and edit their own sessions"
+  },
   "athletes": {
     "title": "Athletes",
     "inviteSection": "Invite Athletes",

@@ -11,6 +11,8 @@ interface DayColumnProps {
   weekStart?: string;
   readonly?: boolean;
   athleteMode?: boolean;
+  /** Show completion/notes/performance controls even when athleteMode is false (e.g. coach viewing own plan) */
+  showAthleteControls?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
   onEditSession?: (session: TrainingSession) => void;
   onDeleteSession?: (sessionId: string) => void;
@@ -28,6 +30,7 @@ export function DayColumn({
   weekStart,
   readonly = false,
   athleteMode = false,
+  showAthleteControls = false,
   onAddSession,
   onEditSession,
   onDeleteSession,
@@ -59,12 +62,12 @@ export function DayColumn({
             <span className="ml-1 normal-case">{format(dayDate, 'dd-MM-yy')}</span>
           )}
         </h3>
-        {!readonly && !athleteMode && (
+        {!readonly && !!onAddSession && (
           <Button
             variant="ghost"
             size="icon"
             className="h-5 w-5"
-            onClick={() => onAddSession?.(day)}
+            onClick={() => onAddSession(day)}
           >
             <Plus className="h-3 w-3" />
           </Button>
@@ -78,6 +81,7 @@ export function DayColumn({
             session={session}
             readonly={readonly}
             athleteMode={athleteMode}
+            showAthleteControls={showAthleteControls}
             onEdit={onEditSession}
             onDelete={onDeleteSession}
             onToggleComplete={onToggleComplete}
@@ -89,9 +93,9 @@ export function DayColumn({
           />
         ))}
 
-        {sessions.length === 0 && !readonly && !athleteMode && (
+        {sessions.length === 0 && !readonly && !!onAddSession && (
           <button
-            onClick={() => onAddSession?.(day)}
+            onClick={() => onAddSession(day)}
             className="flex-1 flex items-center justify-center border border-dashed rounded-md text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors min-h-[60px]"
           >
             <Plus className="h-3 w-3 mr-1" />
@@ -99,7 +103,7 @@ export function DayColumn({
           </button>
         )}
 
-        {sessions.length === 0 && (readonly || athleteMode) && (
+        {sessions.length === 0 && (readonly || !onAddSession) && (
           <div className="flex-1 flex items-center justify-center text-[10px] text-muted-foreground min-h-[60px]">
             -
           </div>
