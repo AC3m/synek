@@ -46,11 +46,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function HydrateFallback() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
-    </div>
-  );
+  return null;
 }
 
 export default function App() {
