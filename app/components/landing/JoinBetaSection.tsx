@@ -11,7 +11,7 @@ export function JoinBetaSection({ className }: JoinBetaSectionProps) {
   const { t } = useTranslation('landing')
 
   return (
-    <section id="join-beta" className={cn('bg-muted/40 px-4 py-24', className)}>
+    <section id="join-beta" className={cn('bg-muted/40 px-4 py-16 sm:py-24', className)}>
       <div className="mx-auto max-w-md text-center">
         <span className="mb-3 inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
           {t('beta.badge')}

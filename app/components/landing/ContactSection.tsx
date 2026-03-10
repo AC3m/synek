@@ -42,7 +42,7 @@ export function ContactSection({ className }: ContactSectionProps) {
   }
 
   return (
-    <section id="contact" className={cn('bg-muted/40 px-4 py-24', className)}>
+    <section id="contact" className={cn('bg-muted/40 px-4 py-16 sm:py-24', className)}>
       <div className="mx-auto max-w-md">
         <div className="mb-8 text-center">
           <h2 className="text-3xl font-bold tracking-tight">{t('contact.title')}</h2>
@@ -58,7 +58,7 @@ export function ContactSection({ className }: ContactSectionProps) {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 rounded-xl border bg-background p-8 shadow-sm"
+            className="space-y-4 rounded-xl border bg-background p-6 shadow-sm sm:p-8"
           >
             <div className="space-y-1">
               <label htmlFor="contact-name" className="text-sm font-medium">

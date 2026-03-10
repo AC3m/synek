@@ -16,7 +16,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
   }))
 
   return (
-    <section id="features" className={cn('px-4 py-24', className)}>
+    <section id="features" className={cn('px-4 py-16 sm:py-24', className)}>
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
