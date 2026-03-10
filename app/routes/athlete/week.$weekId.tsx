@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Zap } from 'lucide-react';
@@ -7,14 +7,22 @@ import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
-import { useWeekPlan } from '~/lib/hooks/useWeekPlan';
-import { useSessions, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
+import { SessionForm } from '~/components/training/SessionForm';
+import { useWeekPlan, useGetOrCreateWeekPlan } from '~/lib/hooks/useWeekPlan';
+import {
+  useSessions,
+  useUpdateAthleteSession,
+  useCreateSession,
+  useUpdateSession,
+  useDeleteSession,
+} from '~/lib/hooks/useSessions';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
+import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
-import { weekIdToMonday } from '~/lib/utils/date';
+import { weekIdToMonday, parseWeekId } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
-import type { AthleteSessionUpdate } from '~/types/training';
+import type { DayOfWeek, TrainingSession, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
 
 export default function AthleteWeekView() {
   const { weekId } = useParams();
@@ -23,6 +31,11 @@ export default function AthleteWeekView() {
   const localePath = useLocalePath();
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
+  const { year, weekNumber } = weekId
+    ? parseWeekId(weekId)
+    : { year: 0, weekNumber: 0 };
+
+  const { data: canSelfPlan = true } = useSelfPlanPermission(user?.id ?? '');
 
   // Queries
   const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
@@ -30,6 +43,29 @@ export default function AthleteWeekView() {
   const updateAthlete = useUpdateAthleteSession();
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
   const stravaSync = useStravaSync();
+
+  // Planning hooks — only used when canSelfPlan
+  const getOrCreate = useGetOrCreateWeekPlan();
+  const createSession = useCreateSession();
+  const updateSession = useUpdateSession();
+  const deleteSessionMut = useDeleteSession();
+
+  // Auto-create week plan when self-planning is enabled and no plan exists
+  const mutatingRef = useRef(false);
+  useEffect(() => {
+    if (!canSelfPlan || !weekId || weekLoading || weekPlan || mutatingRef.current) return;
+    mutatingRef.current = true;
+    getOrCreate.mutate(
+      { weekStart, year, weekNumber },
+      { onSettled: () => { mutatingRef.current = false; } }
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canSelfPlan, weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
+
+  // Planning form state
+  const [formOpen, setFormOpen] = useState(false);
+  const [formDay, setFormDay] = useState<DayOfWeek | undefined>();
+  const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
 
   const sessionsByDay = groupSessionsByDay(sessions);
   const stats = computeWeekStats(sessions);
@@ -63,9 +99,42 @@ export default function AthleteWeekView() {
     }
   }, [stravaSync, user, weekStart]);
 
+  const handleAddSession = useCallback((day: DayOfWeek) => {
+    setEditingSession(null);
+    setFormDay(day);
+    setFormOpen(true);
+  }, []);
+
+  const handleEditSession = useCallback((session: TrainingSession) => {
+    setEditingSession(session);
+    setFormDay(session.dayOfWeek);
+    setFormOpen(true);
+  }, []);
+
+  const handleDeleteSession = useCallback(
+    (sessionId: string) => {
+      if (window.confirm(t('common:session.deleteConfirm' as never))) {
+        deleteSessionMut.mutate(sessionId);
+      }
+    },
+    [t, deleteSessionMut]
+  );
+
+  const handleFormSubmit = useCallback(
+    (data: CreateSessionInput | UpdateSessionInput) => {
+      if ('weekPlanId' in data) {
+        createSession.mutate(data);
+      } else {
+        updateSession.mutate(data);
+      }
+      setFormOpen(false);
+    },
+    [createSession, updateSession]
+  );
+
   if (!weekId) return null;
 
-  if (weekLoading) {
+  if (weekLoading || (canSelfPlan && getOrCreate.isPending && !weekPlan)) {
     return <WeekSkeleton />;
   }
 
@@ -115,7 +184,7 @@ export default function AthleteWeekView() {
       {/* Week Summary (readonly with progress bar) */}
       <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
 
-      {/* Week Grid (athlete mode: completion + feedback) */}
+      {/* Week Grid */}
       <WeekGrid
         sessionsByDay={sessionsByDay}
         weekStart={weekStart}
@@ -125,7 +194,24 @@ export default function AthleteWeekView() {
         onUpdatePerformance={handleUpdatePerformance}
         stravaConnected={stravaConnected}
         onSyncStrava={handleSyncStrava}
+        {...(canSelfPlan && {
+          onAddSession: handleAddSession,
+          onEditSession: handleEditSession,
+          onDeleteSession: handleDeleteSession,
+        })}
       />
+
+      {/* Session Form — only shown when self-planning is enabled */}
+      {canSelfPlan && (
+        <SessionForm
+          open={formOpen}
+          onClose={() => setFormOpen(false)}
+          weekPlanId={weekPlan.id}
+          day={formDay}
+          session={editingSession}
+          onSubmit={handleFormSubmit}
+        />
+      )}
     </div>
   );
 }

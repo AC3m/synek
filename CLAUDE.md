@@ -424,6 +424,8 @@ When writing new migrations, place in `supabase/migrations/` with prefix `00N_`.
 - Supabase (PostgreSQL) — mock mode used in all tests (005-tests-refactor)
 - TypeScript 5 stric + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, shadcn/ui, i18next, Zod 4 (006-coach-athlete-invite)
 - Supabase PostgreSQL — new `invites` table; no schema changes to existing tables (006-coach-athlete-invite)
+- TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, shadcn/ui, i18nex (007-athlete-planning)
+- PostgreSQL via Supabase — one new column `profiles.can_self_plan boolean DEFAULT false` (007-athlete-planning)
 
 ## Recent Changes
 - 001-sheets-data-migration: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only)

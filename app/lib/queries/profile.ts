@@ -7,6 +7,18 @@ import { supabase, isMockMode } from '~/lib/supabase';
 const mockNames: Record<string, string> = {};
 const mockAvatars: Record<string, string | null> = {};
 
+// Self-plan permission mock store (default: true for all athletes)
+const mockSelfPlan: Map<string, boolean> = new Map([
+  ['athlete-1', true],
+  ['athlete-2', true],
+]);
+
+export function resetMockSelfPlan(): void {
+  mockSelfPlan.clear();
+  mockSelfPlan.set('athlete-1', true);
+  mockSelfPlan.set('athlete-2', true);
+}
+
 // ============================================================
 // Update display name
 // ============================================================
@@ -76,6 +88,40 @@ export async function mockChangePassword(
   // Mock validation by checking against known passwords by email convention
   const isValid = Object.values(validPasswords).includes(currentPassword);
   if (!isValid) throw new Error('wrong_password');
+}
+
+// ============================================================
+// Self-plan permission
+// ============================================================
+
+export async function mockFetchSelfPlanPermission(athleteId: string): Promise<boolean> {
+  await new Promise((r) => setTimeout(r, 100));
+  return mockSelfPlan.get(athleteId) ?? true;
+}
+
+export async function mockUpdateSelfPlanPermission(athleteId: string, value: boolean): Promise<void> {
+  await new Promise((r) => setTimeout(r, 150));
+  mockSelfPlan.set(athleteId, value);
+}
+
+export async function fetchSelfPlanPermission(athleteId: string): Promise<boolean> {
+  if (isMockMode) return mockFetchSelfPlanPermission(athleteId);
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, can_self_plan')
+    .eq('id', athleteId)
+    .maybeSingle();
+  if (error) throw error;
+  return data?.can_self_plan ?? true;
+}
+
+export async function updateSelfPlanPermission(athleteId: string, value: boolean): Promise<void> {
+  if (isMockMode) return mockUpdateSelfPlanPermission(athleteId, value);
+  const { error } = await supabase
+    .from('profiles')
+    .update({ can_self_plan: value })
+    .eq('id', athleteId);
+  if (error) throw error;
 }
 
 export async function changePassword(

@@ -22,4 +22,7 @@ export const queryKeys = {
     byCoach: (coachId: string) => ['invites', coachId] as const,
     preview: (token: string) => ['invites', 'preview', token] as const,
   },
+  selfPlan: {
+    byAthlete: (athleteId: string) => ['selfPlan', athleteId] as const,
+  },
 };
