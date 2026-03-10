@@ -5,10 +5,16 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetFooter,
 } from '~/components/ui/sheet';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
-import { SessionFormFields } from './SessionFormFields';
+import { SessionFormFields, type FormTab } from './SessionFormFields';
+import { useIsMobile } from '~/lib/hooks/useIsMobile';
 import {
   type TrainingType,
   type DayOfWeek,
@@ -25,6 +31,8 @@ interface SessionFormProps {
   day?: DayOfWeek;
   session?: TrainingSession | null;
   onSubmit: (data: CreateSessionInput | UpdateSessionInput) => void;
+  isCoach?: boolean;
+  className?: string;
 }
 
 export function SessionForm({
@@ -34,8 +42,10 @@ export function SessionForm({
   day,
   session,
   onSubmit,
+  isCoach = false,
 }: SessionFormProps) {
   const { t } = useTranslation(['coach', 'common']);
+  const isMobile = useIsMobile();
   const isEditing = !!session;
 
   const [trainingType, setTrainingType] = useState<TrainingType>(
@@ -65,6 +75,11 @@ export function SessionForm({
   const [coachPostFeedback, setCoachPostFeedback] = useState(
     session?.coachPostFeedback ?? ''
   );
+  const [activeTab, setActiveTab] = useState<FormTab>('plan');
+
+  useEffect(() => {
+    setActiveTab('plan');
+  }, [open]);
 
   useEffect(() => {
     if (session) {
@@ -144,53 +159,96 @@ export function SessionForm({
     onClose();
   };
 
+  const formFields = (
+    <SessionFormFields
+      trainingType={trainingType}
+      onTypeChange={handleTypeChange}
+      description={description}
+      onDescriptionChange={setDescription}
+      coachComments={coachComments}
+      onCoachCommentsChange={setCoachComments}
+      durationMinutes={durationMinutes}
+      onDurationChange={setDurationMinutes}
+      distanceKm={distanceKm}
+      onDistanceChange={setDistanceKm}
+      typeData={typeData}
+      onTypeDataChange={setTypeData}
+      actualDuration={actualDuration}
+      onActualDurationChange={setActualDuration}
+      actualDistance={actualDistance}
+      onActualDistanceChange={setActualDistance}
+      actualPace={actualPace}
+      onActualPaceChange={setActualPace}
+      avgHr={avgHr}
+      onAvgHrChange={setAvgHr}
+      maxHr={maxHr}
+      onMaxHrChange={setMaxHr}
+      rpe={rpe}
+      onRpeChange={setRpe}
+      coachPostFeedback={coachPostFeedback}
+      onCoachPostFeedbackChange={setCoachPostFeedback}
+      isCoach={isCoach}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    />
+  );
+
+  const title = isEditing ? t('coach:session.edit') : t('coach:session.create');
+  const saveLabel = isEditing ? t('common:actions.save') : t('coach:session.create');
+
+  if (isMobile) {
+    return (
+      <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
+        <SheetContent
+          side="bottom"
+          showCloseButton={false}
+          className="rounded-t-2xl max-h-[92vh] flex flex-col gap-0 p-0"
+        >
+          {/* Drag handle */}
+          <div className="flex justify-center pt-3 pb-1 shrink-0">
+            <div className="h-1 w-10 rounded-full bg-border" />
+          </div>
+
+          <SheetHeader className="px-5 pt-3 pb-3 border-b shrink-0">
+            <SheetTitle>{title}</SheetTitle>
+          </SheetHeader>
+
+          <div className="flex-1 overflow-y-auto px-5 py-4">
+            {formFields}
+          </div>
+
+          <div className="px-5 pt-4 pb-4 border-t flex gap-2 justify-end shrink-0">
+            <Button variant="outline" onClick={onClose}>
+              {t('common:actions.cancel')}
+            </Button>
+            <Button onClick={handleSubmit}>{saveLabel}</Button>
+          </div>
+        </SheetContent>
+      </Sheet>
+    );
+  }
+
   return (
-    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent className="overflow-y-auto sm:max-w-md">
-        <SheetHeader>
-          <SheetTitle>
-            {isEditing ? t('coach:session.edit') : t('coach:session.create')}
-          </SheetTitle>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-lg max-h-[85vh] flex flex-col p-0 gap-0"
+      >
+        <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
 
-        <SessionFormFields
-          trainingType={trainingType}
-          onTypeChange={handleTypeChange}
-          description={description}
-          onDescriptionChange={setDescription}
-          coachComments={coachComments}
-          onCoachCommentsChange={setCoachComments}
-          durationMinutes={durationMinutes}
-          onDurationChange={setDurationMinutes}
-          distanceKm={distanceKm}
-          onDistanceChange={setDistanceKm}
-          typeData={typeData}
-          onTypeDataChange={setTypeData}
-          actualDuration={actualDuration}
-          onActualDurationChange={setActualDuration}
-          actualDistance={actualDistance}
-          onActualDistanceChange={setActualDistance}
-          actualPace={actualPace}
-          onActualPaceChange={setActualPace}
-          avgHr={avgHr}
-          onAvgHrChange={setAvgHr}
-          maxHr={maxHr}
-          onMaxHrChange={setMaxHr}
-          rpe={rpe}
-          onRpeChange={setRpe}
-          coachPostFeedback={coachPostFeedback}
-          onCoachPostFeedbackChange={setCoachPostFeedback}
-        />
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          {formFields}
+        </div>
 
-        <SheetFooter>
+        <div className="px-6 py-4 border-t flex gap-2 justify-end shrink-0">
           <Button variant="outline" onClick={onClose}>
             {t('common:actions.cancel')}
           </Button>
-          <Button onClick={handleSubmit}>
-            {isEditing ? t('common:actions.save') : t('coach:session.create')}
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          <Button onClick={handleSubmit}>{saveLabel}</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -210,6 +210,7 @@ export default function AthleteWeekView() {
           day={formDay}
           session={editingSession}
           onSubmit={handleFormSubmit}
+          isCoach={false}
         />
       )}
     </div>

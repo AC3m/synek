@@ -2,7 +2,10 @@
   "appName": "Synek",
   "nav": {
     "coach": "Coach",
-    "athlete": "Athlete"
+    "athlete": "Athlete",
+    "week": "Week",
+    "team": "Team",
+    "settings": "Settings"
   },
   "days": {
     "monday": "Monday",
@@ -74,6 +77,7 @@
     "invalidCredentials": "Invalid email or password",
     "demoCredentials": "Demo credentials",
     "registerAsCoach": "Register as Coach",
+    "registerAccount": "Register an account",
     "registerAsCoachSubtitle": "Create your coach account",
     "fullName": "Full Name",
     "createAccount": "Create Account",
@@ -150,5 +154,12 @@
     "notConnected": "Not connected",
     "syncedBadge": "Data from Strava",
     "sync": "Sync"
+  },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "add": "Add"
   }
 }

@@ -56,32 +56,38 @@ export function DayColumn({
   return (
     <div
       className={cn(
-        'rounded-lg border bg-card p-2 min-h-[200px] flex flex-col',
-        isWeekend && 'bg-muted/30',
-        isCurrentDay && 'border-primary ring-1 ring-primary/20',
+        'rounded-xl bg-surface-1 p-3 min-h-[200px] flex flex-col ring-1 ring-[color:var(--border)]',
+        isWeekend && 'bg-surface-2/40',
       )}
     >
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          {t(`daysShort.${day}`)}
-        </h3>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          <h3 className="text-[10px] font-semibold text-[color:var(--foreground-secondary)] uppercase tracking-[0.08em]">
+            {t(`daysShort.${day}`)}
+          </h3>
           {dayDate && (
-            <span className={cn('text-xs normal-case', isCurrentDay ? 'text-primary font-semibold' : 'text-muted-foreground')}>
-              {format(dayDate, 'dd-MM-yy')}
+            <span
+              className={cn(
+                'flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold tabular-nums',
+                isCurrentDay
+                  ? 'bg-foreground text-background'
+                  : 'text-[color:var(--foreground-secondary)]'
+              )}
+            >
+              {format(dayDate, 'd')}
             </span>
           )}
-          {!readonly && !!onAddSession && !hasRestDay && (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 sm:h-5 sm:w-5"
-              onClick={() => onAddSession(day)}
-            >
-              <Plus className="h-3 w-3" />
-            </Button>
-          )}
         </div>
+        {!readonly && !!onAddSession && !hasRestDay && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 sm:h-6 sm:w-6"
+            onClick={() => onAddSession(day)}
+          >
+            <Plus className="h-3 w-3" />
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5 flex-1">
@@ -106,7 +112,7 @@ export function DayColumn({
         {sessions.length === 0 && !readonly && !!onAddSession && (
           <button
             onClick={() => onAddSession(day)}
-            className="flex-1 flex items-center justify-center border border-dashed rounded-md text-xs text-muted-foreground hover:border-primary hover:text-primary transition-colors min-h-[60px]"
+            className="flex-1 flex items-center justify-center border border-dashed border-[color:var(--border)] rounded-xl text-xs text-[color:var(--foreground-tertiary)] hover:border-foreground/20 hover:text-[color:var(--foreground-secondary)] transition-colors min-h-[56px] w-full"
           >
             <Plus className="h-3 w-3 mr-1" />
             {t('actions.add')}
@@ -114,8 +120,8 @@ export function DayColumn({
         )}
 
         {sessions.length === 0 && (readonly || !onAddSession) && (
-          <div className="flex-1 flex items-center justify-center text-[10px] text-muted-foreground min-h-[60px]">
-            -
+          <div className="flex-1 flex items-center justify-center text-[10px] text-[color:var(--foreground-tertiary)] min-h-[60px]">
+            —
           </div>
         )}
       </div>

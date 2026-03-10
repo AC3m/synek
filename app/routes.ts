@@ -7,36 +7,38 @@ import {
 } from '@react-router/dev/routes';
 
 export default [
-  // Public landing page — no auth required
-  index('routes/landing.tsx'),
+  // Root: redirect / → /:locale
+  index('routes/root-redirect.tsx'),
 
-  // Login is public and outside the locale wrapper
-  route('login', 'routes/login.tsx'),
-
-  // Register is public and outside the locale wrapper
-  route('register', 'routes/register.tsx'),
-
-  // Invite landing page — public, no locale prefix
+  // Invite landing page — stays at top level (links sent via email, locale-independent)
   route('invite/:token', 'routes/invite.$token.tsx'),
 
-  // All authenticated routes live under /:locale (pl or en)
-  route(':locale', 'routes/locale-layout.tsx', [
-    index('routes/home.tsx'),
+  // All routes under /:locale
+  route(':locale', 'routes/locale-bare-layout.tsx', [
+    // Public pages — each has its own nav (LandingNav), no app chrome
+    index('routes/landing.tsx'),
+    route('login', 'routes/login.tsx'),
+    route('register', 'routes/register.tsx'),
 
-    ...prefix('coach', [
-      layout('routes/coach/layout.tsx', [
-        index('routes/coach/week.tsx'),
-        route('week/:weekId', 'routes/coach/week.$weekId.tsx'),
+    // App pages — wrapped with Header + BottomNav
+    layout('routes/locale-layout.tsx', [
+      route('home', 'routes/home.tsx'),
+
+      ...prefix('coach', [
+        layout('routes/coach/layout.tsx', [
+          index('routes/coach/week.tsx'),
+          route('week/:weekId', 'routes/coach/week.$weekId.tsx'),
+        ]),
       ]),
-    ]),
 
-    ...prefix('athlete', [
-      layout('routes/athlete/layout.tsx', [
-        index('routes/athlete/week.tsx'),
-        route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
+      ...prefix('athlete', [
+        layout('routes/athlete/layout.tsx', [
+          index('routes/athlete/week.tsx'),
+          route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
+        ]),
       ]),
-    ]),
 
-    route('settings', 'routes/settings.tsx'),
+      route('settings', 'routes/settings.tsx'),
+    ]),
   ]),
 ] satisfies RouteConfig;

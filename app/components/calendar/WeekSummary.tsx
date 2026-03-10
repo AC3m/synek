@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
 import { Button } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
 import { loadTypeConfig } from '~/lib/utils/training-types';
 import { LOAD_TYPES, type WeekPlan, type WeekStats } from '~/types/training';
 
@@ -60,7 +61,7 @@ export function WeekSummary({
             variant="ghost"
             size="icon"
             onClick={() => setIsExpanded((v) => !v)}
-            className="h-7 w-7"
+            className="h-7 w-7 text-[color:var(--foreground-tertiary)] hover:text-foreground transition-colors"
           >
             {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
@@ -73,7 +74,7 @@ export function WeekSummary({
 
             {/* ── LEFT: Plan ── */}
             <div className="px-6 pb-6 space-y-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[color:var(--foreground-tertiary)] pt-2">
                 {t('coach:weekSummary.plan')}
               </p>
 
@@ -84,7 +85,11 @@ export function WeekSummary({
                 </p>
                 {readonly ? (
                   weekPlan.loadType ? (
-                    <span className={`inline-flex items-center h-7 text-xs px-2.5 rounded-md font-medium ${loadTypeConfig[weekPlan.loadType].bgColor} ${loadTypeConfig[weekPlan.loadType].color}`}>
+                    <span className={cn(
+                      'inline-flex items-center rounded-full h-8 text-xs px-3 font-medium',
+                      loadTypeConfig[weekPlan.loadType].bgColor,
+                      loadTypeConfig[weekPlan.loadType].color
+                    )}>
                       {t(`common:loadType.${weekPlan.loadType}`)}
                     </span>
                   ) : (
@@ -100,7 +105,10 @@ export function WeekSummary({
                           key={lt}
                           variant={isSelected ? 'default' : 'outline'}
                           size="sm"
-                          className={`h-7 text-xs px-2.5 ${isSelected ? `${config.bgColor} ${config.color} border-0 hover:opacity-80` : ''}`}
+                          className={cn(
+                            'rounded-full h-8 text-xs px-3',
+                            isSelected && `${config.bgColor} ${config.color} border-0 hover:opacity-80`
+                          )}
                           onClick={() => onUpdate?.({ loadType: isSelected ? null : lt })}
                         >
                           {t(`common:loadType.${lt}`)}
@@ -167,7 +175,7 @@ export function WeekSummary({
 
             {/* ── RIGHT: Performance ── */}
             <div className="px-6 pb-6 space-y-4">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground pt-2">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[color:var(--foreground-tertiary)] pt-2">
                 {t('coach:weekSummary.performance')}
               </p>
 
@@ -204,9 +212,9 @@ export function WeekSummary({
                     <span>{stats.completedSessions}/{stats.totalSessions}</span>
                     <span>{Math.round(stats.completionPercentage)}%</span>
                   </div>
-                  <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div className="h-2 bg-surface-2 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-green-500 rounded-full transition-all duration-500"
+                      className="h-full bg-foreground rounded-full transition-all duration-500"
                       style={{ width: `${stats.completionPercentage}%` }}
                     />
                   </div>

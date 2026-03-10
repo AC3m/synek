@@ -14,7 +14,7 @@ export default function Home() {
 
   if (isLoading) return null;
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user) return <Navigate to={`/${locale}/login`} replace />;
 
   const target = user.role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
   return <Navigate to={target} replace />;

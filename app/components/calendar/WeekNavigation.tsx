@@ -10,7 +10,6 @@ import {
   parseWeekId,
 } from '~/lib/utils/date';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
-import { cn } from '~/lib/utils';
 
 interface WeekNavigationProps {
   weekId: string;
@@ -26,27 +25,29 @@ export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {
   const isCurrentWeek = weekId === getCurrentWeekId();
 
   return (
-    <div className="flex items-center gap-1.5 sm:gap-3 w-full px-2 sm:px-4">
+    <div className="flex flex-1 items-center gap-1 sm:gap-2 ml-auto">
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
-        className="h-8 w-8 sm:h-9 sm:w-9"
+        className="h-11 w-11 rounded-full shrink-0"
         onClick={() => navigate(localePath(`/${basePath}/week/${getPrevWeekId(weekId)}`))}
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex-1 text-center">
-        <h2 className="text-sm sm:text-lg font-semibold">
+      <div className="flex-1 text-center min-w-0 px-1">
+        <span className="text-sm font-semibold tracking-tight whitespace-nowrap">
           {t('week')} {weekNumber}
-        </h2>
-        <p className="text-[10px] sm:text-sm text-muted-foreground">{formatted}</p>
+        </span>
+        <span className="hidden sm:inline text-xs text-[color:var(--foreground-secondary)] ml-1.5">
+          · {formatted}
+        </span>
       </div>
 
       <Button
-        variant="outline"
+        variant="ghost"
         size="icon"
-        className="h-8 w-8 sm:h-9 sm:w-9"
+        className="h-11 w-11 rounded-full shrink-0"
         onClick={() => navigate(localePath(`/${basePath}/week/${getNextWeekId(weekId)}`))}
       >
         <ChevronRight className="h-4 w-4" />
@@ -57,7 +58,7 @@ export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {
         size="sm"
         disabled={isCurrentWeek}
         onClick={() => navigate(localePath(`/${basePath}/week/${getCurrentWeekId()}`))}
-        className="ml-1 sm:ml-2 text-xs"
+        className="text-xs px-3 py-1.5 rounded-full bg-surface-2 hover:bg-surface-3 min-h-[36px] transition-colors shrink-0"
       >
         {t('common:today', 'Today')}
       </Button>

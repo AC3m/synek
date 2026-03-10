@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import { useAuth } from '~/lib/context/AuthContext'
 import { LandingNav } from '~/components/landing/LandingNav'
 import { HeroSection } from '~/components/landing/HeroSection'
@@ -18,13 +18,13 @@ export function meta() {
 export default function LandingPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const { locale = 'pl' } = useParams<{ locale: string }>()
 
   useEffect(() => {
     if (user) {
-      const locale = localStorage.getItem('locale') ?? 'pl'
       navigate(`/${locale}/${user.role}`, { replace: true })
     }
-  }, [user, navigate])
+  }, [user, navigate, locale])
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router'
+import { useNavigate, Link, useParams } from 'react-router'
 import { Eye, EyeOff } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
@@ -30,6 +30,7 @@ export default function RegisterPage() {
   const { t } = useTranslation('landing')
   const { login } = useAuth()
   const navigate = useNavigate()
+  const { locale = 'pl' } = useParams<{ locale: string }>()
 
   const [role, setRole] = useState<UserRole | null>(null)
   const [name, setName] = useState('')
@@ -110,7 +111,6 @@ export default function RegisterPage() {
         if (signInError) throw signInError
       }
 
-      const locale = localStorage.getItem('locale') ?? 'pl'
       navigate(`/${locale}/${role}`, { replace: true })
     } catch {
       setError(t('beta.selectRole'))
@@ -242,7 +242,7 @@ export default function RegisterPage() {
 
             <p className="text-center text-sm text-muted-foreground">
               {t('beta.alreadyHaveAccount')}{' '}
-              <Link to="/login" className="font-medium text-primary hover:underline">
+              <Link to={`/${locale}/login`} className="font-medium text-primary hover:underline">
                 {t('beta.alreadyHaveAccountCta')}
               </Link>
             </p>

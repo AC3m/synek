@@ -2,7 +2,10 @@
   "appName": "Synek",
   "nav": {
     "coach": "Trener",
-    "athlete": "Zawodnik"
+    "athlete": "Zawodnik",
+    "week": "Tydzień",
+    "team": "Zespół",
+    "settings": "Ustawienia"
   },
   "days": {
     "monday": "Poniedziałek",
@@ -74,6 +77,7 @@
     "invalidCredentials": "Nieprawidłowy email lub hasło",
     "demoCredentials": "Dane testowe",
     "registerAsCoach": "Zarejestruj się jako trener",
+    "registerAccount": "Zarejestruj konto",
     "registerAsCoachSubtitle": "Utwórz konto trenera",
     "fullName": "Imię i nazwisko",
     "createAccount": "Utwórz konto",
@@ -150,5 +154,12 @@
     "notConnected": "Nie połączono",
     "syncedBadge": "Dane ze Strava",
     "sync": "Synchronizuj"
+  },
+  "actions": {
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "add": "Dodaj"
   }
 }
