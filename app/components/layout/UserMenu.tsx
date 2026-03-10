@@ -1,5 +1,5 @@
 import { LogOut, Settings, User } from 'lucide-react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
@@ -18,12 +18,13 @@ export function UserMenu() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const localePath = useLocalePath();
+  const { locale = 'pl' } = useParams<{ locale?: string }>();
 
   if (!user) return null;
 
   function handleLogout() {
     logout();
-    navigate('/login', { replace: true });
+    navigate(`/${locale}/login`, { replace: true });
   }
 
   const roleLabel = user.role === 'coach' ? t('roles.coach') : t('roles.athlete');

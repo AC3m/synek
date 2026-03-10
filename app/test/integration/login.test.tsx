@@ -5,6 +5,12 @@ import { MemoryRouter } from 'react-router';
 import LoginPage from '~/routes/login';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
+// LandingNav uses ThemeToggle/LanguageToggle which need context providers not
+// relevant to login form tests — stub it out.
+vi.mock('~/components/landing/LandingNav', () => ({
+  LandingNav: () => <nav data-testid="landing-nav" />,
+}));
+
 // ---------------------------------------------------------------------------
 // Auth mock — track login calls and simulate success/failure
 // ---------------------------------------------------------------------------
@@ -39,7 +45,7 @@ function renderLogin() {
   const queryClient = createTestQueryClient();
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={['/login']}>
+      <MemoryRouter initialEntries={['/pl/login']}>
         <LoginPage />
       </MemoryRouter>
     </QueryClientProvider>
@@ -54,7 +60,6 @@ describe('LoginPage', () => {
 
   it('renders the login form with email and password fields', () => {
     renderLogin();
-    // Use placeholders (hardcoded, not i18n keys) as stable selectors
     expect(screen.getByPlaceholderText('you@example.com')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('••••••••')).toBeInTheDocument();
   });
@@ -66,7 +71,6 @@ describe('LoginPage', () => {
 
     await user.type(screen.getByPlaceholderText('you@example.com'), 'coach@synek.app');
     await user.type(screen.getByPlaceholderText('••••••••'), 'coach123');
-    // In tests, t('auth.signIn') returns the key 'auth.signIn'
     await user.click(screen.getByRole('button', { name: 'auth.signIn' }));
 
     await waitFor(() =>
@@ -91,5 +95,18 @@ describe('LoginPage', () => {
   it('does not show an error initially', () => {
     renderLogin();
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('renders a link to the register page', () => {
+    renderLogin();
+    const registerLink = screen.getByRole('link', { name: 'auth.registerAccount' });
+    expect(registerLink).toBeInTheDocument();
+    expect(registerLink).toHaveAttribute('href', '/pl/register');
+  });
+
+  it('does not render a register form', () => {
+    renderLogin();
+    // No name field should exist — register form is on /register
+    expect(screen.queryByPlaceholderText('Jane Smith')).not.toBeInTheDocument();
   });
 });

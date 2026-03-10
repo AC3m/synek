@@ -21,7 +21,7 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
   return (
     <section
       id="why-synek"
-      className={cn('bg-muted/40 px-4 py-16 sm:py-24', className)}
+      className={cn('bg-surface-2 px-4 py-16 sm:py-24', className)}
     >
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
@@ -37,9 +37,9 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
           {cards.map(({ n, Icon, title, desc }) => (
             <div
               key={n}
-              className="rounded-xl border bg-background p-6 shadow-sm"
+              className="rounded-2xl bg-surface-1 p-6"
             >
-              <Icon className="mb-4 h-8 w-8 text-primary" />
+              <Icon className="mb-4 h-5 w-5 text-muted-foreground" />
               <h3 className="mb-2 font-semibold">{title}</h3>
               <p className="text-sm text-muted-foreground">{desc}</p>
             </div>

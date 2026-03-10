@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams, useParams, Link } from 'react-router';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, LogOut } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useConnectStrava } from '~/lib/hooks/useStravaConnection';
 import { queryKeys } from '~/lib/queries/keys';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
+import { Button } from '~/components/ui/button';
 import { UserTab } from '~/components/settings/UserTab';
 import { IntegrationsTab } from '~/components/settings/IntegrationsTab';
 import { AthletesTab } from '~/components/settings/AthletesTab';
@@ -19,7 +20,7 @@ type CallbackState = 'connecting' | 'success' | 'error';
 
 export default function SettingsPage() {
   const { t } = useTranslation('common');
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const { locale = 'pl' } = useParams<{ locale?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -39,9 +40,9 @@ export default function SettingsPage() {
   // Redirect unauthenticated users (wait for auth to finish loading first)
   useEffect(() => {
     if (!authLoading && !user && !isOAuthCallback.current) {
-      navigate('/login', { replace: true });
+      navigate(`/${locale}/login`, { replace: true });
     }
-  }, [authLoading, user, navigate]);
+  }, [authLoading, user, navigate, locale]);
 
   // Listen for localStorage signal from the OAuth popup
   useEffect(() => {
@@ -141,13 +142,24 @@ export default function SettingsPage() {
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
-      <Link
-        to={backHref}
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        {t('settings.back')}
-      </Link>
+      <div className="mb-6 flex items-center justify-between">
+        <Link
+          to={backHref}
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          {t('settings.back')}
+        </Link>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-muted-foreground hover:text-destructive"
+          onClick={() => { logout(); navigate(`/${locale}/login`, { replace: true }); }}
+        >
+          <LogOut className="h-4 w-4 mr-1.5" />
+          {t('auth.signOut')}
+        </Button>
+      </div>
       <h1 className="mb-6 text-2xl font-semibold">{t('settings.title')}</h1>
 
       <Tabs

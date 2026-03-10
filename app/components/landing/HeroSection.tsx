@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '~/lib/utils'
 import { Button } from '~/components/ui/button'
+import { Link, useParams } from 'react-router'
 
 interface HeroSectionProps {
   className?: string
@@ -8,6 +9,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ className }: HeroSectionProps) {
   const { t } = useTranslation('landing')
+  const { locale = 'pl' } = useParams<{ locale: string }>()
 
   function scrollTo(id: string) {
     document.querySelector(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -17,17 +19,17 @@ export function HeroSection({ className }: HeroSectionProps) {
     <section
       id="get-started"
       className={cn(
-        'flex min-h-screen flex-col items-center justify-center px-4 pt-14 text-center',
+        'flex min-h-screen flex-col items-center justify-center px-4 pt-14 text-center bg-background',
         className
       )}
     >
       <div className="mx-auto max-w-3xl space-y-6">
         {/* Beta badge */}
-        <span className="inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+        <span className="inline-block rounded-full border border-border bg-surface-2 px-3 py-1 text-xs text-muted-foreground">
           {t('hero.badge')}
         </span>
 
-        <h1 className="text-3xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+        <h1 className="text-4xl font-bold tracking-tight leading-none sm:text-6xl lg:text-7xl">
           {t('hero.headline')}
         </h1>
 
@@ -36,12 +38,12 @@ export function HeroSection({ className }: HeroSectionProps) {
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Button size="lg" onClick={() => scrollTo('#join-beta')}>
-            {t('hero.ctaJoinBeta')}
+          <Button asChild size="lg">
+            <Link to={`/${locale}/register`}>{t('beta.cta')}</Link>
           </Button>
           <button
             onClick={() => scrollTo('#log-in')}
-            className="text-sm text-muted-foreground underline-offset-4 hover:underline"
+            className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
           >
             {t('hero.ctaLogIn')}
           </button>

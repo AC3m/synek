@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import { CheckCircle2 } from 'lucide-react'
 import { cn } from '~/lib/utils'
 
 interface FeaturesSectionProps {
@@ -30,7 +29,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map(({ n, title, desc }) => (
             <div key={n} className="flex gap-4">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+              <div className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/50" />
               <div>
                 <h3 className="font-semibold">{title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{desc}</p>

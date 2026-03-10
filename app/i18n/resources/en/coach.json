@@ -28,7 +28,12 @@
     "coachCommentsPlaceholder": "Add notes for the athlete...",
     "duration": "Duration (min)",
     "distance": "Distance (km)",
-    "markRestDay": "Mark as Rest Day"
+    "markRestDay": "Mark as Rest Day",
+    "tabs": {
+      "plan": "Plan",
+      "details": "Details",
+      "results": "Results"
+    }
   },
   "athletePicker": {
     "title": "Select an athlete",

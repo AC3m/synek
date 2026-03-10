@@ -1,62 +1,62 @@
 {
   "nav": {
-    "getStarted": "Zacznij",
+    "getStarted": "Start",
     "whySynek": "Dlaczego Synek",
     "features": "Funkcje",
     "logIn": "Zaloguj się",
-    "joinBeta": "Dołącz do Bety",
+    "joinBeta": "Dołącz do bety",
     "contact": "Kontakt"
   },
   "hero": {
-    "badge": "Publiczna Beta - Bezpłatne Konto",
-    "headline": "Wygodne prowadzenie treningów dla trenerów i zawodników",
-    "subheadline": "Aplikacja Synek daje trenerom ustrukturyzowany sposób planowania tygodniowych treningów, a zawodnicy mogą z łatwością aktualizować swoje postępy.",
-    "ctaJoinBeta": "Dołącz do Bety — To Bezpłatne",
+    "badge": "Publiczna beta — bezpłatny dostęp",
+    "headline": "Plany treningowe, które trenerzy tworzą, a zawodnicy realizują",
+    "subheadline": "Synek porządkuje Twój tydzień coachingu — zawodnik po zawodniku, sesja po sesji. Zawodnicy wiedzą dokładnie, co przed nimi.",
+    "ctaJoinBeta": "Załóż darmowe konto",
     "ctaLogIn": "Masz już konto?",
-    "betaNote": "Jesteśmy w fazie beta i Twoje opinie kształtują to, co budujemy."
+    "betaNote": "Twoje opinie kształtują to, co budujemy."
   },
   "whySynek": {
-    "title": "Dlaczego synek.app?",
-    "subtitle": "Prosty i intuicyjny. Zbudowany na podstawie współpracy trenerów i zawodników.",
+    "title": "Jak to działa",
+    "subtitle": "Zbudowane wokół tygodnia treningowego, nie wokół funkcji.",
     "card1": {
-      "title": "Ustrukturyzowane planowanie tygodniowe",
-      "desc": "Planuj każdy tydzień jako całość — obciążenie, typ i dzienne sesje — nie tylko listę treningów."
+      "title": "Tygodniowa struktura",
+      "desc": "Planuj każdy tydzień jako całość — sesje, obciążenie, odpoczynek. Pełny obraz zanim zawodnicy zaczną."
     },
     "card2": {
-      "title": "Pełna widoczność trenera",
-      "desc": "Trenerzy widzą co zawodnicy wykonują, jak się czują i gdzie plan wymaga korekty."
+      "title": "Kontrola trenera",
+      "desc": "Widzisz co każdy zawodnik wykonał, jak się czuł i gdzie plan wymaga korekty."
     },
     "card3": {
-      "title": "Autonomia zawodnika",
-      "desc": "Zawodnicy mogą samodzielnie planować i dodawać notatki do każdej sesji."
+      "title": "Zaangażowanie zawodnika",
+      "desc": "Zawodnicy logują sesje, dodają notatki i — opcjonalnie — planują własne tygodnie."
     },
     "card4": {
-      "title": "Beta budowana przez użytkowników",
-      "desc": "Aktywnie budujemy z wczesnymi użytkownikami. Twoje opinie bezpośrednio wpływają na to, co dodajemy."
+      "title": "Budowane z użytkownikami",
+      "desc": "Jesteśmy w becie. Każda opinia, którą wyślesz, zmienia to, co budujemy."
     }
   },
   "features": {
-    "title": "Co znajdziesz w środku",
-    "subtitle": "Wszystko czego potrzebujesz do prowadzenia ustrukturyzowanego programu treningowego — nic więcej.",
+    "title": "Wszystko czego potrzebujesz",
+    "subtitle": "Narzędzia do planowania treningów dla trenerów. Bez zbędnych funkcji.",
     "item1": {
-      "title": "Planowanie treningów tygodniowo",
-      "desc": "Plany są zorganizowane wg tygodnia treningowego. Dodawaj sesje według dnia, ustaw obciążenie i zostaw notatki."
+      "title": "Planowanie tygodniowe",
+      "desc": "Sesje według dni, tygodniowe obciążenie, notatki trenerskie — wszystko w jednym widoku."
     },
     "item2": {
-      "title": "Sesje specyficzne dla sportu",
-      "desc": "Bieg, kolarstwo, siłownia, joga, pływanie, mobilność i odpoczynek — każde z odpowiednimi polami."
+      "title": "Sesje dopasowane do sportu",
+      "desc": "Bieg, kolarstwo, siłownia, joga, pływanie, mobilność, odpoczynek — każda z odpowiednimi polami."
     },
     "item3": {
       "title": "Role trenera i zawodnika",
       "desc": "Trenerzy zarządzają wieloma zawodnikami. Każdy zawodnik widzi tylko swój plan."
     },
     "item4": {
-      "title": "Tryb samodzielnego planowania",
-      "desc": "Trenerzy mogą umożliwić zawodnikom planowanie własnych tygodni — przydatne dla doświadczonych."
+      "title": "Tryb samodzielny",
+      "desc": "Daj doświadczonym zawodnikom wolną rękę w planowaniu. Ty nadal widzisz wszystko."
     },
     "item5": {
       "title": "Synchronizacja ze Stravą",
-      "desc": "Połącz Stravę, aby pobierać ukończone aktywności bezpośrednio do dziennika treningowego."
+      "desc": "Połącz Stravę, a zakończone aktywności uzupełnią się automatycznie."
     }
   },
   "login": {
@@ -70,10 +70,10 @@
     "noAccountCta": "Dołącz do bety →"
   },
   "beta": {
-    "title": "Dołącz do Bety",
-    "subtitle": "Bezpłatny dostęp przez cały czas trwania bety. Bez karty. Bez wygaśnięcia.",
-    "badge": "Beta — Bezpłatna",
-    "betaNote": "Dołączasz w trakcie publicznej bety. Oznacza to bezpłatny dostęp i bezpośredni kontakt z zespołem — czytamy każdą opinię.",
+    "title": "Załóż darmowe konto",
+    "subtitle": "Bezpłatnie przez cały czas trwania bety. Bez karty kredytowej. Bez wygasania.",
+    "badge": "Publiczna beta",
+    "betaNote": "Dołączasz do publicznej bety. Bezpłatny dostęp i bezpośredni kontakt z zespołem — czytamy każdą opinię.",
     "roleLabel": "Jestem...",
     "roleCoach": "Trenerem",
     "roleAthlete": "Zawodnikiem",
@@ -81,23 +81,23 @@
     "email": "E-mail",
     "password": "Hasło",
     "passwordHint": "Co najmniej 8 znaków, jedna wielka litera, jedna cyfra",
-    "submit": "Utwórz bezpłatne konto",
-    "selectRole": "Wybierz Trener lub Zawodnik przed kontynuowaniem",
+    "submit": "Utwórz darmowe konto",
+    "selectRole": "Wybierz Trener lub Zawodnik, żeby kontynuować",
     "emailAlreadyRegistered": "Ten e-mail jest już zarejestrowany. Spróbuj się zalogować.",
     "alreadyHaveAccount": "Masz już konto?",
     "alreadyHaveAccountCta": "Zaloguj się →",
     "cta": "Dołącz do bety"
   },
   "contact": {
-    "title": "Skontaktuj się",
-    "subtitle": "Masz opinię, pytanie lub pomysł? Jesteśmy małym zespołem i czytamy wszystko.",
-    "betaNote": "To najszybszy sposób na wpłynięcie na to, co budujemy.",
+    "title": "Napisz do nas",
+    "subtitle": "Masz feedback, pytanie lub pomysł? Jesteśmy małym zespołem i czytamy wszystko.",
+    "betaNote": "To najszybszy sposób, żeby wpłynąć na to, co budujemy.",
     "name": "Twoje imię",
     "email": "Twój e-mail",
     "message": "Twoja wiadomość",
-    "messagePlaceholder": "Powiedz nam co myślisz, czego brakuje lub co można poprawić...",
+    "messagePlaceholder": "Powiedz nam co brakuje, co nie działa, albo co możemy zrobić lepiej...",
     "submit": "Wyślij wiadomość",
-    "submitSuccess": "Wiadomość wysłana — dziękujemy! Odpiszemy wkrótce.",
-    "submitError": "Coś poszło nie tak. Spróbuj ponownie za chwilę."
+    "submitSuccess": "Wiadomość wysłana — dziękujemy! Odezwiemy się wkrótce.",
+    "submitError": "Coś poszło nie tak. Spróbuj ponownie."
   }
 }

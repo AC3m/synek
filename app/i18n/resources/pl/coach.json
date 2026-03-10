@@ -28,7 +28,12 @@
     "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika...",
     "duration": "Czas trwania (min)",
     "distance": "Dystans (km)",
-    "markRestDay": "Oznacz jako Dzień Odpoczynku"
+    "markRestDay": "Oznacz jako Dzień Odpoczynku",
+    "tabs": {
+      "plan": "Plan",
+      "details": "Szczegóły",
+      "results": "Wyniki"
+    }
   },
   "athletePicker": {
     "title": "Wybierz zawodnika",

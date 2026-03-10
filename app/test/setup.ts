@@ -1,4 +1,20 @@
 import '@testing-library/jest-dom';
+
+// JSDOM does not implement window.matchMedia — stub it globally so hooks like
+// useIsMobile don't throw in any test that renders components using it.
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: (query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }),
+});
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 

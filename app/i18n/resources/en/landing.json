@@ -8,43 +8,43 @@
     "contact": "Contact"
   },
   "hero": {
-    "badge": "Public Beta — Free Account",
-    "headline": "Effortless training management for coaches and athletes",
-    "subheadline": "The Synek app gives coaches a structured way to plan weekly training, and athletes can easily track and update their progress.",
-    "ctaJoinBeta": "Join the Beta — It's Free",
+    "badge": "Public beta — free access",
+    "headline": "Training plans that coaches build and athletes actually follow",
+    "subheadline": "Synek organises your coaching week — athlete by athlete, session by session. Your athletes see exactly what's ahead.",
+    "ctaJoinBeta": "Create your free account",
     "ctaLogIn": "Already have an account?",
-    "betaNote": "We're in beta and your feedback shapes what we build next."
+    "betaNote": "Your feedback shapes what we build next."
   },
   "whySynek": {
-    "title": "Why synek.app?",
-    "subtitle": "Simple and intuitive. Built from real collaboration between coaches and athletes.",
+    "title": "How it works",
+    "subtitle": "Built around the coaching week, not around features.",
     "card1": {
-      "title": "Structured weekly planning",
-      "desc": "Plan each week as a whole — load, type, and daily sessions — not just a list of workouts."
+      "title": "Weekly structure",
+      "desc": "Plan each week as a complete unit — sessions, load, rest. See the whole picture before athletes start."
     },
     "card2": {
-      "title": "Full coach visibility",
-      "desc": "Coaches see what athletes complete, how they feel, and where the plan needs adjusting."
+      "title": "Coach visibility",
+      "desc": "See what every athlete completes, how they feel, and where the plan needs adjusting."
     },
     "card3": {
-      "title": "Athlete autonomy",
-      "desc": "Athletes can self-plan and log notes on every session."
+      "title": "Athlete buy-in",
+      "desc": "Athletes can log sessions, add notes, and optionally plan their own weeks."
     },
     "card4": {
-      "title": "Beta built by users",
-      "desc": "We're actively building with early users. Your feedback directly drives what we add next."
+      "title": "Built with early users",
+      "desc": "This is beta. Every piece of feedback you send changes what we build next."
     }
   },
   "features": {
-    "title": "What's inside",
-    "subtitle": "Everything you need to run a structured training programme — nothing you don't.",
+    "title": "Everything you need",
+    "subtitle": "Structured training tools for coaches. No extra features, no clutter.",
     "item1": {
-      "title": "Weekly training planning",
-      "desc": "Plans are organised by training week. Add sessions by day, set load, and leave coaching notes."
+      "title": "Weekly planning",
+      "desc": "Organise sessions by day, set weekly load, and leave coaching notes — all in one view."
     },
     "item2": {
       "title": "Sport-specific sessions",
-      "desc": "Run, cycling, strength, yoga, swimming, mobility, and rest — each with relevant fields."
+      "desc": "Run, cycling, strength, yoga, swimming, mobility, rest — each with the right fields."
     },
     "item3": {
       "title": "Coach & athlete roles",
@@ -52,11 +52,11 @@
     },
     "item4": {
       "title": "Self-planning mode",
-      "desc": "Coaches can enable athletes to plan their own weeks — useful for experienced athletes."
+      "desc": "Let experienced athletes plan their own weeks. You still see everything."
     },
     "item5": {
       "title": "Strava sync",
-      "desc": "Connect Strava to pull completed activities directly into your training log."
+      "desc": "Link Strava and completed activities fill in automatically."
     }
   },
   "login": {
@@ -70,34 +70,34 @@
     "noAccountCta": "Join the beta →"
   },
   "beta": {
-    "title": "Join the Beta",
-    "subtitle": "Free access during beta. No credit card. No expiry.",
-    "badge": "Beta — Free",
-    "betaNote": "You're joining during our public beta. That means free access and a direct line to the team — we read every piece of feedback.",
+    "title": "Create your free account",
+    "subtitle": "Free during beta. No credit card. No expiry.",
+    "badge": "Public beta",
+    "betaNote": "You're joining our public beta. Free access, and a direct line to the team — we read every piece of feedback.",
     "roleLabel": "I am a...",
     "roleCoach": "Coach",
     "roleAthlete": "Athlete",
     "name": "Full name",
     "email": "Email",
     "password": "Password",
-    "passwordHint": "At least 8 characters, one uppercase, one number",
+    "passwordHint": "At least 8 characters, one uppercase letter, one number",
     "submit": "Create free account",
-    "selectRole": "Please select Coach or Athlete before continuing",
-    "emailAlreadyRegistered": "This email is already registered. Try logging in instead.",
+    "selectRole": "Pick Coach or Athlete to continue",
+    "emailAlreadyRegistered": "That email is already registered. Try logging in instead.",
     "alreadyHaveAccount": "Already have an account?",
     "alreadyHaveAccountCta": "Log in →",
     "cta": "Join the beta"
   },
   "contact": {
-    "title": "Get in touch",
+    "title": "Write to us",
     "subtitle": "Got feedback, a question, or an idea? We're a small team and we read everything.",
     "betaNote": "This is the fastest way to shape what we build next.",
     "name": "Your name",
     "email": "Your email",
     "message": "Your message",
-    "messagePlaceholder": "Tell us what you think, what's missing, or what could be better...",
+    "messagePlaceholder": "Tell us what's missing, what's broken, or what could be better...",
     "submit": "Send message",
     "submitSuccess": "Message sent — thank you! We'll get back to you soon.",
-    "submitError": "Something went wrong. Please try again in a moment."
+    "submitError": "Something went wrong. Please try again."
   }
 }

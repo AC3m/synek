@@ -90,7 +90,7 @@
   "units": {
     "km": "km",
     "min": "min",
-    "bpm": "ud/min",
+    "bpm": "bpm",
     "perKm": "/km"
   }
 }

@@ -29,7 +29,7 @@ export async function createFeedback(
     return submission
   }
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('feedback_submissions')
     .insert({
       name: input.name,
@@ -37,9 +37,14 @@ export async function createFeedback(
       message: input.message,
       user_id: input.userId ?? null,
     })
-    .select('id, name, email, message, user_id, created_at')
-    .single()
 
   if (error) throw error
-  return toFeedbackSubmission(data as Record<string, unknown>)
+  return {
+    id: crypto.randomUUID(),
+    name: input.name,
+    email: input.email,
+    message: input.message,
+    userId: input.userId ?? null,
+    createdAt: new Date().toISOString(),
+  }
 }
