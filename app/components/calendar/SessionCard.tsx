@@ -97,12 +97,12 @@ export function SessionCard({
         </div>
 
         {!readonly && (onEdit || onDelete) && (
-          <div className="flex gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex gap-0.5 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
             {onEdit && (
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-5 w-5"
+                className="h-8 w-8 sm:h-5 sm:w-5"
                 onClick={() => onEdit(session)}
               >
                 <Pencil className="h-3 w-3" />
@@ -112,7 +112,7 @@ export function SessionCard({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-5 w-5 text-destructive"
+                className="h-8 w-8 sm:h-5 sm:w-5 text-destructive"
                 onClick={() => onDelete(session.id)}
               >
                 <Trash2 className="h-3 w-3" />

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
-import { addDays, format, parseISO } from 'date-fns';
+import { addDays, format, isToday, parseISO } from 'date-fns';
+import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { SessionCard } from './SessionCard';
 import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type AthleteSessionUpdate } from '~/types/training';
@@ -44,34 +45,43 @@ export function DayColumn({
   const { t } = useTranslation();
 
   const isWeekend = day === 'saturday' || day === 'sunday';
+  const hasRestDay = sessions.some((s) => s.trainingType === 'rest_day');
 
   const dayDate = weekStart
     ? addDays(parseISO(weekStart), DAYS_OF_WEEK.indexOf(day))
     : null;
 
+  const isCurrentDay = dayDate ? isToday(dayDate) : false;
+
   return (
     <div
-      className={`rounded-lg border bg-card p-2 min-h-[200px] flex flex-col ${
-        isWeekend ? 'bg-muted/30' : ''
-      }`}
+      className={cn(
+        'rounded-lg border bg-card p-2 min-h-[200px] flex flex-col',
+        isWeekend && 'bg-muted/30',
+        isCurrentDay && 'border-primary ring-1 ring-primary/20',
+      )}
     >
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {t(`daysShort.${day}`)}
-          {dayDate && (
-            <span className="ml-1 normal-case">{format(dayDate, 'dd-MM-yy')}</span>
-          )}
         </h3>
-        {!readonly && !!onAddSession && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-5 w-5"
-            onClick={() => onAddSession(day)}
-          >
-            <Plus className="h-3 w-3" />
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {dayDate && (
+            <span className={cn('text-xs normal-case', isCurrentDay ? 'text-primary font-semibold' : 'text-muted-foreground')}>
+              {format(dayDate, 'dd-MM-yy')}
+            </span>
+          )}
+          {!readonly && !!onAddSession && !hasRestDay && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 sm:h-5 sm:w-5"
+              onClick={() => onAddSession(day)}
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5 flex-1">

@@ -10,6 +10,7 @@ import {
   parseWeekId,
 } from '~/lib/utils/date';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
+import { cn } from '~/lib/utils';
 
 interface WeekNavigationProps {
   weekId: string;
@@ -25,7 +26,7 @@ export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {
   const isCurrentWeek = weekId === getCurrentWeekId();
 
   return (
-    <div className="flex items-center gap-1.5 sm:gap-3">
+    <div className="flex items-center gap-1.5 sm:gap-3 w-full px-2 sm:px-4">
       <Button
         variant="outline"
         size="icon"
@@ -35,7 +36,7 @@ export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="text-center min-w-[120px] sm:min-w-[180px]">
+      <div className="flex-1 text-center">
         <h2 className="text-sm sm:text-lg font-semibold">
           {t('week')} {weekNumber}
         </h2>
@@ -51,16 +52,15 @@ export function WeekNavigation({ weekId, basePath }: WeekNavigationProps) {
         <ChevronRight className="h-4 w-4" />
       </Button>
 
-      {!isCurrentWeek && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate(localePath(`/${basePath}/week/${getCurrentWeekId()}`))}
-          className="ml-1 sm:ml-2 text-xs"
-        >
-          {t('common:today', 'Today')}
-        </Button>
-      )}
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled={isCurrentWeek}
+        onClick={() => navigate(localePath(`/${basePath}/week/${getCurrentWeekId()}`))}
+        className="ml-1 sm:ml-2 text-xs"
+      >
+        {t('common:today', 'Today')}
+      </Button>
     </div>
   );
 }
