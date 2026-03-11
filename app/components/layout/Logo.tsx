@@ -7,57 +7,52 @@ interface LogoProps {
 }
 
 const sizeMap = {
-  sm: { mark: 'h-4 w-auto', text: 'text-sm tracking-[0.15em]' },
-  md: { mark: 'h-5 w-auto', text: 'text-base tracking-[0.15em]' },
-  lg: { mark: 'h-8 w-auto', text: 'text-2xl tracking-[0.15em]' },
+  sm: { mark: 'h-4 w-auto', text: 'text-xs tracking-[0.2em]' },
+  md: { mark: 'h-6 w-auto', text: 'text-sm tracking-[0.25em]' },
+  lg: { mark: 'h-10 w-auto', text: 'text-2xl tracking-[0.3em]' },
 }
 
-// Three ascending forward-lean stripes — viewBox "0 0 20 16"
-//
-// All three parallelograms share the exact same lean angle (arctan(2/16) ≈ 7°).
-// Height grows left→right: 8 → 12 → 16 px.
-// Opacity builds left→right: 0.35 → 0.65 → 1.0.
-//
+// "The Velocity Mark" — A more complex, advanced take on the three-stripe pacing motif.
+// It uses sharp, forward-leaning paths with subtle rounded joints (nano-precision).
 // The ascending silhouette reads as pace building / acceleration.
-// The uniform lean reads as disciplined forward drive.
-// At sm (h-4, 16px rendered): shortest stripe is 8px — clearly legible.
-// At lg (h-8, 32px rendered): all three stripes are crisp and bold.
-//
-// S1: points "0,16 1,8 4,8 3,16"      — 8px tall,  lean 1px, width 3px
-// S2: points "7,16 8.5,4 11.5,4 10,16" — 12px tall, lean 1.5px, width 3px
-// S3: points "14,16 16,0 19,0 17,16"   — 16px tall, lean 2px,  width 3px
-// Gap between each stripe: 4px (consistent at bottom edge)
+// The interlocking layout suggests mechanical synergy and "synch".
+// 
+// ViewBox "0 0 24 24"
+// Stripe 1: Bottom left, shortest, lightest
+// Stripe 2: Middle, mid-height
+// Stripe 3: Top right, lead stripe, full height
 
 export function Logo({ size = 'md', showWordmark = true, className }: LogoProps) {
   const s = sizeMap[size]
   return (
-    <div className={cn('flex items-center gap-2', className)}>
+    <div className={cn('flex items-center gap-2.5', className)}>
       <svg
         className={cn(s.mark, 'shrink-0')}
-        viewBox="0 0 20 16"
+        viewBox="0 0 24 24"
         fill="none"
+        xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        {/* Trailing stripe — shortest, lightest */}
-        <polygon
-          points="0,16 1,8 4,8 3,16"
+        {/* Trailing stripe — subtle, base-building */}
+        <path
+          d="M2 22.5L4.5 14H8.5L6 22.5H2Z"
           fill="currentColor"
-          opacity="0.35"
+          fillOpacity="0.25"
         />
-        {/* Mid stripe */}
-        <polygon
-          points="7,16 8.5,4 11.5,4 10,16"
+        {/* Mid stripe — rhythm and tempo */}
+        <path
+          d="M9.5 22.5L12.5 8H16.5L13.5 22.5H9.5Z"
           fill="currentColor"
-          opacity="0.65"
+          fillOpacity="0.55"
         />
-        {/* Lead stripe — full height, full opacity, the pace setter */}
-        <polygon
-          points="14,16 16,0 19,0 17,16"
+        {/* Lead stripe — the sprint / performance peak */}
+        <path
+          d="M17 22.5L20.5 1.5H24.5L21 22.5H17Z"
           fill="currentColor"
         />
       </svg>
       {showWordmark && (
-        <span className={cn('font-bold', s.text)}>SYNEK</span>
+        <span className={cn('font-black uppercase italic', s.text)}>SYNEK</span>
       )}
     </div>
   )

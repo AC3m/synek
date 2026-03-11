@@ -63,7 +63,9 @@
   },
   "errors": {
     "generic": "Coś poszło nie tak",
-    "goHome": "Strona główna"
+    "goHome": "Strona główna",
+    "404": "Nie odnaleziono żądanej strony.",
+    "error": "Błąd"
   },
   "auth": {
     "signIn": "Zaloguj się",

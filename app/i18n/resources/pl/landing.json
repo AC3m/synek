@@ -1,62 +1,62 @@
 {
   "nav": {
     "getStarted": "Start",
-    "whySynek": "Dlaczego Synek",
+    "whySynek": "Dlaczego my",
     "features": "Funkcje",
     "logIn": "Zaloguj się",
     "joinBeta": "Dołącz do bety",
     "contact": "Kontakt"
   },
   "hero": {
-    "badge": "Publiczna beta — bezpłatny dostęp",
-    "headline": "Plany treningowe, które tworzą trenerzy, a realizują zawodnicy",
-    "subheadline": "Synek porządkuje Twój tydzień treningu — zawodnik po zawodniku, sesja po sesji. Zawodnicy wiedzą dokładnie, co przed nimi.",
+    "badge": "Publiczna beta — darmowy dostęp",
+    "headline": "Koniec z excelem. Płynna współpraca na linii trener-zawodnik.",
+    "subheadline": "Porzuć chaotyczne arkusze i ręczne aktualizacje. Synek to proste narzędzie, które łączy plan trenera z wykonaniem zawodnika. Sprawdź naszą darmową betę.",
     "ctaJoinBeta": "Załóż darmowe konto",
     "ctaLogIn": "Masz już konto?",
-    "betaNote": "Twoje opinie kształtują to, co budujemy."
+    "betaNote": "Projektujemy tę aplikację razem z Wami. Każda opinia się liczy."
   },
   "whySynek": {
-    "title": "Jak to działa",
-    "subtitle": "Zbudowane wokół tygodnia treningowego, nie wokół funkcji.",
+    "title": "Dlaczego Synek?",
+    "subtitle": "Bo planowanie treningów w arkuszach po prostu męczy.",
     "card1": {
-      "title": "Tygodniowa struktura",
-      "desc": "Planuj każdy tydzień jako całość — sesje, obciążenie, odpoczynek. Pełny obraz zanim zawodnicy zaczną."
+      "title": "Koniec z przepisywaniem",
+      "desc": "Zapomnij o ręcznym aktualizowaniu wyników po każdym treningu. Synek i Strava zrobią to za Was."
     },
     "card2": {
-      "title": "Kontrola trenera",
-      "desc": "Widzisz co każdy zawodnik wykonał, jak się czuł i gdzie plan wymaga korekty."
+      "title": "Wszystko w jednym miejscu",
+      "desc": "Zamiast dziesiątek wiadomości i linków do dokumentów – jeden, zawsze aktualny widok tygodnia."
     },
     "card3": {
-      "title": "Zaangażowanie zawodnika",
-      "desc": "Zawodnicy logują sesje, dodają notatki i — opcjonalnie — planują własne tygodnie."
+      "title": "Pełna kontrola, zero chaosu",
+      "desc": "Trener widzi postępy całego zespołu na jednym ekranie, a zawodnik skupia się wyłącznie na dzisiejszym zadaniu."
     },
     "card4": {
-      "title": "Budowane z użytkownikami",
-      "desc": "Jesteśmy w becie. Każda opinia, którą wyślesz, zmienia to, co budujemy."
+      "title": "Tworzymy to razem",
+      "desc": "Jesteśmy w darmowej becie. Słuchamy trenerów i zawodników, by budować dokładnie to, czego potrzebujecie."
     }
   },
   "features": {
-    "title": "Wszystko czego potrzebujesz",
-    "subtitle": "Narzędzia do planowania treningów dla trenerów. Bez zbędnych funkcji.",
+    "title": "Proste narzędzia, konkretne efekty",
+    "subtitle": "Zaprojektowane, by oszczędzać czas – Twój i Twoich podopiecznych. Żadnych zbędnych bajerów.",
     "item1": {
-      "title": "Planowanie tygodniowe",
-      "desc": "Sesje według dni, tygodniowe obciążenie, notatki trenerskie — wszystko w jednym widoku."
+      "title": "Przejrzysty tydzień",
+      "desc": "Szybki podgląd obciążeń, notatek i sesji. Zbudowane wokół naturalnego cyklu treningowego."
     },
     "item2": {
-      "title": "Sesje dopasowane do sportu",
-      "desc": "Bieg, kolarstwo, siłownia, joga, pływanie, mobilność, odpoczynek — każda z odpowiednimi polami."
+      "title": "Dopasowane dyscypliny",
+      "desc": "Bieg, rower, siłownia czy regeneracja – każda aktywność z dedykowanymi parametrami."
     },
     "item3": {
-      "title": "Role trenera i zawodnika",
-      "desc": "Trenerzy zarządzają wieloma zawodnikami. Każdy zawodnik widzi tylko swój plan."
+      "title": "Dwie perspektywy",
+      "desc": "Panel trenera do zarządzania całą grupą i czysty widok zawodnika skupiony na wykonaniu pracy."
     },
     "item4": {
       "title": "Tryb samodzielny",
-      "desc": "Daj doświadczonym zawodnikom wolną rękę w planowaniu. Ty nadal widzisz wszystko."
+      "desc": "Daj wolną rękę doświadczonym zawodnikom. Ty weryfikujesz, oni sami układają swój plan."
     },
     "item5": {
-      "title": "Synchronizacja ze Stravą",
-      "desc": "Połącz Stravę, a zakończone aktywności uzupełnią się automatycznie."
+      "title": "Pełna automatyzacja",
+      "desc": "Podłącz konto ze Stravą i patrz, jak zrealizowane treningi same odhaczają się na zielono."
     }
   },
   "login": {

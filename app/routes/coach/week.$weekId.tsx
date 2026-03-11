@@ -9,7 +9,7 @@ import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
 import { useAuth } from '~/lib/context/AuthContext';
-import { weekIdToMonday, parseWeekId } from '~/lib/utils/date';
+import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
 import type {
   DayOfWeek,
@@ -24,6 +24,8 @@ export default function CoachWeekView() {
   const { weekId } = useParams();
   const { t } = useTranslation('coach');
   const { user, effectiveAthleteId } = useAuth();
+
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
 
   const isViewingSelf = !!effectiveAthleteId && effectiveAthleteId === user?.id;
 
@@ -153,7 +155,7 @@ export default function CoachWeekView() {
       {/* Header with navigation */}
       <div className="flex items-center gap-2">
         <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-        <WeekNavigation weekId={weekId} basePath="coach" />
+        <WeekNavigation weekId={weekId} basePath="coach" selectedDay={selectedDay} />
       </div>
 
       {/* Week Summary */}
@@ -171,6 +173,8 @@ export default function CoachWeekView() {
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+        selectedDay={selectedDay}
+        onSelectDay={setSelectedDay}
         {...(isViewingSelf && {
           showAthleteControls: true,
           onToggleComplete: handleToggleComplete,

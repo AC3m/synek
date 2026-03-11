@@ -18,7 +18,7 @@ import {
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
-import { weekIdToMonday, parseWeekId } from '~/lib/utils/date';
+import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
 import type { DayOfWeek, TrainingSession, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
 
@@ -26,6 +26,8 @@ export default function AthleteWeekView() {
   const { weekId } = useParams();
   const { t } = useTranslation('athlete');
   const { user } = useAuth();
+
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
   const { year, weekNumber } = weekId
@@ -138,9 +140,9 @@ export default function AthleteWeekView() {
   if (!weekPlan) {
     return (
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h1 className="text-xl sm:text-2xl font-bold">{t('title')}</h1>
-          <WeekNavigation weekId={weekId} basePath="athlete" />
+        <div className="flex items-center gap-2">
+          <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+          <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
         </div>
         <div className="text-center py-20 text-muted-foreground">
           {t('noTrainingPlan')}
@@ -152,9 +154,9 @@ export default function AthleteWeekView() {
   return (
     <div className="space-y-6">
       {/* Header with navigation */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <h1 className="text-xl sm:text-2xl font-bold">{t('title')}</h1>
-        <WeekNavigation weekId={weekId} basePath="athlete" />
+      <div className="flex items-center gap-2">
+        <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+        <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
       </div>
 
       {/* Week Summary (readonly with progress bar) */}
@@ -170,6 +172,8 @@ export default function AthleteWeekView() {
         onUpdatePerformance={handleUpdatePerformance}
         stravaConnected={stravaConnected}
         onSyncStrava={handleSyncStrava}
+        selectedDay={selectedDay}
+        onSelectDay={setSelectedDay}
         {...(canSelfPlan && {
           onAddSession: handleAddSession,
           onEditSession: handleEditSession,

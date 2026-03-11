@@ -17,3 +17,7 @@ supabase/seed.sql
 
 # Logs
 *.log
+
+# Agent-specific
+.claude/
+.gemini/

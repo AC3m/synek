@@ -7,7 +7,17 @@ import {
   getISOWeekYear,
   format,
   parseISO,
+  getDay,
 } from 'date-fns';
+import { type DayOfWeek, DAYS_OF_WEEK } from '~/types/training';
+
+export function getTodayDayOfWeek(): DayOfWeek {
+  const now = new Date();
+  // date-fns getDay: 0 (Sun) to 6 (Sat)
+  // Our DAYS_OF_WEEK: 0 (Mon) to 6 (Sun)
+  const dayIndex = (getDay(now) + 6) % 7;
+  return DAYS_OF_WEEK[dayIndex];
+}
 
 export function getCurrentWeekId(): string {
   const now = new Date();

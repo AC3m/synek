@@ -42,28 +42,30 @@ export function ContactSection({ className }: ContactSectionProps) {
   }
 
   return (
-    <section id="contact" className={cn('bg-surface-2 px-4 py-16 sm:py-24', className)}>
+    <section id="contact" className={cn('bg-surface-2/50 px-4 py-24 sm:py-32', className)}>
       <div className="mx-auto max-w-md">
         {!isSuccess && (
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold tracking-tight">{t('contact.title')}</h2>
-            <p className="mt-2 text-muted-foreground">{t('contact.subtitle')}</p>
-            <p className="mt-1 text-sm font-medium text-primary">{t('contact.betaNote')}</p>
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-black italic uppercase tracking-tighter sm:text-5xl">{t('contact.title')}</h2>
+            <p className="mt-4 text-muted-foreground font-medium">{t('contact.subtitle')}</p>
+            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">{t('contact.betaNote')}</p>
           </div>
         )}
 
         {isSuccess ? (
-          <div className="flex flex-col items-center gap-3 rounded-2xl bg-surface-1 p-8 text-center">
-            <CheckCircle2 className="h-10 w-10 text-muted-foreground" />
-            <p className="font-medium">{t('contact.submitSuccess')}</p>
+          <div className="flex flex-col items-center gap-4 rounded-xl border border-border/50 bg-surface-1 p-12 text-center shadow-sm">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/10 text-green-600">
+              <CheckCircle2 className="h-6 w-6" />
+            </div>
+            <p className="font-bold uppercase tracking-tight">{t('contact.submitSuccess')}</p>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="space-y-4 rounded-2xl bg-surface-1 p-6 sm:p-8"
+            className="space-y-5 rounded-xl border border-border/50 bg-surface-1 p-8 shadow-sm"
           >
-            <div className="space-y-1">
-              <label htmlFor="contact-name" className="text-sm font-medium">
+            <div className="space-y-2">
+              <label htmlFor="contact-name" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
                 {t('contact.name')}
               </label>
               <Input
@@ -72,11 +74,12 @@ export function ContactSection({ className }: ContactSectionProps) {
                 onChange={(e) => setName(e.target.value)}
                 autoComplete="name"
                 required
+                className="h-11 bg-background/50 focus:bg-background transition-colors"
               />
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="contact-email" className="text-sm font-medium">
+            <div className="space-y-2">
+              <label htmlFor="contact-email" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
                 {t('contact.email')}
               </label>
               <Input
@@ -86,11 +89,12 @@ export function ContactSection({ className }: ContactSectionProps) {
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
                 required
+                className="h-11 bg-background/50 focus:bg-background transition-colors"
               />
             </div>
 
-            <div className="space-y-1">
-              <label htmlFor="contact-message" className="text-sm font-medium">
+            <div className="space-y-2">
+              <label htmlFor="contact-message" className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/80">
                 {t('contact.message')}
               </label>
               <textarea
@@ -100,7 +104,7 @@ export function ContactSection({ className }: ContactSectionProps) {
                 placeholder={t('contact.messagePlaceholder')}
                 required
                 rows={5}
-                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus:bg-background transition-colors disabled:cursor-not-allowed disabled:opacity-50 resize-none"
               />
             </div>
 
@@ -115,10 +119,10 @@ export function ContactSection({ className }: ContactSectionProps) {
             />
 
             {isError && (
-              <p className="text-sm text-destructive">{t('contact.submitError')}</p>
+              <p className="text-xs font-medium text-destructive">{t('contact.submitError')}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button type="submit" className="h-12 w-full text-sm font-bold uppercase tracking-widest italic" disabled={isPending}>
               {isPending ? '…' : t('contact.submit')}
             </Button>
           </form>
