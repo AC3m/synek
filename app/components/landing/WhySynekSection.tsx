@@ -37,7 +37,7 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
           {cards.map(({ n, Icon, title, desc }) => (
             <div
               key={n}
-              className="group rounded-xl border border-border/50 bg-surface-1 p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
+              className="group flex flex-col items-center text-center rounded-xl border border-border/50 bg-surface-1 p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
             >
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <Icon className="h-6 w-6" />
