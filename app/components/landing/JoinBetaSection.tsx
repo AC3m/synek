@@ -14,16 +14,20 @@ export function JoinBetaSection({ className }: JoinBetaSectionProps) {
   return (
     <section
       id="join-beta"
-      className={cn('bg-background border-t border-b border-[color:var(--separator)] px-4 py-16 sm:py-24', className)}
+      className={cn('bg-background border-y border-border/40 px-4 py-24 sm:py-32', className)}
     >
-      <div className="mx-auto max-w-md text-center">
-        <span className="mb-3 inline-block rounded-full border border-border bg-surface-2 px-3 py-1 text-xs text-muted-foreground">
+      <div className="mx-auto max-w-2xl text-center">
+        <span className="mb-6 inline-block rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
           {t('beta.badge')}
         </span>
-        <h2 className="text-3xl font-bold tracking-tight">{t('beta.title')}</h2>
-        <p className="mt-2 text-muted-foreground">{t('beta.subtitle')}</p>
-        <div className="mt-8">
-          <Button asChild size="lg">
+        <h2 className="text-4xl font-black italic uppercase tracking-tighter sm:text-6xl">
+          {t('beta.title')}
+        </h2>
+        <p className="mt-6 text-lg font-medium text-muted-foreground/80 leading-relaxed">
+          {t('beta.subtitle')}
+        </p>
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <Button asChild size="lg" className="h-14 px-10 text-base font-bold uppercase italic tracking-wider transition-transform hover:scale-105 active:scale-95">
             <Link to={`/${locale}/register`}>{t('beta.cta')}</Link>
           </Button>
         </div>

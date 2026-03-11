@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { Calendar, Eye, User, MessageSquare } from 'lucide-react'
+import { Zap, Eye, Users, MessageSquare } from 'lucide-react'
 import { cn } from '~/lib/utils'
 
-const CARD_ICONS = [Calendar, Eye, User, MessageSquare]
+const CARD_ICONS = [Zap, Eye, Users, MessageSquare]
 
 interface WhySynekSectionProps {
   className?: string
@@ -21,14 +21,14 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
   return (
     <section
       id="why-synek"
-      className={cn('bg-surface-2 px-4 py-16 sm:py-24', className)}
+      className={cn('bg-surface-2/50 border-y border-border/40 px-4 py-20 sm:py-32', className)}
     >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+        <div className="mb-16 text-center">
+          <h2 className="text-3xl font-black italic uppercase tracking-tighter sm:text-5xl lg:text-6xl">
             {t('whySynek.title')}
           </h2>
-          <p className="mt-3 text-lg text-muted-foreground">
+          <p className="mx-auto mt-4 max-w-2xl text-lg font-medium text-muted-foreground/80">
             {t('whySynek.subtitle')}
           </p>
         </div>
@@ -37,11 +37,13 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
           {cards.map(({ n, Icon, title, desc }) => (
             <div
               key={n}
-              className="rounded-2xl bg-surface-1 p-6"
+              className="group rounded-xl border border-border/50 bg-surface-1 p-8 shadow-sm transition-all hover:shadow-md hover:border-primary/20"
             >
-              <Icon className="mb-4 h-5 w-5 text-muted-foreground" />
-              <h3 className="mb-2 font-semibold">{title}</h3>
-              <p className="text-sm text-muted-foreground">{desc}</p>
+              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                <Icon className="h-6 w-6" />
+              </div>
+              <h3 className="mb-3 text-lg font-bold uppercase tracking-tight">{title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground/90">{desc}</p>
             </div>
           ))}
         </div>

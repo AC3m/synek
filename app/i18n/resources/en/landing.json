@@ -9,54 +9,54 @@
   },
   "hero": {
     "badge": "Public beta — free access",
-    "headline": "Training plans that coaches build and athletes actually follow",
-    "subheadline": "Synek organises your coaching week — athlete by athlete, session by session. Your athletes see exactly what's ahead.",
+    "headline": "No more spreadsheets. Smooth collaboration between coach and athlete.",
+    "subheadline": "Ditch the chaotic sheets and manual updates. Synek is a simple tool that connects the coach's plan with the athlete's execution. Try our free beta.",
     "ctaJoinBeta": "Create your free account",
     "ctaLogIn": "Already have an account?",
     "betaNote": "Your feedback shapes what we build next."
   },
   "whySynek": {
-    "title": "How it works",
-    "subtitle": "Built around the coaching week, not around features.",
+    "title": "Why Synek?",
+    "subtitle": "Because planning training in spreadsheets is exhausting.",
     "card1": {
-      "title": "Weekly structure",
-      "desc": "Plan each week as a complete unit — sessions, load, rest. See the whole picture before athletes start."
+      "title": "No more manual entry",
+      "desc": "Forget about typing in results after every session. Synek and Strava do it for you."
     },
     "card2": {
-      "title": "Coach visibility",
-      "desc": "See what every athlete completes, how they feel, and where the plan needs adjusting."
+      "title": "Everything in one place",
+      "desc": "Instead of scattered messages and document links — one, always up-to-date weekly view."
     },
     "card3": {
-      "title": "Athlete buy-in",
-      "desc": "Athletes can log sessions, add notes, and optionally plan their own weeks."
+      "title": "Full control, zero chaos",
+      "desc": "Coaches see the whole team's progress on one screen, while athletes focus solely on today's workout."
     },
     "card4": {
-      "title": "Built with early users",
-      "desc": "This is beta. Every piece of feedback you send changes what we build next."
+      "title": "We're building this together",
+      "desc": "We're in a free beta. We listen to coaches and athletes to build exactly what you need."
     }
   },
   "features": {
-    "title": "Everything you need",
-    "subtitle": "Structured training tools for coaches. No extra features, no clutter.",
+    "title": "Simple tools, real results",
+    "subtitle": "Designed to save time — yours and your athletes'. No unnecessary fluff.",
     "item1": {
-      "title": "Weekly planning",
-      "desc": "Organise sessions by day, set weekly load, and leave coaching notes — all in one view."
+      "title": "Clear weekly view",
+      "desc": "Quick overview of load, notes, and sessions. Built around the natural training cycle."
     },
     "item2": {
       "title": "Sport-specific sessions",
-      "desc": "Run, cycling, strength, yoga, swimming, mobility, rest — each with the right fields."
+      "desc": "Run, bike, strength, or recovery — every activity has its dedicated parameters."
     },
     "item3": {
-      "title": "Coach & athlete roles",
-      "desc": "Coaches manage multiple athletes. Each athlete sees only their own plan."
+      "title": "Two perspectives",
+      "desc": "A coach panel to manage the whole group, and a clean athlete view focused on getting the work done."
     },
     "item4": {
       "title": "Self-planning mode",
-      "desc": "Let experienced athletes plan their own weeks. You still see everything."
+      "desc": "Give experienced athletes free rein. You review, they build their own plan."
     },
     "item5": {
-      "title": "Strava sync",
-      "desc": "Link Strava and completed activities fill in automatically."
+      "title": "Full automation",
+      "desc": "Connect your Strava account and watch completed workouts turn green automatically."
     }
   },
   "login": {
