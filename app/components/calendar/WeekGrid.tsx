@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router';
 import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
@@ -27,6 +28,8 @@ interface WeekGridProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
   onSyncStrava?: () => void;
+  selectedDay?: DayOfWeek;
+  onSelectDay?: (day: DayOfWeek) => void;
 }
 
 function getDefaultSelectedDay(weekStart: string | undefined): DayOfWeek {
@@ -105,10 +108,20 @@ export function WeekGrid({
   onUpdateCoachPostFeedback,
   stravaConnected,
   onSyncStrava,
+  selectedDay: controlledSelectedDay,
+  onSelectDay: controlledOnSelectDay,
 }: WeekGridProps) {
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() =>
+  const location = useLocation();
+  const [internalSelectedDay, setInternalSelectedDay] = useState<DayOfWeek>(() =>
     getDefaultSelectedDay(weekStart)
   );
+
+  const selectedDay = controlledSelectedDay ?? internalSelectedDay;
+  const setSelectedDay = controlledOnSelectDay ?? setInternalSelectedDay;
+
+  useEffect(() => {
+    setSelectedDay(getDefaultSelectedDay(weekStart));
+  }, [weekStart, location.state?.resetToToday, setSelectedDay]);
 
   const dayColumnProps = {
     readonly,

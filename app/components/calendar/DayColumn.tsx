@@ -78,10 +78,11 @@ export function DayColumn({
             </span>
           )}
         </div>
-        {!readonly && !!onAddSession && !hasRestDay && (
+        {!readonly && !!onAddSession && (
           <Button
             variant="ghost"
             size="icon"
+            disabled={hasRestDay}
             className="h-8 w-8 sm:h-6 sm:w-6"
             onClick={() => onAddSession(day)}
           >

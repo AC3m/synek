@@ -52,7 +52,7 @@ export function BottomNav() {
     <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[color:var(--separator)] bg-surface-1/90 backdrop-blur-md pb-safe">
       <div className="flex items-stretch h-14">
         <NavItem
-          to={localePath(`/${user.role}/week`)}
+          to={localePath(`/${user.role}`)}
           icon={CalendarDays}
           label={t('nav.week')}
           isActive={isWeekActive}

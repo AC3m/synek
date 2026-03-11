@@ -63,7 +63,9 @@
   },
   "errors": {
     "generic": "Something went wrong",
-    "goHome": "Go Home"
+    "goHome": "Go Home",
+    "404": "The requested page could not be found.",
+    "error": "Error"
   },
   "auth": {
     "signIn": "Sign in",

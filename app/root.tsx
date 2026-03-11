@@ -6,6 +6,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
@@ -24,7 +25,6 @@ const queryClient = new QueryClient({
     },
   },
 });
-
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -66,15 +66,16 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  const { t } = useTranslation('common');
   let message = 'Oops!';
-  let details = 'An unexpected error occurred.';
+  let details = t('errors.generic');
   let stack: string | undefined;
 
   if (isRouteErrorResponse(error)) {
-    message = error.status === 404 ? '404' : 'Error';
+    message = error.status === 404 ? '404' : t('errors.error');
     details =
       error.status === 404
-        ? 'The requested page could not be found.'
+        ? t('errors.404')
         : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
@@ -91,7 +92,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         href="/"
         className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
       >
-        Go Home
+        {t('errors.goHome')}
       </a>
       {stack && (
         <pre className="mt-8 w-full max-w-2xl p-4 overflow-x-auto text-left text-xs bg-muted rounded-lg">

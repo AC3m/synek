@@ -7,6 +7,7 @@ import { WhySynekSection } from '~/components/landing/WhySynekSection'
 import { FeaturesSection } from '~/components/landing/FeaturesSection'
 import { JoinBetaSection } from '~/components/landing/JoinBetaSection'
 import { ContactSection } from '~/components/landing/ContactSection'
+import { Logo } from '~/components/layout/Logo'
 
 export function meta() {
   return [
@@ -16,15 +17,25 @@ export function meta() {
 }
 
 export default function LandingPage() {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
   const navigate = useNavigate()
   const { locale = 'pl' } = useParams<{ locale: string }>()
 
   useEffect(() => {
-    if (user) {
+    if (!isLoading && user) {
       navigate(`/${locale}/${user.role}`, { replace: true })
     }
-  }, [user, navigate, locale])
+  }, [user, isLoading, navigate, locale])
+
+  if (isLoading || user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="animate-pulse">
+          <Logo size="lg" showWordmark={true} />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background">
