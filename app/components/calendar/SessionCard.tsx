@@ -245,6 +245,15 @@ export function SessionCard({
             
             {session.stravaActivityId != null && (
               <div className="w-full flex flex-col gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed xs:flex-row xs:items-center xs:justify-between">
+                <a
+                  href={`https://www.strava.com/activities/${session.stravaActivityId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] font-bold hover:underline whitespace-nowrap"
+                  style={{ color: '#FC5200' }}
+                >
+                  View on Strava
+                </a>
                 <div className="flex items-center gap-1.5 opacity-80">
                   <img
                     src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
@@ -257,15 +266,6 @@ export function SessionCard({
                     className="h-3.5 w-auto hidden dark:block"
                   />
                 </div>
-                <a
-                  href={`https://www.strava.com/activities/${session.stravaActivityId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] font-bold underline whitespace-nowrap"
-                  style={{ color: '#FC5200' }}
-                >
-                  View on Strava
-                </a>
               </div>
             )}
           </div>

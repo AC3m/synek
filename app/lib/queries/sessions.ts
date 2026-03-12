@@ -40,9 +40,19 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
+    isStravaConfirmed: row.is_strava_confirmed as boolean,
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
+}
+
+export async function confirmStravaSession(sessionId: string): Promise<void> {
+  const { error } = await supabase
+    .from('strava_activities')
+    .update({ is_confirmed: true })
+    .eq('training_session_id', sessionId);
+
+  if (error) throw error;
 }
 
 export async function fetchSessionsByWeekPlan(

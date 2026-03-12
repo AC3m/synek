@@ -14,6 +14,7 @@ import {
   useCreateSession,
   useUpdateSession,
   useDeleteSession,
+  useConfirmStravaSession,
 } from '~/lib/hooks/useSessions';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
@@ -48,6 +49,7 @@ export default function AthleteWeekView() {
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const deleteSessionMut = useDeleteSession();
+  const confirmStrava = useConfirmStravaSession();
 
   // Auto-create week plan when self-planning is enabled and no plan exists
   const mutatingRef = useRef(false);
@@ -97,6 +99,13 @@ export default function AthleteWeekView() {
       stravaSync.mutate({ userId: user.id, weekStart });
     }
   }, [stravaSync, user, weekStart]);
+
+  const handleConfirmStrava = useCallback(
+    (sessionId: string) => {
+      confirmStrava.mutate(sessionId);
+    },
+    [confirmStrava]
+  );
 
   const handleAddSession = useCallback((day: DayOfWeek) => {
     setEditingSession(null);
@@ -172,6 +181,7 @@ export default function AthleteWeekView() {
         onUpdatePerformance={handleUpdatePerformance}
         stravaConnected={stravaConnected}
         onSyncStrava={handleSyncStrava}
+        onConfirmStrava={handleConfirmStrava}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(canSelfPlan && {

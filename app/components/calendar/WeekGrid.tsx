@@ -28,6 +28,7 @@ interface WeekGridProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
   onSyncStrava?: () => void;
+  onConfirmStrava?: (sessionId: string) => void;
   selectedDay?: DayOfWeek;
   onSelectDay?: (day: DayOfWeek) => void;
 }
@@ -137,6 +138,7 @@ export function WeekGrid({
     onUpdateCoachPostFeedback,
     stravaConnected,
     onSyncStrava,
+    onConfirmStrava,
   };
 
   return (

@@ -7,6 +7,7 @@ import {
   updateSession,
   deleteSession,
   updateAthleteSession,
+  confirmStravaSession,
 } from '~/lib/queries/sessions';
 import type {
   CreateSessionInput,
@@ -173,6 +174,23 @@ export function useUpdateAthleteSession() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
+    },
+  });
+}
+
+export function useConfirmStravaSession() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (sessionId: string) => confirmStravaSession(sessionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.sessions.all,
+      });
+      toast.success('Session shared with coach');
+    },
+    onError: () => {
+      toast.error('Failed to share session');
     },
   });
 }

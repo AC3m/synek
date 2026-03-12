@@ -23,6 +23,7 @@ interface DayColumnProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
   onSyncStrava?: () => void;
+  onConfirmStrava?: (sessionId: string) => void;
 }
 
 export function DayColumn({
@@ -41,6 +42,7 @@ export function DayColumn({
   onUpdateCoachPostFeedback,
   stravaConnected,
   onSyncStrava,
+  onConfirmStrava,
 }: DayColumnProps) {
   const { t } = useTranslation();
 
@@ -107,6 +109,7 @@ export function DayColumn({
             onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
             stravaConnected={stravaConnected}
             onSyncStrava={onSyncStrava}
+            onConfirmStrava={onConfirmStrava}
           />
         ))}
 
