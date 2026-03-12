@@ -134,7 +134,7 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
               <img
                 src="/strava/1.1 Connect with Strava Buttons/Connect with Strava Orange/btn_strava_connect_with_orange.svg"
                 alt="Connect with Strava"
-                className="h-12 w-auto"
+                className="h-10 w-auto"
               />
             </button>
           </div>

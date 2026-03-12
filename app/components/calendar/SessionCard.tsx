@@ -179,14 +179,14 @@ export function SessionCard({
           session.rpe != null) && (
           <div
             className={cn(
-              'grid grid-cols-2 gap-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
+              'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
               isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
             )}
             title={isMasked ? 'Waiting for athlete confirmation' : ''}
           >
             {session.actualDurationMinutes != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.duration')}
                 </span>
                 <span className="text-[10px] font-semibold">
@@ -195,8 +195,8 @@ export function SessionCard({
               </div>
             )}
             {session.actualDistanceKm != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
                 </span>
                 <span className="text-[10px] font-semibold">
@@ -205,8 +205,8 @@ export function SessionCard({
               </div>
             )}
             {session.actualPace != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.pace')}
                 </span>
                 <span className="text-[10px] font-semibold">
@@ -215,8 +215,8 @@ export function SessionCard({
               </div>
             )}
             {session.avgHeartRate != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.avgHr')}
                 </span>
                 <span className="text-[10px] font-semibold">
@@ -225,8 +225,8 @@ export function SessionCard({
               </div>
             )}
             {session.maxHeartRate != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.maxHr')}
                 </span>
                 <span className="text-[10px] font-semibold">
@@ -235,8 +235,8 @@ export function SessionCard({
               </div>
             )}
             {session.rpe != null && (
-              <div className="flex flex-col">
-                <span className="text-[10px] text-muted-foreground">
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.rpe')}
                 </span>
                 <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
@@ -244,17 +244,19 @@ export function SessionCard({
             )}
             
             {session.stravaActivityId != null && (
-              <div className="col-span-2 flex flex-col gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed sm:flex-row sm:items-center sm:justify-between">
-                <img
-                  src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
-                  alt="Powered by Strava"
-                  className="h-4 w-auto dark:hidden"
-                />
-                <img
-                  src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
-                  alt="Powered by Strava"
-                  className="h-4 w-auto hidden dark:block"
-                />
+              <div className="w-full flex flex-col gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed xs:flex-row xs:items-center xs:justify-between">
+                <div className="flex items-center gap-1.5 opacity-80">
+                  <img
+                    src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
+                    alt="Powered by Strava"
+                    className="h-3.5 w-auto dark:hidden"
+                  />
+                  <img
+                    src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
+                    alt="Powered by Strava"
+                    className="h-3.5 w-auto hidden dark:block"
+                  />
+                </div>
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
