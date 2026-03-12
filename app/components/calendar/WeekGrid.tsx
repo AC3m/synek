@@ -109,6 +109,7 @@ export function WeekGrid({
   onUpdateCoachPostFeedback,
   stravaConnected,
   onSyncStrava,
+  onConfirmStrava,
   selectedDay: controlledSelectedDay,
   onSelectDay: controlledOnSelectDay,
 }: WeekGridProps) {

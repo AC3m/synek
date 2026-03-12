@@ -7,7 +7,7 @@ import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
 import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
-import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
+import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession, useConfirmStravaSession } from '~/lib/hooks/useSessions';
 import { useAuth } from '~/lib/context/AuthContext';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
@@ -45,6 +45,7 @@ export default function CoachWeekView() {
   const updateSession = useUpdateSession();
   const deleteSessionMut = useDeleteSession();
   const updateAthlete = useUpdateAthleteSession();
+  const confirmStrava = useConfirmStravaSession();
 
   // Auto-create week plan if it doesn't exist.
   // Use a ref to guard against repeated calls — the mutation object changes
@@ -139,6 +140,13 @@ export default function CoachWeekView() {
     [updateAthlete]
   );
 
+  const handleConfirmStrava = useCallback(
+    (sessionId: string) => {
+      confirmStrava.mutate(sessionId);
+    },
+    [confirmStrava]
+  );
+
   if (!weekId) return null;
 
   if (weekLoading || (getOrCreate.isPending && !weekPlan)) {
@@ -173,6 +181,7 @@ export default function CoachWeekView() {
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+        onConfirmStrava={handleConfirmStrava}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(isViewingSelf && {
