@@ -16,25 +16,28 @@ function json(data: unknown, status = 200) {
 }
 
 // Strava type → Synek training type
-const TYPE_MAP: Record<string, string> = {
-  Run: 'run',
-  TrailRun: 'run',
-  VirtualRun: 'run',
-  Ride: 'cycling',
-  EBikeRide: 'cycling',
-  VirtualRide: 'cycling',
-  MountainBikeRide: 'cycling',
-  GravelRide: 'cycling',
-  Swim: 'swimming',
-  WeightTraining: 'strength',
-  Workout: 'strength',
-  Yoga: 'yoga',
-  Walk: 'walk',
-  Hike: 'hike',
+const TYPE_MAP: Record<string, string[]> = {
+  Run: ['run'],
+  TrailRun: ['run'],
+  VirtualRun: ['run'],
+  Ride: ['cycling'],
+  EBikeRide: ['cycling'],
+  EMountainBikeRide: ['cycling'],
+  VirtualRide: ['cycling'],
+  MountainBikeRide: ['cycling'],
+  GravelRide: ['cycling'],
+  Swim: ['swimming'],
+  WeightTraining: ['strength'],
+  Crossfit: ['strength'],
+  HighIntensityIntervalTraining: ['strength', 'other'],
+  Workout: ['strength', 'mobility', 'other'], // Apple Watch Flexibility/Core syncs as Workout
+  Yoga: ['yoga'],
+  Walk: ['walk'],
+  Hike: ['hike'],
 };
 
-function mapType(stravaType: string): string {
-  return TYPE_MAP[stravaType] ?? 'other';
+function mapType(stravaType: string): string[] {
+  return TYPE_MAP[stravaType] ?? ['other'];
 }
 
 Deno.serve(async (req) => {
@@ -157,16 +160,26 @@ Deno.serve(async (req) => {
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let synced = 0;
 
+    // Sort activities so that specific mappings (e.g., WeightTraining -> ['strength'])
+    // are processed BEFORE generic fallbacks (e.g., Workout -> ['strength', 'mobility', 'other']).
+    // This prevents a generic activity from stealing a session meant for a specific one.
+    activities.sort((a, b) => mapType(a.type).length - mapType(b.type).length);
+
     for (const activity of activities) {
-      const synerType = mapType(activity.type);
+      const synerTypes = mapType(activity.type);
       const activityDate = new Date(activity.start_date);
       const dayIndex = (activityDate.getDay() + 6) % 7; // Mon=0
       const dayName = days[dayIndex];
 
-      // Find matching unsynced session
-      const matchIdx = sessions.findIndex(
-        (s) => s.day_of_week === dayName && s.training_type === synerType
-      );
+      // Find matching unsynced session, respecting the priority order in synerTypes array
+      let matchIdx = -1;
+      for (const targetType of synerTypes) {
+        matchIdx = sessions.findIndex(
+          (s) => s.day_of_week === dayName && s.training_type === targetType
+        );
+        if (matchIdx !== -1) break; // Found a match at this priority level
+      }
+
       if (matchIdx === -1) continue;
       const match = sessions[matchIdx];
       // Remove from pool so a second activity of the same type/day matches the next session
@@ -181,7 +194,7 @@ Deno.serve(async (req) => {
 
       // Compute pace string (min/km)
       let pace: string | null = null;
-      if (activity.average_speed > 0 && (synerType === 'run' || synerType === 'walk' || synerType === 'hike')) {
+      if (activity.average_speed > 0 && synerTypes.some(t => ['run', 'walk', 'hike'].includes(t))) {
         const secPerKm = 1000 / activity.average_speed;
         const paceMin = Math.floor(secPerKm / 60);
         const paceSec = Math.round(secPerKm % 60);
