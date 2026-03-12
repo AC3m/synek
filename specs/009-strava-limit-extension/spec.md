@@ -29,10 +29,8 @@ Implement a UI masking layer that blurs metrics for Coaches until the Athlete co
 
 ### Implementation Details
 *   **Data Flag:** Rely on a new `is_confirmed` boolean flag on the data model (see Section 3).
-*   **UI Masking:** In React Router v7 loaders and the `SessionCard` component, check the `user_role`.
-*   **Condition:** If `user_role === 'coach'` and `is_confirmed === false`:
-    *   Apply a CSS `filter: blur(4px)` to the values of distance, pace, average_heartrate, and moving_time.
-    *   Display a tooltip or badge indicating: "Waiting for athlete confirmation".
+*   **Secure Backend Masking:** Implement a Supabase Row Level Security (RLS) policy or a secure database view that prevents unauthorized coaches from reading the raw metrics. If `is_confirmed === false` and the `auth.uid()` belongs to a coach, the database must return `NULL` for fields like `distance_meters`, `average_heartrate`, `moving_time_seconds`, and `raw_data`. 
+*   **UI Fallback:** In the `SessionCard` component, when these metric fields are returned as `NULL` (but the `strava_activity_id` exists), apply a CSS `filter: blur(4px)` over placeholder text (`---`) and display a tooltip or badge indicating: "Waiting for athlete confirmation". This ensures no raw data ever crosses the network to unauthorized users.
 
 ## 3. Performance & Persistence: Manual Sharing
 
@@ -43,8 +41,10 @@ Athletes need a way to explicitly share synced Strava data with their coach. Dat
 Add an explicit confirmation action that updates a flag on the *existing* Strava data record.
 
 ### Implementation Details
-*   **Database Migration:** Create a new migration to add `is_confirmed BOOLEAN DEFAULT FALSE` to the `strava_activities` table.
-*   *Note on Compliance:* This approach is chosen over moving data to a new table to ensure that if a user revokes access, a single cascade delete on `strava_activities` completely scrubs their data from the system.
+*   **Database Migration:** Create a new migration to add two columns to `strava_activities`:
+    *   `is_confirmed BOOLEAN DEFAULT FALSE`
+    *   `user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE` (to provide a direct link to the user, preventing orphaned data if `training_session_id` is null).
+*   *Note on Compliance:* This approach is chosen over moving data to a new table to ensure that if a user revokes access, a single cascade delete completely scrubs their data from the system.
 *   **UI:** Add a "Confirm Session" button on the `SessionCard` for athletes (visible when `is_confirmed === false`).
 *   **Action:** Clicking the button triggers a Supabase RPC or direct update to set `is_confirmed = true` for that `strava_activities` record.
 
@@ -65,8 +65,9 @@ Implement a Supabase Edge Function to handle the Strava webhook lifecycle.
     *   Listen for `object_type: "athlete"` and `aspect_type: "update"`.
     *   If `updates.authorized === "false"`:
         *   Extract the `owner_id` (Strava athlete ID).
-        *   Immediately delete the corresponding row in `strava_tokens`.
-        *   Immediately delete all corresponding rows in `strava_activities` (via `athlete_id` lookup on tokens or a direct cascading link).
+        *   Look up the internal `user_id` via `strava_tokens`.
+        *   **Critical Order:** Immediately delete all corresponding rows in `strava_activities` (using the new `user_id` column) *before* deleting the token, or rely on `ON DELETE CASCADE` if the schema supports it.
+        *   Delete the corresponding row in `strava_tokens`.
 *   **Idempotency:** Track processed events (using a lightweight cache or DB table if necessary, or rely on the idempotent nature of the delete operations based on `object_id` and `event_time`).
 
 ## 5. Logic: Background Token Refresh Service
