@@ -3,9 +3,9 @@ ALTER TABLE strava_activities
 ADD COLUMN IF NOT EXISTS is_confirmed BOOLEAN DEFAULT FALSE,
 ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
 
--- Backfill user_id for existing activities based on the linked training_session -> week_plan -> user_id
+-- Backfill user_id for existing activities based on the linked training_session -> week_plan -> athlete_id
 UPDATE strava_activities sa
-SET user_id = wp.user_id
+SET user_id = wp.athlete_id
 FROM training_sessions ts
 JOIN week_plans wp ON wp.id = ts.week_plan_id
 WHERE sa.training_session_id = ts.id
@@ -18,7 +18,7 @@ ALTER TABLE strava_activities ENABLE ROW LEVEL SECURITY;
 DROP POLICY IF EXISTS "anon_all_strava_activities" ON strava_activities;
 
 -- Create policies
-CREATE POLICY "Users can read their own activities or confirmed activities for their athletes"
+CREATE POLICY "Users can read own activities or confirmed for their athletes"
 ON strava_activities FOR SELECT
 TO authenticated
 USING (
@@ -75,8 +75,11 @@ WHERE
     sa.user_id = auth.uid() OR
     EXISTS (
         -- Check if current user is a coach of this athlete
-        SELECT 1 FROM user_roles ur 
-        WHERE ur.user_id = auth.uid() AND ur.role = 'coach'
+        SELECT 1 FROM coach_athletes ca 
+        JOIN profiles p ON p.id = auth.uid()
+        WHERE ca.coach_id = auth.uid() 
+          AND ca.athlete_id = sa.user_id 
+          AND p.role = 'coach'
     );
 
 -- Grant access to the view
