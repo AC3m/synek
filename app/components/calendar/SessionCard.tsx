@@ -348,8 +348,9 @@ export function SessionCard({
             <Button
               size="sm"
               variant="outline"
-              className="w-full text-[9px] sm:text-[10px] h-auto min-h-[28px] py-1.5 whitespace-normal text-center leading-tight border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950"
+              className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 truncate block"
               onClick={() => onConfirmStrava?.(session.id)}
+              title={t('common:strava.confirmAndShare')}
             >
               {t('common:strava.confirmAndShare')}
             </Button>
