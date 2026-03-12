@@ -10,12 +10,14 @@ interface NavItemProps {
   icon: React.ElementType
   label: string
   isActive: boolean
+  onClick?: (e: React.MouseEvent) => void
 }
 
-function NavItem({ to, icon: Icon, label, isActive }: NavItemProps) {
+function NavItem({ to, icon: Icon, label, isActive, onClick }: NavItemProps) {
   return (
     <NavLink
       to={to}
+      onClick={onClick}
       className="flex flex-col items-center justify-center gap-1 flex-1 min-h-[44px] py-2"
     >
       <Icon
@@ -39,13 +41,14 @@ function NavItem({ to, icon: Icon, label, isActive }: NavItemProps) {
 
 export function BottomNav() {
   const { t } = useTranslation('common')
-  const { user } = useAuth()
+  const { user, selectedAthleteId, clearSelectedAthlete } = useAuth()
   const localePath = useLocalePath()
   const { pathname } = useLocation()
 
   if (!user) return null
 
-  const isWeekActive = pathname.includes('/week')
+  const isTeamActive = user.role === 'coach' && !selectedAthleteId && pathname.includes('/coach')
+  const isWeekActive = pathname.includes('/week') && (user.role === 'athlete' || !!selectedAthleteId)
   const isSettingsActive = pathname.includes('/settings')
 
   return (
@@ -59,17 +62,18 @@ export function BottomNav() {
         />
         {user.role === 'coach' && (
           <NavItem
-            to={localePath('/settings')}
+            to={localePath('/coach')}
             icon={Users}
             label={t('nav.team')}
-            isActive={isSettingsActive}
+            isActive={isTeamActive}
+            onClick={() => clearSelectedAthlete?.()}
           />
         )}
         <NavItem
           to={localePath('/settings')}
           icon={Settings}
           label={t('nav.settings')}
-          isActive={isSettingsActive && user.role !== 'coach'}
+          isActive={isSettingsActive}
         />
       </div>
     </nav>
