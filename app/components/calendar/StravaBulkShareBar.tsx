@@ -14,7 +14,7 @@ export function StravaBulkShareBar({ unsharedCount, onShareAll, isPending }: Str
   if (unsharedCount < 2) return null;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
       <div className="flex items-center gap-4 bg-zinc-900 dark:bg-zinc-800 text-zinc-50 px-4 py-2.5 rounded-full shadow-lg ring-1 ring-white/10">
         <div className="flex items-center gap-2.5">
           <div className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-600 text-white font-bold text-xs">
