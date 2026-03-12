@@ -182,7 +182,7 @@ export function SessionCard({
               'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
               isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
             )}
-            title={isMasked ? 'Waiting for athlete confirmation' : ''}
+            title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
           >
             {session.actualDurationMinutes != null && (
               <div className="flex flex-col min-w-[60px]">
@@ -244,7 +244,7 @@ export function SessionCard({
             )}
             
             {session.stravaActivityId != null && (
-              <div className="w-full flex flex-col gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed xs:flex-row xs:items-center xs:justify-between">
+              <div className="w-full flex flex-wrap items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
@@ -351,7 +351,7 @@ export function SessionCard({
               className="w-full text-[10px] h-7 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950"
               onClick={() => onConfirmStrava?.(session.id)}
             >
-              Confirm & Share with Coach
+              {t('common:strava.confirmAndShare')}
             </Button>
           )}
 

@@ -155,7 +155,9 @@
     "connectedSince": "Połączono {{date}}",
     "notConnected": "Nie połączono",
     "syncedBadge": "Dane ze Strava",
-    "sync": "Synchronizuj"
+    "sync": "Synchronizuj",
+    "waitingForConfirmation": "Oczekiwanie na potwierdzenie od zawodnika",
+    "confirmAndShare": "Potwierdź i udostępnij trenerowi"
   },
   "actions": {
     "edit": "Edytuj",

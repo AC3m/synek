@@ -155,7 +155,9 @@
     "connectedSince": "Connected since {{date}}",
     "notConnected": "Not connected",
     "syncedBadge": "Data from Strava",
-    "sync": "Sync"
+    "sync": "Sync",
+    "waitingForConfirmation": "Waiting for athlete confirmation",
+    "confirmAndShare": "Confirm & Share with Coach"
   },
   "actions": {
     "edit": "Edit",
