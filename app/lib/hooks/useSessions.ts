@@ -183,14 +183,39 @@ export function useConfirmStravaSession() {
 
   return useMutation({
     mutationFn: (sessionId: string) => confirmStravaSession(sessionId),
+    onMutate: async (sessionId) => {
+      const allQueries = queryClient.getQueriesData<TrainingSession[]>({
+        queryKey: queryKeys.sessions.all,
+      });
+      const rollbacks: Array<{ key: readonly unknown[]; data: TrainingSession[] }> = [];
+
+      for (const [key, sessions] of allQueries) {
+        if (!sessions) continue;
+        const idx = sessions.findIndex((s) => s.id === sessionId);
+        if (idx === -1) continue;
+
+        await queryClient.cancelQueries({ queryKey: key });
+        rollbacks.push({ key: key as readonly unknown[], data: sessions });
+
+        const updated = [...sessions];
+        updated[idx] = { ...updated[idx], isStravaConfirmed: true };
+        queryClient.setQueryData(key, updated);
+      }
+      return { rollbacks };
+    },
     onSuccess: () => {
+      toast.success('Session shared with coach');
+    },
+    onError: (_err, _input, context) => {
+      context?.rollbacks?.forEach(({ key, data }) => {
+        queryClient.setQueryData(key, data);
+      });
+      toast.error('Failed to share session');
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
-      toast.success('Session shared with coach');
-    },
-    onError: () => {
-      toast.error('Failed to share session');
     },
   });
 }
