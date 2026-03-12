@@ -6,6 +6,14 @@ import { createTestQueryClient } from '~/test/utils/query-client';
 import { SessionCard } from '~/components/calendar/SessionCard';
 import type { TrainingSession } from '~/types/training';
 
+vi.mock('~/lib/context/AuthContext', () => ({
+  useAuth: vi.fn(() => ({
+    user: { id: 'user-1', role: 'athlete' },
+    loading: false,
+    signOut: vi.fn(),
+  })),
+}));
+
 /**
  * Strava Sync CTA tests.
  *
