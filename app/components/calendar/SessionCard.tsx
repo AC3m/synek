@@ -244,19 +244,22 @@ export function SessionCard({
             )}
             
             {session.stravaActivityId != null && (
-              <div className="col-span-2 flex items-center justify-between mt-1 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
-                <Badge
-                  variant="outline"
-                  title={t('strava.syncedBadge')}
-                  className="h-4 px-1 text-[8px] bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-900"
-                >
-                  Powered by Strava
-                </Badge>
+              <div className="col-span-2 flex flex-col gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed sm:flex-row sm:items-center sm:justify-between">
+                <img
+                  src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
+                  alt="Powered by Strava"
+                  className="h-4 w-auto dark:hidden"
+                />
+                <img
+                  src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
+                  alt="Powered by Strava"
+                  className="h-4 w-auto hidden dark:block"
+                />
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[9px] font-bold underline"
+                  className="text-[10px] font-bold underline whitespace-nowrap"
                   style={{ color: '#FC5200' }}
                 >
                   View on Strava

@@ -131,7 +131,11 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">{t('strava.description')}</p>
             <button onClick={onConnectStrava} className="p-0 border-0 bg-transparent hover:opacity-90 transition-opacity">
-              <img src="/images/strava/btn_strava_connectwith_orange.svg" alt="Connect with Strava" height="48" />
+              <img
+                src="/strava/1.1 Connect with Strava Buttons/Connect with Strava Orange/btn_strava_connect_with_orange.svg"
+                alt="Connect with Strava"
+                className="h-12 w-auto"
+              />
             </button>
           </div>
         )}
