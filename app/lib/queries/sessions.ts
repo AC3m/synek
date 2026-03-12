@@ -49,12 +49,22 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
 
 export async function confirmStravaSession(sessionId: string): Promise<void> {
   if (isMockMode) return mockConfirmStravaSession(sessionId);
-  const { error } = await supabase
+  
+  // Update the flag on training_sessions so the UI gets the right state on next fetch
+  const { error: tsError } = await supabase
+    .from('training_sessions')
+    .update({ is_strava_confirmed: true })
+    .eq('id', sessionId);
+
+  if (tsError) throw tsError;
+
+  // Also keep the source of truth in strava_activities synced for compliance
+  const { error: saError } = await supabase
     .from('strava_activities')
     .update({ is_confirmed: true })
     .eq('training_session_id', sessionId);
 
-  if (error) throw error;
+  if (saError) throw saError;
 }
 
 export async function fetchSessionsByWeekPlan(
