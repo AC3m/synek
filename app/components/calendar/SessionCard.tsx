@@ -89,7 +89,7 @@ export function SessionCard({
   const isRestDay = session.trainingType === 'rest_day';
 
   const userRole = user?.role;
-  const isMasked = !session.isStravaConfirmed && userRole === 'coach';
+  const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
   return (
     <div
