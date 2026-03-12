@@ -157,7 +157,9 @@
     "syncedBadge": "Dane ze Strava",
     "sync": "Synchronizuj",
     "waitingForConfirmation": "Oczekiwanie na potwierdzenie od zawodnika",
-    "confirmAndShare": "Potwierdź i udostępnij trenerowi"
+    "confirmAndShare": "Potwierdź i udostępnij trenerowi",
+    "unsharedSessions": "{{count}} nieudostępnione treningi",
+    "shareAll": "Udostępnij wszystkie trenerowi"
   },
   "actions": {
     "edit": "Edytuj",

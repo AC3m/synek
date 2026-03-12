@@ -219,3 +219,44 @@ export function useConfirmStravaSession() {
     },
   });
 }
+
+export function useBulkConfirmStravaSessions() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (weekPlanId: string) => bulkConfirmStravaSessions(weekPlanId),
+    onMutate: async (weekPlanId) => {
+      const queryKey = queryKeys.sessions.byWeek(weekPlanId);
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousSessions = queryClient.getQueryData<TrainingSession[]>(queryKey);
+
+      if (previousSessions) {
+        queryClient.setQueryData<TrainingSession[]>(queryKey, (old) => {
+          if (!old) return [];
+          return old.map((session) => 
+            session.stravaActivityId && !session.isStravaConfirmed
+              ? { ...session, isStravaConfirmed: true }
+              : session
+          );
+        });
+      }
+
+      return { previousSessions, queryKey };
+    },
+    onSuccess: () => {
+      toast.success('All pending sessions shared with coach');
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousSessions) {
+        queryClient.setQueryData(context.queryKey, context.previousSessions);
+      }
+      toast.error('Failed to share sessions');
+    },
+    onSettled: (_data, _err, weekPlanId) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.sessions.byWeek(weekPlanId),
+      });
+    },
+  });
+}

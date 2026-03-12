@@ -6,6 +6,7 @@ import {
   mockDeleteSession,
   mockUpdateAthleteSession,
   mockConfirmStravaSession,
+  mockBulkConfirmStravaSessions,
 } from '~/lib/mock-data';
 import type {
   TrainingSession,
@@ -65,6 +66,15 @@ export async function confirmStravaSession(sessionId: string): Promise<void> {
     .eq('training_session_id', sessionId);
 
   if (saError) throw saError;
+}
+
+export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
+  if (isMockMode) return mockBulkConfirmStravaSessions(weekPlanId);
+  
+  const { error } = await supabase
+    .rpc('confirm_all_strava_sessions_for_week', { p_week_plan_id: weekPlanId });
+
+  if (error) throw error;
 }
 
 export async function fetchSessionsByWeekPlan(

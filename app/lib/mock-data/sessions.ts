@@ -125,3 +125,20 @@ export async function mockConfirmStravaSession(sessionId: string): Promise<void>
   };
   sessions.set(updated.id, updated);
 }
+
+export async function mockBulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
+  await delay();
+  for (const session of sessions.values()) {
+    if (
+      session.weekPlanId === weekPlanId &&
+      session.stravaActivityId != null &&
+      !session.isStravaConfirmed
+    ) {
+      sessions.set(session.id, {
+        ...session,
+        isStravaConfirmed: true,
+        updatedAt: new Date().toISOString()
+      });
+    }
+  }
+}

@@ -157,7 +157,9 @@
     "syncedBadge": "Data from Strava",
     "sync": "Sync",
     "waitingForConfirmation": "Waiting for athlete confirmation",
-    "confirmAndShare": "Confirm & Share with Coach"
+    "confirmAndShare": "Confirm & Share with Coach",
+    "unsharedSessions": "{{count}} unshared sessions",
+    "shareAll": "Share All With Coach"
   },
   "actions": {
     "edit": "Edit",
