@@ -172,6 +172,7 @@ export interface TrainingSession {
   athleteNotes: string | null;
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
+  isStravaConfirmed?: boolean;
   createdAt: string;
   updatedAt: string;
 }
