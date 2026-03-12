@@ -112,3 +112,16 @@ export async function mockUpdateAthleteSession(
   sessions.set(updated.id, updated);
   return updated;
 }
+
+export async function mockConfirmStravaSession(sessionId: string): Promise<void> {
+  await delay();
+  const existing = sessions.get(sessionId);
+  if (!existing) throw new Error(`Session ${sessionId} not found`);
+
+  const updated: TrainingSession = {
+    ...existing,
+    isStravaConfirmed: true,
+    updatedAt: new Date().toISOString(),
+  };
+  sessions.set(updated.id, updated);
+}

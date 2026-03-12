@@ -5,6 +5,7 @@ import {
   mockUpdateSession,
   mockDeleteSession,
   mockUpdateAthleteSession,
+  mockConfirmStravaSession,
 } from '~/lib/mock-data';
 import type {
   TrainingSession,
@@ -47,6 +48,7 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
 }
 
 export async function confirmStravaSession(sessionId: string): Promise<void> {
+  if (isMockMode) return mockConfirmStravaSession(sessionId);
   const { error } = await supabase
     .from('strava_activities')
     .update({ is_confirmed: true })
