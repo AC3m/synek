@@ -111,27 +111,6 @@ export function SessionCard({
             <Icon className="h-2.5 w-2.5" />
             {t(`common:trainingTypes.${session.trainingType}` as never)}
           </span>
-
-          {session.stravaActivityId != null && (
-            <div className="flex items-center gap-2">
-              <Badge
-                variant="outline"
-                title={t('strava.syncedBadge')}
-                className="h-5 px-1.5 text-[10px] bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-900"
-              >
-                Powered by Strava
-              </Badge>
-              <a
-                href={`https://www.strava.com/activities/${session.stravaActivityId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[10px] font-bold underline"
-                style={{ color: '#FC5200' }}
-              >
-                View on Strava
-              </a>
-            </div>
-          )}
         </div>
 
         {!readonly && (onEdit || onDelete) && (
@@ -261,6 +240,27 @@ export function SessionCard({
                   {t('training:actualPerformance.rpe')}
                 </span>
                 <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
+              </div>
+            )}
+            
+            {session.stravaActivityId != null && (
+              <div className="col-span-2 flex items-center justify-between mt-1 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
+                <Badge
+                  variant="outline"
+                  title={t('strava.syncedBadge')}
+                  className="h-4 px-1 text-[8px] bg-orange-50 text-orange-600 border-orange-200 dark:bg-orange-950 dark:text-orange-400 dark:border-orange-900"
+                >
+                  Powered by Strava
+                </Badge>
+                <a
+                  href={`https://www.strava.com/activities/${session.stravaActivityId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[9px] font-bold underline"
+                  style={{ color: '#FC5200' }}
+                >
+                  View on Strava
+                </a>
               </div>
             )}
           </div>
