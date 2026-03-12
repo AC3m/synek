@@ -8,6 +8,7 @@ import {
   deleteSession,
   updateAthleteSession,
   confirmStravaSession,
+  bulkConfirmStravaSessions,
 } from '~/lib/queries/sessions';
 import type {
   CreateSessionInput,
