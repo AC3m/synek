@@ -247,7 +247,8 @@ export function useBulkConfirmStravaSessions() {
     onSuccess: () => {
       toast.success('All pending sessions shared with coach');
     },
-    onError: (_err, _variables, context) => {
+    onError: (err: any, _variables, context) => {
+      console.error('Bulk confirm failed:', err);
       if (context?.previousSessions) {
         queryClient.setQueryData(context.queryKey, context.previousSessions);
       }
