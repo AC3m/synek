@@ -64,25 +64,14 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
                         />
                       </div>
                       <span style={{ color: '#FC5200' }} className="block text-[10px] font-black italic">
-                        {title.includes('(') ? title.substring(title.indexOf('(')) : ''}
+                        {t('features.item5.approvalBadge')}
                       </span>
                     </div>
                   ) : (
                     title
                   )}
                 </h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/90">
-                  {desc.split('Strava').map((part, i, arr) => (
-                    <span key={i}>
-                      {part}
-                      {i < arr.length - 1 && (
-                        <span style={{ color: '#FC5200' }} className="font-semibold">
-                          Strava
-                        </span>
-                      )}
-                    </span>
-                  ))}
-                </p>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/90">{desc}</p>
               </div>
             </div>
           ))}

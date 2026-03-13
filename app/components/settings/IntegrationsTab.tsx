@@ -44,7 +44,7 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
 
   function handleSync() {
     if (!user || !selectedWeekStart) return;
-    sync.mutate({ userId: user.id, weekStart: selectedWeekStart });
+    sync.mutate({ weekStart: selectedWeekStart });
   }
 
   function handlePrevWeek() {

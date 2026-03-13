@@ -23,12 +23,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { useAuth } from '~/lib/context/AuthContext';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
+import type { UserRole } from '~/lib/auth';
 import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -58,6 +58,7 @@ interface SessionCardProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   onSyncStrava?: () => void;
   onConfirmStrava?: (sessionId: string) => void;
+  userRole?: UserRole;
 }
 
 export function SessionCard({
@@ -74,9 +75,9 @@ export function SessionCard({
   onUpdateCoachPostFeedback,
   onSyncStrava,
   onConfirmStrava,
+  userRole,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
-  const { user } = useAuth();
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
 
   useEffect(() => {
@@ -87,7 +88,6 @@ export function SessionCard({
   const Icon = iconMap[config.icon] ?? Footprints;
   const isRestDay = session.trainingType === 'rest_day';
 
-  const userRole = user?.role;
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
@@ -238,7 +238,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {session.rpe != null && (
+            {(shouldShowMaskedPlaceholders || session.rpe != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.rpe')}
@@ -350,8 +350,7 @@ export function SessionCard({
 
           {session.stravaActivityId &&
             !session.isStravaConfirmed &&
-            userRole === 'athlete' &&
-            (athleteMode || showAthleteControls) && (
+            userRole === 'athlete' && (
             <Button
               size="sm"
               variant="outline"

@@ -30,22 +30,33 @@ export function useConnectStrava() {
 export function useStravaSync() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, weekStart }: { userId: string; weekStart: string }) =>
-      syncStrava(userId, weekStart),
-    onMutate: async ({ userId }) => {
-      await qc.cancelQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
-      const prev = qc.getQueryData<StravaConnectionStatus>(
-        queryKeys.stravaConnection.byUser(userId)
+    mutationFn: ({ weekStart }: { weekStart: string }) =>
+      syncStrava(weekStart),
+    onMutate: async (_vars) => {
+      // Snapshot all strava-connection caches because this mutation no longer
+      // requires caller-provided userId.
+      const all = qc.getQueriesData<StravaConnectionStatus>({
+        queryKey: queryKeys.stravaConnection.all,
+      });
+
+      await Promise.all(
+        all.map(([key]) => qc.cancelQueries({ queryKey: key }))
       );
-      return { prev, userId };
+
+      const rollbacks: Array<{ key: readonly unknown[]; data: StravaConnectionStatus }> = [];
+      for (const [key, data] of all) {
+        if (data) rollbacks.push({ key, data });
+      }
+
+      return { rollbacks };
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev) {
-        qc.setQueryData(queryKeys.stravaConnection.byUser(ctx.userId), ctx.prev);
-      }
+      ctx?.rollbacks?.forEach(({ key, data }) => {
+        qc.setQueryData(key, data);
+      });
     },
-    onSettled: (_data, _err, { userId }) => {
-      qc.invalidateQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.stravaConnection.all });
       qc.invalidateQueries({ queryKey: queryKeys.sessions.all });
     },
   });

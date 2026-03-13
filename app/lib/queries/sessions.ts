@@ -42,7 +42,7 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
-    isStravaConfirmed: Boolean(row.is_strava_confirmed ?? row.is_confirmed ?? false),
+    isStravaConfirmed: Boolean(row.is_strava_confirmed ?? false),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };

@@ -40,3 +40,6 @@ verify_jwt = false
 
 [functions.strava-token-refresh]
 verify_jwt = false
+
+[functions.strava-sync]
+verify_jwt = false

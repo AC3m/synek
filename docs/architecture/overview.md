@@ -84,6 +84,9 @@ sequenceDiagram
 ### 1. Synchronization (`strava-sync` Edge Function)
 When an athlete clicks "Sync", an Edge Function polls the Strava API for activities matching the current week. It matches Strava activities (e.g., "Morning Run") to planned Synek sessions (e.g., `training_type = 'run'`).
 
+Security model:
+- See [`strava-function-security.md`](./strava-function-security.md) for the canonical auth model and required client headers.
+
 The function writes to two tables:
 1. `strava_activities`: Stores raw payload + exact metrics + `user_id` owner.
 2. `training_sessions`: Updates `strava_activity_id` and `strava_synced_at` only.

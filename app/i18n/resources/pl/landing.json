@@ -56,6 +56,7 @@
     },
     "item5": {
       "title": "Powered by Strava (Oczekuje na zatwierdzenie)",
+      "approvalBadge": "(Oczekuje na zatwierdzenie)",
       "desc": "Integracja jest obecnie w fazie ograniczonej bety. Złożyliśmy wniosek do Strava o zwiększenie limitów API, aby wkrótce udostępnić automatyczną synchronizację wszystkim użytkownikom."
     },
     "item6": {

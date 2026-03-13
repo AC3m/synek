@@ -173,6 +173,7 @@ export default function CoachWeekView() {
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+        userRole={user?.role}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(isViewingSelf && {

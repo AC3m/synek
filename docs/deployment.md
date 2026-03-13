@@ -114,8 +114,12 @@ pnpm supabase:deploy:strava
 ```
 
 This applies migrations, sets Edge Function secrets, and deploys:
+- `strava-sync`
 - `strava-webhook`
 - `strava-token-refresh`
+
+Function auth/security settings for Strava functions are documented in:
+- `docs/architecture/strava-function-security.md`
 
 ### 4. One-time DB runtime settings for cron
 

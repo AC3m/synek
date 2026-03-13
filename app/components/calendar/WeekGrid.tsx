@@ -4,6 +4,7 @@ import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import { DayColumn } from './DayColumn';
+import type { UserRole } from '~/lib/auth';
 import {
   DAYS_OF_WEEK,
   type DayOfWeek,
@@ -29,6 +30,7 @@ interface WeekGridProps {
   stravaConnected?: boolean;
   onSyncStrava?: () => void;
   onConfirmStrava?: (sessionId: string) => void;
+  userRole?: UserRole;
   selectedDay?: DayOfWeek;
   onSelectDay?: (day: DayOfWeek) => void;
 }
@@ -110,6 +112,7 @@ export function WeekGrid({
   stravaConnected,
   onSyncStrava,
   onConfirmStrava,
+  userRole,
   selectedDay: controlledSelectedDay,
   onSelectDay: controlledOnSelectDay,
 }: WeekGridProps) {
@@ -140,6 +143,7 @@ export function WeekGrid({
     stravaConnected,
     onSyncStrava,
     onConfirmStrava,
+    userRole,
   };
 
   return (

@@ -46,7 +46,26 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { userId, weekStart } = await req.json() as { userId: string; weekStart: string };
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return json({ error: 'unauthorized' }, 401);
+    }
+    const jwt = authHeader.slice(7);
+
+    const anonClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!
+    );
+    const { data: userData, error: userError } = await anonClient.auth.getUser(jwt);
+    if (userError || !userData.user) {
+      return json({ error: 'unauthorized' }, 401);
+    }
+    const userId = userData.user.id;
+
+    const { weekStart } = await req.json() as { weekStart: string };
+    if (!weekStart) {
+      return json({ error: 'invalid_request' }, 400);
+    }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
@@ -151,11 +170,27 @@ Deno.serve(async (req) => {
     const { data: sessionsData } = await supabase
       .from('training_sessions')
       .select('id, day_of_week, training_type, strava_activity_id')
-      .eq('week_plan_id', weekPlan.id)
-      .is('strava_activity_id', null);
+      .eq('week_plan_id', weekPlan.id);
 
-    // Mutable copy so matched sessions are removed and can't be double-matched
-    const sessions = [...(sessionsData ?? [])];
+    const weekSessionIds = (sessionsData ?? []).map((s) => s.id);
+    const linkedSessionIds = new Set<string>();
+
+    if (weekSessionIds.length > 0) {
+      const { data: linkedRows } = await supabase
+        .from('strava_activities')
+        .select('training_session_id')
+        .in('training_session_id', weekSessionIds);
+
+      for (const row of linkedRows ?? []) {
+        const sessionId = row.training_session_id as string | null;
+        if (sessionId) linkedSessionIds.add(sessionId);
+      }
+    }
+
+    // Sync candidates are sessions without a linked strava_activities row.
+    // This includes both never-synced sessions and stale/orphaned links where
+    // strava_activity_id is set but backing row is missing.
+    const sessions = (sessionsData ?? []).filter((session) => !linkedSessionIds.has(session.id));
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let synced = 0;

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { queryKeys } from '~/lib/queries/keys';
 import {
@@ -16,6 +16,36 @@ import type {
   AthleteSessionUpdate,
   TrainingSession,
 } from '~/types/training';
+
+type SessionQueryRollback = { key: readonly unknown[]; data: TrainingSession[] };
+
+async function patchAllSessionQueries(
+  queryClient: QueryClient,
+  patcher: (sessions: TrainingSession[]) => TrainingSession[] | null
+): Promise<{ rollbacks: SessionQueryRollback[] }> {
+  const allQueries = queryClient.getQueriesData<TrainingSession[]>({
+    queryKey: queryKeys.sessions.all,
+  });
+
+  const updates: Array<{ key: readonly unknown[]; original: TrainingSession[]; updated: TrainingSession[] }> = [];
+
+  for (const [key, sessions] of allQueries) {
+    if (!sessions) continue;
+    const updated = patcher(sessions);
+    if (!updated) continue;
+    updates.push({ key: key as readonly unknown[], original: sessions, updated });
+  }
+
+  await Promise.all(updates.map(({ key }) => queryClient.cancelQueries({ queryKey: key })));
+
+  for (const { key, updated } of updates) {
+    queryClient.setQueryData(key, updated);
+  }
+
+  return {
+    rollbacks: updates.map(({ key, original }) => ({ key, data: original })),
+  };
+}
 
 export function useSessions(weekPlanId: string | undefined) {
   return useQuery({
@@ -47,26 +77,14 @@ export function useUpdateSession() {
 
   return useMutation({
     mutationFn: (input: UpdateSessionInput) => updateSession(input),
-    onMutate: async (input) => {
-      const allQueries = queryClient.getQueriesData<TrainingSession[]>({
-        queryKey: queryKeys.sessions.all,
-      });
-      const rollbacks: Array<{ key: readonly unknown[]; data: TrainingSession[] }> = [];
-
-      for (const [key, sessions] of allQueries) {
-        if (!sessions) continue;
+    onMutate: async (input) =>
+      patchAllSessionQueries(queryClient, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === input.id);
-        if (idx === -1) continue;
-
-        await queryClient.cancelQueries({ queryKey: key });
-        rollbacks.push({ key: key as readonly unknown[], data: sessions });
-
+        if (idx === -1) return null;
         const updated = [...sessions];
         updated[idx] = { ...updated[idx], ...input } as TrainingSession;
-        queryClient.setQueryData(key, updated);
-      }
-      return { rollbacks };
-    },
+        return updated;
+      }),
     onSuccess: () => {
       toast.success('Session updated');
     },
@@ -89,27 +107,11 @@ export function useDeleteSession() {
 
   return useMutation({
     mutationFn: (sessionId: string) => deleteSession(sessionId),
-    onMutate: async (sessionId) => {
-      const allQueries = queryClient.getQueriesData<TrainingSession[]>({
-        queryKey: queryKeys.sessions.all,
-      });
-      const rollbacks: Array<{ key: readonly unknown[]; data: TrainingSession[] }> = [];
-
-      for (const [key, sessions] of allQueries) {
-        if (!sessions) continue;
-        const idx = sessions.findIndex((s) => s.id === sessionId);
-        if (idx === -1) continue;
-
-        await queryClient.cancelQueries({ queryKey: key });
-        rollbacks.push({ key: key as readonly unknown[], data: sessions });
-
-        queryClient.setQueryData(
-          key,
-          sessions.filter((s) => s.id !== sessionId)
-        );
-      }
-      return { rollbacks };
-    },
+    onMutate: async (sessionId) =>
+      patchAllSessionQueries(queryClient, (sessions) => {
+        if (!sessions.some((s) => s.id === sessionId)) return null;
+        return sessions.filter((s) => s.id !== sessionId);
+      }),
     onSuccess: () => {
       toast.success('Session deleted');
     },
@@ -132,19 +134,10 @@ export function useUpdateAthleteSession() {
 
   return useMutation({
     mutationFn: (input: AthleteSessionUpdate) => updateAthleteSession(input),
-    onMutate: async (input) => {
-      const allQueries = queryClient.getQueriesData<TrainingSession[]>({
-        queryKey: queryKeys.sessions.all,
-      });
-      const rollbacks: Array<{ key: readonly unknown[]; data: TrainingSession[] }> = [];
-
-      for (const [key, sessions] of allQueries) {
-        if (!sessions) continue;
+    onMutate: async (input) =>
+      patchAllSessionQueries(queryClient, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === input.id);
-        if (idx === -1) continue;
-
-        await queryClient.cancelQueries({ queryKey: key });
-        rollbacks.push({ key: key as readonly unknown[], data: sessions });
+        if (idx === -1) return null;
 
         const updated = [...sessions];
         updated[idx] = {
@@ -161,10 +154,8 @@ export function useUpdateAthleteSession() {
           ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
           ...(input.rpe !== undefined && { rpe: input.rpe }),
         };
-        queryClient.setQueryData(key, updated);
-      }
-      return { rollbacks };
-    },
+        return updated;
+      }),
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
@@ -184,26 +175,14 @@ export function useConfirmStravaSession() {
 
   return useMutation({
     mutationFn: (sessionId: string) => confirmStravaSession(sessionId),
-    onMutate: async (sessionId) => {
-      const allQueries = queryClient.getQueriesData<TrainingSession[]>({
-        queryKey: queryKeys.sessions.all,
-      });
-      const rollbacks: Array<{ key: readonly unknown[]; data: TrainingSession[] }> = [];
-
-      for (const [key, sessions] of allQueries) {
-        if (!sessions) continue;
+    onMutate: async (sessionId) =>
+      patchAllSessionQueries(queryClient, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === sessionId);
-        if (idx === -1) continue;
-
-        await queryClient.cancelQueries({ queryKey: key });
-        rollbacks.push({ key: key as readonly unknown[], data: sessions });
-
+        if (idx === -1) return null;
         const updated = [...sessions];
         updated[idx] = { ...updated[idx], isStravaConfirmed: true };
-        queryClient.setQueryData(key, updated);
-      }
-      return { rollbacks };
-    },
+        return updated;
+      }),
     onSuccess: () => {
       toast.success('Session shared with coach');
     },
@@ -226,38 +205,34 @@ export function useBulkConfirmStravaSessions() {
 
   return useMutation({
     mutationFn: (weekPlanId: string) => bulkConfirmStravaSessions(weekPlanId),
-    onMutate: async (weekPlanId) => {
-      const queryKey = queryKeys.sessions.byWeek(weekPlanId);
-      await queryClient.cancelQueries({ queryKey });
-
-      const previousSessions = queryClient.getQueryData<TrainingSession[]>(queryKey);
-
-      if (previousSessions) {
-        queryClient.setQueryData<TrainingSession[]>(queryKey, (old) => {
-          if (!old) return [];
-          return old.map((session) => 
-            session.stravaActivityId && !session.isStravaConfirmed
-              ? { ...session, isStravaConfirmed: true }
-              : session
-          );
+    onMutate: async (weekPlanId) =>
+      patchAllSessionQueries(queryClient, (sessions) => {
+        let changed = false;
+        const updated = sessions.map((session) => {
+          if (
+            session.weekPlanId === weekPlanId &&
+            session.stravaActivityId &&
+            !session.isStravaConfirmed
+          ) {
+            changed = true;
+            return { ...session, isStravaConfirmed: true };
+          }
+          return session;
         });
-      }
-
-      return { previousSessions, queryKey };
-    },
+        return changed ? updated : null;
+      }),
     onSuccess: () => {
       toast.success('All pending sessions shared with coach');
     },
-    onError: (err: any, _variables, context) => {
-      console.error('Bulk confirm failed:', err);
-      if (context?.previousSessions) {
-        queryClient.setQueryData(context.queryKey, context.previousSessions);
-      }
+    onError: (_err, _variables, context) => {
+      context?.rollbacks?.forEach(({ key, data }) => {
+        queryClient.setQueryData(key, data);
+      });
       toast.error('Failed to share sessions');
     },
-    onSettled: (_data, _err, weekPlanId) => {
+    onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.sessions.byWeek(weekPlanId),
+        queryKey: queryKeys.sessions.all,
       });
     },
   });

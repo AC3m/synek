@@ -56,6 +56,7 @@
     },
     "item5": {
       "title": "Powered by Strava (Pending Approval)",
+      "approvalBadge": "(Pending Approval)",
       "desc": "Integration is currently in a restricted beta. We've applied for an API limit extension from Strava to roll out automatic performance syncing to all users soon."
     },
     "item6": {

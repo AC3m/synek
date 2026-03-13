@@ -98,9 +98,8 @@ export default function AthleteWeekView() {
   );
 
   const handleSyncStrava = useCallback(() => {
-    if (user) {
-      stravaSync.mutate({ userId: user.id, weekStart });
-    }
+    if (!user) return;
+    stravaSync.mutate({ weekStart });
   }, [stravaSync, user, weekStart]);
 
   const handleConfirmStrava = useCallback(
@@ -191,6 +190,7 @@ export default function AthleteWeekView() {
         stravaConnected={stravaConnected}
         onSyncStrava={handleSyncStrava}
         onConfirmStrava={handleConfirmStrava}
+        userRole={user?.role}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(canSelfPlan && {
