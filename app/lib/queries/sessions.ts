@@ -42,7 +42,7 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
-    isStravaConfirmed: row.is_strava_confirmed as boolean,
+    isStravaConfirmed: Boolean(row.is_strava_confirmed ?? row.is_confirmed ?? false),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
@@ -50,22 +50,12 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
 
 export async function confirmStravaSession(sessionId: string): Promise<void> {
   if (isMockMode) return mockConfirmStravaSession(sessionId);
-  
-  // Update the flag on training_sessions so the UI gets the right state on next fetch
-  const { error: tsError } = await supabase
-    .from('training_sessions')
-    .update({ is_strava_confirmed: true })
-    .eq('id', sessionId);
 
-  if (tsError) throw tsError;
+  const { error } = await supabase.rpc('confirm_strava_session', {
+    p_session_id: sessionId,
+  });
 
-  // Also keep the source of truth in strava_activities synced for compliance
-  const { error: saError } = await supabase
-    .from('strava_activities')
-    .update({ is_confirmed: true })
-    .eq('training_session_id', sessionId);
-
-  if (saError) throw saError;
+  if (error) throw error;
 }
 
 export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
@@ -82,7 +72,7 @@ export async function fetchSessionsByWeekPlan(
 ): Promise<TrainingSession[]> {
   if (isMockMode) return mockFetchSessionsByWeekPlan(weekPlanId);
   const { data, error } = await supabase
-    .from('training_sessions')
+    .from('secure_training_sessions')
     .select('*')
     .eq('week_plan_id', weekPlanId)
     .order('sort_order', { ascending: true });

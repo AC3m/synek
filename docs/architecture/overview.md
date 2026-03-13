@@ -53,7 +53,7 @@ The core data model relies heavily on Supabase Row Level Security (RLS) to enfor
 
 ## Strava Integration Architecture
 
-To comply with Strava's API terms—specifically regarding data privacy, sharing consent, and data retention—the Strava integration uses a dual-table model with a strict manual-sharing gateway.
+To comply with Strava's API terms—specifically regarding data privacy, sharing consent, and data retention—the integration uses `strava_activities.is_confirmed` as the single consent flag and a secure read surface for session data.
 
 ### Data Flow
 
@@ -68,35 +68,35 @@ sequenceDiagram
     Athlete->>UI: Clicks "Sync Strava"
     UI->>Edge: Request Sync
     Edge->>DB: Fetch & Match Activities
-    Edge->>DB: Insert into strava_activities (Raw)
-    Edge->>DB: Update training_sessions (Actuals)
+    Edge->>DB: Upsert strava_activities (Raw + owner user_id)
+    Edge->>DB: Update training_sessions link metadata only
     
-    Note over UI, Coach: Coach cannot see actuals yet (Blurred UI via RLS/Views)
+    Note over UI, Coach: Coach cannot see raw metrics yet (backend masking + UI blur)
     
     Athlete->>UI: Clicks "Confirm & Share"
-    UI->>DB: RPC: confirm_all_strava_sessions_for_week
-    DB->>DB: SET is_strava_confirmed = TRUE
+    UI->>DB: RPC: confirm_strava_session / confirm_all_strava_sessions_for_week
+    DB->>DB: SET strava_activities.is_confirmed = TRUE
     
     Note over UI, Coach: Data unmasked. Coach can now view metrics.
     Coach->>UI: Views Athlete Calendar
 ```
 
 ### 1. Synchronization (`strava-sync` Edge Function)
-When an athlete clicks "Sync", an Edge Function polls the Strava API for activities matching the current week. It applies an algorithm to match Strava activities (e.g., "Morning Run") to planned Synek sessions (e.g., `training_type = 'run'`).
+When an athlete clicks "Sync", an Edge Function polls the Strava API for activities matching the current week. It matches Strava activities (e.g., "Morning Run") to planned Synek sessions (e.g., `training_type = 'run'`).
 
 The function writes to two tables:
-1. `strava_activities`: Stores the raw JSON payload and exact Strava metrics.
-2. `training_sessions`: Updates the `actual_*` columns for the matched session.
+1. `strava_activities`: Stores raw payload + exact metrics + `user_id` owner.
+2. `training_sessions`: Updates `strava_activity_id` and `strava_synced_at` only.
 
 ### 2. Privacy & Masking (The "Consent" Gateway)
 By default, newly synced Strava data is considered *private* to the athlete.
-- **Backend Masking:** A secure database view (`secure_strava_activities`) checks the `is_strava_confirmed` flag. If it is `FALSE` and the requester is a Coach, the view returns `NULL` for sensitive metrics (distance, pace, HR).
-- **Frontend Masking:** The UI intercepts these `NULL` values and applies a visual blur (`filter: blur(3px)`) with placeholder text (`---`), informing the coach that the data exists but awaits the athlete's consent to share.
+- **Backend Masking:** The app reads sessions from `secure_training_sessions`. For Strava-linked sessions, this view returns `NULL` for sensitive metrics to coaches until `strava_activities.is_confirmed = TRUE`.
+- **Frontend Masking:** The UI applies a blur (`filter: blur(3px)`) and placeholder text (`---`) when masked values are returned.
 
 ### 3. Bulk Confirmation RPC
 To share data, the athlete must explicitly consent. Clicking the "Confirm & Share" button invokes a secure PostgreSQL RPC: `confirm_all_strava_sessions_for_week`. 
 - This function runs as `SECURITY INVOKER` to verify the JWT token matches the `athlete_id` of the week plan.
-- It atomically flips the `is_strava_confirmed` flag to `TRUE` for both the `training_sessions` and `strava_activities` tables.
+- It updates only `strava_activities.is_confirmed` (single source of truth).
 
 ### 4. Background Token Refresh (`strava-token-refresh`)
 Strava OAuth tokens expire every 6 hours.
@@ -107,5 +107,5 @@ Strava OAuth tokens expire every 6 hours.
 ### 5. Webhook Data Retention Compliance (`strava-webhook`)
 If an athlete revokes access to Synek from their Strava dashboard, Strava fires an `athlete:update` webhook with `authorized: "false"`.
 - The `strava-webhook` Edge Function receives this payload.
-- It immediately deletes the user's `strava_tokens` row.
-- **Cascade Deletion:** Because `strava_activities.user_id` has an `ON DELETE CASCADE` constraint linked to the user's authorization, deleting the token (and subsequent user link) thoroughly scrubs the revoked Strava data from the system, keeping Synek 100% compliant with Strava's data retention policies.
+- It validates both Strava handshake token and callback `verify_token` query secret.
+- It hard-deletes `strava_activities` for the revoked user and then deletes the corresponding `strava_tokens` row.

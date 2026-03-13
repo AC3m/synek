@@ -27,8 +27,8 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
 
   const items = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
     n,
-    title: t(`features.item${n}.title` as never),
-    desc: t(`features.item${n}.desc` as never),
+    title: t(`features.item${n}.title` as never) as string,
+    desc: t(`features.item${n}.desc` as never) as string,
   }))
 
   return (

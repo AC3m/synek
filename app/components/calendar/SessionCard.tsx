@@ -23,7 +23,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { Badge } from '~/components/ui/badge';
 import { useAuth } from '~/lib/context/AuthContext';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
@@ -90,6 +89,17 @@ export function SessionCard({
 
   const userRole = user?.role;
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const hasActualPerformance =
+    session.actualDurationMinutes != null ||
+    session.actualDistanceKm != null ||
+    session.actualPace != null ||
+    session.avgHeartRate != null ||
+    session.maxHeartRate != null ||
+    session.rpe != null;
+  const shouldShowMaskedPlaceholders =
+    session.isCompleted && session.stravaActivityId != null && isMasked;
+  const shouldShowPerformanceSection =
+    session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
 
   return (
     <div
@@ -170,13 +180,7 @@ export function SessionCard({
       </div>
 
       {/* Actual performance chips — shown when completed */}
-      {session.isCompleted &&
-        (session.actualDurationMinutes != null ||
-          session.actualDistanceKm != null ||
-          session.actualPace != null ||
-          session.avgHeartRate != null ||
-          session.maxHeartRate != null ||
-          session.rpe != null) && (
+      {shouldShowPerformanceSection && (
           <div
             className={cn(
               'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
@@ -184,7 +188,7 @@ export function SessionCard({
             )}
             title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
           >
-            {session.actualDurationMinutes != null && (
+            {(shouldShowMaskedPlaceholders || session.actualDurationMinutes != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.duration')}
@@ -194,7 +198,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {session.actualDistanceKm != null && (
+            {(shouldShowMaskedPlaceholders || session.actualDistanceKm != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
@@ -204,7 +208,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {session.actualPace != null && (
+            {(shouldShowMaskedPlaceholders || session.actualPace != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.pace')}
@@ -214,7 +218,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {session.avgHeartRate != null && (
+            {(shouldShowMaskedPlaceholders || session.avgHeartRate != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.avgHr')}
@@ -224,7 +228,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {session.maxHeartRate != null && (
+            {(shouldShowMaskedPlaceholders || session.maxHeartRate != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.maxHr')}
@@ -344,7 +348,10 @@ export function SessionCard({
             </button>
           )}
 
-          {session.stravaActivityId && !session.isStravaConfirmed && (athleteMode || showAthleteControls) && (
+          {session.stravaActivityId &&
+            !session.isStravaConfirmed &&
+            userRole === 'athlete' &&
+            (athleteMode || showAthleteControls) && (
             <Button
               size="sm"
               variant="outline"

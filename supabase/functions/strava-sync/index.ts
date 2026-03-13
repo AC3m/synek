@@ -185,9 +185,6 @@ Deno.serve(async (req) => {
       // Remove from pool so a second activity of the same type/day matches the next session
       sessions.splice(matchIdx, 1);
 
-      const distanceKm = activity.distance > 0 ? Math.round(activity.distance / 10) / 100 : null;
-      const durationMin = activity.moving_time > 0 ? Math.round(activity.moving_time / 60) : null;
-
       // Round HR floats to integers (Strava returns floats; DB column is INTEGER)
       const avgHr = activity.average_heartrate != null ? Math.round(activity.average_heartrate) : null;
       const maxHr = activity.max_heartrate != null ? Math.round(activity.max_heartrate) : null;
@@ -208,6 +205,7 @@ Deno.serve(async (req) => {
           {
             strava_id: activity.id,
             training_session_id: match.id,
+            user_id: userId,
             name: activity.name,
             activity_type: activity.type,
             start_date: activity.start_date,
@@ -237,11 +235,6 @@ Deno.serve(async (req) => {
       const { error: updateErr } = await supabase
         .from('training_sessions')
         .update({
-          actual_duration_minutes: durationMin,
-          actual_distance_km: distanceKm,
-          actual_pace: pace,
-          avg_heart_rate: avgHr,
-          max_heart_rate: maxHr,
           strava_activity_id: activity.id,
           strava_synced_at: new Date().toISOString(),
         })

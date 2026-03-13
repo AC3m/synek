@@ -19,15 +19,16 @@ This document provides the exact technical details and architectural context req
 *(Requirement: Data cannot be shared with third parties without explicit user action/consent).*
 
 **Implementation:**
-- **Secure by Default:** When a session is synced from Strava, it is inserted into the database with a default `is_strava_confirmed = FALSE` flag.
-- **Backend Masking:** We utilize Supabase Row Level Security (RLS) and a secure database view (`secure_strava_activities`). If a Coach attempts to view an unconfirmed session, the database intercepts the request and returns `NULL` for all sensitive metrics (distance, pace, heart rate, moving time, and raw data). The data never crosses the network.
-- **Explicit Consent Action:** The athlete's UI displays a clear "Confirm & Share with Coach" button on synced sessions. Clicking this triggers a secure Remote Procedure Call (RPC) that sets the `is_confirmed` flag to `TRUE`, finally granting the coach access to view the metrics.
+- **Secure by Default:** When a session is synced from Strava, `strava_activities.is_confirmed` defaults to `FALSE`.
+- **Backend Masking:** The app reads calendar sessions through a secure SQL view (`secure_training_sessions`). For unconfirmed Strava sessions and coach viewers, sensitive metrics are returned as `NULL`, so raw metrics never cross the network.
+- **Explicit Consent Action:** The athlete UI displays "Confirm & Share with Coach" for unconfirmed Strava sessions. This calls a secure RPC that updates `strava_activities.is_confirmed = TRUE`.
 
 ## 4. Webhooks and Data Retention
 *(Requirement: Must handle webhook events, specifically `athlete:update` for authorization revocation, and delete data accordingly).*
 
 **Implementation:**
-- **Webhook Endpoint:** We have deployed a serverless Deno Edge Function at `https://[project].supabase.co/functions/v1/strava-webhook` that successfully responds to the `hub.challenge` GET handshake.
+- **Webhook Endpoint:** We deploy a Deno Edge Function at `https://[project].supabase.co/functions/v1/strava-webhook`.
+- **Validation:** GET handshake validates `hub.verify_token`; POST events require a callback URL `verify_token` query secret.
 - **Revocation Handling:** The POST handler listens for `object_type: "athlete"`, `aspect_type: "update"`, and `updates.authorized === "false"`.
 - **Data Deletion:** Upon receiving a revocation payload, the Edge Function extracts the user ID and performs a hard delete on all records in the `strava_activities` table associated with that user, followed by deleting their OAuth tokens from the `strava_tokens` table. This ensures complete data erasure in compliance with Strava's retention policies.
 

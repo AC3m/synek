@@ -22,11 +22,13 @@ Athlete training planning platform with coach and athlete roles. Coaches create 
 
 - Node.js 20+
 - pnpm
+- Supabase CLI (for migrations/functions deploy)
 
 ### Install
 
 ```bash
 pnpm install
+pnpm supabase:install
 ```
 
 ### Environment
@@ -117,3 +119,28 @@ supabase db push
 ```
 
 Tables: `week_plans`, `training_sessions`, `strava_activities`, `strava_tokens`
+
+## Supabase Deploy (Strava Changes)
+
+Required environment variables:
+
+- `SUPABASE_PROJECT_REF`
+- `SUPABASE_DB_PASSWORD`
+- `STRAVA_CLIENT_ID`
+- `STRAVA_CLIENT_SECRET`
+- `STRAVA_WEBHOOK_VERIFY_TOKEN`
+- `SUPABASE_INTERNAL_FUNCTIONS_TOKEN`
+
+Deploy:
+
+```bash
+pnpm supabase:deploy:strava
+```
+
+After deploy, run this one-time SQL in Supabase SQL Editor for cron runtime settings:
+
+```sql
+ALTER DATABASE postgres SET app.settings.supabase_project_ref = '<your-project-ref>';
+ALTER DATABASE postgres SET app.settings.internal_functions_token = '<your-internal-functions-token>';
+SELECT pg_reload_conf();
+```

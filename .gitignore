@@ -21,3 +21,6 @@ supabase/seed.sql
 # Agent-specific
 .claude/
 .gemini/
+
+#DB Backups
+supabase/backup_before_strava_refactor

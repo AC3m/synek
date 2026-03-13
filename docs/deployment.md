@@ -82,3 +82,73 @@ Synek deploys automatically to Vercel via native Git integration. Every push to 
 | Open or update a pull request | Preview URL posted as a PR comment |
 
 No manual steps are required after initial setup.
+
+---
+
+## I. Supabase Deployment (Migrations + Edge Functions)
+
+Vercel deploys the frontend. Database migrations and Edge Functions must be deployed to Supabase separately.
+
+### 1. Install and authenticate Supabase CLI
+
+```bash
+pnpm supabase:install
+supabase login
+```
+
+### 2. Export required variables
+
+```bash
+export SUPABASE_PROJECT_REF=<project-ref>
+export SUPABASE_DB_PASSWORD=<db-password>
+export STRAVA_CLIENT_ID=<strava-client-id>
+export STRAVA_CLIENT_SECRET=<strava-client-secret>
+export STRAVA_WEBHOOK_VERIFY_TOKEN=<long-random-token>
+export SUPABASE_INTERNAL_FUNCTIONS_TOKEN=<long-random-token>
+```
+
+### 3. Deploy DB + Functions
+
+```bash
+pnpm supabase:deploy:strava
+```
+
+This applies migrations, sets Edge Function secrets, and deploys:
+- `strava-webhook`
+- `strava-token-refresh`
+
+### 4. One-time DB runtime settings for cron
+
+Run in Supabase SQL Editor:
+
+```sql
+ALTER DATABASE postgres SET app.settings.supabase_project_ref = '<project-ref>';
+ALTER DATABASE postgres SET app.settings.internal_functions_token = '<internal-functions-token>';
+SELECT pg_reload_conf();
+```
+
+### 5. Configure Strava webhook callback URL
+
+Set callback URL to:
+
+`https://<project-ref>.supabase.co/functions/v1/strava-webhook?verify_token=<STRAVA_WEBHOOK_VERIFY_TOKEN>`
+
+The `verify_token` query param is required for POST event validation.
+
+### 6. Validation Matrix (Automated vs Manual)
+
+Automated checks runnable in CI/local terminal:
+
+```bash
+pnpm typecheck
+pnpm test:run
+pnpm build
+```
+
+Manual checks (requires your hosted Supabase + Strava app):
+
+1. Run `pnpm supabase:deploy:strava` with real secrets and confirm success.
+2. Confirm `strava-webhook` GET handshake passes with Strava.
+3. Trigger a revocation event and verify activities/tokens are deleted.
+4. Verify hourly token refresh job executes in Supabase (`cron.job` + function logs).
+5. Verify coach UI shows masked metrics until athlete confirms.

@@ -1,7 +1,21 @@
 import { createClient } from "supabase";
 
-// Note: In production, trigger this via pg_cron calling the edge function URL
 Deno.serve(async (req) => {
+  if (req.method !== "POST") {
+    return new Response("Method Not Allowed", { status: 405 });
+  }
+
+  const internalToken = Deno.env.get("SUPABASE_INTERNAL_FUNCTIONS_TOKEN");
+  const authHeader = req.headers.get("Authorization");
+
+  if (!internalToken) {
+    return new Response("Missing internal token config", { status: 500 });
+  }
+
+  if (authHeader !== `Bearer ${internalToken}`) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const supabaseAdmin = createClient(
     Deno.env.get('SUPABASE_URL') ?? '',
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -15,16 +29,25 @@ Deno.serve(async (req) => {
   }
 
   // Find tokens expiring in the next 60 minutes
-  const { data: expiringTokens } = await supabaseAdmin
+  const { data: expiringTokens, error: tokenQueryError } = await supabaseAdmin
     .from('strava_tokens')
     .select('id, refresh_token')
     .lte('expires_at', new Date(Date.now() + 60 * 60 * 1000).toISOString());
 
-  if (!expiringTokens || expiringTokens.length === 0) {
-    return new Response("No tokens to refresh", { status: 200 });
+  if (tokenQueryError) {
+    console.error("Failed querying expiring tokens:", tokenQueryError.message);
+    return new Response("Failed to load expiring tokens", { status: 500 });
   }
 
-  const results = [];
+  if (!expiringTokens || expiringTokens.length === 0) {
+    return new Response(JSON.stringify({ checked: 0, refreshed: 0, failed: 0 }), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    });
+  }
+
+  let refreshed = 0;
+  let failed = 0;
 
   for (const token of expiringTokens) {
     try {
@@ -43,7 +66,7 @@ Deno.serve(async (req) => {
       
       const newAuth = await response.json();
 
-      await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin
         .from('strava_tokens')
         .update({
           access_token: newAuth.access_token,
@@ -53,13 +76,24 @@ Deno.serve(async (req) => {
         })
         .eq('id', token.id);
 
-      results.push({ id: token.id, status: 'success' });
-    } catch (error: any) {
-      results.push({ id: token.id, status: 'failed', error: error.message });
+      if (updateError) {
+        throw new Error(`DB update failed: ${updateError.message}`);
+      }
+
+      refreshed += 1;
+    } catch (error) {
+      failed += 1;
+      const message = error instanceof Error ? error.message : "Unknown refresh error";
+      console.error(`Token refresh failed for ${token.id}:`, message);
     }
   }
 
-  return new Response(JSON.stringify(results), { 
-    headers: { "Content-Type": "application/json" }
+  return new Response(JSON.stringify({
+    checked: expiringTokens.length,
+    refreshed,
+    failed,
+  }), {
+    headers: { "Content-Type": "application/json" },
+    status: 200,
   });
 });

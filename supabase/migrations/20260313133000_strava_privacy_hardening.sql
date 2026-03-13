@@ -1,28 +1,41 @@
--- Add confirmation and user ownership to strava_activities
-ALTER TABLE strava_activities
-ADD COLUMN IF NOT EXISTS is_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
-ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
+-- ============================================================
+-- Strava privacy hardening + single-source confirmation model
+-- ============================================================
 
--- Backfill owner for existing activities based on training_session -> week_plan -> athlete_id
+-- Ensure core columns exist
+ALTER TABLE strava_activities
+  ADD COLUMN IF NOT EXISTS is_confirmed BOOLEAN NOT NULL DEFAULT FALSE,
+  ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE;
+
+-- Ensure ownership is populated
 UPDATE strava_activities sa
 SET user_id = wp.athlete_id
 FROM training_sessions ts
 JOIN week_plans wp ON wp.id = ts.week_plan_id
 WHERE sa.training_session_id = ts.id
-AND sa.user_id IS NULL;
+  AND sa.user_id IS NULL;
 
 CREATE INDEX IF NOT EXISTS idx_strava_activities_user_id ON strava_activities(user_id);
 
-ALTER TABLE strava_activities ENABLE ROW LEVEL SECURITY;
+-- Preserve existing confirmation state before removing legacy duplicate flag.
+UPDATE strava_activities sa
+SET is_confirmed = TRUE
+FROM training_sessions ts
+WHERE sa.training_session_id = ts.id
+  AND COALESCE(ts.is_strava_confirmed, FALSE) = TRUE;
 
--- Remove legacy permissive policies
+-- Remove legacy duplicate flag from training_sessions (never released)
+ALTER TABLE training_sessions
+  DROP COLUMN IF EXISTS is_strava_confirmed;
+
+-- Remove stale policies and re-create strict policies
 DROP POLICY IF EXISTS "anon_all_strava_activities" ON strava_activities;
-DROP POLICY IF EXISTS "anon_all_strava_tokens" ON strava_tokens;
 DROP POLICY IF EXISTS "Users can read own activities or confirmed for their athletes" ON strava_activities;
-DROP POLICY IF EXISTS "Users can update their own activities" ON strava_activities;
 DROP POLICY IF EXISTS "Users can read their own activities or confirmed activities for their athletes" ON strava_activities;
+DROP POLICY IF EXISTS "strava_activities_select_owner_or_assigned_coach" ON strava_activities;
+DROP POLICY IF EXISTS "Users can update their own activities" ON strava_activities;
+DROP POLICY IF EXISTS "strava_activities_update_owner_only" ON strava_activities;
 
--- Athletes can read their own rows; coaches can read rows for assigned athletes only
 CREATE POLICY "strava_activities_select_owner_or_assigned_coach"
 ON strava_activities FOR SELECT
 TO authenticated
@@ -38,14 +51,16 @@ USING (
   )
 );
 
--- Only athletes can update their own rows (used by confirmation RPC path)
 CREATE POLICY "strava_activities_update_owner_only"
 ON strava_activities FOR UPDATE
 TO authenticated
 USING (user_id = auth.uid())
 WITH CHECK (user_id = auth.uid());
 
--- Secure Strava activities view with backend masking
+-- Keep strava_tokens locked down for authenticated ownership policies only
+DROP POLICY IF EXISTS "anon_all_strava_tokens" ON strava_tokens;
+
+-- Rebuild secure views
 DROP VIEW IF EXISTS secure_strava_activities;
 CREATE VIEW secure_strava_activities
 WITH (security_invoker = true) AS
@@ -94,8 +109,6 @@ WHERE
 
 GRANT SELECT ON secure_strava_activities TO authenticated;
 
--- Canonical session read surface for the app:
--- for Strava-linked sessions, use strava_activities values and mask for coaches until confirmed.
 DROP VIEW IF EXISTS secure_training_sessions;
 CREATE VIEW secure_training_sessions
 WITH (security_invoker = true) AS
@@ -171,7 +184,7 @@ LEFT JOIN strava_activities sa ON sa.training_session_id = ts.id;
 
 GRANT SELECT ON secure_training_sessions TO authenticated;
 
--- Confirmation RPCs use strava_activities.is_confirmed as the single source of truth
+-- Recreate confirmation RPCs to use a single source of truth
 DROP FUNCTION IF EXISTS confirm_strava_session(UUID);
 CREATE OR REPLACE FUNCTION confirm_strava_session(p_session_id UUID)
 RETURNS void
@@ -230,3 +243,6 @@ GRANT EXECUTE ON FUNCTION confirm_strava_session(UUID) TO authenticated;
 
 REVOKE ALL ON FUNCTION confirm_all_strava_sessions_for_week(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION confirm_all_strava_sessions_for_week(UUID) TO authenticated;
+
+-- Ensure PostgREST picks up newly created/updated views and functions.
+NOTIFY pgrst, 'reload schema';
