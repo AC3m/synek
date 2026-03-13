@@ -25,7 +25,7 @@ function BrandedBullet() {
 export function FeaturesSection({ className }: FeaturesSectionProps) {
   const { t } = useTranslation('landing')
 
-  const items = ([1, 2, 3, 4, 5] as const).map((n) => ({
+  const items = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
     n,
     title: t(`features.item${n}.title` as never),
     desc: t(`features.item${n}.desc` as never),
@@ -48,8 +48,41 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
             <div key={n} className="flex gap-4">
               <BrandedBullet />
               <div>
-                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/90">{desc}</p>
+                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight">
+                  {n === 5 ? (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center">
+                        <img
+                          src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
+                          alt="Powered by Strava"
+                          className="h-5 w-auto dark:hidden"
+                        />
+                        <img
+                          src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
+                          alt="Powered by Strava"
+                          className="h-5 w-auto hidden dark:block"
+                        />
+                      </div>
+                      <span style={{ color: '#FC5200' }} className="block text-[10px] font-black italic">
+                        {title.includes('(') ? title.substring(title.indexOf('(')) : ''}
+                      </span>
+                    </div>
+                  ) : (
+                    title
+                  )}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground/90">
+                  {desc.split('Strava').map((part, i, arr) => (
+                    <span key={i}>
+                      {part}
+                      {i < arr.length - 1 && (
+                        <span style={{ color: '#FC5200' }} className="font-semibold">
+                          Strava
+                        </span>
+                      )}
+                    </span>
+                  ))}
+                </p>
               </div>
             </div>
           ))}

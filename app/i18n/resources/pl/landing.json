@@ -55,8 +55,12 @@
       "desc": "Daj wolną rękę doświadczonym zawodnikom. Ty weryfikujesz, oni sami układają swój plan."
     },
     "item5": {
-      "title": "Pełna automatyzacja",
-      "desc": "Podłącz konto ze Stravą i patrz, jak zrealizowane treningi same odhaczają się na zielono."
+      "title": "Powered by Strava (Oczekuje na zatwierdzenie)",
+      "desc": "Integracja jest obecnie w fazie ograniczonej bety. Złożyliśmy wniosek do Strava o zwiększenie limitów API, aby wkrótce udostępnić automatyczną synchronizację wszystkim użytkownikom."
+    },
+    "item6": {
+      "title": "Pełna Prywatność Danych",
+      "desc": "Masz pełną kontrolę nad swoimi danymi. Treningi pobrane ze Strava są ukryte przed trenerem, dopóki wyraźnie nie zdecydujesz się ich udostępnić."
     }
   },
   "login": {
