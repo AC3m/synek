@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { stravaAssets } from '~/assets/strava'
 import { cn } from '~/lib/utils'
 
 interface FeaturesSectionProps {
@@ -53,12 +54,12 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
                     <div className="space-y-1.5">
                       <div className="flex items-center">
                         <img
-                          src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
+                          src={stravaAssets.poweredByStravaOrangeUrl}
                           alt="Powered by Strava"
                           className="h-5 w-auto dark:hidden"
                         />
                         <img
-                          src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
+                          src={stravaAssets.poweredByStravaWhiteUrl}
                           alt="Powered by Strava"
                           className="h-5 w-auto hidden dark:block"
                         />

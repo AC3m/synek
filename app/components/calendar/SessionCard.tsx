@@ -23,6 +23,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
+import { stravaAssets } from '~/assets/strava';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
@@ -96,8 +97,7 @@ export function SessionCard({
     session.avgHeartRate != null ||
     session.maxHeartRate != null ||
     session.rpe != null;
-  const shouldShowMaskedPlaceholders =
-    session.isCompleted && session.stravaActivityId != null && isMasked;
+  const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
   const shouldShowPerformanceSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
 
@@ -260,12 +260,12 @@ export function SessionCard({
                 </a>
                 <div className="flex items-center gap-1.5 opacity-80">
                   <img
-                    src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_orange/api_logo_pwrdBy_strava_horiz_orange.svg"
+                    src={stravaAssets.poweredByStravaOrangeUrl}
                     alt="Powered by Strava"
                     className="h-3.5 w-auto dark:hidden"
                   />
                   <img
-                    src="/strava/1.2-Strava-API-Logos/Powered by Strava/pwrdBy_strava_white/api_logo_pwrdBy_strava_horiz_white.svg"
+                    src={stravaAssets.poweredByStravaWhiteUrl}
                     alt="Powered by Strava"
                     className="h-3.5 w-auto hidden dark:block"
                   />
@@ -348,6 +348,10 @@ export function SessionCard({
             </button>
           )}
 
+          {/* Confirm & Share is only shown to athletes, never to coaches — even when a coach
+              uses showAthleteControls to manage their own self-planned sessions. A coach acting
+              as their own athlete has no one to share data with, so the confirmation step is
+              meaningless and intentionally omitted. */}
           {session.stravaActivityId &&
             !session.isStravaConfirmed &&
             userRole === 'athlete' && (

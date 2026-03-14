@@ -9,6 +9,7 @@ import {
 } from '~/lib/hooks/useStravaConnection';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
+import { stravaAssets } from '~/assets/strava';
 import { cn } from '~/lib/utils';
 import {
   mondayToWeekId,
@@ -132,7 +133,7 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
             <p className="text-sm text-muted-foreground">{t('strava.description')}</p>
             <button onClick={onConnectStrava} className="p-0 border-0 bg-transparent hover:opacity-90 transition-opacity">
               <img
-                src="/strava/1.1 Connect with Strava Buttons/Connect with Strava Orange/btn_strava_connect_with_orange.svg"
+                src={stravaAssets.connectWithStravaOrangeUrl}
                 alt="Connect with Strava"
                 className="h-12 w-auto"
               />
