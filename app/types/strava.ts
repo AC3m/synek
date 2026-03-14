@@ -41,12 +41,21 @@ export interface StravaConnectionStatus {
   lastSyncedAt: string | null;
 }
 
-export interface StravaDataPlaceholder {
-  trainingTime: string | null;
-  avgHR: number | null;
-  maxHR: number | null;
-  fatigue: number | null;
-  distance: number | null;
-  pace: string | null;
-  duration: string | null;
+export type StravaLapSegmentType = 'warmup' | 'interval' | 'recovery' | 'cooldown';
+
+export interface StravaLap {
+  id: string;
+  lapIndex: number;
+  name: string | null;
+  intensity: 'active' | 'rest' | null;
+  segmentType: StravaLapSegmentType;
+  distanceMeters: number | null;
+  elapsedTimeSeconds: number | null;
+  movingTimeSeconds: number | null;
+  averageSpeed: number | null;       // m/s — convert to min/km for display
+  averageHeartrate: number | null;
+  maxHeartrate: number | null;
+  averageCadence: number | null;
+  paceZone: number | null;           // 1–5; fallback when averageHeartrate is null
 }
+

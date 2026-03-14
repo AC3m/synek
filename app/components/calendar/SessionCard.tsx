@@ -12,6 +12,7 @@ import {
   Pencil,
   Trash2,
   Zap,
+  Loader2,
   MoreVertical,
 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
@@ -23,14 +24,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { stravaAssets } from '~/assets/strava';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
+import { IntervalButton } from '~/components/training/IntervalButton';
+import { StravaLogo } from '~/components/training/StravaLogo';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
-import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
+import type { TrainingSession, AthleteSessionUpdate, RunData } from '~/types/training';
 
 const iconMap: Record<string, React.ElementType> = {
   Footprints,
@@ -57,7 +59,7 @@ interface SessionCardProps {
   onUpdateNotes?: (sessionId: string, notes: string | null) => void;
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
-  onSyncStrava?: () => void;
+  onSyncStrava?: (sessionId: string) => Promise<void>;
   onConfirmStrava?: (sessionId: string) => void;
   userRole?: UserRole;
 }
@@ -80,6 +82,7 @@ export function SessionCard({
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
+  const [isSyncingStrava, setIsSyncingStrava] = useState(false);
 
   useEffect(() => {
     setCoachFeedback(session.coachPostFeedback ?? '');
@@ -90,6 +93,7 @@ export function SessionCard({
   const isRestDay = session.trainingType === 'rest_day';
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
     session.actualDistanceKm != null ||
@@ -121,6 +125,7 @@ export function SessionCard({
             <Icon className="h-2.5 w-2.5" />
             {t(`common:trainingTypes.${session.trainingType}` as never)}
           </span>
+
         </div>
 
         {!readonly && (onEdit || onDelete) && (
@@ -177,6 +182,13 @@ export function SessionCard({
             {session.plannedDistanceKm} {t('training:units.km')}
           </span>
         )}
+        {session.trainingType === 'run' &&
+          (session.typeSpecificData as RunData).pace_target && (
+            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
+              <Zap className="h-2.5 w-2.5" />
+              {(session.typeSpecificData as RunData).pace_target}{t('training:units.perKm')}
+            </span>
+          )}
       </div>
 
       {/* Actual performance chips — shown when completed */}
@@ -198,7 +210,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {(shouldShowMaskedPlaceholders || session.actualDistanceKm != null) && (
+            {(shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
@@ -246,9 +258,11 @@ export function SessionCard({
                 <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
               </div>
             )}
-            
+
+            <IntervalButton session={session} userRole={userRole} />
+
             {session.stravaActivityId != null && (
-              <div className="w-full flex flex-wrap items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
+              <div className="w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
@@ -258,17 +272,8 @@ export function SessionCard({
                 >
                   View on Strava
                 </a>
-                <div className="flex items-center gap-1.5 opacity-80">
-                  <img
-                    src={stravaAssets.poweredByStravaOrangeUrl}
-                    alt="Powered by Strava"
-                    className="h-3.5 w-auto dark:hidden"
-                  />
-                  <img
-                    src={stravaAssets.poweredByStravaWhiteUrl}
-                    alt="Powered by Strava"
-                    className="h-3.5 w-auto hidden dark:block"
-                  />
+                <div className="flex justify-end mt-1">
+                  <StravaLogo />
                 </div>
               </div>
             )}
@@ -340,10 +345,21 @@ export function SessionCard({
 
           {session.isCompleted && !session.stravaActivityId && stravaConnected && (
             <button
-              onClick={onSyncStrava}
-              className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-400"
+              onClick={async () => {
+                setIsSyncingStrava(true);
+                try {
+                  await onSyncStrava?.(session.id);
+                } finally {
+                  setIsSyncingStrava(false);
+                }
+              }}
+              disabled={isSyncingStrava}
+              className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-400 disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              <Zap className="h-2.5 w-2.5" />
+              {isSyncingStrava
+                ? <Loader2 className="h-2.5 w-2.5 animate-spin" />
+                : <Zap className="h-2.5 w-2.5" />
+              }
               {t('common:strava.sync')}
             </button>
           )}

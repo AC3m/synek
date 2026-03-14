@@ -158,8 +158,16 @@
     "sync": "Synchronizuj",
     "waitingForConfirmation": "Oczekiwanie na potwierdzenie od zawodnika",
     "confirmAndShare": "Potwierdź i udostępnij trenerowi",
-    "unsharedSessions": "{{count}} nieudostępnione treningi",
-    "shareAll": "Udostępnij wszystkie trenerowi"
+    "unsharedSessions_one": "{{count}} nieudostępniony trening",
+    "unsharedSessions_few": "{{count}} nieudostępnione treningi",
+    "unsharedSessions_many": "{{count}} nieudostępnionych treningów",
+    "unsharedSessions_other": "{{count}} nieudostępnionych treningów",
+    "shareAll": "Udostępnij wszystkie dane trenerowi",
+    "unsyncedSessions_one": "{{count}} trening do synchronizacji",
+    "unsyncedSessions_few": "{{count}} treningi do synchronizacji",
+    "unsyncedSessions_many": "{{count}} treningów do synchronizacji",
+    "unsyncedSessions_other": "{{count}} treningów do synchronizacji",
+    "syncAll": "Synchronizuj wszystkie treningi ze Stravą"
   },
   "actions": {
     "edit": "Edytuj",

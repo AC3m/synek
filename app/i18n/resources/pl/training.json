@@ -1,6 +1,7 @@
 {
   "run": {
     "paceTarget": "Docelowe Tempo",
+    "paceTargetHint": "Tempo docelowe dla interwałów lub głównego wysiłku",
     "hrZone": "Strefa Tętna",
     "intervals": "Interwały",
     "terrain": "Teren",
@@ -92,5 +93,23 @@
     "min": "min",
     "bpm": "bpm",
     "perKm": "/km"
+  },
+  "intervals": {
+    "viewButton": "Interwały",
+    "modalTitle": "Szczegóły Interwałów",
+    "retry": "Spróbuj ponownie",
+    "columns": {
+      "segment": "Segment",
+      "duration": "Czas",
+      "distance": "Dystans",
+      "pace": "Tempo",
+      "heartRate": "Tętno / Strefa"
+    },
+    "segments": {
+      "warmup": "Rozgrzewka",
+      "interval": "Interwał",
+      "recovery": "Odpoczynek",
+      "cooldown": "Wyciszenie"
+    }
   }
 }

@@ -30,8 +30,8 @@ export function useConnectStrava() {
 export function useStravaSync() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ weekStart }: { weekStart: string }) =>
-      syncStrava(weekStart),
+    mutationFn: ({ weekStart, sessionId }: { weekStart: string; sessionId?: string }) =>
+      syncStrava(weekStart, sessionId),
     onMutate: async (_vars) => {
       // Snapshot all strava-connection caches because this mutation no longer
       // requires caller-provided userId.

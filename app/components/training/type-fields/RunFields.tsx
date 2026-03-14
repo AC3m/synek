@@ -13,14 +13,6 @@ export function RunFields({ data, onChange }: RunFieldsProps) {
   return (
     <div className="space-y-3">
       <div>
-        <label className="text-sm font-medium">{t('run.paceTarget')}</label>
-        <Input
-          placeholder="e.g. 5:30/km"
-          value={data.pace_target ?? ''}
-          onChange={(e) => onChange({ ...data, pace_target: e.target.value || undefined })}
-        />
-      </div>
-      <div>
         <label className="text-sm font-medium">{t('run.hrZone')}</label>
         <Input
           type="number"

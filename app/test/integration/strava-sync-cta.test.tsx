@@ -63,7 +63,7 @@ function renderCard(
   props: {
     athleteMode?: boolean;
     stravaConnected?: boolean;
-    onSyncStrava?: () => void;
+    onSyncStrava?: (sessionId: string) => Promise<void>;
     userRole?: UserRole;
   } = {}
 ) {

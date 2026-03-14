@@ -203,6 +203,27 @@ export function SessionFormFields({
             </div>
           </div>
 
+          {trainingType === 'run' && (
+            <div className="space-y-2">
+              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                {t('training:run.paceTarget')}
+              </label>
+              <Input
+                placeholder="5:30"
+                value={(typeData as Partial<RunData>).pace_target ?? ''}
+                onChange={(e) =>
+                  onTypeDataChange({
+                    ...typeData,
+                    pace_target: e.target.value || undefined,
+                  })
+                }
+              />
+              <p className="text-[10px] text-muted-foreground mt-1">
+                {t('training:run.paceTargetHint')}
+              </p>
+            </div>
+          )}
+
           {isCoach && (
             <div className="space-y-2">
               <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">

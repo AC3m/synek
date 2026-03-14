@@ -17,12 +17,14 @@ import {
   useConfirmStravaSession,
   useBulkConfirmStravaSessions,
 } from '~/lib/hooks/useSessions';
+import { useQueryClient } from '@tanstack/react-query';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
+import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
-import { StravaBulkShareBar } from '~/components/calendar/StravaBulkShareBar';
+import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import type { DayOfWeek, TrainingSession, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
 
 export default function AthleteWeekView() {
@@ -44,8 +46,10 @@ export default function AthleteWeekView() {
   const sessionsQuery = useSessions(weekPlan?.id);
   const sessions = sessionsQuery.data ?? [];
   const updateAthlete = useUpdateAthleteSession();
+  const qc = useQueryClient();
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
-  const stravaSync = useStravaSync();
+  const stravaSyncSingle = useStravaSync();
+  const stravaSyncBulk = useStravaSync();
 
   // Planning hooks — only used when canSelfPlan
   const getOrCreate = useGetOrCreateWeekPlan();
@@ -98,10 +102,22 @@ export default function AthleteWeekView() {
     [updateAthlete]
   );
 
-  const handleSyncStrava = useCallback(() => {
+  const handleSyncStrava = useCallback(async (sessionId: string) => {
     if (!user) return;
-    stravaSync.mutate({ weekStart });
-  }, [stravaSync, user, weekStart]);
+    try {
+      await stravaSyncSingle.mutateAsync({ weekStart, sessionId });
+    } catch {
+      // mutation errors are handled by useStravaSync's onError
+    } finally {
+      if (weekPlan?.id) {
+        void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
+      }
+    }
+  }, [stravaSyncSingle, user, weekStart, qc, weekPlan?.id]);
+
+  const handleSyncAllStrava = useCallback(() => {
+    stravaSyncBulk.mutate({ weekStart });
+  }, [stravaSyncBulk, weekStart]);
 
   const handleConfirmStrava = useCallback(
     (sessionId: string) => {
@@ -110,11 +126,16 @@ export default function AthleteWeekView() {
     [confirmStrava]
   );
 
-  const handleBulkConfirmStrava = useCallback(() => {
-    if (weekPlan) {
-      bulkConfirmStrava.mutate(weekPlan.id);
+  const handleBulkConfirmStrava = useCallback(async () => {
+    if (!weekPlan) return;
+    try {
+      await bulkConfirmStrava.mutateAsync(weekPlan.id);
+    } catch {
+      // handled by hook's onError
+    } finally {
+      void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
     }
-  }, [bulkConfirmStrava, weekPlan]);
+  }, [bulkConfirmStrava, weekPlan, qc]);
 
   const handleAddSession = useCallback((day: DayOfWeek) => {
     setEditingSession(null);
@@ -218,11 +239,14 @@ export default function AthleteWeekView() {
         />
       )}
 
-      {/* Floating Action Bar for Bulk Sharing */}
-      <StravaBulkShareBar
+      {/* Floating Action Bar — Strava bulk sync + bulk share */}
+      <StravaActionsBar
+        unsyncedCount={stravaConnected ? sessions.filter(s => s.isCompleted && !s.stravaActivityId).length : 0}
         unsharedCount={sessions.filter(s => s.stravaActivityId != null && !s.isStravaConfirmed).length}
+        onSyncAll={handleSyncAllStrava}
         onShareAll={handleBulkConfirmStrava}
-        isPending={bulkConfirmStrava.isPending}
+        isSyncPending={stravaSyncBulk.isPending}
+        isSharePending={bulkConfirmStrava.isPending}
       />
     </div>
   );

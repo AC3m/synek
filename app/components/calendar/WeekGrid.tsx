@@ -28,7 +28,7 @@ interface WeekGridProps {
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
-  onSyncStrava?: () => void;
+  onSyncStrava?: (sessionId: string) => Promise<void>;
   onConfirmStrava?: (sessionId: string) => void;
   userRole?: UserRole;
   selectedDay?: DayOfWeek;
