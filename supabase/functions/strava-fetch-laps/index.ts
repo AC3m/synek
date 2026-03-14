@@ -15,6 +15,8 @@ function json(data: unknown, status = 200) {
   });
 }
 
+// ─── Lap classification ────────────────────────────────────────────────────────
+
 type SegmentType = 'warmup' | 'interval' | 'recovery' | 'cooldown';
 
 interface StravaRawLap {
@@ -34,7 +36,6 @@ interface StravaRawLap {
 function classifyLaps(rawLaps: StravaRawLap[]): Array<StravaRawLap & { segment_type: SegmentType }> {
   if (rawLaps.length === 0) return [];
 
-  // Step 1: Name-based classification
   const nameClassified = rawLaps.map((lap) => {
     const nameLower = (lap.name ?? '').toLowerCase();
     if (nameLower.includes('warm') || nameLower.includes('wu')) {
@@ -46,13 +47,11 @@ function classifyLaps(rawLaps: StravaRawLap[]): Array<StravaRawLap & { segment_t
     return { ...lap, segment_type: null as unknown as SegmentType };
   });
 
-  // Step 2: Position-heuristic for unclassified laps
   const restIndices = rawLaps
     .map((lap, i) => (lap.intensity === 'rest' ? i : -1))
     .filter((i) => i !== -1);
 
   if (restIndices.length === 0) {
-    // No rest laps — classify all active as intervals (caller will suppress affordance)
     return nameClassified.map((lap) => ({
       ...lap,
       segment_type: (lap.segment_type ?? 'interval') as SegmentType,
@@ -63,25 +62,15 @@ function classifyLaps(rawLaps: StravaRawLap[]): Array<StravaRawLap & { segment_t
   const lastRest = restIndices[restIndices.length - 1];
 
   return nameClassified.map((lap, i) => {
-    // Already name-classified
     if (lap.segment_type !== null) return lap;
-
-    if (lap.intensity === 'rest') {
-      return { ...lap, segment_type: 'recovery' as SegmentType };
-    }
-
-    // Active laps before the first rest → warmup
-    if (i < firstRest) {
-      return { ...lap, segment_type: 'warmup' as SegmentType };
-    }
-    // Active laps after the last rest → cooldown
-    if (i > lastRest) {
-      return { ...lap, segment_type: 'cooldown' as SegmentType };
-    }
-    // Active laps between rest laps → intervals
+    if (lap.intensity === 'rest') return { ...lap, segment_type: 'recovery' as SegmentType };
+    if (i < firstRest) return { ...lap, segment_type: 'warmup' as SegmentType };
+    if (i > lastRest) return { ...lap, segment_type: 'cooldown' as SegmentType };
     return { ...lap, segment_type: 'interval' as SegmentType };
   });
 }
+
+// ─── Handler ───────────────────────────────────────────────────────────────────
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -93,17 +82,20 @@ Deno.serve(async (req) => {
     if (!authHeader?.startsWith('Bearer ')) {
       return json({ error: 'unauthorized' }, 401);
     }
-    const jwt = authHeader.slice(7);
 
+    const token = authHeader.slice(7);
+
+    // Use the anon client + getClaims for local JWT verification (no network round-trip).
+    // This works correctly with ES256 asymmetric tokens issued by this Supabase project.
     const anonClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!
+      Deno.env.get('SUPABASE_ANON_KEY')!,
     );
-    const { data: userData, error: userError } = await anonClient.auth.getUser(jwt);
-    if (userError || !userData.user) {
+    const { data: claimsData, error: claimsError } = await anonClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims?.sub) {
       return json({ error: 'unauthorized' }, 401);
     }
-    const userId = userData.user.id;
+    const userId = claimsData.claims.sub as string;
 
     const { sessionId } = await req.json() as { sessionId?: string };
     if (!sessionId) {
@@ -115,7 +107,6 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    // Verify session ownership via week_plan
     const { data: sessionRow, error: sessionErr } = await supabase
       .from('training_sessions')
       .select('id, strava_activity_id, week_plan_id')
@@ -126,7 +117,6 @@ Deno.serve(async (req) => {
       return json({ error: 'forbidden' }, 403);
     }
 
-    // Check the athlete owns this session
     const { data: weekPlan, error: wpErr } = await supabase
       .from('week_plans')
       .select('athlete_id')
@@ -140,7 +130,6 @@ Deno.serve(async (req) => {
     const isAthlete = weekPlan.athlete_id === userId;
 
     if (!isAthlete) {
-      // Allow coaches who have a relationship with this athlete
       const { data: coachRel } = await supabase
         .from('coach_athletes')
         .select('coach_id')
@@ -158,7 +147,6 @@ Deno.serve(async (req) => {
       return json({ error: 'no_strava_activity' }, 404);
     }
 
-    // Check cache: if laps already exist, return them immediately
     const { data: cachedLaps, error: cacheErr } = await supabase
       .from('strava_laps')
       .select(
@@ -171,12 +159,10 @@ Deno.serve(async (req) => {
       return json({ laps: cachedLaps.map(toLapResponse) });
     }
 
-    // Coaches can only read from cache — they don't have the athlete's Strava token
     if (!isAthlete) {
       return json({ laps: [] });
     }
 
-    // Retrieve Strava access token
     const { data: tokenRow, error: tokenErr } = await supabase
       .from('strava_tokens')
       .select('access_token, refresh_token, expires_at')
@@ -189,7 +175,6 @@ Deno.serve(async (req) => {
 
     let accessToken = tokenRow.access_token as string;
 
-    // Refresh if expired
     if (new Date(tokenRow.expires_at as string).getTime() < Date.now() + 60_000) {
       const refreshRes = await fetch(STRAVA_TOKEN_URL, {
         method: 'POST',
@@ -223,7 +208,6 @@ Deno.serve(async (req) => {
         .eq('user_id', userId);
     }
 
-    // Fetch detailed activity with laps from Strava
     const activityRes = await fetch(
       `${STRAVA_ACTIVITY_URL}/${stravaId}`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
@@ -238,32 +222,30 @@ Deno.serve(async (req) => {
     }
 
     const activity = await activityRes.json() as { laps?: StravaRawLap[] };
-    const rawLaps: StravaRawLap[] = activity.laps ?? [];
+    const classified = classifyLaps(activity.laps ?? []);
 
-    const classified = classifyLaps(rawLaps);
-
-    // Upsert classified laps into strava_laps
     if (classified.length > 0) {
-      const rows = classified.map((lap) => ({
-        strava_activity_id: stravaId,
-        user_id: userId,
-        lap_index: lap.lap_index,
-        name: lap.name ?? null,
-        intensity: lap.intensity ?? null,
-        segment_type: lap.segment_type,
-        distance_meters: lap.distance ?? null,
-        elapsed_time_seconds: lap.elapsed_time ?? null,
-        moving_time_seconds: lap.moving_time ?? null,
-        average_speed: lap.average_speed ?? null,
-        average_heartrate: lap.average_heartrate ?? null,
-        max_heartrate: lap.max_heartrate ?? null,
-        average_cadence: lap.average_cadence ?? null,
-        pace_zone: lap.pace_zone ?? null,
-      }));
-
       await supabase
         .from('strava_laps')
-        .upsert(rows, { onConflict: 'strava_activity_id,lap_index' });
+        .upsert(
+          classified.map((lap) => ({
+            strava_activity_id: stravaId,
+            user_id: userId,
+            lap_index: lap.lap_index,
+            name: lap.name ?? null,
+            intensity: lap.intensity ?? null,
+            segment_type: lap.segment_type,
+            distance_meters: lap.distance ?? null,
+            elapsed_time_seconds: lap.elapsed_time ?? null,
+            moving_time_seconds: lap.moving_time ?? null,
+            average_speed: lap.average_speed ?? null,
+            average_heartrate: lap.average_heartrate ?? null,
+            max_heartrate: lap.max_heartrate ?? null,
+            average_cadence: lap.average_cadence ?? null,
+            pace_zone: lap.pace_zone ?? null,
+          })),
+          { onConflict: 'strava_activity_id,lap_index' }
+        );
     }
 
     return json({

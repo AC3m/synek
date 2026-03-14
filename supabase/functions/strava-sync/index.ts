@@ -62,7 +62,8 @@ Deno.serve(async (req) => {
     }
     const userId = userData.user.id;
 
-    const { weekStart } = await req.json() as { weekStart: string };
+    const body = await req.json() as { weekStart: string; sessionId?: string };
+    const { weekStart, sessionId } = body;
     if (!weekStart) {
       return json({ error: 'invalid_request' }, 400);
     }
@@ -191,7 +192,12 @@ Deno.serve(async (req) => {
     // Sync candidates are sessions without a linked strava_activities row.
     // This includes both never-synced sessions and stale/orphaned links where
     // strava_activity_id is set but backing row is missing.
-    const sessions = (sessionsData ?? []).filter((session) => !linkedSessionIds.has(session.id));
+    const unlinkedSessions = (sessionsData ?? []).filter((session) => !linkedSessionIds.has(session.id));
+
+    // When a specific sessionId is provided, narrow the pool to that session only.
+    const sessions = sessionId
+      ? unlinkedSessions.filter((s) => s.id === sessionId)
+      : unlinkedSessions;
 
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
     let synced = 0;

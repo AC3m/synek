@@ -94,17 +94,19 @@ export async function connectStrava(
 // Sync activities for a week (calls Edge Function)
 // ============================================================
 
-export async function mockSyncStrava(weekStart: string): Promise<{ synced: number; lastSyncedAt: string }> {
+export async function mockSyncStrava(weekStart: string, sessionId?: string): Promise<{ synced: number; lastSyncedAt: string }> {
   await new Promise((r) => setTimeout(r, 800));
   void weekStart;
+  void sessionId;
   mockLastSyncedAt = new Date().toISOString();
   return { synced: 1, lastSyncedAt: mockLastSyncedAt };
 }
 
 export async function syncStrava(
-  weekStart: string
+  weekStart: string,
+  sessionId?: string
 ): Promise<{ synced: number; lastSyncedAt: string }> {
-  if (isMockMode) return mockSyncStrava(weekStart);
+  if (isMockMode) return mockSyncStrava(weekStart, sessionId);
 
   const accessToken = await getValidAccessToken();
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
@@ -117,7 +119,7 @@ export async function syncStrava(
       apikey: supabaseAnonKey,
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({ weekStart }),
+    body: JSON.stringify(sessionId ? { weekStart, sessionId } : { weekStart }),
   });
 
   const payload = (await res.json().catch(() => null)) as
