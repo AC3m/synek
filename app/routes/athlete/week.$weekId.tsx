@@ -41,7 +41,8 @@ export default function AthleteWeekView() {
 
   // Queries
   const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
-  const { data: sessions = [] } = useSessions(weekPlan?.id);
+  const sessionsQuery = useSessions(weekPlan?.id);
+  const sessions = sessionsQuery.data ?? [];
   const updateAthlete = useUpdateAthleteSession();
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
   const stravaSync = useStravaSync();
@@ -150,7 +151,11 @@ export default function AthleteWeekView() {
 
   if (!weekId) return null;
 
-  if (weekLoading || (canSelfPlan && getOrCreate.isPending && !weekPlan)) {
+  if (
+    weekLoading ||
+    (canSelfPlan && getOrCreate.isPending && !weekPlan) ||
+    (!!weekPlan && sessionsQuery.isPending)
+  ) {
     return <WeekSkeleton />;
   }
 
