@@ -1,6 +1,7 @@
 {
   "run": {
     "paceTarget": "Pace Target",
+    "paceTargetHint": "Target pace for intervals or key effort",
     "hrZone": "HR Zone",
     "intervals": "Intervals",
     "terrain": "Terrain",

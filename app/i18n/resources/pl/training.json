@@ -1,6 +1,7 @@
 {
   "run": {
     "paceTarget": "Docelowe Tempo",
+    "paceTargetHint": "Tempo docelowe dla interwałów lub głównego wysiłku",
     "hrZone": "Strefa Tętna",
     "intervals": "Interwały",
     "terrain": "Teren",
