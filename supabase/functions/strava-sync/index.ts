@@ -153,6 +153,7 @@ Deno.serve(async (req) => {
       average_cadence?: number;
       calories?: number;
       suffer_score?: number;
+      workout_type?: number;
     }>;
 
     // Load week plan + sessions for this user
@@ -256,6 +257,7 @@ Deno.serve(async (req) => {
             calories: activity.calories ?? null,
             suffer_score: activity.suffer_score ?? null,
             average_pace_per_km: pace,
+            workout_type: activity.workout_type ?? null,
             raw_data: activity,
           },
           { onConflict: 'strava_id' }

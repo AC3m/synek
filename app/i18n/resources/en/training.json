@@ -92,5 +92,23 @@
     "min": "min",
     "bpm": "bpm",
     "perKm": "/km"
+  },
+  "intervals": {
+    "viewButton": "Intervals",
+    "modalTitle": "Interval Breakdown",
+    "retry": "Retry",
+    "columns": {
+      "segment": "Segment",
+      "duration": "Duration",
+      "distance": "Distance",
+      "pace": "Pace",
+      "heartRate": "HR / Zone"
+    },
+    "segments": {
+      "warmup": "WU",
+      "interval": "Interval",
+      "recovery": "Rec",
+      "cooldown": "CD"
+    }
   }
 }

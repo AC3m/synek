@@ -23,10 +23,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
-import { stravaAssets } from '~/assets/strava';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
+import { IntervalButton } from '~/components/training/IntervalButton';
+import { StravaLogo } from '~/components/training/StravaLogo';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
@@ -90,6 +91,7 @@ export function SessionCard({
   const isRestDay = session.trainingType === 'rest_day';
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
     session.actualDistanceKm != null ||
@@ -121,6 +123,7 @@ export function SessionCard({
             <Icon className="h-2.5 w-2.5" />
             {t(`common:trainingTypes.${session.trainingType}` as never)}
           </span>
+
         </div>
 
         {!readonly && (onEdit || onDelete) && (
@@ -246,9 +249,11 @@ export function SessionCard({
                 <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
               </div>
             )}
-            
+
+            <IntervalButton session={session} userRole={userRole} />
+
             {session.stravaActivityId != null && (
-              <div className="w-full flex flex-wrap items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
+              <div className="w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed space-y-1">
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
@@ -258,18 +263,7 @@ export function SessionCard({
                 >
                   View on Strava
                 </a>
-                <div className="flex items-center gap-1.5 opacity-80">
-                  <img
-                    src={stravaAssets.poweredByStravaOrangeUrl}
-                    alt="Powered by Strava"
-                    className="h-3.5 w-auto dark:hidden"
-                  />
-                  <img
-                    src={stravaAssets.poweredByStravaWhiteUrl}
-                    alt="Powered by Strava"
-                    className="h-3.5 w-auto hidden dark:block"
-                  />
-                </div>
+                <StravaLogo />
               </div>
             )}
           </div>

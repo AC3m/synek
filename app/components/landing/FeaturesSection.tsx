@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { stravaAssets } from '~/assets/strava'
 import { cn } from '~/lib/utils'
+import { StravaLogo } from '~/components/training/StravaLogo'
 
 interface FeaturesSectionProps {
   className?: string
@@ -53,16 +53,7 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
                   {n === 5 ? (
                     <div className="space-y-1.5">
                       <div className="flex items-center">
-                        <img
-                          src={stravaAssets.poweredByStravaOrangeUrl}
-                          alt="Powered by Strava"
-                          className="h-5 w-auto dark:hidden"
-                        />
-                        <img
-                          src={stravaAssets.poweredByStravaWhiteUrl}
-                          alt="Powered by Strava"
-                          className="h-5 w-auto hidden dark:block"
-                        />
+                        <StravaLogo />
                       </div>
                       <span style={{ color: '#FC5200' }} className="block text-[10px] font-black italic">
                         {t('features.item5.approvalBadge')}
