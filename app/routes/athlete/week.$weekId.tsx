@@ -14,12 +14,15 @@ import {
   useCreateSession,
   useUpdateSession,
   useDeleteSession,
+  useConfirmStravaSession,
+  useBulkConfirmStravaSessions,
 } from '~/lib/hooks/useSessions';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import { StravaBulkShareBar } from '~/components/calendar/StravaBulkShareBar';
 import type { DayOfWeek, TrainingSession, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
 
 export default function AthleteWeekView() {
@@ -38,7 +41,8 @@ export default function AthleteWeekView() {
 
   // Queries
   const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
-  const { data: sessions = [] } = useSessions(weekPlan?.id);
+  const sessionsQuery = useSessions(weekPlan?.id);
+  const sessions = sessionsQuery.data ?? [];
   const updateAthlete = useUpdateAthleteSession();
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
   const stravaSync = useStravaSync();
@@ -48,6 +52,8 @@ export default function AthleteWeekView() {
   const createSession = useCreateSession();
   const updateSession = useUpdateSession();
   const deleteSessionMut = useDeleteSession();
+  const confirmStrava = useConfirmStravaSession();
+  const bulkConfirmStrava = useBulkConfirmStravaSessions();
 
   // Auto-create week plan when self-planning is enabled and no plan exists
   const mutatingRef = useRef(false);
@@ -93,10 +99,22 @@ export default function AthleteWeekView() {
   );
 
   const handleSyncStrava = useCallback(() => {
-    if (user) {
-      stravaSync.mutate({ userId: user.id, weekStart });
-    }
+    if (!user) return;
+    stravaSync.mutate({ weekStart });
   }, [stravaSync, user, weekStart]);
+
+  const handleConfirmStrava = useCallback(
+    (sessionId: string) => {
+      confirmStrava.mutate(sessionId);
+    },
+    [confirmStrava]
+  );
+
+  const handleBulkConfirmStrava = useCallback(() => {
+    if (weekPlan) {
+      bulkConfirmStrava.mutate(weekPlan.id);
+    }
+  }, [bulkConfirmStrava, weekPlan]);
 
   const handleAddSession = useCallback((day: DayOfWeek) => {
     setEditingSession(null);
@@ -133,7 +151,11 @@ export default function AthleteWeekView() {
 
   if (!weekId) return null;
 
-  if (weekLoading || (canSelfPlan && getOrCreate.isPending && !weekPlan)) {
+  if (
+    weekLoading ||
+    (canSelfPlan && getOrCreate.isPending && !weekPlan) ||
+    (!!weekPlan && sessionsQuery.isPending)
+  ) {
     return <WeekSkeleton />;
   }
 
@@ -172,6 +194,8 @@ export default function AthleteWeekView() {
         onUpdatePerformance={handleUpdatePerformance}
         stravaConnected={stravaConnected}
         onSyncStrava={handleSyncStrava}
+        onConfirmStrava={handleConfirmStrava}
+        userRole={user?.role}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(canSelfPlan && {
@@ -193,6 +217,13 @@ export default function AthleteWeekView() {
           isCoach={false}
         />
       )}
+
+      {/* Floating Action Bar for Bulk Sharing */}
+      <StravaBulkShareBar
+        unsharedCount={sessions.filter(s => s.stravaActivityId != null && !s.isStravaConfirmed).length}
+        onShareAll={handleBulkConfirmStrava}
+        isPending={bulkConfirmStrava.isPending}
+      />
     </div>
   );
 }

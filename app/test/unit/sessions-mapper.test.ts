@@ -24,6 +24,7 @@ const baseRow: Record<string, unknown> = {
   trainee_notes: 'Felt strong',
   strava_activity_id: 12345,
   strava_synced_at: '2026-03-04T09:00:00Z',
+  is_strava_confirmed: false,
   created_at: '2026-03-01T00:00:00Z',
   updated_at: '2026-03-04T09:00:00Z',
 };
@@ -51,6 +52,7 @@ describe('toSession (row mapper)', () => {
     expect(session.coachPostFeedback).toBe('Good effort');
     expect(session.stravaActivityId).toBe(12345);
     expect(session.stravaSyncedAt).toBe('2026-03-04T09:00:00Z');
+    expect(session.isStravaConfirmed).toBe(false);
     expect(session.createdAt).toBe('2026-03-01T00:00:00Z');
     expect(session.updatedAt).toBe('2026-03-04T09:00:00Z');
   });
@@ -90,6 +92,7 @@ describe('toSession (row mapper)', () => {
       trainee_notes: null,
       strava_activity_id: null,
       strava_synced_at: null,
+      is_strava_confirmed: null,
     };
     const session = toSession(nullRow);
     expect(session.description).toBeNull();
@@ -108,5 +111,6 @@ describe('toSession (row mapper)', () => {
     expect(session.athleteNotes).toBeNull();
     expect(session.stravaActivityId).toBeNull();
     expect(session.stravaSyncedAt).toBeNull();
+    expect(session.isStravaConfirmed).toBe(false);
   });
 });

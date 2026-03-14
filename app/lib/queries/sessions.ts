@@ -5,6 +5,8 @@ import {
   mockUpdateSession,
   mockDeleteSession,
   mockUpdateAthleteSession,
+  mockConfirmStravaSession,
+  mockBulkConfirmStravaSessions,
 } from '~/lib/mock-data';
 import type {
   TrainingSession,
@@ -40,9 +42,29 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
+    isStravaConfirmed: Boolean(row.is_strava_confirmed ?? false),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
+}
+
+export async function confirmStravaSession(sessionId: string): Promise<void> {
+  if (isMockMode) return mockConfirmStravaSession(sessionId);
+
+  const { error } = await supabase.rpc('confirm_strava_session', {
+    p_session_id: sessionId,
+  });
+
+  if (error) throw error;
+}
+
+export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
+  if (isMockMode) return mockBulkConfirmStravaSessions(weekPlanId);
+  
+  const { error } = await supabase
+    .rpc('confirm_all_strava_sessions_for_week', { p_week_plan_id: weekPlanId });
+
+  if (error) throw error;
 }
 
 export async function fetchSessionsByWeekPlan(
@@ -50,7 +72,7 @@ export async function fetchSessionsByWeekPlan(
 ): Promise<TrainingSession[]> {
   if (isMockMode) return mockFetchSessionsByWeekPlan(weekPlanId);
   const { data, error } = await supabase
-    .from('training_sessions')
+    .from('secure_training_sessions')
     .select('*')
     .eq('week_plan_id', weekPlanId)
     .order('sort_order', { ascending: true });

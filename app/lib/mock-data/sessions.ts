@@ -112,3 +112,33 @@ export async function mockUpdateAthleteSession(
   sessions.set(updated.id, updated);
   return updated;
 }
+
+export async function mockConfirmStravaSession(sessionId: string): Promise<void> {
+  await delay();
+  const existing = sessions.get(sessionId);
+  if (!existing) throw new Error(`Session ${sessionId} not found`);
+
+  const updated: TrainingSession = {
+    ...existing,
+    isStravaConfirmed: true,
+    updatedAt: new Date().toISOString(),
+  };
+  sessions.set(updated.id, updated);
+}
+
+export async function mockBulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
+  await delay();
+  for (const session of sessions.values()) {
+    if (
+      session.weekPlanId === weekPlanId &&
+      session.stravaActivityId != null &&
+      !session.isStravaConfirmed
+    ) {
+      sessions.set(session.id, {
+        ...session,
+        isStravaConfirmed: true,
+        updatedAt: new Date().toISOString()
+      });
+    }
+  }
+}

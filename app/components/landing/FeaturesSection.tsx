@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next'
+import { stravaAssets } from '~/assets/strava'
 import { cn } from '~/lib/utils'
 
 interface FeaturesSectionProps {
@@ -25,10 +26,10 @@ function BrandedBullet() {
 export function FeaturesSection({ className }: FeaturesSectionProps) {
   const { t } = useTranslation('landing')
 
-  const items = ([1, 2, 3, 4, 5] as const).map((n) => ({
+  const items = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
     n,
-    title: t(`features.item${n}.title` as never),
-    desc: t(`features.item${n}.desc` as never),
+    title: t(`features.item${n}.title` as never) as string,
+    desc: t(`features.item${n}.desc` as never) as string,
   }))
 
   return (
@@ -48,7 +49,29 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
             <div key={n} className="flex gap-4">
               <BrandedBullet />
               <div>
-                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight">{title}</h3>
+                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight">
+                  {n === 5 ? (
+                    <div className="space-y-1.5">
+                      <div className="flex items-center">
+                        <img
+                          src={stravaAssets.poweredByStravaOrangeUrl}
+                          alt="Powered by Strava"
+                          className="h-5 w-auto dark:hidden"
+                        />
+                        <img
+                          src={stravaAssets.poweredByStravaWhiteUrl}
+                          alt="Powered by Strava"
+                          className="h-5 w-auto hidden dark:block"
+                        />
+                      </div>
+                      <span style={{ color: '#FC5200' }} className="block text-[10px] font-black italic">
+                        {t('features.item5.approvalBadge')}
+                      </span>
+                    </div>
+                  ) : (
+                    title
+                  )}
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground/90">{desc}</p>
               </div>
             </div>

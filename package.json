@@ -12,6 +12,8 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "supabase:install": "bash scripts/install-supabase-cli.sh",
+    "supabase:deploy:strava": "bash scripts/supabase-deploy-strava.sh",
     "release": "release-it"
   },
   "dependencies": {

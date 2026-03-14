@@ -55,8 +55,13 @@
       "desc": "Give experienced athletes free rein. You review, they build their own plan."
     },
     "item5": {
-      "title": "Full automation",
-      "desc": "Connect your Strava account and watch completed workouts turn green automatically."
+      "title": "Powered by Strava (Pending Approval)",
+      "approvalBadge": "(Pending Approval)",
+      "desc": "Integration is currently in a restricted beta. We've applied for an API limit extension from Strava to roll out automatic performance syncing to all users soon."
+    },
+    "item6": {
+      "title": "Strict Data Privacy",
+      "desc": "You are in full control of your data. Workouts synced from Strava are masked from your coach until you explicitly choose to share them."
     }
   },
   "login": {

@@ -38,7 +38,8 @@ export default function CoachWeekView() {
   const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
   const getOrCreate = useGetOrCreateWeekPlan();
   const updateWeek = useUpdateWeekPlan();
-  const { data: sessions = [] } = useSessions(weekPlan?.id);
+  const sessionsQuery = useSessions(weekPlan?.id);
+  const sessions = sessionsQuery.data ?? [];
 
   // Mutations
   const createSession = useCreateSession();
@@ -141,7 +142,11 @@ export default function CoachWeekView() {
 
   if (!weekId) return null;
 
-  if (weekLoading || (getOrCreate.isPending && !weekPlan)) {
+  if (
+    weekLoading ||
+    (getOrCreate.isPending && !weekPlan) ||
+    (!!weekPlan && sessionsQuery.isPending)
+  ) {
     return <WeekSkeleton />;
   }
 
@@ -173,6 +178,7 @@ export default function CoachWeekView() {
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+        userRole={user?.role}
         selectedDay={selectedDay}
         onSelectDay={setSelectedDay}
         {...(isViewingSelf && {

@@ -6,6 +6,8 @@ import {
   useCreateSession,
   useDeleteSession,
   useUpdateSession,
+  useConfirmStravaSession,
+  useBulkConfirmStravaSessions,
 } from '~/lib/hooks/useSessions';
 import {
   mockFetchSessionsByWeekPlan,
@@ -14,6 +16,11 @@ import {
   mockUpdateSession,
 } from '~/lib/mock-data';
 import { createTestQueryClient } from '~/test/utils/query-client';
+
+const { confirmStravaSessionMock, bulkConfirmStravaSessionsMock } = vi.hoisted(() => ({
+  confirmStravaSessionMock: vi.fn(async () => {}),
+  bulkConfirmStravaSessionsMock: vi.fn(async () => {}),
+}));
 
 // Mock the query module — async factory avoids vi.mock hoisting issues
 vi.mock('~/lib/queries/sessions', async () => {
@@ -24,6 +31,8 @@ vi.mock('~/lib/queries/sessions', async () => {
     deleteSession: m.mockDeleteSession,
     updateSession: m.mockUpdateSession,
     updateAthleteSession: vi.fn(),
+    confirmStravaSession: confirmStravaSessionMock,
+    bulkConfirmStravaSessions: bulkConfirmStravaSessionsMock,
   };
 });
 
@@ -145,5 +154,169 @@ describe('useUpdateSession', () => {
     ]);
     const updated = cached?.find((s) => s.id === target.id);
     expect(updated?.description).toBe('Updated description');
+  });
+});
+
+describe('useConfirmStravaSession', () => {
+  it('optimistically marks a pending Strava session as confirmed', async () => {
+    const { queryClient, Wrapper } = makeWrapper();
+    const sessions = [
+      {
+        id: 'session-pending',
+        weekPlanId: ALICE_W10_PLAN_ID,
+        dayOfWeek: 'monday',
+        trainingType: 'run',
+        description: null,
+        coachComments: null,
+        plannedDurationMinutes: null,
+        plannedDistanceKm: null,
+        sortOrder: 0,
+        isCompleted: true,
+        completedAt: '2026-03-09T08:00:00Z',
+        athleteNotes: null,
+        actualDurationMinutes: null,
+        actualDistanceKm: null,
+        actualPace: null,
+        avgHeartRate: null,
+        maxHeartRate: null,
+        rpe: null,
+        stravaActivityId: 999,
+        stravaSyncedAt: '2026-03-09T08:30:00Z',
+        isStravaConfirmed: false,
+        coachPostFeedback: null,
+        typeSpecificData: { type: 'run' },
+        createdAt: '2026-03-09T00:00:00Z',
+        updatedAt: '2026-03-09T00:00:00Z',
+      },
+    ];
+    const target = sessions[0];
+
+    queryClient.setQueryData(['sessions', 'week', ALICE_W10_PLAN_ID], sessions);
+
+    const { result } = renderHook(() => useConfirmStravaSession(), { wrapper: Wrapper });
+
+    await act(async () => {
+      result.current.mutate(target.id);
+    });
+
+    const cached = queryClient.getQueryData<typeof sessions>([
+      'sessions',
+      'week',
+      ALICE_W10_PLAN_ID,
+    ]);
+    const updated = cached?.find((s) => s.id === target.id);
+    expect(updated?.isStravaConfirmed).toBe(true);
+  });
+});
+
+describe('useBulkConfirmStravaSessions', () => {
+  it('optimistically confirms all pending Strava sessions for the selected week', async () => {
+    const { queryClient, Wrapper } = makeWrapper();
+    const sessions = [
+      {
+        id: 'session-pending-1',
+        weekPlanId: ALICE_W10_PLAN_ID,
+        dayOfWeek: 'monday',
+        trainingType: 'run',
+        description: null,
+        coachComments: null,
+        plannedDurationMinutes: null,
+        plannedDistanceKm: null,
+        sortOrder: 0,
+        isCompleted: true,
+        completedAt: '2026-03-09T08:00:00Z',
+        athleteNotes: null,
+        actualDurationMinutes: null,
+        actualDistanceKm: null,
+        actualPace: null,
+        avgHeartRate: null,
+        maxHeartRate: null,
+        rpe: null,
+        stravaActivityId: 111,
+        stravaSyncedAt: '2026-03-09T08:30:00Z',
+        isStravaConfirmed: false,
+        coachPostFeedback: null,
+        typeSpecificData: { type: 'run' },
+        createdAt: '2026-03-09T00:00:00Z',
+        updatedAt: '2026-03-09T00:00:00Z',
+      },
+      {
+        id: 'session-confirmed',
+        weekPlanId: ALICE_W10_PLAN_ID,
+        dayOfWeek: 'tuesday',
+        trainingType: 'run',
+        description: null,
+        coachComments: null,
+        plannedDurationMinutes: null,
+        plannedDistanceKm: null,
+        sortOrder: 1,
+        isCompleted: true,
+        completedAt: '2026-03-10T08:00:00Z',
+        athleteNotes: null,
+        actualDurationMinutes: null,
+        actualDistanceKm: null,
+        actualPace: null,
+        avgHeartRate: null,
+        maxHeartRate: null,
+        rpe: null,
+        stravaActivityId: 222,
+        stravaSyncedAt: '2026-03-10T08:30:00Z',
+        isStravaConfirmed: true,
+        coachPostFeedback: null,
+        typeSpecificData: { type: 'run' },
+        createdAt: '2026-03-10T00:00:00Z',
+        updatedAt: '2026-03-10T00:00:00Z',
+      },
+      {
+        id: 'session-without-strava',
+        weekPlanId: ALICE_W10_PLAN_ID,
+        dayOfWeek: 'wednesday',
+        trainingType: 'run',
+        description: null,
+        coachComments: null,
+        plannedDurationMinutes: null,
+        plannedDistanceKm: null,
+        sortOrder: 2,
+        isCompleted: true,
+        completedAt: '2026-03-11T08:00:00Z',
+        athleteNotes: null,
+        actualDurationMinutes: null,
+        actualDistanceKm: null,
+        actualPace: null,
+        avgHeartRate: null,
+        maxHeartRate: null,
+        rpe: null,
+        stravaActivityId: null,
+        stravaSyncedAt: null,
+        isStravaConfirmed: false,
+        coachPostFeedback: null,
+        typeSpecificData: { type: 'run' },
+        createdAt: '2026-03-11T00:00:00Z',
+        updatedAt: '2026-03-11T00:00:00Z',
+      },
+    ];
+    queryClient.setQueryData(['sessions', 'week', ALICE_W10_PLAN_ID], sessions);
+
+    const expectedToConfirm = sessions.filter((s) => s.stravaActivityId != null && !s.isStravaConfirmed);
+    if (expectedToConfirm.length === 0) {
+      throw new Error('Test data: no pending Strava sessions found in Alice W10');
+    }
+
+    const { result } = renderHook(() => useBulkConfirmStravaSessions(), { wrapper: Wrapper });
+
+    await act(async () => {
+      result.current.mutate(ALICE_W10_PLAN_ID);
+    });
+
+    const cached = queryClient.getQueryData<typeof sessions>([
+      'sessions',
+      'week',
+      ALICE_W10_PLAN_ID,
+    ]);
+
+    expectedToConfirm.forEach((session) => {
+      const updated = cached?.find((s) => s.id === session.id);
+      expect(updated?.isStravaConfirmed).toBe(true);
+    });
   });
 });

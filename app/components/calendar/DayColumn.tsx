@@ -4,6 +4,7 @@ import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { SessionCard } from './SessionCard';
+import type { UserRole } from '~/lib/auth';
 import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type AthleteSessionUpdate } from '~/types/training';
 
 interface DayColumnProps {
@@ -23,6 +24,8 @@ interface DayColumnProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
   onSyncStrava?: () => void;
+  onConfirmStrava?: (sessionId: string) => void;
+  userRole?: UserRole;
 }
 
 export function DayColumn({
@@ -41,6 +44,8 @@ export function DayColumn({
   onUpdateCoachPostFeedback,
   stravaConnected,
   onSyncStrava,
+  onConfirmStrava,
+  userRole,
 }: DayColumnProps) {
   const { t } = useTranslation();
 
@@ -107,6 +112,8 @@ export function DayColumn({
             onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
             stravaConnected={stravaConnected}
             onSyncStrava={onSyncStrava}
+            onConfirmStrava={onConfirmStrava}
+            userRole={userRole}
           />
         ))}
 

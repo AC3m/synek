@@ -10,6 +10,26 @@ let mockAthleteName: string | null = null;
 let mockConnectedAt: string | null = null;
 let mockLastSyncedAt: string | null = null;
 
+async function getValidAccessToken(): Promise<string> {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const session = sessionData.session;
+
+  if (!session) {
+    throw new Error('Not authenticated');
+  }
+
+  const expiresAtMs = session.expires_at ? session.expires_at * 1000 : 0;
+  const needsRefresh = expiresAtMs !== 0 && expiresAtMs < Date.now() + 60_000;
+  if (!needsRefresh) return session.access_token;
+
+  const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
+  if (refreshError || !refreshed.session) {
+    throw refreshError ?? new Error('Session refresh failed');
+  }
+
+  return refreshed.session.access_token;
+}
+
 // ============================================================
 // Get connection status
 // ============================================================
@@ -82,18 +102,36 @@ export async function mockSyncStrava(weekStart: string): Promise<{ synced: numbe
 }
 
 export async function syncStrava(
-  userId: string,
   weekStart: string
 ): Promise<{ synced: number; lastSyncedAt: string }> {
   if (isMockMode) return mockSyncStrava(weekStart);
 
-  // Ensure the access token is fresh before invoking the edge function.
-  // getSession() returns a cached token; refreshSession() forces a new one.
-  const res = await supabase.functions.invoke('strava-sync', {
-    body: { userId, weekStart },
+  const accessToken = await getValidAccessToken();
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+  const res = await fetch(`${supabaseUrl}/functions/v1/strava-sync`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ weekStart }),
   });
-  if (res.error) throw res.error;
-  return res.data as { synced: number; lastSyncedAt: string };
+
+  const payload = (await res.json().catch(() => null)) as
+    | { synced?: number; lastSyncedAt?: string; error?: string; code?: number; message?: string }
+    | null;
+
+  if (!res.ok) {
+    throw new Error(payload?.message ?? payload?.error ?? `strava-sync failed (${res.status})`);
+  }
+
+  return {
+    synced: payload?.synced ?? 0,
+    lastSyncedAt: payload?.lastSyncedAt ?? new Date().toISOString(),
+  };
 }
 
 // ============================================================

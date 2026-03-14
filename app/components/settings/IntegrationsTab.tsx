@@ -9,6 +9,7 @@ import {
 } from '~/lib/hooks/useStravaConnection';
 import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
+import { stravaAssets } from '~/assets/strava';
 import { cn } from '~/lib/utils';
 import {
   mondayToWeekId,
@@ -44,7 +45,7 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
 
   function handleSync() {
     if (!user || !selectedWeekStart) return;
-    sync.mutate({ userId: user.id, weekStart: selectedWeekStart });
+    sync.mutate({ weekStart: selectedWeekStart });
   }
 
   function handlePrevWeek() {
@@ -130,13 +131,13 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">{t('strava.description')}</p>
-            <Button
-              onClick={onConnectStrava}
-              style={{ backgroundColor: STRAVA_ORANGE }}
-              className="text-white hover:opacity-90"
-            >
-              {t('strava.connect')}
-            </Button>
+            <button onClick={onConnectStrava} className="p-0 border-0 bg-transparent hover:opacity-90 transition-opacity">
+              <img
+                src={stravaAssets.connectWithStravaOrangeUrl}
+                alt="Connect with Strava"
+                className="h-12 w-auto"
+              />
+            </button>
           </div>
         )}
       </div>

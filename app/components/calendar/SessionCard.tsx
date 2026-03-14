@@ -23,11 +23,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
+import { stravaAssets } from '~/assets/strava';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { AthleteFeedback } from '~/components/training/AthleteFeedback';
 import { PerformanceEntry } from '~/components/training/PerformanceEntry';
 import { trainingTypeConfig } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
+import type { UserRole } from '~/lib/auth';
 import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -56,6 +58,8 @@ interface SessionCardProps {
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   onSyncStrava?: () => void;
+  onConfirmStrava?: (sessionId: string) => void;
+  userRole?: UserRole;
 }
 
 export function SessionCard({
@@ -71,6 +75,8 @@ export function SessionCard({
   onUpdatePerformance,
   onUpdateCoachPostFeedback,
   onSyncStrava,
+  onConfirmStrava,
+  userRole,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training']);
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
@@ -83,6 +89,18 @@ export function SessionCard({
   const Icon = iconMap[config.icon] ?? Footprints;
   const isRestDay = session.trainingType === 'rest_day';
 
+  const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const hasActualPerformance =
+    session.actualDurationMinutes != null ||
+    session.actualDistanceKm != null ||
+    session.actualPace != null ||
+    session.avgHeartRate != null ||
+    session.maxHeartRate != null ||
+    session.rpe != null;
+  const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
+  const shouldShowPerformanceSection =
+    session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
+
   return (
     <div
       className={cn(
@@ -91,17 +109,19 @@ export function SessionCard({
       )}
     >
       <div className="flex items-start justify-between gap-1">
-        {/* Sport badge pill — sport color only here */}
-        <span
-          className={cn(
-            'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full',
-            config.bgColor,
-            config.color
-          )}
-        >
-          <Icon className="h-2.5 w-2.5" />
-          {t(`common:trainingTypes.${session.trainingType}` as never)}
-        </span>
+        <div className="flex flex-wrap items-center gap-1.5">
+          {/* Sport badge pill — sport color only here */}
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full',
+              config.bgColor,
+              config.color
+            )}
+          >
+            <Icon className="h-2.5 w-2.5" />
+            {t(`common:trainingTypes.${session.trainingType}` as never)}
+          </span>
+        </div>
 
         {!readonly && (onEdit || onDelete) && (
           <DropdownMenu>
@@ -160,57 +180,97 @@ export function SessionCard({
       </div>
 
       {/* Actual performance chips — shown when completed */}
-      {session.isCompleted &&
-        (session.actualDurationMinutes != null ||
-          session.actualDistanceKm != null ||
-          session.actualPace != null ||
-          session.avgHeartRate != null ||
-          session.maxHeartRate != null ||
-          session.rpe != null) && (
-          <div className="flex flex-wrap gap-1 mt-1.5 pt-1.5 border-t border-[color:var(--separator)]">
-            {session.actualDurationMinutes != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.duration')}: {session.actualDurationMinutes}{' '}
-                {t('training:units.min')}
-              </span>
+      {shouldShowPerformanceSection && (
+          <div
+            className={cn(
+              'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
+              isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
             )}
-            {session.actualDistanceKm != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.distance')}: {session.actualDistanceKm}{' '}
-                {t('training:units.km')}
-              </span>
+            title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
+          >
+            {(shouldShowMaskedPlaceholders || session.actualDurationMinutes != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.duration')}
+                </span>
+                <span className="text-[10px] font-semibold">
+                  {isMasked ? '---' : `${session.actualDurationMinutes} ${t('training:units.min')}`}
+                </span>
+              </div>
             )}
-            {session.actualPace != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.pace')}: {session.actualPace}{' '}
-                {t('training:units.perKm')}
-              </span>
+            {(shouldShowMaskedPlaceholders || session.actualDistanceKm != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.distance')}
+                </span>
+                <span className="text-[10px] font-semibold">
+                  {isMasked ? '---' : `${session.actualDistanceKm} ${t('training:units.km')}`}
+                </span>
+              </div>
             )}
-            {session.avgHeartRate != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.avgHr')}: {session.avgHeartRate}{' '}
-                {t('training:units.bpm')}
-              </span>
+            {(shouldShowMaskedPlaceholders || session.actualPace != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.pace')}
+                </span>
+                <span className="text-[10px] font-semibold">
+                  {isMasked ? '---' : `${session.actualPace} ${t('training:units.perKm')}`}
+                </span>
+              </div>
             )}
-            {session.maxHeartRate != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.maxHr')}: {session.maxHeartRate}{' '}
-                {t('training:units.bpm')}
-              </span>
+            {(shouldShowMaskedPlaceholders || session.avgHeartRate != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.avgHr')}
+                </span>
+                <span className="text-[10px] font-semibold">
+                  {isMasked ? '---' : `${session.avgHeartRate} ${t('training:units.bpm')}`}
+                </span>
+              </div>
             )}
-            {session.rpe != null && (
-              <span className="text-[10px] bg-surface-2 text-[color:var(--foreground-secondary)] px-1.5 py-0.5 rounded-md">
-                {t('training:actualPerformance.rpe')}: {session.rpe}/10
-              </span>
+            {(shouldShowMaskedPlaceholders || session.maxHeartRate != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.maxHr')}
+                </span>
+                <span className="text-[10px] font-semibold">
+                  {isMasked ? '---' : `${session.maxHeartRate} ${t('training:units.bpm')}`}
+                </span>
+              </div>
             )}
+            {(shouldShowMaskedPlaceholders || session.rpe != null) && (
+              <div className="flex flex-col min-w-[60px]">
+                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                  {t('training:actualPerformance.rpe')}
+                </span>
+                <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
+              </div>
+            )}
+            
             {session.stravaActivityId != null && (
-              <span
-                title={t('strava.syncedBadge')}
-                className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded-md bg-orange-100 text-orange-600 dark:bg-orange-950 dark:text-orange-400"
-              >
-                <Zap className="h-2.5 w-2.5" />
-                Strava
-              </span>
+              <div className="w-full flex flex-wrap items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
+                <a
+                  href={`https://www.strava.com/activities/${session.stravaActivityId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] font-bold hover:underline whitespace-nowrap"
+                  style={{ color: '#FC5200' }}
+                >
+                  View on Strava
+                </a>
+                <div className="flex items-center gap-1.5 opacity-80">
+                  <img
+                    src={stravaAssets.poweredByStravaOrangeUrl}
+                    alt="Powered by Strava"
+                    className="h-3.5 w-auto dark:hidden"
+                  />
+                  <img
+                    src={stravaAssets.poweredByStravaWhiteUrl}
+                    alt="Powered by Strava"
+                    className="h-3.5 w-auto hidden dark:block"
+                  />
+                </div>
+              </div>
             )}
           </div>
         )}
@@ -286,6 +346,24 @@ export function SessionCard({
               <Zap className="h-2.5 w-2.5" />
               {t('common:strava.sync')}
             </button>
+          )}
+
+          {/* Confirm & Share is only shown to athletes, never to coaches — even when a coach
+              uses showAthleteControls to manage their own self-planned sessions. A coach acting
+              as their own athlete has no one to share data with, so the confirmation step is
+              meaningless and intentionally omitted. */}
+          {session.stravaActivityId &&
+            !session.isStravaConfirmed &&
+            userRole === 'athlete' && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 truncate block"
+              onClick={() => onConfirmStrava?.(session.id)}
+              title={t('common:strava.confirmAndShare')}
+            >
+              {t('common:strava.confirmAndShare')}
+            </Button>
           )}
 
           <AthleteFeedback
