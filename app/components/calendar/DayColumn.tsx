@@ -101,6 +101,7 @@ export function DayColumn({
           <SessionCard
             key={session.id}
             session={session}
+            weekStart={weekStart}
             readonly={readonly}
             athleteMode={athleteMode}
             showAthleteControls={showAthleteControls}
