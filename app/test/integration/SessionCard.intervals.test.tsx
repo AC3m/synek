@@ -10,7 +10,6 @@ import type { StravaLap } from '~/types/strava';
 
 // ─── Mocks ─────────────────────────────────────────────────────────────────────
 
-// Control variable read by the mock
 let mockLapResult: StravaLap[] | null = null;
 let mockLapShouldFail = false;
 
@@ -19,8 +18,6 @@ vi.mock('~/lib/queries/strava-laps', () => ({
   toLap: vi.fn(),
   mockFetchSessionLaps: vi.fn(),
 }));
-
-
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -66,6 +63,36 @@ const STRUCTURED_LAPS: StravaLap[] = [
   {
     id: 'l3',
     lapIndex: 2,
+    name: 'Interval 2',
+    intensity: 'active',
+    segmentType: 'interval',
+    distanceMeters: 1000,
+    elapsedTimeSeconds: 258,
+    movingTimeSeconds: 258,
+    averageSpeed: 3.88,
+    averageHeartrate: 174,
+    maxHeartrate: 181,
+    averageCadence: 185,
+    paceZone: 5,
+  },
+  {
+    id: 'l4',
+    lapIndex: 3,
+    name: 'Interval 3',
+    intensity: 'active',
+    segmentType: 'interval',
+    distanceMeters: 1000,
+    elapsedTimeSeconds: 260,
+    movingTimeSeconds: 260,
+    averageSpeed: 3.85,
+    averageHeartrate: 175,
+    maxHeartrate: 182,
+    averageCadence: 184,
+    paceZone: 5,
+  },
+  {
+    id: 'l5',
+    lapIndex: 4,
     name: 'Recovery 1',
     intensity: 'rest',
     segmentType: 'recovery',
@@ -77,24 +104,6 @@ const STRUCTURED_LAPS: StravaLap[] = [
     maxHeartrate: 165,
     averageCadence: 174,
     paceZone: 3,
-  },
-];
-
-const AUTO_LAPS: StravaLap[] = [
-  {
-    id: 'al1',
-    lapIndex: 0,
-    name: 'Lap 1',
-    intensity: 'active',
-    segmentType: 'interval',
-    distanceMeters: 1000,
-    elapsedTimeSeconds: 330,
-    movingTimeSeconds: 330,
-    averageSpeed: 3.03,
-    averageHeartrate: null,
-    maxHeartrate: null,
-    averageCadence: null,
-    paceZone: null,
   },
 ];
 
@@ -142,89 +151,78 @@ beforeEach(() => {
   });
 });
 
-describe('SessionCard — interval affordance', () => {
-  it('shows skeleton while lap data is loading', async () => {
+describe('SessionCard — interval affordance via detail modal', () => {
+  it('opens detail modal when card is clicked', async () => {
+    const { Wrapper, } = makeWrapper();
+    const { container } = render(
+      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      { wrapper: Wrapper }
+    );
+
+    fireEvent.click(container.firstChild as Element);
+
+    await waitFor(() => {
+      // Modal opens and shows planned section
+      expect(screen.getByText('sessionDetail.planned')).toBeTruthy();
+    });
+  });
+
+  it('shows loading skeleton in modal while lap data is loading', async () => {
     // Never resolve — stays loading
     vi.mocked(fetchSessionLaps).mockImplementation(
       () => new Promise(() => {})
     );
 
     const { Wrapper } = makeWrapper();
-    render(
+    const { container } = render(
       <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
       { wrapper: Wrapper }
     );
+
+    fireEvent.click(container.firstChild as Element);
+
+    await waitFor(() => {
+      expect(screen.getByText('sessionDetail.planned')).toBeTruthy();
+    });
 
     expect(document.querySelector('[data-slot="skeleton"]')).toBeTruthy();
   });
 
-  // Note: In tests, t() returns the i18n key string (empty resources in setup.ts).
-  // So t('intervals.viewButton') → 'intervals.viewButton',
-  //    t('intervals.retry') → 'intervals.retry', etc.
-
-  it('shows "Intervals" button when laps load with rest laps', async () => {
+  it('shows interval table columns in modal when laps load with structured intervals', async () => {
     mockLapResult = STRUCTURED_LAPS;
 
     const { Wrapper } = makeWrapper();
-    render(
+    const { container } = render(
       <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
       { wrapper: Wrapper }
     );
 
+    fireEvent.click(container.firstChild as Element);
+
+    // Wait for modal to open then laps to load
     await waitFor(() => {
-      expect(screen.getByText('intervals.viewButton')).toBeTruthy();
+      expect(screen.getByText('intervals.columns.segment')).toBeTruthy();
     });
-    // Skeleton should be gone
     expect(document.querySelector('[data-slot="skeleton"]')).toBeNull();
   });
 
-  it('opens modal when "Intervals" button is clicked', async () => {
-    mockLapResult = STRUCTURED_LAPS;
-
-    const { Wrapper } = makeWrapper();
-    render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
-      { wrapper: Wrapper }
-    );
-
-    await waitFor(() => screen.getByText('intervals.viewButton'));
-    fireEvent.click(screen.getByText('intervals.viewButton'));
-
-    // Modal title should appear (may be prefixed with session name)
-    await waitFor(() => {
-      expect(screen.getByText(/intervals\.modalTitle/)).toBeTruthy();
-    });
-  });
-
-  it('shows "Intervals" button when laps load with only active laps (auto-laps)', async () => {
-    mockLapResult = AUTO_LAPS;
-
-    const { Wrapper } = makeWrapper();
-    render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
-      { wrapper: Wrapper }
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('intervals.viewButton')).toBeTruthy();
-    });
-  });
-
-  it('shows retry prompt when lap fetch fails', async () => {
+  it('shows retry button in modal when lap fetch fails', async () => {
     mockLapShouldFail = true;
 
     const { Wrapper } = makeWrapper();
-    render(
+    const { container } = render(
       <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
       { wrapper: Wrapper }
     );
+
+    fireEvent.click(container.firstChild as Element);
 
     await waitFor(() => {
       expect(screen.getByText('intervals.retry')).toBeTruthy();
     });
   });
 
-  it('shows no interval affordance for an unsynced run session', async () => {
+  it('does not load laps for an unsynced run session', async () => {
     const { Wrapper } = makeWrapper();
     render(
       <SessionCard
@@ -235,13 +233,10 @@ describe('SessionCard — interval affordance', () => {
       { wrapper: Wrapper }
     );
 
-    // fetchSessionLaps should not be called
     expect(vi.mocked(fetchSessionLaps)).not.toHaveBeenCalled();
-    expect(document.querySelector('[data-slot="skeleton"]')).toBeNull();
-    expect(screen.queryByText('intervals.viewButton')).toBeNull();
   });
 
-  it('shows no interval affordance for coach on unconfirmed session', async () => {
+  it('does not load laps for coach on unconfirmed session', async () => {
     const { Wrapper } = makeWrapper();
     render(
       <SessionCard
@@ -252,15 +247,13 @@ describe('SessionCard — interval affordance', () => {
     );
 
     expect(vi.mocked(fetchSessionLaps)).not.toHaveBeenCalled();
-    expect(document.querySelector('[data-slot="skeleton"]')).toBeNull();
-    expect(screen.queryByText('intervals.viewButton')).toBeNull();
   });
 
-  it('shows interval affordance for coach on confirmed session', async () => {
+  it('loads laps for coach on confirmed session and shows interval table', async () => {
     mockLapResult = STRUCTURED_LAPS;
 
     const { Wrapper } = makeWrapper();
-    render(
+    const { container } = render(
       <SessionCard
         session={makeSession({ isStravaConfirmed: true })}
         userRole="coach"
@@ -268,8 +261,24 @@ describe('SessionCard — interval affordance', () => {
       { wrapper: Wrapper }
     );
 
+    fireEvent.click(container.firstChild as Element);
+
     await waitFor(() => {
-      expect(screen.getByText('intervals.viewButton')).toBeTruthy();
+      expect(screen.getByText('intervals.columns.segment')).toBeTruthy();
     });
+  });
+
+  it('does not open modal when interactive element on card is clicked', async () => {
+    const { Wrapper } = makeWrapper();
+    render(
+      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      { wrapper: Wrapper }
+    );
+
+    // Click the completion toggle (a button) — modal should NOT open
+    const toggle = screen.getByRole('checkbox');
+    fireEvent.click(toggle);
+
+    expect(screen.queryByText('sessionDetail.planned')).toBeNull();
   });
 });

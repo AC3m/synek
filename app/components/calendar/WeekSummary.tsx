@@ -147,19 +147,34 @@ export function WeekSummary({
                     {t('coach:weekSummary.plannedKm')}
                   </p>
                   {readonly ? (
-                    <StatValue value={weekPlan.totalPlannedKm ?? '—'} unit={weekPlan.totalPlannedKm != null ? 'km' : undefined} />
+                    weekPlan.totalPlannedKm != null ? (
+                      <StatValue value={weekPlan.totalPlannedKm} unit="km" />
+                    ) : stats.totalPlannedKm > 0 ? (
+                      <div className="flex items-baseline gap-1">
+                        <StatValue value={`~${stats.totalPlannedKm.toFixed(1)}`} unit="km" />
+                      </div>
+                    ) : (
+                      <StatValue value="—" />
+                    )
                   ) : (
-                    <div className="relative max-w-[100px]">
-                      <Input
-                        type="number"
-                        step="0.1"
-                        placeholder="0"
-                        value={plannedKm}
-                        onChange={(e) => setPlannedKm(e.target.value)}
-                        onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
-                        className="h-9 pr-8 text-sm font-bold tracking-tight bg-background border-border/60"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground/50 uppercase">km</span>
+                    <div className="space-y-1">
+                      <div className="relative max-w-[100px]">
+                        <Input
+                          type="number"
+                          step="0.1"
+                          placeholder="0"
+                          value={plannedKm}
+                          onChange={(e) => setPlannedKm(e.target.value)}
+                          onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
+                          className="h-9 pr-8 text-sm font-bold tracking-tight bg-background border-border/60"
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground/50 uppercase">km</span>
+                      </div>
+                      {!plannedKm && stats.totalPlannedKm > 0 && (
+                        <p className="text-[10px] text-muted-foreground/60">
+                          Σ {stats.totalPlannedKm.toFixed(1)} km from sessions
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>

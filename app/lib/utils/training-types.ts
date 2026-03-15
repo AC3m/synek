@@ -1,4 +1,30 @@
+import {
+  Footprints,
+  Bike,
+  Dumbbell,
+  Sparkles,
+  StretchHorizontal,
+  Waves,
+  Moon,
+  Activity,
+  PersonStanding,
+  Mountain,
+} from 'lucide-react';
+import type { ElementType } from 'react';
 import type { TrainingType, LoadType } from '~/types/training';
+
+export const iconMap: Record<string, ElementType> = {
+  Footprints,
+  Bike,
+  Dumbbell,
+  Sparkles,
+  StretchHorizontal,
+  Waves,
+  Moon,
+  Activity,
+  PersonStanding,
+  Mountain,
+};
 
 export const trainingTypeConfig: Record<
   TrainingType,

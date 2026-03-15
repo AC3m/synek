@@ -213,7 +213,7 @@ export function SessionForm({
             <SheetTitle>{title}</SheetTitle>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto px-5 py-4">
+          <div className="h-[58vh] overflow-y-auto px-5 py-4">
             {formFields}
           </div>
 
@@ -238,7 +238,7 @@ export function SessionForm({
           <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="h-[55vh] overflow-y-auto px-6 py-4">
           {formFields}
         </div>
 

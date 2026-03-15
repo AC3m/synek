@@ -94,6 +94,13 @@
     "bpm": "bpm",
     "perKm": "/km"
   },
+  "sessionDetail": {
+    "planned": "Plan",
+    "actual": "Wykonanie",
+    "noActualData": "Brak danych o wykonaniu.",
+    "plannedIntervals": "Zaplanowane interwały",
+    "rest": "Odpoczynek"
+  },
   "intervals": {
     "viewButton": "Interwały",
     "modalTitle": "Szczegóły Interwałów",
