@@ -1,25 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, addDays, parseISO } from 'date-fns';
-import {
-  Footprints,
-  Bike,
-  Dumbbell,
-  Sparkles,
-  StretchHorizontal,
-  Waves,
-  Moon,
-  Activity,
-  PersonStanding,
-  Mountain,
-  Pencil,
-  Trash2,
-  X,
-  Zap,
-  Loader2,
-  Share2,
-  RotateCcw,
-} from 'lucide-react';
+import { Pencil, Trash2, X, Zap, Loader2, Share2, RotateCcw } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { Separator } from '~/components/ui/separator';
@@ -44,7 +26,7 @@ import { IntervalChart } from './IntervalChart';
 import { LapTable } from './LapTable';
 import { StravaLogo } from './StravaLogo';
 import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
-import { trainingTypeConfig } from '~/lib/utils/training-types';
+import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
 import { DAYS_OF_WEEK } from '~/types/training';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
@@ -61,19 +43,6 @@ import type {
   RestDayData,
   IntervalBlock,
 } from '~/types/training';
-
-const iconMap: Record<string, React.ElementType> = {
-  Footprints,
-  Bike,
-  Dumbbell,
-  Sparkles,
-  StretchHorizontal,
-  Waves,
-  Moon,
-  Activity,
-  PersonStanding,
-  Mountain,
-};
 
 interface SessionDetailModalProps {
   open: boolean;
@@ -154,13 +123,18 @@ export function SessionDetailModal({
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
   const [isSyncingStrava, setIsSyncingStrava] = useState(false);
   const [isConfirmingStrava, setIsConfirmingStrava] = useState(false);
+  const coachFeedbackRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setCoachFeedback(session.coachPostFeedback ?? '');
+    // Don't reset while the coach is actively typing — the blur handler will save and
+    // subsequent query invalidation would otherwise clobber in-progress edits.
+    if (document.activeElement !== coachFeedbackRef.current) {
+      setCoachFeedback(session.coachPostFeedback ?? '');
+    }
   }, [session.id, session.coachPostFeedback]);
 
   const config = trainingTypeConfig[session.trainingType];
-  const Icon = iconMap[config.icon] ?? Footprints;
+  const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
   const isRestDay = session.trainingType === 'rest_day';
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
@@ -335,23 +309,9 @@ export function SessionDetailModal({
           </div>
         );
       }
-      case 'walk': {
-        const d = typeData as WalkData;
-        return (
-          <div className="space-y-1.5">
-            <FieldRow
-              label={t('training:walkHike.terrain')}
-              value={d.terrain ? t(`training:walkHike.terrainOptions.${d.terrain}` as never) : null}
-            />
-            <FieldRow
-              label={t('training:walkHike.elevationGain')}
-              value={d.elevation_gain_m != null ? `${d.elevation_gain_m} m` : null}
-            />
-          </div>
-        );
-      }
+      case 'walk':
       case 'hike': {
-        const d = typeData as HikeData;
+        const d = typeData as WalkData | HikeData;
         return (
           <div className="space-y-1.5">
             <FieldRow
@@ -657,6 +617,7 @@ export function SessionDetailModal({
               <SectionLabel>{t('training:coachPostFeedback.label')}</SectionLabel>
               {!athleteMode ? (
                 <Textarea
+                  ref={coachFeedbackRef}
                   value={coachFeedback}
                   placeholder={t('training:coachPostFeedback.placeholder')}
                   rows={3}

@@ -292,9 +292,9 @@ export function SessionFormFields({
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <div className="grid grid-cols-3 gap-3 items-end">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
                 {t('training:actualPerformance.avgHr')} ({t('training:units.bpm')})
               </label>
               <Input
@@ -304,8 +304,8 @@ export function SessionFormFields({
                 onChange={(e) => onAvgHrChange(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
                 {t('training:actualPerformance.maxHr')} ({t('training:units.bpm')})
               </label>
               <Input
@@ -315,8 +315,8 @@ export function SessionFormFields({
                 onChange={(e) => onMaxHrChange(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
                 {t('training:actualPerformance.rpe')} (1–10)
               </label>
               <Input

@@ -205,7 +205,7 @@ export function WeekGrid({
           )}
         />
         <div ref={scrollRef} className="overflow-x-auto">
-          <div className="grid grid-cols-2 lg:grid-cols-7 gap-1.5 lg:min-w-[1160px]">
+          <div className="grid grid-cols-2 lg:grid-cols-7 gap-1.5 lg:min-w-[1400px]">
             {DAYS_OF_WEEK.map((day) => (
               <DayColumn
                 key={day}

@@ -1,37 +1,14 @@
 import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Footprints,
-  Bike,
-  Dumbbell,
-  Sparkles,
-  StretchHorizontal,
-  Waves,
-  Moon,
-  Activity,
-  Zap,
-  Loader2,
-  Share2,
-} from 'lucide-react';
+import { Zap, Loader2, Share2 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { StravaLogo } from '~/components/training/StravaLogo';
 import { SessionDetailModal } from '~/components/training/SessionDetailModal';
-import { trainingTypeConfig } from '~/lib/utils/training-types';
+import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
 import type { TrainingSession, AthleteSessionUpdate, RunData } from '~/types/training';
-
-const iconMap: Record<string, React.ElementType> = {
-  Footprints,
-  Bike,
-  Dumbbell,
-  Sparkles,
-  StretchHorizontal,
-  Waves,
-  Moon,
-  Activity,
-};
 
 interface SessionCardProps {
   session: TrainingSession;
@@ -88,7 +65,7 @@ export function SessionCard({
 
 
   const config = trainingTypeConfig[session.trainingType];
-  const Icon = iconMap[config.icon] ?? Footprints;
+  const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
   const isRestDay = session.trainingType === 'rest_day';
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
