@@ -120,9 +120,7 @@ export default function AthleteWeekView() {
   }, [stravaSyncBulk, weekStart]);
 
   const handleConfirmStrava = useCallback(
-    (sessionId: string) => {
-      confirmStrava.mutate(sessionId);
-    },
+    (sessionId: string) => confirmStrava.mutateAsync(sessionId),
     [confirmStrava]
   );
 

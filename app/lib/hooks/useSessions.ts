@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { useTranslation } from 'react-i18next';
 import { queryKeys } from '~/lib/queries/keys';
 import {
   fetchSessionsByWeekPlan,
@@ -57,6 +58,7 @@ export function useSessions(weekPlanId: string | undefined) {
 
 export function useCreateSession() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: CreateSessionInput) => createSession(input),
@@ -64,16 +66,17 @@ export function useCreateSession() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.sessions.byWeek(data.weekPlanId),
       });
-      toast.success('Session created');
+      toast.success(t('toast.sessionCreated'));
     },
     onError: () => {
-      toast.error('Failed to create session');
+      toast.error(t('toast.sessionCreateFailed'));
     },
   });
 }
 
 export function useUpdateSession() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: UpdateSessionInput) => updateSession(input),
@@ -86,13 +89,13 @@ export function useUpdateSession() {
         return updated;
       }),
     onSuccess: () => {
-      toast.success('Session updated');
+      toast.success(t('toast.sessionUpdated'));
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to update session');
+      toast.error(t('toast.sessionUpdateFailed'));
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -104,6 +107,7 @@ export function useUpdateSession() {
 
 export function useDeleteSession() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (sessionId: string) => deleteSession(sessionId),
@@ -113,13 +117,13 @@ export function useDeleteSession() {
         return sessions.filter((s) => s.id !== sessionId);
       }),
     onSuccess: () => {
-      toast.success('Session deleted');
+      toast.success(t('toast.sessionDeleted'));
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to delete session');
+      toast.error(t('toast.sessionDeleteFailed'));
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -131,6 +135,7 @@ export function useDeleteSession() {
 
 export function useUpdateAthleteSession() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: AthleteSessionUpdate) => updateAthleteSession(input),
@@ -160,7 +165,7 @@ export function useUpdateAthleteSession() {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to update');
+      toast.error(t('toast.performanceUpdateFailed'));
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -172,6 +177,7 @@ export function useUpdateAthleteSession() {
 
 export function useConfirmStravaSession() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (sessionId: string) => confirmStravaSession(sessionId),
@@ -184,13 +190,13 @@ export function useConfirmStravaSession() {
         return updated;
       }),
     onSuccess: () => {
-      toast.success('Session shared with coach');
+      toast.success(t('toast.stravaSessionShared'));
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to share session');
+      toast.error(t('toast.stravaSessionShareFailed'));
     },
     onSettled: () => {
       queryClient.invalidateQueries({
@@ -202,6 +208,7 @@ export function useConfirmStravaSession() {
 
 export function useBulkConfirmStravaSessions() {
   const queryClient = useQueryClient();
+  const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (weekPlanId: string) => bulkConfirmStravaSessions(weekPlanId),
@@ -222,13 +229,13 @@ export function useBulkConfirmStravaSessions() {
         return changed ? updated : null;
       }),
     onSuccess: () => {
-      toast.success('All pending sessions shared with coach');
+      toast.success(t('toast.stravaAllShared'));
     },
     onError: (_err, _variables, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
         queryClient.setQueryData(key, data);
       });
-      toast.error('Failed to share sessions');
+      toast.error(t('toast.stravaAllShareFailed'));
     },
     onSettled: () => {
       queryClient.invalidateQueries({

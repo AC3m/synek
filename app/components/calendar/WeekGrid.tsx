@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router';
 import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
@@ -29,7 +29,7 @@ interface WeekGridProps {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
   onSyncStrava?: (sessionId: string) => Promise<void>;
-  onConfirmStrava?: (sessionId: string) => void;
+  onConfirmStrava?: (sessionId: string) => Promise<void>;
   userRole?: UserRole;
   selectedDay?: DayOfWeek;
   onSelectDay?: (day: DayOfWeek) => void;
@@ -124,6 +124,29 @@ export function WeekGrid({
   const selectedDay = controlledSelectedDay ?? internalSelectedDay;
   const setSelectedDay = controlledOnSelectDay ?? setInternalSelectedDay;
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showRightFade, setShowRightFade] = useState(false);
+  const [showLeftFade, setShowLeftFade] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const check = () => {
+      const canScroll = el.scrollWidth > el.clientWidth + 2;
+      setShowRightFade(canScroll && el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+      setShowLeftFade(canScroll && el.scrollLeft > 4);
+    };
+
+    check();
+    el.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    return () => {
+      el.removeEventListener('scroll', check);
+      window.removeEventListener('resize', check);
+    };
+  }, []);
+
   useEffect(() => {
     setSelectedDay(getDefaultSelectedDay(weekStart));
   }, [weekStart, location.state?.resetToToday, setSelectedDay]);
@@ -165,16 +188,34 @@ export function WeekGrid({
         </div>
       </div>
 
-      {/* Desktop: 7-column grid */}
-      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-7 gap-1.5">
-        {DAYS_OF_WEEK.map((day) => (
-          <DayColumn
-            key={day}
-            day={day}
-            sessions={sessionsByDay[day] ?? []}
-            {...dayColumnProps}
-          />
-        ))}
+      {/* Desktop: 7-column grid — scrollable when viewport < ~1192px */}
+      <div className="hidden md:block relative">
+        {/* Left fade — visible once user has scrolled right */}
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-background to-transparent transition-opacity duration-200',
+            showLeftFade ? 'opacity-100' : 'opacity-0'
+          )}
+        />
+        {/* Right fade — signals more columns to the right */}
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent transition-opacity duration-200',
+            showRightFade ? 'opacity-100' : 'opacity-0'
+          )}
+        />
+        <div ref={scrollRef} className="overflow-x-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-7 gap-1.5 lg:min-w-[1160px]">
+            {DAYS_OF_WEEK.map((day) => (
+              <DayColumn
+                key={day}
+                day={day}
+                sessions={sessionsByDay[day] ?? []}
+                {...dayColumnProps}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );
