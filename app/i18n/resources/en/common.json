@@ -142,6 +142,19 @@
       "wrongPassword": "Current password is incorrect"
     }
   },
+  "toast": {
+    "sessionCreated": "Session created",
+    "sessionCreateFailed": "Failed to create session",
+    "sessionUpdated": "Session updated",
+    "sessionUpdateFailed": "Failed to update session",
+    "sessionDeleted": "Session deleted",
+    "sessionDeleteFailed": "Failed to delete session",
+    "performanceUpdateFailed": "Failed to save performance data",
+    "stravaSessionShared": "Session data shared with coach",
+    "stravaSessionShareFailed": "Failed to share session data",
+    "stravaAllShared": "All sessions data shared with coach",
+    "stravaAllShareFailed": "Failed to share sessions data"
+  },
   "strava": {
     "connect": "Connect with Strava",
     "connected": "Connected",
@@ -157,19 +170,12 @@
     "syncedBadge": "Data from Strava",
     "sync": "Sync",
     "waitingForConfirmation": "Waiting for athlete confirmation",
-    "confirmAndShare": "Confirm & Share with Coach",
+    "confirmAndShare": "Confirm & Share data with Coach",
     "unsharedSessions_one": "{{count}} unshared session",
     "unsharedSessions_other": "{{count}} unshared sessions",
     "shareAll": "Share All With Coach",
     "unsyncedSessions_one": "{{count}} session to sync",
     "unsyncedSessions_other": "{{count}} sessions to sync",
     "syncAll": "Sync All From Strava"
-  },
-  "actions": {
-    "edit": "Edit",
-    "delete": "Delete",
-    "save": "Save",
-    "cancel": "Cancel",
-    "add": "Add"
   }
 }

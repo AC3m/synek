@@ -142,6 +142,19 @@
       "wrongPassword": "Obecne hasło jest nieprawidłowe"
     }
   },
+  "toast": {
+    "sessionCreated": "Sesja została utworzona",
+    "sessionCreateFailed": "Nie udało się utworzyć sesji",
+    "sessionUpdated": "Sesja zaktualizowana",
+    "sessionUpdateFailed": "Nie udało się zaktualizować sesji",
+    "sessionDeleted": "Sesja usunięta",
+    "sessionDeleteFailed": "Nie udało się usunąć sesji",
+    "performanceUpdateFailed": "Nie udało się zapisać danych wynikowych",
+    "stravaSessionShared": "Dane udostępnione trenerowi",
+    "stravaSessionShareFailed": "Nie udało się udostępnić danych trenerowi",
+    "stravaAllShared": "Wszystkie dane udostępnione trenerowi",
+    "stravaAllShareFailed": "Nie udało się udostępnić danych"
+  },
   "strava": {
     "connect": "Połącz ze Stravą",
     "connected": "Połączono",
@@ -157,7 +170,7 @@
     "syncedBadge": "Dane ze Strava",
     "sync": "Synchronizuj",
     "waitingForConfirmation": "Oczekiwanie na potwierdzenie od zawodnika",
-    "confirmAndShare": "Potwierdź i udostępnij trenerowi",
+    "confirmAndShare": "Potwierdź i udostępnij dane trenerowi",
     "unsharedSessions_one": "{{count}} nieudostępniony trening",
     "unsharedSessions_few": "{{count}} nieudostępnione treningi",
     "unsharedSessions_many": "{{count}} nieudostępnionych treningów",
@@ -168,12 +181,5 @@
     "unsyncedSessions_many": "{{count}} treningów do synchronizacji",
     "unsyncedSessions_other": "{{count}} treningów do synchronizacji",
     "syncAll": "Synchronizuj wszystkie treningi ze Stravą"
-  },
-  "actions": {
-    "edit": "Edytuj",
-    "delete": "Usuń",
-    "save": "Zapisz",
-    "cancel": "Anuluj",
-    "add": "Dodaj"
   }
 }

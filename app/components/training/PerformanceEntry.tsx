@@ -76,7 +76,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
       </button>
 
       {expanded && (
-        <div className="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1.5">
+        <div className="animate-in fade-in slide-in-from-top-1 duration-150 mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1.5">
           <div>
             <label className="text-[9px] text-muted-foreground block mb-0.5">
               {t('actualPerformance.duration')} (min)

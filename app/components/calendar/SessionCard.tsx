@@ -14,6 +14,7 @@ import {
   Zap,
   Loader2,
   MoreVertical,
+  Share2,
 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
@@ -60,7 +61,7 @@ interface SessionCardProps {
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   onSyncStrava?: (sessionId: string) => Promise<void>;
-  onConfirmStrava?: (sessionId: string) => void;
+  onConfirmStrava?: (sessionId: string) => Promise<void>;
   userRole?: UserRole;
 }
 
@@ -83,6 +84,7 @@ export function SessionCard({
   const { t } = useTranslation(['common', 'training']);
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
   const [isSyncingStrava, setIsSyncingStrava] = useState(false);
+  const [isConfirmingStrava, setIsConfirmingStrava] = useState(false);
 
   useEffect(() => {
     setCoachFeedback(session.coachPostFeedback ?? '');
@@ -195,13 +197,14 @@ export function SessionCard({
       {shouldShowPerformanceSection && (
           <div
             className={cn(
+              'animate-in fade-in slide-in-from-bottom-2 duration-300',
               'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
               isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
             )}
             title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
           >
             {(shouldShowMaskedPlaceholders || session.actualDurationMinutes != null) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[50ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.duration')}
                 </span>
@@ -211,7 +214,7 @@ export function SessionCard({
               </div>
             )}
             {(shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[75ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
                 </span>
@@ -221,7 +224,7 @@ export function SessionCard({
               </div>
             )}
             {(shouldShowMaskedPlaceholders || session.actualPace != null) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[100ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.pace')}
                 </span>
@@ -231,7 +234,7 @@ export function SessionCard({
               </div>
             )}
             {(shouldShowMaskedPlaceholders || session.avgHeartRate != null) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[125ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.avgHr')}
                 </span>
@@ -241,7 +244,7 @@ export function SessionCard({
               </div>
             )}
             {(shouldShowMaskedPlaceholders || session.maxHeartRate != null) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[150ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.maxHr')}
                 </span>
@@ -251,7 +254,7 @@ export function SessionCard({
               </div>
             )}
             {(shouldShowMaskedPlaceholders || session.rpe != null) && (
-              <div className="flex flex-col min-w-[60px]">
+              <div className="animate-in fade-in duration-200 delay-[175ms] flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.rpe')}
                 </span>
@@ -262,7 +265,7 @@ export function SessionCard({
             <IntervalButton session={session} userRole={userRole} />
 
             {session.stravaActivityId != null && (
-              <div className="w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
+              <div className="animate-in fade-in duration-200 delay-[200ms] w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed">
                 <a
                   href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                   target="_blank"
@@ -374,11 +377,23 @@ export function SessionCard({
             <Button
               size="sm"
               variant="outline"
-              className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 truncate block"
-              onClick={() => onConfirmStrava?.(session.id)}
+              disabled={isConfirmingStrava}
+              className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300 disabled:opacity-60 disabled:cursor-not-allowed"
+              onClick={async () => {
+                setIsConfirmingStrava(true);
+                try {
+                  await onConfirmStrava?.(session.id);
+                } finally {
+                  setIsConfirmingStrava(false);
+                }
+              }}
               title={t('common:strava.confirmAndShare')}
             >
-              {t('common:strava.confirmAndShare')}
+              {isConfirmingStrava
+                ? <Loader2 className="h-2.5 w-2.5 animate-spin shrink-0" />
+                : <Share2 className="h-2.5 w-2.5 shrink-0" />
+              }
+              <span className="truncate">{t('common:strava.confirmAndShare')}</span>
             </Button>
           )}
 
