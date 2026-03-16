@@ -32,4 +32,9 @@ export const queryKeys = {
     all: ['sessionLaps'] as const,
     bySession: (sessionId: string) => ['sessionLaps', sessionId] as const,
   },
+  // PoC: Junction Garmin integration — remove after evaluation
+  junctionPoc: {
+    all: ['junction-poc'] as const,
+    connection: (userId: string) => ['junction-poc', 'connection', userId] as const,
+  },
 };
