@@ -19,6 +19,7 @@ import {
 } from '~/lib/hooks/useSessions';
 import { useQueryClient } from '@tanstack/react-query';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
+import { useJunctionConnectionStatus } from '~/lib/hooks/useJunctionConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
@@ -48,6 +49,7 @@ export default function AthleteWeekView() {
   const updateAthlete = useUpdateAthleteSession();
   const qc = useQueryClient();
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
+  const { data: junctionConnection } = useJunctionConnectionStatus(user?.id ?? '');
   const stravaSyncSingle = useStravaSync();
   const stravaSyncBulk = useStravaSync();
 
@@ -80,6 +82,7 @@ export default function AthleteWeekView() {
   const stats = computeWeekStats(sessions);
 
   const stravaConnected = stravaStatus?.connected ?? false;
+  const junctionConnected = junctionConnection?.status === 'active';
 
   const handleToggleComplete = useCallback(
     (sessionId: string, completed: boolean) => {
@@ -212,6 +215,7 @@ export default function AthleteWeekView() {
         onUpdateNotes={handleUpdateNotes}
         onUpdatePerformance={handleUpdatePerformance}
         stravaConnected={stravaConnected}
+        junctionConnected={junctionConnected}
         onSyncStrava={handleSyncStrava}
         onConfirmStrava={handleConfirmStrava}
         userRole={user?.role}

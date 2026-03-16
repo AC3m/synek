@@ -7,6 +7,15 @@ import { SessionCard } from '~/components/calendar/SessionCard';
 import type { UserRole } from '~/lib/auth';
 import type { TrainingSession } from '~/types/training';
 
+vi.mock('~/lib/context/AuthContext', () => ({
+  useAuth: () => ({ user: { id: 'test-user-1', role: 'athlete' } }),
+}));
+
+vi.mock('~/lib/hooks/useJunctionConnection', () => ({
+  useJunctionConnectionStatus: () => ({ data: null }),
+  useJunctionWorkout: () => ({ data: null }),
+}));
+
 /**
  * Strava Sync CTA tests.
  *

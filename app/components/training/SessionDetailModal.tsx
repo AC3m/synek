@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { format, addDays, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
+import { getSessionCalendarDate } from '~/lib/utils/date';
 import { Pencil, Trash2, X, Zap, Loader2, Share2, RotateCcw } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
@@ -26,8 +27,9 @@ import { IntervalChart } from './IntervalChart';
 import { LapTable } from './LapTable';
 import { StravaLogo } from './StravaLogo';
 import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
+import { useAuth } from '~/lib/context/AuthContext';
+import { GarminModalSection } from './GarminModalSection';
 import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
-import { DAYS_OF_WEEK } from '~/types/training';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
 import type {
@@ -53,6 +55,7 @@ interface SessionDetailModalProps {
   athleteMode?: boolean;
   showAthleteControls?: boolean;
   stravaConnected?: boolean;
+  junctionConnected?: boolean;
   onEdit?: (session: TrainingSession) => void;
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
@@ -107,6 +110,7 @@ export function SessionDetailModal({
   athleteMode = false,
   showAthleteControls = false,
   stravaConnected = false,
+  junctionConnected = false,
   onEdit,
   onDelete,
   onToggleComplete,
@@ -119,6 +123,7 @@ export function SessionDetailModal({
 }: SessionDetailModalProps) {
   const { t } = useTranslation(['training', 'common']);
   const isMobile = useIsMobile();
+  const { user } = useAuth();
 
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
   const [isSyncingStrava, setIsSyncingStrava] = useState(false);
@@ -139,16 +144,7 @@ export function SessionDetailModal({
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
-  const hasActualPerformance =
-    session.actualDurationMinutes != null ||
-    session.actualDistanceKm != null ||
-    session.actualPace != null ||
-    session.avgHeartRate != null ||
-    session.maxHeartRate != null ||
-    session.rpe != null;
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
-  const shouldShowActualSection =
-    session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
 
   const lapsEnabled =
     session.trainingType === 'run' &&
@@ -161,10 +157,20 @@ export function SessionDetailModal({
   const intervalCount = lapsEnabled && laps ? laps.filter((l) => l.segmentType === 'interval').length : 0;
   const hasRealIntervals = intervalCount > 2;
 
-  const dayDate = weekStart
-    ? addDays(parseISO(weekStart), DAYS_OF_WEEK.indexOf(session.dayOfWeek))
-    : null;
+  const calendarDate = getSessionCalendarDate(weekStart, session.dayOfWeek);
+  const dayDate = calendarDate ? parseISO(calendarDate) : null;
   const dateStr = dayDate ? format(dayDate, 'EEEE · MMM d') : null;
+
+  const hasActualPerformance =
+    session.actualDurationMinutes != null ||
+    session.actualDistanceKm != null ||
+    session.actualPace != null ||
+    session.avgHeartRate != null ||
+    session.maxHeartRate != null ||
+    session.rpe != null;
+
+  const shouldShowActualSection =
+    session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
 
   const typeData = session.typeSpecificData;
 
@@ -535,6 +541,14 @@ export function SessionDetailModal({
           )}
         </div>
       )}
+
+      {/* Garmin performance — PoC: Junction integration */}
+      <GarminModalSection
+        appUserId={user?.id ?? ''}
+        calendarDate={calendarDate}
+        trainingType={session.trainingType}
+        junctionConnected={junctionConnected}
+      />
 
       {/* ACTIONS */}
       {(athleteMode || showAthleteControls) && !isRestDay && (

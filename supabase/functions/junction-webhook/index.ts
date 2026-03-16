@@ -107,7 +107,7 @@ Deno.serve(async (req) => {
   // Check that this Junction user has an active connection
   const { data: connection, error: connErr } = await supabase
     .from('junction_poc_connections')
-    .select('id')
+    .select('id, app_user_id')
     .eq('junction_user_id', junctionUserId)
     .eq('status', 'active')
     .maybeSingle();
@@ -150,6 +150,45 @@ Deno.serve(async (req) => {
   if (insertErr) {
     console.error('DB insert error:', insertErr);
     return json({ error: 'db_error' }, 500);
+  }
+
+  // Parse workout events into the normalised junction_poc_workouts table
+  if (eventType === 'daily.data.workouts.created') {
+    const w = (payload.data ?? {}) as Record<string, unknown>;
+    const workoutId = w.id as string | undefined;
+
+    if (workoutId) {
+      const sport = (w.sport ?? {}) as Record<string, unknown>;
+      const { error: workoutErr } = await supabase
+        .from('junction_poc_workouts')
+        .upsert(
+          {
+            junction_user_id: junctionUserId,
+            app_user_id: connection.app_user_id,
+            junction_workout_id: workoutId,
+            provider_id: (w.provider_id as string | undefined) ?? null,
+            title: (w.title as string | undefined) ?? null,
+            sport_slug: (sport.slug as string | undefined) ?? null,
+            sport_name: (sport.name as string | undefined) ?? null,
+            calendar_date: w.calendar_date as string,
+            time_start: (w.time_start as string | undefined) ?? null,
+            time_end: (w.time_end as string | undefined) ?? null,
+            moving_time_seconds: (w.moving_time as number | undefined) ?? null,
+            distance_meters: (w.distance as number | undefined) ?? null,
+            calories: (w.calories as number | undefined) ?? null,
+            average_hr: (w.average_hr as number | undefined) ?? null,
+            max_hr: (w.max_hr as number | undefined) ?? null,
+            average_speed: (w.average_speed as number | undefined) ?? null,
+            raw_data: w,
+          },
+          { onConflict: 'junction_workout_id' },
+        );
+
+      if (workoutErr) {
+        console.error('Failed to upsert junction_poc_workouts:', workoutErr);
+        // Non-fatal — raw event is already stored above
+      }
+    }
   }
 
   return json({ received: true });

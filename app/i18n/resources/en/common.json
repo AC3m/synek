@@ -161,10 +161,14 @@
     "disconnectButton": "Disconnect",
     "disconnectConfirm": "Disconnect your Garmin account?",
     "connecting": "Connecting…",
-    "description": "Connect your Garmin account to receive workout data via Junction.",
+    "description": "Connect your Garmin account to receive workout data.",
     "errorLoad": "Failed to load the connection widget. Please try again.",
     "errorConnect": "Failed to connect Garmin. Please try again.",
-    "errorDisconnect": "Failed to disconnect. Please try again."
+    "errorDisconnect": "Failed to disconnect. Please try again.",
+    "garmin": {
+      "syncedBadge": "Synced via Garmin",
+      "noData": "No Garmin data for this session"
+    }
   },
   "strava": {
     "connect": "Connect with Strava",

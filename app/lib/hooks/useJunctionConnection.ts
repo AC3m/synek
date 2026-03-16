@@ -3,11 +3,24 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '~/lib/queries/keys';
 import {
   fetchJunctionConnection,
+  fetchJunctionWorkoutForSession,
   createJunctionConnection,
   disconnectJunctionConnection,
 } from '~/lib/queries/junction-poc';
 import { supabase } from '~/lib/supabase';
 import type { JunctionPocConnection } from '~/types/junction-poc';
+
+export function useJunctionWorkout(
+  appUserId: string,
+  calendarDate: string | null,
+  trainingType: string,
+) {
+  return useQuery({
+    queryKey: queryKeys.junctionPoc.workout(appUserId, calendarDate, trainingType),
+    queryFn: () => fetchJunctionWorkoutForSession(appUserId, calendarDate!, trainingType),
+    enabled: !!appUserId && !!calendarDate,
+  });
+}
 
 export function useJunctionConnectionStatus(userId: string) {
   return useQuery({

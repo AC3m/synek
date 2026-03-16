@@ -4,8 +4,10 @@ import {
   getMockJunctionConnection,
   mockCreateJunctionConnection,
   mockDisconnectJunctionConnection,
+  getMockJunctionWorkoutForSession,
 } from '~/lib/mock-data/junction-poc';
-import type { JunctionPocConnection } from '~/types/junction-poc';
+import { JUNCTION_SPORT_MAP } from '~/types/junction-poc';
+import type { JunctionPocConnection, JunctionPocWorkout } from '~/types/junction-poc';
 
 function toJunctionConnection(row: Record<string, unknown>): JunctionPocConnection {
   return {
@@ -52,6 +54,53 @@ export async function createJunctionConnection(
   if (error) throw error;
   return toJunctionConnection(data);
 }
+
+function toJunctionWorkout(row: Record<string, unknown>): JunctionPocWorkout {
+  return {
+    id: row.id as string,
+    appUserId: row.app_user_id as string,
+    junctionWorkoutId: row.junction_workout_id as string,
+    title: (row.title as string | null) ?? null,
+    sportSlug: (row.sport_slug as string | null) ?? null,
+    calendarDate: row.calendar_date as string,
+    movingTimeSeconds: (row.moving_time_seconds as number | null) ?? null,
+    distanceMeters: (row.distance_meters as number | null) ?? null,
+    calories: (row.calories as number | null) ?? null,
+    averageHr: (row.average_hr as number | null) ?? null,
+    maxHr: (row.max_hr as number | null) ?? null,
+    averageSpeed: (row.average_speed as number | null) ?? null,
+  };
+}
+
+export async function fetchJunctionWorkoutForSession(
+  appUserId: string,
+  calendarDate: string,
+  trainingType: string,
+): Promise<JunctionPocWorkout | null> {
+  if (isMockMode) return getMockJunctionWorkoutForSession(appUserId, calendarDate, trainingType);
+
+  // Find sport slugs that map to the requested training type
+  const matchingSlugs = Object.entries(JUNCTION_SPORT_MAP)
+    .filter(([, type]) => type === trainingType)
+    .map(([slug]) => slug);
+
+  if (matchingSlugs.length === 0) return null;
+
+  const { data, error } = await supabase
+    .from('junction_poc_workouts')
+    .select(
+      'id, app_user_id, junction_workout_id, title, sport_slug, calendar_date, moving_time_seconds, distance_meters, calories, average_hr, max_hr, average_speed',
+    )
+    .eq('app_user_id', appUserId)
+    .eq('calendar_date', calendarDate)
+    .in('sport_slug', matchingSlugs)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? toJunctionWorkout(data) : null;
+}
+
+// ── Connection queries (existing) ────────────────────────────────────────────
 
 export async function disconnectJunctionConnection(appUserId: string): Promise<void> {
   if (isMockMode) {
