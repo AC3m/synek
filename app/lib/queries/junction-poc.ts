@@ -5,6 +5,7 @@ import {
   mockCreateJunctionConnection,
   mockDisconnectJunctionConnection,
   getMockJunctionWorkoutForSession,
+  getMockJunctionWorkoutsForWeek,
 } from '~/lib/mock-data/junction-poc';
 import { JUNCTION_SPORT_MAP } from '~/types/junction-poc';
 import type { JunctionPocConnection, JunctionPocWorkout } from '~/types/junction-poc';
@@ -98,6 +99,27 @@ export async function fetchJunctionWorkoutForSession(
 
   if (error) throw error;
   return data ? toJunctionWorkout(data) : null;
+}
+
+// PoC: Junction Garmin integration — remove after evaluation
+export async function fetchJunctionWorkoutsForWeek(
+  appUserId: string,
+  weekStart: string,
+  weekEnd: string,
+): Promise<JunctionPocWorkout[]> {
+  if (isMockMode) return getMockJunctionWorkoutsForWeek(appUserId, weekStart, weekEnd);
+
+  const { data, error } = await supabase
+    .from('junction_poc_workouts')
+    .select(
+      'id, app_user_id, junction_workout_id, title, sport_slug, calendar_date, moving_time_seconds, distance_meters, calories, average_hr, max_hr, average_speed',
+    )
+    .eq('app_user_id', appUserId)
+    .gte('calendar_date', weekStart)
+    .lte('calendar_date', weekEnd);
+
+  if (error) throw error;
+  return (data ?? []).map(toJunctionWorkout);
 }
 
 // ── Connection queries (existing) ────────────────────────────────────────────

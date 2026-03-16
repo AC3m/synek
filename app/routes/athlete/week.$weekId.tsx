@@ -19,12 +19,12 @@ import {
 } from '~/lib/hooks/useSessions';
 import { useQueryClient } from '@tanstack/react-query';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
-import { useJunctionConnectionStatus } from '~/lib/hooks/useJunctionConnection';
+import { useJunctionConnectionStatus, useJunctionWeekWorkouts } from '~/lib/hooks/useJunctionConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
-import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import { groupSessionsByDay, computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import type { DayOfWeek, TrainingSession, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
 
@@ -78,11 +78,22 @@ export default function AthleteWeekView() {
   const [formDay, setFormDay] = useState<DayOfWeek | undefined>();
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
 
-  const sessionsByDay = groupSessionsByDay(sessions);
-  const stats = computeWeekStats(sessions);
-
   const stravaConnected = stravaStatus?.connected ?? false;
   const junctionConnected = junctionConnection?.status === 'active';
+
+  // PoC: Junction Garmin integration — remove after evaluation
+  const { data: garminWeekWorkouts = [] } = useJunctionWeekWorkouts(
+    user?.id ?? '',
+    weekStart,
+    junctionConnected,
+  );
+
+  const sessionsByDay = groupSessionsByDay(sessions);
+  // PoC: Junction Garmin integration — remove after evaluation
+  const augmentedSessions = junctionConnected
+    ? augmentSessionsWithGarmin(sessions, garminWeekWorkouts, weekStart)
+    : sessions;
+  const stats = computeWeekStats(augmentedSessions);
 
   const handleToggleComplete = useCallback(
     (sessionId: string, completed: boolean) => {

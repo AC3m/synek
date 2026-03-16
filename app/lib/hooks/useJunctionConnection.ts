@@ -1,9 +1,11 @@
 // PoC: Junction Garmin integration — remove after evaluation
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { format, addDays, parseISO } from 'date-fns';
 import { queryKeys } from '~/lib/queries/keys';
 import {
   fetchJunctionConnection,
   fetchJunctionWorkoutForSession,
+  fetchJunctionWorkoutsForWeek,
   createJunctionConnection,
   disconnectJunctionConnection,
 } from '~/lib/queries/junction-poc';
@@ -19,6 +21,23 @@ export function useJunctionWorkout(
     queryKey: queryKeys.junctionPoc.workout(appUserId, calendarDate, trainingType),
     queryFn: () => fetchJunctionWorkoutForSession(appUserId, calendarDate!, trainingType),
     enabled: !!appUserId && !!calendarDate,
+  });
+}
+
+// PoC: Junction Garmin integration — remove after evaluation
+export function useJunctionWeekWorkouts(
+  appUserId: string,
+  weekStart: string,
+  junctionConnected: boolean,
+) {
+  const weekEnd = weekStart
+    ? format(addDays(parseISO(weekStart), 6), 'yyyy-MM-dd')
+    : '';
+
+  return useQuery({
+    queryKey: queryKeys.junctionPoc.weekWorkouts(appUserId, weekStart),
+    queryFn: () => fetchJunctionWorkoutsForWeek(appUserId, weekStart, weekEnd),
+    enabled: !!appUserId && !!weekStart && junctionConnected,
   });
 }
 

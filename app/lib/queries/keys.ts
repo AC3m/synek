@@ -38,5 +38,7 @@ export const queryKeys = {
     connection: (userId: string) => ['junction-poc', 'connection', userId] as const,
     workout: (userId: string, date: string | null, type: string) =>
       ['junction-poc', 'workout', userId, date, type] as const,
+    weekWorkouts: (userId: string, weekStart: string) =>
+      ['junction-poc', 'week-workouts', userId, weekStart] as const,
   },
 };

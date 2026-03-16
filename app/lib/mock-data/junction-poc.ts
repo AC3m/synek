@@ -76,6 +76,20 @@ const MOCK_JUNCTION_WORKOUTS: JunctionPocWorkout[] = [
   },
 ];
 
+// PoC: Junction Garmin integration — remove after evaluation
+export function getMockJunctionWorkoutsForWeek(
+  appUserId: string,
+  weekStart: string,
+  weekEnd: string,
+): JunctionPocWorkout[] {
+  return MOCK_JUNCTION_WORKOUTS.filter(
+    (w) =>
+      w.appUserId === appUserId &&
+      w.calendarDate >= weekStart &&
+      w.calendarDate <= weekEnd,
+  );
+}
+
 export function getMockJunctionWorkoutForSession(
   appUserId: string,
   calendarDate: string,
