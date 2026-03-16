@@ -28,6 +28,7 @@ interface WeekGridProps {
   onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   stravaConnected?: boolean;
+  junctionConnected?: boolean;
   onSyncStrava?: (sessionId: string) => Promise<void>;
   onConfirmStrava?: (sessionId: string) => Promise<void>;
   userRole?: UserRole;
@@ -110,6 +111,7 @@ export function WeekGrid({
   onUpdatePerformance,
   onUpdateCoachPostFeedback,
   stravaConnected,
+  junctionConnected,
   onSyncStrava,
   onConfirmStrava,
   userRole,
@@ -164,6 +166,7 @@ export function WeekGrid({
     onUpdatePerformance,
     onUpdateCoachPostFeedback,
     stravaConnected,
+    junctionConnected,
     onSyncStrava,
     onConfirmStrava,
     userRole,

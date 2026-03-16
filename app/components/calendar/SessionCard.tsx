@@ -4,8 +4,11 @@ import { Zap, Loader2, Share2 } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { StravaLogo } from '~/components/training/StravaLogo';
+import { GarminCardSection } from '~/components/training/GarminCardSection';
 import { SessionDetailModal } from '~/components/training/SessionDetailModal';
+import { useAuth } from '~/lib/context/AuthContext';
 import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
+import { getSessionCalendarDate } from '~/lib/utils/date';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
 import type { TrainingSession, AthleteSessionUpdate, RunData } from '~/types/training';
@@ -19,6 +22,7 @@ interface SessionCardProps {
   /** Show completion/notes/performance controls regardless of athleteMode (e.g. coach viewing own plan) */
   showAthleteControls?: boolean;
   stravaConnected?: boolean;
+  junctionConnected?: boolean;
   onEdit?: (session: TrainingSession) => void;
   onDelete?: (sessionId: string) => void;
   onToggleComplete?: (sessionId: string, completed: boolean) => void;
@@ -37,6 +41,7 @@ export function SessionCard({
   athleteMode = false,
   showAthleteControls = false,
   stravaConnected = false,
+  junctionConnected = false,
   onEdit,
   onDelete,
   onToggleComplete,
@@ -52,6 +57,10 @@ export function SessionCard({
   const [isConfirmingStrava, setIsConfirmingStrava] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // PoC: Junction Garmin — remove after evaluation
+  const { user } = useAuth();
+  const calendarDate = getSessionCalendarDate(weekStart, session.dayOfWeek);
 
   const handleCardClick = (e: React.MouseEvent) => {
     // React portals bubble synthetic events through the React tree even though the
@@ -222,6 +231,14 @@ export function SessionCard({
           </div>
         )}
 
+      {/* PoC: Junction Garmin — remove after evaluation */}
+      <GarminCardSection
+        appUserId={user?.id ?? ''}
+        calendarDate={calendarDate}
+        trainingType={session.trainingType}
+        junctionConnected={junctionConnected}
+      />
+
       {/* Athlete-specific features */}
       {(athleteMode || showAthleteControls) && !isRestDay && (
         <div className="mt-2 pt-1.5 border-t border-[color:var(--separator)] space-y-1">
@@ -295,6 +312,7 @@ export function SessionCard({
         athleteMode={athleteMode}
         showAthleteControls={showAthleteControls}
         stravaConnected={stravaConnected}
+        junctionConnected={junctionConnected}
         onEdit={onEdit}
         onDelete={onDelete}
         onToggleComplete={onToggleComplete}

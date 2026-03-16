@@ -11,6 +11,7 @@ import { Button } from '~/components/ui/button';
 import { Separator } from '~/components/ui/separator';
 import { stravaAssets } from '~/assets/strava';
 import { cn } from '~/lib/utils';
+import { JunctionGarminSection } from '~/components/settings/JunctionGarminSection';
 import {
   mondayToWeekId,
   getPrevWeekId,
@@ -143,6 +144,9 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
       </div>
 
       <Separator />
+
+      {/* PoC: Junction Garmin integration — remove after evaluation */}
+      <JunctionGarminSection className="mt-2" />
     </div>
   );
 }

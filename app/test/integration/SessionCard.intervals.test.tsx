@@ -19,6 +19,15 @@ vi.mock('~/lib/queries/strava-laps', () => ({
   mockFetchSessionLaps: vi.fn(),
 }));
 
+vi.mock('~/lib/context/AuthContext', () => ({
+  useAuth: () => ({ user: { id: 'test-user-1', role: 'athlete' } }),
+}));
+
+vi.mock('~/lib/hooks/useJunctionConnection', () => ({
+  useJunctionConnectionStatus: () => ({ data: null }),
+  useJunctionWorkout: () => ({ data: null }),
+}));
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function makeWrapper() {

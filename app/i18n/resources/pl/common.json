@@ -155,6 +155,21 @@
     "stravaAllShared": "Wszystkie dane udostępnione trenerowi",
     "stravaAllShareFailed": "Nie udało się udostępnić danych"
   },
+  "junction": {
+    "connectButton": "Połącz z Garmin",
+    "connectedBadge": "Garmin połączony",
+    "disconnectButton": "Rozłącz",
+    "disconnectConfirm": "Rozłączyć konto Garmin?",
+    "connecting": "Łączenie…",
+    "description": "Połącz konto Garmin, aby pobierać dane treningowe.",
+    "errorLoad": "Nie udało się załadować widgetu. Spróbuj ponownie.",
+    "errorConnect": "Nie udało się połączyć z Garmin. Spróbuj ponownie.",
+    "errorDisconnect": "Nie udało się rozłączyć. Spróbuj ponownie.",
+    "garmin": {
+      "syncedBadge": "Zsynchronizowano z Garmin",
+      "noData": "Brak danych Garmin dla tego treningu"
+    }
+  },
   "strava": {
     "connect": "Połącz ze Stravą",
     "connected": "Połączono",

@@ -43,3 +43,13 @@ verify_jwt = false
 
 [functions.strava-sync]
 verify_jwt = false
+
+[functions.junction-create-user]
+verify_jwt = false
+
+[functions.junction-disconnect]
+verify_jwt = false
+
+[functions.junction-webhook]
+verify_jwt = false
+

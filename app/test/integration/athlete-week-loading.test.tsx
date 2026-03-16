@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AthleteWeekView from '~/routes/athlete/week.$weekId'
 
 const {
@@ -41,6 +42,13 @@ vi.mock('~/lib/hooks/useStravaConnection', () => ({
   useStravaSync: () => ({ mutate: vi.fn() }),
 }))
 
+vi.mock('~/lib/hooks/useJunctionConnection', () => ({
+  useJunctionConnectionStatus: () => ({ data: null }),
+  useJunctionConnect: () => ({ mutate: vi.fn(), isPending: false }),
+  useJunctionDisconnect: () => ({ mutate: vi.fn(), isPending: false }),
+  useJunctionWorkout: () => ({ data: null }),
+}))
+
 vi.mock('~/lib/hooks/useProfile', () => ({
   useSelfPlanPermission: useSelfPlanPermissionMock,
 }))
@@ -76,12 +84,15 @@ vi.mock('react-i18next', () => ({
 }))
 
 function renderPage() {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter initialEntries={['/athlete/week/2026-W10']}>
-      <Routes>
-        <Route path="/athlete/week/:weekId" element={<AthleteWeekView />} />
-      </Routes>
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter initialEntries={['/athlete/week/2026-W10']}>
+        <Routes>
+          <Route path="/athlete/week/:weekId" element={<AthleteWeekView />} />
+        </Routes>
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 

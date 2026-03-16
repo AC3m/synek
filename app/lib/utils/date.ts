@@ -3,6 +3,7 @@ import {
   endOfISOWeek,
   addWeeks,
   subWeeks,
+  addDays,
   getISOWeek,
   getISOWeekYear,
   format,
@@ -71,6 +72,15 @@ export function getWeekDateRange(weekId: string): {
     end: sunday,
     formatted: `${format(monday, 'MMM d')} - ${format(sunday, 'MMM d yyyy')}`,
   };
+}
+
+/** Returns the YYYY-MM-DD calendar date for a session given its week start and day of week. */
+export function getSessionCalendarDate(
+  weekStart: string | undefined,
+  dayOfWeek: DayOfWeek,
+): string | null {
+  if (!weekStart) return null;
+  return format(addDays(parseISO(weekStart), DAYS_OF_WEEK.indexOf(dayOfWeek)), 'yyyy-MM-dd');
 }
 
 export function parseWeekId(weekId: string): {
