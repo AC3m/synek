@@ -1,4 +1,4 @@
-import { DAYS_OF_WEEK, type TrainingSession, type SessionsByDay, type WeekStats } from '~/types/training';
+import { DAYS_OF_WEEK, type TrainingSession, type SessionsByDay, type WeekStats, type DayOfWeek, type ReorderSessionInput } from '~/types/training';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { JUNCTION_SPORT_MAP } from '~/types/junction-poc';
 import type { JunctionPocWorkout } from '~/types/junction-poc';
@@ -49,6 +49,34 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
     totalActualDurationMinutes,
     totalActualRunKm,
   };
+}
+
+/**
+ * Computes the result of a drag-and-drop reorder operation.
+ * Returns null when the drop is cancelled (over is null).
+ * Returns a ReorderSessionInput with the target day and sortOrder otherwise.
+ */
+export function computeDragResult(
+  activeId: string,
+  activeDay: DayOfWeek,
+  overDay: DayOfWeek | null,
+  sessionsByDay: SessionsByDay,
+): ReorderSessionInput | null {
+  if (overDay === null) return null;
+
+  const targetDay = overDay;
+  const targetSessions = sessionsByDay[targetDay] ?? [];
+
+  if (targetDay === activeDay) {
+    // Within-day reorder: place after all other sessions in the day
+    const others = targetSessions.filter((s) => s.id !== activeId);
+    const sortOrder = others.length > 0 ? others[others.length - 1].sortOrder + 1 : 0;
+    return { sessionId: activeId, dayOfWeek: targetDay, sortOrder };
+  }
+
+  // Cross-day drop: append after existing sessions in the target day
+  const sortOrder = targetSessions.length;
+  return { sessionId: activeId, dayOfWeek: targetDay, sortOrder };
 }
 
 // PoC: Junction Garmin integration — remove after evaluation

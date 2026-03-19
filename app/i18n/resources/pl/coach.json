@@ -52,6 +52,29 @@
     "label": "Zezwól na samodzielne planowanie",
     "hint": "Zawodnik może dodawać i edytować własne treningi"
   },
+  "history": {
+    "weekLabel": "Tydzień {{week}} — {{range}}",
+    "sessionCount_one": "{{count}} trening",
+    "sessionCount_other": "{{count}} treningów",
+    "noSessions": "Brak treningów",
+    "copyWeek": "Kopiuj tydzień ↓",
+    "copyDay": "Kopiuj dzień ↓",
+    "copySession": "Kopiuj",
+    "expand": "Rozwiń tydzień",
+    "collapse": "Zwiń tydzień",
+    "currentWeek": "Bieżący tydzień",
+    "copyWeekConfirmTitle": "Skopiować Tydzień {{week}} — {{range}} do bieżącego tygodnia?",
+    "copyWeekConfirmBody": "{{count}} treningów zostanie dodanych do bieżącego tygodnia."
+  },
+  "copy": {
+    "successWeek": "{{count}} treningów skopiowanych do bieżącego tygodnia",
+    "successDay": "{{count}} treningów skopiowanych",
+    "successSession": "Trening skopiowany",
+    "error": "Kopiowanie nie powiodło się — spróbuj ponownie"
+  },
+  "dnd": {
+    "moveToDay": "Przenieś na {{day}}"
+  },
   "athletes": {
     "title": "Zawodnicy",
     "inviteSection": "Zapraszaj zawodników",

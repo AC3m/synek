@@ -94,3 +94,17 @@ export function parseWeekId(weekId: string): {
     weekNumber: parseInt(match[2], 10),
   };
 }
+
+/**
+ * Returns `count` previous ISO week IDs relative to `weekId`, most-recent first.
+ * Handles year-boundary wrap correctly using getPrevWeekId.
+ */
+export function computePreviousWeekIds(weekId: string, count: number): string[] {
+  const result: string[] = [];
+  let current = weekId;
+  for (let i = 0; i < count; i++) {
+    current = getPrevWeekId(current);
+    result.push(current);
+  }
+  return result;
+}

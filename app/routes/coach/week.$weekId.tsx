@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
-import { WeekGrid } from '~/components/calendar/WeekGrid';
+import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
 import { SessionForm } from '~/components/training/SessionForm';
@@ -170,23 +170,18 @@ export default function CoachWeekView() {
         onUpdate={handleWeekUpdate}
       />
 
-      {/* Week Grid */}
-      <WeekGrid
-        sessionsByDay={sessionsByDay}
-        weekStart={weekStart}
+      {/* Multi-Week View (current week + 4 history rows) */}
+      <MultiWeekView
+        currentWeekId={weekId}
+        currentWeekPlan={weekPlan}
+        currentSessions={sessions}
+        currentSessionsByDay={sessionsByDay}
         onAddSession={handleAddSession}
         onEditSession={handleEditSession}
         onDeleteSession={handleDeleteSession}
         onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
         userRole={user?.role}
-        selectedDay={selectedDay}
-        onSelectDay={setSelectedDay}
-        {...(isViewingSelf && {
-          showAthleteControls: true,
-          onToggleComplete: handleToggleComplete,
-          onUpdateNotes: handleUpdateNotes,
-          onUpdatePerformance: handleUpdatePerformance,
-        })}
+        showAthleteControls={isViewingSelf}
       />
 
       {/* Session Form Sheet */}

@@ -432,6 +432,8 @@ When writing new migrations, place in `supabase/migrations/` with prefix `00N_`.
 - PostgreSQL via Supabase — new `strava_laps` table; `workout_type` column added to `strava_activities`; `secure_training_sessions` view updated (010-strava-run-intervals)
 - TypeScript 5 (strict) — React 19 frontend, Deno Edge Functions + `@tryvital/vital-link` (1.7 KB gzipped, new), `svix` via esm.sh (Deno, Edge Function only — not a frontend bundle concern) (011-junction-garmin-poc)
 - Supabase PostgreSQL — three new isolated tables (`junction_poc_connections`, `junction_poc_events`, `junction_poc_workouts`) (011-junction-garmin-poc)
+- TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, @dnd-kit/core + @dnd-kit/sortable (new, ~20 KB gzipped), date-fns 4, shadcn/ui (New York), i18nex (012-multi-week-planning)
+- PostgreSQL via Supabase — two new stored procedures in migration 021 (additive only; no schema changes) (012-multi-week-planning)
 
 ## Recent Changes
 - 001-sheets-data-migration: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, Supabase JS 2, Zod 4, date-fns 4, papaparse (devDependency — migration script only)

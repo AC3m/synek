@@ -8,6 +8,8 @@ import {
   useUpdateSession,
   useConfirmStravaSession,
   useBulkConfirmStravaSessions,
+  useCopyWeekSessions,
+  useCopyDaySessions,
 } from '~/lib/hooks/useSessions';
 import {
   mockFetchSessionsByWeekPlan,
@@ -16,10 +18,18 @@ import {
   mockUpdateSession,
 } from '~/lib/mock-data';
 import { createTestQueryClient } from '~/test/utils/query-client';
+import { queryKeys } from '~/lib/queries/keys';
 
-const { confirmStravaSessionMock, bulkConfirmStravaSessionsMock } = vi.hoisted(() => ({
+const {
+  confirmStravaSessionMock,
+  bulkConfirmStravaSessionsMock,
+  copyWeekSessionsMock,
+  copyDaySessionsMock,
+} = vi.hoisted(() => ({
   confirmStravaSessionMock: vi.fn(async () => {}),
   bulkConfirmStravaSessionsMock: vi.fn(async () => {}),
+  copyWeekSessionsMock: vi.fn(async () => 3),
+  copyDaySessionsMock: vi.fn(async () => 1),
 }));
 
 // Mock the query module — async factory avoids vi.mock hoisting issues
@@ -33,6 +43,8 @@ vi.mock('~/lib/queries/sessions', async () => {
     updateAthleteSession: vi.fn(),
     confirmStravaSession: confirmStravaSessionMock,
     bulkConfirmStravaSessions: bulkConfirmStravaSessionsMock,
+    copyWeekSessions: copyWeekSessionsMock,
+    copyDaySessions: copyDaySessionsMock,
   };
 });
 
@@ -206,6 +218,59 @@ describe('useConfirmStravaSession', () => {
     ]);
     const updated = cached?.find((s) => s.id === target.id);
     expect(updated?.isStravaConfirmed).toBe(true);
+  });
+});
+
+describe('useCopyWeekSessions', () => {
+  it('calls copyWeekSessions with correct args and invalidates target week cache', async () => {
+    const { queryClient, Wrapper } = makeWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useCopyWeekSessions(), { wrapper: Wrapper });
+
+    await act(async () => {
+      result.current.mutate({ sourceWeekPlanId: 'wp-w09-a1', targetWeekPlanId: 'wp-target' });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(copyWeekSessionsMock).toHaveBeenCalledWith({
+      sourceWeekPlanId: 'wp-w09-a1',
+      targetWeekPlanId: 'wp-target',
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') })
+    );
+  });
+});
+
+describe('useCopyDaySessions', () => {
+  it('calls copyDaySessions with correct args and invalidates target week cache', async () => {
+    const { queryClient, Wrapper } = makeWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+    const { result } = renderHook(() => useCopyDaySessions(), { wrapper: Wrapper });
+
+    await act(async () => {
+      result.current.mutate({
+        sourceWeekPlanId: 'wp-w09-a1',
+        sourceDay: 'monday',
+        targetWeekPlanId: 'wp-target',
+        targetDay: 'monday',
+      });
+    });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+    expect(copyDaySessionsMock).toHaveBeenCalledWith({
+      sourceWeekPlanId: 'wp-w09-a1',
+      sourceDay: 'monday',
+      targetWeekPlanId: 'wp-target',
+      targetDay: 'monday',
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') })
+    );
   });
 });
 

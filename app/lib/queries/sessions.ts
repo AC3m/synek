@@ -7,6 +7,8 @@ import {
   mockUpdateAthleteSession,
   mockConfirmStravaSession,
   mockBulkConfirmStravaSessions,
+  mockCopyWeekSessions,
+  mockCopyDaySessions,
 } from '~/lib/mock-data';
 import type {
   TrainingSession,
@@ -14,6 +16,8 @@ import type {
   UpdateSessionInput,
   AthleteSessionUpdate,
   TypeSpecificData,
+  CopyWeekInput,
+  CopyDayInput,
 } from '~/types/training';
 
 export function toSession(row: Record<string, unknown>): TrainingSession {
@@ -122,6 +126,7 @@ export async function updateSession(
   const updates: Record<string, unknown> = {};
   if (input.trainingType !== undefined)
     updates.training_type = input.trainingType;
+  if (input.dayOfWeek !== undefined) updates.day_of_week = input.dayOfWeek;
   if (input.description !== undefined) updates.description = input.description;
   if (input.coachComments !== undefined)
     updates.coach_comments = input.coachComments;
@@ -164,6 +169,28 @@ export async function deleteSession(sessionId: string): Promise<void> {
     .eq('id', sessionId);
 
   if (error) throw error;
+}
+
+export async function copyWeekSessions(input: CopyWeekInput): Promise<number> {
+  if (isMockMode) return mockCopyWeekSessions(input);
+  const { data, error } = await supabase.rpc('copy_week_sessions', {
+    p_source_week_plan_id: input.sourceWeekPlanId,
+    p_target_week_plan_id: input.targetWeekPlanId,
+  });
+  if (error) throw error;
+  return data as number;
+}
+
+export async function copyDaySessions(input: CopyDayInput): Promise<number> {
+  if (isMockMode) return mockCopyDaySessions(input);
+  const { data, error } = await supabase.rpc('copy_day_sessions', {
+    p_source_week_plan_id: input.sourceWeekPlanId,
+    p_source_day: input.sourceDay,
+    p_target_week_plan_id: input.targetWeekPlanId,
+    p_target_day: input.targetDay,
+  });
+  if (error) throw error;
+  return data as number;
 }
 
 export async function updateAthleteSession(
