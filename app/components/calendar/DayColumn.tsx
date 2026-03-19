@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Plus } from 'lucide-react';
+import { Plus, Copy } from 'lucide-react';
+import { useDroppable } from '@dnd-kit/core';
 import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
@@ -27,6 +28,14 @@ interface DayColumnProps {
   onSyncStrava?: (sessionId: string) => Promise<void>;
   onConfirmStrava?: (sessionId: string) => Promise<void>;
   userRole?: UserRole;
+  /** In read-only mode: copy this day's sessions to the target week */
+  onCopyDay?: (day: DayOfWeek) => void;
+  /** In read-only mode: opens day-picker to copy a single session */
+  onCopySession?: (session: TrainingSession) => void;
+  /** Enable this column as a drag-and-drop drop target */
+  droppable?: boolean;
+  /** Enable drag handles on session cards */
+  draggableSessions?: boolean;
 }
 
 export function DayColumn({
@@ -48,8 +57,15 @@ export function DayColumn({
   onSyncStrava,
   onConfirmStrava,
   userRole,
+  onCopyDay,
+  onCopySession,
+  droppable = false,
+  draggableSessions = false,
 }: DayColumnProps) {
   const { t } = useTranslation();
+  const { t: tCoach } = useTranslation('coach');
+
+  const { setNodeRef: setDropRef, isOver } = useDroppable({ id: day, disabled: !droppable });
 
   const isWeekend = day === 'saturday' || day === 'sunday';
   const hasRestDay = sessions.some((s) => s.trainingType === 'rest_day');
@@ -62,9 +78,11 @@ export function DayColumn({
 
   return (
     <div
+      ref={droppable ? setDropRef : undefined}
       className={cn(
         'rounded-xl bg-surface-1 p-3 min-h-[200px] flex flex-col ring-1 ring-[color:var(--border)]',
         isWeekend && 'bg-surface-2/40',
+        isOver && 'ring-2 ring-primary/40 bg-primary/5',
       )}
     >
       <div className="flex items-center justify-between mb-2">
@@ -96,6 +114,17 @@ export function DayColumn({
             <Plus className="h-3 w-3" />
           </Button>
         )}
+        {readonly && !!onCopyDay && sessions.length > 0 && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6 shrink-0"
+            onClick={() => onCopyDay(day)}
+            title={tCoach('history.copyDay')}
+          >
+            <Copy className="h-3 w-3" />
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-col gap-1.5 flex-1">
@@ -118,6 +147,8 @@ export function DayColumn({
             onSyncStrava={onSyncStrava}
             onConfirmStrava={onConfirmStrava}
             userRole={userRole}
+            onCopy={onCopySession}
+            draggable={draggableSessions}
           />
         ))}
 

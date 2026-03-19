@@ -47,6 +47,7 @@ vi.mock('~/lib/hooks/useJunctionConnection', () => ({
   useJunctionConnect: () => ({ mutate: vi.fn(), isPending: false }),
   useJunctionDisconnect: () => ({ mutate: vi.fn(), isPending: false }),
   useJunctionWorkout: () => ({ data: null }),
+  useJunctionWeekWorkouts: () => ({ data: [] }),
 }))
 
 vi.mock('~/lib/hooks/useProfile', () => ({

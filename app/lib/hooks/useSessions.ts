@@ -10,12 +10,18 @@ import {
   updateAthleteSession,
   confirmStravaSession,
   bulkConfirmStravaSessions,
+  copyWeekSessions,
+  copyDaySessions,
 } from '~/lib/queries/sessions';
+import { buildCopySessionInput } from '~/lib/utils/session-copy';
 import type {
   CreateSessionInput,
   UpdateSessionInput,
   AthleteSessionUpdate,
   TrainingSession,
+  CopyWeekInput,
+  CopyDayInput,
+  DayOfWeek,
 } from '~/types/training';
 
 type SessionQueryRollback = { key: readonly unknown[]; data: TrainingSession[] };
@@ -80,14 +86,18 @@ export function useUpdateSession() {
 
   return useMutation({
     mutationFn: (input: UpdateSessionInput) => updateSession(input),
-    onMutate: async (input) =>
-      patchAllSessionQueries(queryClient, (sessions) => {
+    onMutate: async (input) => {
+      let weekPlanId: string | undefined;
+      const result = await patchAllSessionQueries(queryClient, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === input.id);
         if (idx === -1) return null;
+        if (!weekPlanId) weekPlanId = sessions[idx].weekPlanId;
         const updated = [...sessions];
         updated[idx] = { ...updated[idx], ...input } as TrainingSession;
         return updated;
-      }),
+      });
+      return { ...result, weekPlanId };
+    },
     onSuccess: () => {
       toast.success(t('toast.sessionUpdated'));
     },
@@ -97,9 +107,11 @@ export function useUpdateSession() {
       });
       toast.error(t('toast.sessionUpdateFailed'));
     },
-    onSettled: () => {
+    onSettled: (_data, _err, _input, context) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.sessions.all,
+        queryKey: context?.weekPlanId
+          ? queryKeys.sessions.byWeek(context.weekPlanId)
+          : queryKeys.sessions.all,
       });
     },
   });
@@ -202,6 +214,62 @@ export function useConfirmStravaSession() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
+    },
+  });
+}
+
+export function useCopyWeekSessions() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('coach');
+
+  return useMutation({
+    mutationFn: (input: CopyWeekInput) => copyWeekSessions(input),
+    onSuccess: (count, input) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
+      toast.success(t('copy.successWeek', { count }));
+    },
+    onError: () => {
+      toast.error(t('copy.error'));
+    },
+  });
+}
+
+export function useCopySession() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('coach');
+
+  return useMutation({
+    mutationFn: ({
+      session,
+      targetWeekPlanId,
+      targetDay,
+    }: {
+      session: TrainingSession;
+      targetWeekPlanId: string;
+      targetDay: DayOfWeek;
+    }) => createSession(buildCopySessionInput(session, targetWeekPlanId, targetDay)),
+    onSuccess: (_data, { targetWeekPlanId }) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(targetWeekPlanId) });
+      toast.success(t('copy.successSession'));
+    },
+    onError: () => {
+      toast.error(t('copy.error'));
+    },
+  });
+}
+
+export function useCopyDaySessions() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation('coach');
+
+  return useMutation({
+    mutationFn: (input: CopyDayInput) => copyDaySessions(input),
+    onSuccess: (count, input) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
+      toast.success(t('copy.successDay', { count }));
+    },
+    onError: () => {
+      toast.error(t('copy.error'));
     },
   });
 }

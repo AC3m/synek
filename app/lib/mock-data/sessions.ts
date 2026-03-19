@@ -4,8 +4,31 @@ import type {
   UpdateSessionInput,
   AthleteSessionUpdate,
   TypeSpecificData,
+  CopyWeekInput,
+  CopyDayInput,
 } from '~/types/training';
 import { sessions, delay, nextId } from './_shared';
+
+// ---------------------------------------------------------------------------
+// Reset helper — call in beforeEach to prevent state bleed between tests
+// ---------------------------------------------------------------------------
+
+// Store the initial seed snapshot once sessions are populated
+let seedSnapshot: Map<string, TrainingSession> | null = null;
+
+function captureSeedIfNeeded() {
+  if (!seedSnapshot) {
+    seedSnapshot = new Map(Array.from(sessions.entries()).map(([k, v]) => [k, structuredClone(v)]));
+  }
+}
+
+export function resetMockSessions() {
+  captureSeedIfNeeded();
+  sessions.clear();
+  for (const [k, v] of seedSnapshot!.entries()) {
+    sessions.set(k, structuredClone(v));
+  }
+}
 
 export async function mockFetchSessionsByWeekPlan(weekPlanId: string): Promise<TrainingSession[]> {
   await delay();
@@ -57,6 +80,7 @@ export async function mockUpdateSession(input: UpdateSessionInput): Promise<Trai
   const updated: TrainingSession = {
     ...existing,
     ...(input.trainingType !== undefined && { trainingType: input.trainingType }),
+    ...(input.dayOfWeek !== undefined && { dayOfWeek: input.dayOfWeek }),
     ...(input.description !== undefined && { description: input.description }),
     ...(input.coachComments !== undefined && { coachComments: input.coachComments }),
     ...(input.plannedDurationMinutes !== undefined && {
@@ -141,4 +165,71 @@ export async function mockBulkConfirmStravaSessions(weekPlanId: string): Promise
       });
     }
   }
+}
+
+function copyPlannedFields(
+  source: TrainingSession,
+  targetWeekPlanId: string,
+  targetDay: TrainingSession['dayOfWeek'],
+  sortOrder: number
+): TrainingSession {
+  const now = new Date().toISOString();
+  return {
+    id: nextId(),
+    weekPlanId: targetWeekPlanId,
+    dayOfWeek: targetDay,
+    sortOrder,
+    trainingType: source.trainingType,
+    description: source.description,
+    coachComments: source.coachComments,
+    plannedDurationMinutes: source.plannedDurationMinutes,
+    plannedDistanceKm: source.plannedDistanceKm,
+    typeSpecificData: source.typeSpecificData,
+    // actual / athlete / strava fields reset
+    isCompleted: false,
+    completedAt: null,
+    actualDurationMinutes: null,
+    actualDistanceKm: null,
+    actualPace: null,
+    avgHeartRate: null,
+    maxHeartRate: null,
+    rpe: null,
+    coachPostFeedback: null,
+    athleteNotes: null,
+    stravaActivityId: null,
+    stravaSyncedAt: null,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+export async function mockCopyWeekSessions(input: CopyWeekInput): Promise<number> {
+  await delay();
+  const sourceSessions = Array.from(sessions.values()).filter(
+    (s) => s.weekPlanId === input.sourceWeekPlanId && s.trainingType !== 'rest_day'
+  );
+  for (const source of sourceSessions) {
+    const copied = copyPlannedFields(source, input.targetWeekPlanId, source.dayOfWeek, source.sortOrder);
+    sessions.set(copied.id, copied);
+  }
+  return sourceSessions.length;
+}
+
+export async function mockCopyDaySessions(input: CopyDayInput): Promise<number> {
+  await delay();
+  const sourceSessions = Array.from(sessions.values())
+    .filter((s) => s.weekPlanId === input.sourceWeekPlanId && s.dayOfWeek === input.sourceDay && s.trainingType !== 'rest_day')
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  // Compute sort offset: append after any existing target-day sessions
+  const targetDaySessions = Array.from(sessions.values()).filter(
+    (s) => s.weekPlanId === input.targetWeekPlanId && s.dayOfWeek === input.targetDay
+  );
+  const sortOffset = targetDaySessions.length;
+
+  for (let i = 0; i < sourceSessions.length; i++) {
+    const copied = copyPlannedFields(sourceSessions[i], input.targetWeekPlanId, input.targetDay, sortOffset + i);
+    sessions.set(copied.id, copied);
+  }
+  return sourceSessions.length;
 }

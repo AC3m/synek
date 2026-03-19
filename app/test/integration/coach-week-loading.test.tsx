@@ -29,6 +29,9 @@ vi.mock('~/lib/hooks/useSessions', () => ({
   useUpdateSession: () => ({ mutate: vi.fn() }),
   useDeleteSession: () => ({ mutate: vi.fn() }),
   useUpdateAthleteSession: () => ({ mutate: vi.fn() }),
+  useCopyWeekSessions: () => ({ mutate: vi.fn(), isPending: false }),
+  useCopyDaySessions: () => ({ mutate: vi.fn(), isPending: false }),
+  useCopySession: () => ({ mutate: vi.fn(), isPending: false }),
 }))
 
 vi.mock('~/components/calendar/WeekNavigation', () => ({

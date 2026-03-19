@@ -11,7 +11,12 @@ import {
   type TrainingSession,
   type SessionsByDay,
   type AthleteSessionUpdate,
+  type ReorderSessionInput,
 } from '~/types/training';
+import { computeDragResult } from '~/lib/utils/week-view';
+import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
@@ -34,6 +39,12 @@ interface WeekGridProps {
   userRole?: UserRole;
   selectedDay?: DayOfWeek;
   onSelectDay?: (day: DayOfWeek) => void;
+  /** In read-only mode: copy a day's sessions to the target week */
+  onCopyDay?: (day: DayOfWeek) => void;
+  /** In read-only mode: opens day-picker to copy a single session */
+  onCopySession?: (session: TrainingSession) => void;
+  /** When provided (and readonly is false), enables drag-and-drop reordering */
+  onReorderSession?: (input: ReorderSessionInput) => void;
 }
 
 function getDefaultSelectedDay(weekStart: string | undefined): DayOfWeek {
@@ -69,6 +80,7 @@ function MobileDayStrip({ weekStart, sessionsByDay, selectedDay, onSelectDay }: 
         return (
           <button
             key={day}
+            data-testid={`mobile-day-btn-${day}`}
             onClick={() => onSelectDay(day)}
             className="flex flex-col items-center justify-center gap-0.5 min-h-[44px] min-w-[44px] py-1"
           >
@@ -117,12 +129,32 @@ export function WeekGrid({
   userRole,
   selectedDay: controlledSelectedDay,
   onSelectDay: controlledOnSelectDay,
+  onCopyDay,
+  onCopySession,
+  onReorderSession,
 }: WeekGridProps) {
   const location = useLocation();
   const [internalSelectedDay, setInternalSelectedDay] = useState<DayOfWeek>(() =>
     getDefaultSelectedDay(weekStart)
   );
 
+  const dndEnabled = !readonly && !!onReorderSession;
+  const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    const activeDay = (active.data.current as { day: DayOfWeek } | undefined)?.day ?? null;
+    if (!activeDay) return;
+    const result = computeDragResult(
+      String(active.id),
+      activeDay,
+      over ? (String(over.id) as DayOfWeek) : null,
+      sessionsByDay
+    );
+    if (result) onReorderSession?.(result);
+  }
+
+  const isControlled = controlledSelectedDay !== undefined;
   const selectedDay = controlledSelectedDay ?? internalSelectedDay;
   const setSelectedDay = controlledOnSelectDay ?? setInternalSelectedDay;
 
@@ -149,9 +181,12 @@ export function WeekGrid({
     };
   }, []);
 
+  // When uncontrolled, reset the selected day when the week changes or the
+  // user navigates back to today. When controlled, the parent owns the reset.
   useEffect(() => {
+    if (isControlled) return;
     setSelectedDay(getDefaultSelectedDay(weekStart));
-  }, [weekStart, location.state?.resetToToday, setSelectedDay]);
+  }, [weekStart, location.state?.resetToToday, setSelectedDay, isControlled]);
 
   const dayColumnProps = {
     readonly,
@@ -170,9 +205,13 @@ export function WeekGrid({
     onSyncStrava,
     onConfirmStrava,
     userRole,
+    onCopyDay,
+    onCopySession,
+    droppable: dndEnabled,
+    draggableSessions: dndEnabled,
   };
 
-  return (
+  const gridContent = (
     <>
       {/* Mobile: day strip + single day view */}
       <div className="md:hidden">
@@ -182,12 +221,17 @@ export function WeekGrid({
           selectedDay={selectedDay}
           onSelectDay={setSelectedDay}
         />
-        <div className="mt-3">
-          <DayColumn
-            day={selectedDay}
-            sessions={sessionsByDay[selectedDay] ?? []}
-            {...dayColumnProps}
-          />
+        <div className="mt-3" data-testid="mobile-single-day">
+          <SortableContext
+            items={(sessionsByDay[selectedDay] ?? []).map((s) => s.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <DayColumn
+              day={selectedDay}
+              sessions={sessionsByDay[selectedDay] ?? []}
+              {...dayColumnProps}
+            />
+          </SortableContext>
         </div>
       </div>
 
@@ -210,16 +254,31 @@ export function WeekGrid({
         <div ref={scrollRef} className="overflow-x-auto py-[2px] px-[2px]">
           <div className="grid grid-cols-2 lg:grid-cols-7 gap-1.5 lg:min-w-[1400px]">
             {DAYS_OF_WEEK.map((day) => (
-              <DayColumn
+              <SortableContext
                 key={day}
-                day={day}
-                sessions={sessionsByDay[day] ?? []}
-                {...dayColumnProps}
-              />
+                items={(sessionsByDay[day] ?? []).map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <DayColumn
+                  day={day}
+                  sessions={sessionsByDay[day] ?? []}
+                  {...dayColumnProps}
+                />
+              </SortableContext>
             ))}
           </div>
         </div>
       </div>
     </>
   );
+
+  if (dndEnabled) {
+    return (
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        {gridContent}
+      </DndContext>
+    );
+  }
+
+  return gridContent;
 }

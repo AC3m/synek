@@ -248,6 +248,7 @@ export interface CreateSessionInput {
 export interface UpdateSessionInput {
   id: string;
   trainingType?: TrainingType;
+  dayOfWeek?: DayOfWeek;
   description?: string | null;
   coachComments?: string | null;
   plannedDurationMinutes?: number | null;
@@ -273,4 +274,32 @@ export interface AthleteSessionUpdate {
   avgHeartRate?: number | null;
   maxHeartRate?: number | null;
   rpe?: number | null;
+}
+
+// ============================================================
+// Multi-week planning — copy and reorder input types
+// ============================================================
+
+export interface CopyWeekInput {
+  sourceWeekPlanId: string;
+  targetWeekPlanId: string;
+}
+
+export interface CopyDayInput {
+  sourceWeekPlanId: string;
+  sourceDay: DayOfWeek;
+  targetWeekPlanId: string;
+  targetDay: DayOfWeek;
+}
+
+export interface ReorderSessionInput {
+  sessionId: string;
+  dayOfWeek: DayOfWeek;
+  sortOrder: number;
+}
+
+export interface HistoryWeek {
+  weekId: string;
+  weekPlan: WeekPlan | null;
+  sessions: TrainingSession[];
 }

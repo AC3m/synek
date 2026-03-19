@@ -52,6 +52,29 @@
     "label": "Allow self-planning",
     "hint": "Athlete can add and edit their own sessions"
   },
+  "history": {
+    "weekLabel": "Week {{week}} — {{range}}",
+    "sessionCount_one": "{{count}} session",
+    "sessionCount_other": "{{count}} sessions",
+    "noSessions": "No sessions",
+    "copyWeek": "Copy week ↓",
+    "copyDay": "Copy day ↓",
+    "copySession": "Copy",
+    "expand": "Expand week",
+    "collapse": "Collapse week",
+    "currentWeek": "Current week",
+    "copyWeekConfirmTitle": "Copy Week {{week}} — {{range}} to current week?",
+    "copyWeekConfirmBody": "{{count}} sessions will be added to your current week."
+  },
+  "copy": {
+    "successWeek": "{{count}} sessions copied to current week",
+    "successDay": "{{count}} sessions copied",
+    "successSession": "Session copied",
+    "error": "Copy failed — please try again"
+  },
+  "dnd": {
+    "moveToDay": "Move to {{day}}"
+  },
   "athletes": {
     "title": "Athletes",
     "inviteSection": "Invite Athletes",
