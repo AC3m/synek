@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useParams } from 'react-router';
+import { AppLoader } from '~/components/ui/app-loader';
 import { Users, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
@@ -21,7 +22,7 @@ export default function CoachLayout() {
   );
   const updateSelfPlan = useUpdateSelfPlanPermission();
 
-  if (isLoading) return null;
+  if (isLoading) return <AppLoader />;
 
   // FR-004: Unauthenticated → login
   if (!user) return <Navigate to="/login" replace />;

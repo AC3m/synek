@@ -2,10 +2,13 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button } from '~/components/ui/button';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from '~/components/ui/dialog';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
-import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
+import { AppLoader } from '~/components/ui/app-loader';
 import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import {
@@ -77,6 +80,7 @@ export default function AthleteWeekView() {
   const [formOpen, setFormOpen] = useState(false);
   const [formDay, setFormDay] = useState<DayOfWeek | undefined>();
   const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   const stravaConnected = stravaStatus?.connected ?? false;
   const junctionConnected = junctionConnection?.status === 'active';
@@ -162,12 +166,8 @@ export default function AthleteWeekView() {
   }, []);
 
   const handleDeleteSession = useCallback(
-    (sessionId: string) => {
-      if (window.confirm(t('common:session.deleteConfirm' as never))) {
-        deleteSessionMut.mutate(sessionId);
-      }
-    },
-    [t, deleteSessionMut]
+    (sessionId: string) => { setDeleteConfirmId(sessionId); },
+    []
   );
 
   const handleFormSubmit = useCallback(
@@ -184,83 +184,99 @@ export default function AthleteWeekView() {
 
   if (!weekId) return null;
 
-  if (
-    weekLoading ||
-    (canSelfPlan && getOrCreate.isPending && !weekPlan) ||
-    (!!weekPlan && sessionsQuery.isPending)
-  ) {
-    return <WeekSkeleton />;
-  }
-
-  if (!weekPlan) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-          <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
-        </div>
-        <div className="text-center py-20 text-muted-foreground">
-          {t('noTrainingPlan')}
-        </div>
-      </div>
-    );
-  }
+  const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
+  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan);
 
   return (
-    <div className="space-y-6">
-      {/* Header with navigation */}
-      <div className="flex items-center gap-2">
-        <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-        <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
-      </div>
+    <>
+      {showSkeleton && <AppLoader />}
+      <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
+      {!showSkeleton && (!weekPlan ? (
+        <>
+          <div className="flex items-center gap-2">
+            <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+            <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
+          </div>
+          <div className="text-center py-20 text-muted-foreground">
+            {t('noTrainingPlan')}
+          </div>
+        </>
+      ) : (
+        <>
+          {/* Header with navigation */}
+          <div className="flex items-center gap-2">
+            <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+            <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekLoading} />
+          </div>
 
-      {/* Week Summary (readonly with progress bar) */}
-      <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+          {/* Week Summary (readonly with progress bar) */}
+          <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
 
-      {/* Week Grid */}
-      <WeekGrid
-        sessionsByDay={sessionsByDay}
-        weekStart={weekStart}
-        athleteMode
-        onToggleComplete={handleToggleComplete}
-        onUpdateNotes={handleUpdateNotes}
-        onUpdatePerformance={handleUpdatePerformance}
-        stravaConnected={stravaConnected}
-        junctionConnected={junctionConnected}
-        onSyncStrava={handleSyncStrava}
-        onConfirmStrava={handleConfirmStrava}
-        userRole={user?.role}
-        selectedDay={selectedDay}
-        onSelectDay={setSelectedDay}
-        {...(canSelfPlan && {
-          onAddSession: handleAddSession,
-          onEditSession: handleEditSession,
-          onDeleteSession: handleDeleteSession,
-        })}
-      />
+          {/* Week Grid */}
+          <WeekGrid
+            sessionsByDay={sessionsByDay}
+            weekStart={weekStart}
+            athleteMode
+            onToggleComplete={handleToggleComplete}
+            onUpdateNotes={handleUpdateNotes}
+            onUpdatePerformance={handleUpdatePerformance}
+            stravaConnected={stravaConnected}
+            junctionConnected={junctionConnected}
+            onSyncStrava={handleSyncStrava}
+            onConfirmStrava={handleConfirmStrava}
+            userRole={user?.role}
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+            {...(canSelfPlan && {
+              onAddSession: handleAddSession,
+              onEditSession: handleEditSession,
+              onDeleteSession: handleDeleteSession,
+            })}
+          />
 
-      {/* Session Form — only shown when self-planning is enabled */}
-      {canSelfPlan && (
-        <SessionForm
-          open={formOpen}
-          onClose={() => setFormOpen(false)}
-          weekPlanId={weekPlan.id}
-          day={formDay}
-          session={editingSession}
-          onSubmit={handleFormSubmit}
-          isCoach={false}
-        />
-      )}
+          {/* Session Form — only shown when self-planning is enabled */}
+          {canSelfPlan && (
+            <SessionForm
+              open={formOpen}
+              onClose={() => setFormOpen(false)}
+              weekPlanId={weekPlan.id}
+              day={formDay}
+              session={editingSession}
+              onSubmit={handleFormSubmit}
+              isCoach={false}
+            />
+          )}
 
-      {/* Floating Action Bar — Strava bulk sync + bulk share */}
-      <StravaActionsBar
-        unsyncedCount={stravaConnected ? sessions.filter(s => s.isCompleted && !s.stravaActivityId).length : 0}
-        unsharedCount={sessions.filter(s => s.stravaActivityId != null && !s.isStravaConfirmed).length}
-        onSyncAll={handleSyncAllStrava}
-        onShareAll={handleBulkConfirmStrava}
-        isSyncPending={stravaSyncBulk.isPending}
-        isSharePending={bulkConfirmStrava.isPending}
-      />
+          {/* Floating Action Bar — Strava bulk sync + bulk share */}
+          <StravaActionsBar
+            unsyncedCount={stravaConnected ? sessions.filter(s => s.isCompleted && !s.stravaActivityId).length : 0}
+            unsharedCount={sessions.filter(s => s.stravaActivityId != null && !s.isStravaConfirmed).length}
+            onSyncAll={handleSyncAllStrava}
+            onShareAll={handleBulkConfirmStrava}
+            isSyncPending={stravaSyncBulk.isPending}
+            isSharePending={bulkConfirmStrava.isPending}
+          />
+        </>
+      ))}
+
+      {/* Delete session confirmation */}
+      <Dialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
+        <DialogContent showCloseButton={false} className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>{t('common:session.delete' as never)}</DialogTitle>
+            <DialogDescription>{t('common:session.deleteConfirm' as never)}</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(null)}>
+              {t('common:actions.cancel' as never)}
+            </Button>
+            <Button variant="destructive" size="sm" onClick={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}>
+              {t('common:session.delete' as never)}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
+    </>
   );
 }

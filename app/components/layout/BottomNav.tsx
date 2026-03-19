@@ -41,11 +41,11 @@ function NavItem({ to, icon: Icon, label, isActive, onClick }: NavItemProps) {
 
 export function BottomNav() {
   const { t } = useTranslation('common')
-  const { user, selectedAthleteId, clearSelectedAthlete } = useAuth()
+  const { user, isLoading, selectedAthleteId, clearSelectedAthlete } = useAuth()
   const localePath = useLocalePath()
   const { pathname } = useLocation()
 
-  if (!user) return null
+  if (isLoading || !user) return null
 
   const isTeamActive = user.role === 'coach' && !selectedAthleteId && pathname.includes('/coach')
   const isWeekActive = pathname.includes('/week') && (user.role === 'athlete' || !!selectedAthleteId)

@@ -7,7 +7,7 @@ import { WhySynekSection } from '~/components/landing/WhySynekSection'
 import { FeaturesSection } from '~/components/landing/FeaturesSection'
 import { JoinBetaSection } from '~/components/landing/JoinBetaSection'
 import { ContactSection } from '~/components/landing/ContactSection'
-import { Logo } from '~/components/layout/Logo'
+import { AppLoader } from '~/components/ui/app-loader'
 
 export function meta() {
   return [
@@ -28,13 +28,7 @@ export default function LandingPage() {
   }, [user, isLoading, navigate, locale])
 
   if (isLoading || user) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="animate-pulse">
-          <Logo size="lg" showWordmark={true} />
-        </div>
-      </div>
-    )
+    return <AppLoader />
   }
 
   return (

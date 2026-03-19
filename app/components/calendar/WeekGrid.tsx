@@ -212,7 +212,7 @@ export function WeekGrid({
   };
 
   const gridContent = (
-    <>
+    <div>
       {/* Mobile: day strip + single day view */}
       <div className="md:hidden">
         <MobileDayStrip
@@ -269,7 +269,7 @@ export function WeekGrid({
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 
   if (dndEnabled) {

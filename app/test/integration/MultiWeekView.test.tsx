@@ -176,11 +176,12 @@ describe('MultiWeekView', () => {
 
     // Find and click the first "Copy week" button (W11, which has sessions) — opens dialog
     // EN: "Copy week ↓", PL: "Kopiuj tydzień ↓"
-    const copyWeekBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i });
+    // Generous timeout: button only appears after 2 sequential mock requests (each ~150ms) per week slot
+    const copyWeekBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i }, { timeout: 5000 });
     fireEvent.click(copyWeekBtns[0]);
 
     // Confirm in the dialog — a second "Copy week" button appears inside the dialog footer
-    const confirmBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i });
+    const confirmBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i }, { timeout: 5000 });
     fireEvent.click(confirmBtns[confirmBtns.length - 1]);
 
     await waitFor(() =>

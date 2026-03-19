@@ -103,7 +103,7 @@ describe('AthleteWeekView loading state', () => {
     useSelfPlanPermissionMock.mockReturnValue({ data: true })
   })
 
-  it('keeps the skeleton visible while sessions are still pending for a resolved week plan', () => {
+  it('renders the grid when weekPlan exists even if sessions are still loading', () => {
     useWeekPlanMock.mockReturnValue({
       data: { id: 'week-plan-1' },
       isLoading: false,
@@ -115,8 +115,8 @@ describe('AthleteWeekView loading state', () => {
 
     renderPage()
 
-    expect(screen.getByTestId('week-skeleton')).toBeInTheDocument()
-    expect(screen.queryByTestId('week-grid')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('week-skeleton')).not.toBeInTheDocument()
+    expect(screen.getByTestId('week-grid')).toBeInTheDocument()
   })
 
   it('renders the week layout after the sessions query settles, even for an empty week', () => {
