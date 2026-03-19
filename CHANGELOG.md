@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.0](https://github.com/AC3m/synek/compare/v0.2.0...v0.3.0) (2026-03-19)
+
+### Features
+
+* add interval lap breakdown to run session cards ([f86d5fb](https://github.com/AC3m/synek/commit/f86d5fb5551a761cd3a453456732801f15f5e0ec))
+* add session detail modal and simplify existing UJ ([7fa41da](https://github.com/AC3m/synek/commit/7fa41da004971e1529040998b19247e0cd05595b))
+* back-fill week stats from Garmin workout data ([e660feb](https://github.com/AC3m/synek/commit/e660febcb7f167f11c70393e7e524249081ece77))
+* contextual pace chip with Zap icon and form hint for interval runs ([db4aa49](https://github.com/AC3m/synek/commit/db4aa496088a3ce79d74410aad6d7df02063ecb7))
+* integrate junction/graming poc on the FE ([abab741](https://github.com/AC3m/synek/commit/abab7414926377016832f9d885579e6ce26b84f6))
+* integrate junction/graming poc to receive raw workout webhooks ([346ed31](https://github.com/AC3m/synek/commit/346ed31e7317bc14f7556adfcfd34bb483f407de))
+* multi-week planning view with copy, DnD reorder, and history ([db39671](https://github.com/AC3m/synek/commit/db39671814d97d1fe1e5c8b4ee0a0648ef4c3916))
+* multi-week view UI polish — animations, dialogs, and UX fixes ([0052237](https://github.com/AC3m/synek/commit/0052237f56150114d6030c863f4c03b75f7ca21b))
+* per-session Strava sync and unified StravaActionsBar ([e341ad5](https://github.com/AC3m/synek/commit/e341ad53909b64154f3bd0c18af984f800cf8acb))
+* unified loading experience with stagger animations ([b70687e](https://github.com/AC3m/synek/commit/b70687e7de5f66e9224541d492d538d9dae877b0))
+
+### Bug Fixes
+
+* add missing Polish plural forms for history session count ([b17122b](https://github.com/AC3m/synek/commit/b17122b666dce06fe05df2807a41bb4e2639dbeb))
+* add small padding to show calendar edges ([f0e423a](https://github.com/AC3m/synek/commit/f0e423a547f4958f3faed680dda779f13ff4447d))
+
 ## 0.2.0 (2026-03-14)
 
 ### Features
