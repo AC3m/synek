@@ -57,6 +57,8 @@
   "history": {
     "weekLabel": "Tydzień {{week}} — {{range}}",
     "sessionCount_one": "{{count}} trening",
+    "sessionCount_few": "{{count}} treningi",
+    "sessionCount_many": "{{count}} treningów",
     "sessionCount_other": "{{count}} treningów",
     "noSessions": "Brak treningów",
     "copyWeek": "Kopiuj tydzień ↓",
