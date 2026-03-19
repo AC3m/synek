@@ -212,10 +212,7 @@ export function WeekGrid({
   };
 
   const gridContent = (
-    <div
-      className="animate-in fade-in duration-300"
-      style={{ animationDelay: '150ms', animationFillMode: 'both' }}
-    >
+    <div>
       {/* Mobile: day strip + single day view */}
       <div className="md:hidden">
         <MobileDayStrip

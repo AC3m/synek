@@ -8,7 +8,8 @@ import { Button } from '~/components/ui/button';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
-import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
+import { AppLoader } from '~/components/ui/app-loader';
+import { StaggerIn } from '~/components/ui/stagger-in';
 import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
@@ -148,35 +149,41 @@ export default function CoachWeekView() {
   const stats = !showSkeleton && weekPlan ? computeWeekStats(sessions) : null;
 
   return (
-    <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
-      {showSkeleton ? <WeekSkeleton /> : weekPlan && sessionsByDay && stats && (
+    <>
+      {showSkeleton && <AppLoader />}
+      <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
+      {!showSkeleton && weekPlan && sessionsByDay && stats && (
         <>
           {/* Header with navigation */}
-          <div className="flex items-center gap-2">
+          <StaggerIn className="flex items-center gap-2">
             <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
             <WeekNavigation weekId={weekId} basePath="coach" selectedDay={selectedDay} isLoading={weekLoading} />
-          </div>
+          </StaggerIn>
 
           {/* Week Summary */}
-          <WeekSummary
-            weekPlan={weekPlan}
-            stats={stats}
-            onUpdate={handleWeekUpdate}
-          />
+          <StaggerIn delay={60}>
+            <WeekSummary
+              weekPlan={weekPlan}
+              stats={stats}
+              onUpdate={handleWeekUpdate}
+            />
+          </StaggerIn>
 
           {/* Multi-Week View (current week + 4 history rows) */}
-          <MultiWeekView
-            currentWeekId={weekId}
-            currentWeekPlan={weekPlan}
-            currentSessions={sessions}
-            currentSessionsByDay={sessionsByDay}
-            onAddSession={handleAddSession}
-            onEditSession={handleEditSession}
-            onDeleteSession={handleDeleteSession}
-            onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
-            userRole={user?.role}
-            showAthleteControls={isViewingSelf}
-          />
+          <StaggerIn delay={120}>
+            <MultiWeekView
+              currentWeekId={weekId}
+              currentWeekPlan={weekPlan}
+              currentSessions={sessions}
+              currentSessionsByDay={sessionsByDay}
+              onAddSession={handleAddSession}
+              onEditSession={handleEditSession}
+              onDeleteSession={handleDeleteSession}
+              onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+              userRole={user?.role}
+              showAthleteControls={isViewingSelf}
+            />
+          </StaggerIn>
 
           {/* Session Form Sheet */}
           <SessionForm
@@ -209,5 +216,6 @@ export default function CoachWeekView() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

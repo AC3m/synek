@@ -12,6 +12,7 @@ import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
 import { AuthProvider } from '~/lib/context/AuthContext';
 import { ThemeProvider } from '~/lib/context/ThemeContext';
+import { AppLoader } from '~/components/ui/app-loader';
 
 import type { Route } from './+types/root';
 import './app.css';
@@ -47,7 +48,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export function HydrateFallback() {
-  return null;
+  return <AppLoader />;
 }
 
 export default function App() {

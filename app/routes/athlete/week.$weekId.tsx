@@ -8,7 +8,7 @@ import {
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
-import { WeekSkeleton } from '~/components/calendar/WeekSkeleton';
+import { AppLoader } from '~/components/ui/app-loader';
 import { SessionForm } from '~/components/training/SessionForm';
 import { useWeekPlan, useGetOrCreateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import {
@@ -188,8 +188,10 @@ export default function AthleteWeekView() {
   const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan);
 
   return (
-    <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
-      {showSkeleton ? <WeekSkeleton /> : !weekPlan ? (
+    <>
+      {showSkeleton && <AppLoader />}
+      <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
+      {!showSkeleton && (!weekPlan ? (
         <>
           <div className="flex items-center gap-2">
             <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
@@ -255,7 +257,7 @@ export default function AthleteWeekView() {
             isSharePending={bulkConfirmStrava.isPending}
           />
         </>
-      )}
+      ))}
 
       {/* Delete session confirmation */}
       <Dialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
@@ -275,5 +277,6 @@ export default function AthleteWeekView() {
         </DialogContent>
       </Dialog>
     </div>
+    </>
   );
 }

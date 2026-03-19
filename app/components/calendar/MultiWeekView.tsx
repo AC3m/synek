@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
+import { StaggerIn } from '~/components/ui/stagger-in';
 import { WeekGrid } from './WeekGrid';
 import { HistoryWeekRow } from './HistoryWeekRow';
 import { useWeekHistory } from '~/lib/hooks/useWeekHistory';
@@ -104,11 +105,7 @@ export function MultiWeekView({
       {/* History weeks (oldest first) */}
       <div data-testid="history-section" className="flex flex-col gap-1.5">
         {reversedHistory.map((hw, i) => (
-          <div
-            key={hw.weekId}
-            className="animate-in fade-in slide-in-from-bottom-2 duration-500"
-            style={{ animationDelay: `${i * 60}ms`, animationFillMode: 'both' }}
-          >
+          <StaggerIn key={hw.weekId} delay={i * 60}>
             <HistoryWeekRow
               weekId={hw.weekId}
               weekPlan={hw.weekPlan}
@@ -130,7 +127,7 @@ export function MultiWeekView({
               selectedDay={selectedDay}
               onSelectDay={setSelectedDay}
             />
-          </div>
+          </StaggerIn>
         ))}
       </div>
 

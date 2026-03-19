@@ -70,7 +70,7 @@ export function WeekSummary({
   const duration = formatDuration(stats.totalActualDurationMinutes);
 
   return (
-    <Card className="overflow-hidden border-border/50 shadow-sm py-0 gap-0 animate-in fade-in duration-300">
+    <Card className="overflow-hidden border-border/50 shadow-sm py-0 gap-0">
       <CardHeader className={cn("py-4 px-6 transition-all", !isExpanded && "py-4")}>
         <div className="flex justify-between items-center">
           <CardTitle className="text-sm font-semibold text-foreground/80 uppercase tracking-wider">
