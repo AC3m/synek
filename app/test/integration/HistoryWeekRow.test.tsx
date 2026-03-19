@@ -143,7 +143,7 @@ describe('HistoryWeekRow', () => {
     expect(screen.queryByRole('button', { name: /add session/i })).not.toBeInTheDocument();
   });
 
-  it('shows day-picker when copy icon is clicked on a session card', () => {
+  it('shows day-picker dialog when copy icon is clicked on a session card', () => {
     const onCopySession = vi.fn();
     const Wrapper = makeWrapper();
     render(
@@ -152,15 +152,17 @@ describe('HistoryWeekRow', () => {
       </Wrapper>
     );
 
-    // Click the copy icon on the session card (WeekGrid renders both mobile+desktop)
+    // Click the copy icon on the session card
     const copyBtns = screen.getAllByTestId('session-copy-btn');
     fireEvent.click(copyBtns[0]);
 
-    // Day picker should appear (7 day buttons)
-    expect(screen.getByTestId('session-day-picker')).toBeInTheDocument();
+    // Dialog should open with day buttons
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    // All 7 day buttons should be present
+    expect(screen.getByRole('button', { name: /thursday/i })).toBeInTheDocument();
   });
 
-  it('calls onCopySession when a day is selected in the picker', () => {
+  it('calls onCopySession when a day is selected in the picker dialog', () => {
     const onCopySession = vi.fn();
     const Wrapper = makeWrapper();
     render(
@@ -170,15 +172,15 @@ describe('HistoryWeekRow', () => {
     );
 
     fireEvent.click(screen.getAllByTestId('session-copy-btn')[0]);
-    // Click 'thursday' in the day picker
-    fireEvent.click(screen.getByTestId('day-pick-thursday'));
+    // Click 'thursday' in the day picker dialog
+    fireEvent.click(screen.getByRole('button', { name: /thursday/i }));
 
     expect(onCopySession).toHaveBeenCalledWith(mockSession, 'thursday');
-    // Picker should close
-    expect(screen.queryByTestId('session-day-picker')).not.toBeInTheDocument();
+    // Dialog should close
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   });
 
-  it('closes day-picker on Escape without calling onCopySession', () => {
+  it('closes day-picker dialog when Cancel is clicked without calling onCopySession', () => {
     const onCopySession = vi.fn();
     const Wrapper = makeWrapper();
     render(
@@ -188,10 +190,11 @@ describe('HistoryWeekRow', () => {
     );
 
     fireEvent.click(screen.getAllByTestId('session-copy-btn')[0]);
-    expect(screen.getByTestId('session-day-picker')).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
 
-    fireEvent.keyDown(document, { key: 'Escape' });
-    expect(screen.queryByTestId('session-day-picker')).not.toBeInTheDocument();
+    // Click Cancel button to close
+    fireEvent.click(screen.getByRole('button', { name: /cancel|anuluj/i }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(onCopySession).not.toHaveBeenCalled();
   });
 });

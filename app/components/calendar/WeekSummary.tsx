@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Pencil, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
@@ -46,6 +46,7 @@ export function WeekSummary({
 }: WeekSummaryProps) {
   const { t } = useTranslation(['coach', 'common']);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isEditingKm, setIsEditingKm] = useState(false);
 
   const [coachComments, setCoachComments] = useState(weekPlan.coachComments ?? '');
   const [plannedKm, setPlannedKm] = useState(weekPlan.totalPlannedKm?.toString() ?? '');
@@ -69,8 +70,8 @@ export function WeekSummary({
   const duration = formatDuration(stats.totalActualDurationMinutes);
 
   return (
-    <Card className="overflow-hidden border-border/50 shadow-sm">
-      <CardHeader className={cn("py-3 px-6 transition-all", !isExpanded && "pb-4")}>
+    <Card className="overflow-hidden border-border/50 shadow-sm py-0 gap-0 animate-in fade-in duration-300">
+      <CardHeader className={cn("py-4 px-6 transition-all", !isExpanded && "py-4")}>
         <div className="flex justify-between items-center">
           <CardTitle className="text-sm font-semibold text-foreground/80 uppercase tracking-wider">
             {t('coach:weekSummary.title')}
@@ -86,7 +87,11 @@ export function WeekSummary({
         </div>
       </CardHeader>
 
-      {isExpanded && (
+      <div
+        className="grid transition-[grid-template-rows] duration-300 ease-out"
+        style={{ gridTemplateRows: isExpanded ? '1fr' : '0fr' }}
+      >
+        <div className={cn('overflow-hidden transition-opacity duration-300 ease-out', isExpanded ? 'opacity-100' : 'opacity-0')}>
         <CardContent className="p-0 border-t border-border/40">
           <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border/40 bg-muted/5">
 
@@ -156,24 +161,50 @@ export function WeekSummary({
                     ) : (
                       <StatValue value="—" />
                     )
+                  ) : isEditingKm ? (
+                    <div className="relative max-w-[100px]">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        placeholder={stats.totalPlannedKm > 0 ? stats.totalPlannedKm.toFixed(1) : '0'}
+                        value={plannedKm}
+                        onChange={(e) => setPlannedKm(e.target.value)}
+                        onBlur={() => { handleBlur('totalPlannedKm', plannedKm); setIsEditingKm(false); }}
+                        autoFocus
+                        className="h-9 pr-8 text-sm font-bold tracking-tight bg-background border-border/60"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground/50 uppercase">km</span>
+                    </div>
+                  ) : weekPlan.totalPlannedKm != null ? (
+                    <div className="space-y-1">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl font-bold tracking-tight text-amber-500">{weekPlan.totalPlannedKm}</span>
+                        <span className="text-[10px] font-medium uppercase tracking-wider text-amber-500/70">km</span>
+                        <Button variant="ghost" size="icon" onClick={() => setIsEditingKm(true)} className="h-5 w-5 ml-0.5">
+                          <Pencil className="h-3 w-3" />
+                        </Button>
+                        <Button variant="ghost" size="icon" onClick={() => { setPlannedKm(''); onUpdate?.({ totalPlannedKm: null }); }} className="h-5 w-5">
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <p className="text-[10px] text-amber-500/70 flex items-center gap-1">
+                        <Pencil className="h-2.5 w-2.5" /> {t('coach:weekSummary.manuallySet')}
+                      </p>
+                    </div>
                   ) : (
                     <div className="space-y-1">
-                      <div className="relative max-w-[100px]">
-                        <Input
-                          type="number"
-                          step="0.1"
-                          placeholder="0"
-                          value={plannedKm}
-                          onChange={(e) => setPlannedKm(e.target.value)}
-                          onBlur={() => handleBlur('totalPlannedKm', plannedKm)}
-                          className="h-9 pr-8 text-sm font-bold tracking-tight bg-background border-border/60"
-                        />
-                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-muted-foreground/50 uppercase">km</span>
+                      <div className="flex items-baseline gap-1.5">
+                        {stats.totalPlannedKm > 0 ? (
+                          <StatValue value={`~${stats.totalPlannedKm.toFixed(1)}`} unit="km" />
+                        ) : (
+                          <StatValue value="—" />
+                        )}
+                        <Button variant="ghost" size="icon" onClick={() => setIsEditingKm(true)} className="h-5 w-5">
+                          <Pencil className="h-3 w-3 text-muted-foreground" />
+                        </Button>
                       </div>
-                      {!plannedKm && stats.totalPlannedKm > 0 && (
-                        <p className="text-[10px] text-muted-foreground/60">
-                          Σ {stats.totalPlannedKm.toFixed(1)} km from sessions
-                        </p>
+                      {stats.totalPlannedKm > 0 && (
+                        <p className="text-[10px] text-muted-foreground/50">{t('coach:weekSummary.fromSessions')}</p>
                       )}
                     </div>
                   )}
@@ -273,7 +304,8 @@ export function WeekSummary({
 
           </div>
         </CardContent>
-      )}
+        </div>
+      </div>
     </Card>
   );
 }

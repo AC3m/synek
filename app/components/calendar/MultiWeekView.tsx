@@ -6,7 +6,7 @@ import { WeekGrid } from './WeekGrid';
 import { HistoryWeekRow } from './HistoryWeekRow';
 import { useWeekHistory } from '~/lib/hooks/useWeekHistory';
 import { useCopyWeekSessions, useCopyDaySessions, useCopySession, useUpdateSession } from '~/lib/hooks/useSessions';
-import { getWeekDateRange, getTodayDayOfWeek } from '~/lib/utils/date';
+import { getWeekDateRange, getTodayDayOfWeek, parseWeekId } from '~/lib/utils/date';
 import type { UserRole } from '~/lib/auth';
 import type {
   DayOfWeek,
@@ -56,6 +56,7 @@ export function MultiWeekView({
   }, [currentWeekId, location.state?.resetToToday]);
 
   const currentWeekLabel = getWeekDateRange(currentWeekId).formatted;
+  const { weekNumber: currentWeekNumber } = parseWeekId(currentWeekId);
 
   const copyWeekMutation = useCopyWeekSessions();
   const copyDayMutation = useCopyDaySessions();
@@ -63,6 +64,15 @@ export function MultiWeekView({
   const updateSessionMutation = useUpdateSession();
 
   const targetWeekPlanId = currentWeekPlan?.id ?? '';
+
+  const currentRestDays = useMemo(
+    () => new Set(
+      Object.entries(currentSessionsByDay)
+        .filter(([, sessions]) => sessions.some((s) => s.trainingType === 'rest_day'))
+        .map(([day]) => day as DayOfWeek)
+    ),
+    [currentSessionsByDay]
+  );
 
   function handleCopyWeek(sourceWeekPlanId: string) {
     if (!targetWeekPlanId) return;
@@ -77,7 +87,7 @@ export function MultiWeekView({
   }
 
   function handleCopySession(session: TrainingSession, targetDay: DayOfWeek) {
-    if (!targetWeekPlanId || session.trainingType === 'rest_day') return;
+    if (!targetWeekPlanId || session.trainingType === 'rest_day' || currentRestDays.has(targetDay)) return;
     copySessionMutation.mutate({ session, targetWeekPlanId, targetDay }, {
       onSuccess: () => setSelectedDay(targetDay),
     });
@@ -116,6 +126,7 @@ export function MultiWeekView({
               onCopyDay={handleCopyDay}
               onCopySession={handleCopySession}
               targetWeekPlanId={targetWeekPlanId}
+              targetRestDays={currentRestDays}
               selectedDay={selectedDay}
               onSelectDay={setSelectedDay}
             />
@@ -127,7 +138,7 @@ export function MultiWeekView({
       <div className="flex items-center gap-2 pt-1">
         <div className="h-px flex-1 bg-[color:var(--border)]" />
         <span className="text-[10px] font-semibold uppercase tracking-widest text-primary px-2">
-          {t('history.currentWeek')} — {currentWeekLabel}
+          {t('history.currentWeek')} {currentWeekNumber} · {currentWeekLabel}
         </span>
         <div className="h-px flex-1 bg-[color:var(--border)]" />
       </div>

@@ -13,7 +13,9 @@
     "totalTime": "Łączny Czas",
     "progress": "Postęp",
     "coachComments": "Notatki Trenera",
-    "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika..."
+    "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika...",
+    "fromSessions": "z treningów",
+    "manuallySet": "ustawiono ręcznie"
   },
   "session": {
     "add": "Dodaj Trening",
@@ -60,10 +62,12 @@
     "copyWeek": "Kopiuj tydzień ↓",
     "copyDay": "Kopiuj dzień ↓",
     "copySession": "Kopiuj",
+    "copySessionPickDay": "Wybierz dzień docelowy",
+    "copySessionRestDayBlocked": "Zaplanowany dzień odpoczynku",
     "expand": "Rozwiń tydzień",
     "collapse": "Zwiń tydzień",
     "currentWeek": "Bieżący tydzień",
-    "copyWeekConfirmTitle": "Skopiować Tydzień {{week}} — {{range}} do bieżącego tygodnia?",
+    "copyWeekConfirmTitle": "Skopiować Tydzień {{week}} do bieżącego tygodnia?",
     "copyWeekConfirmBody": "{{count}} treningów zostanie dodanych do bieżącego tygodnia."
   },
   "copy": {

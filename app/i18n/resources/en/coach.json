@@ -13,7 +13,9 @@
     "totalTime": "Total Time",
     "progress": "Progress",
     "coachComments": "Coach Notes",
-    "coachCommentsPlaceholder": "Add notes for the athlete..."
+    "coachCommentsPlaceholder": "Add notes for the athlete...",
+    "fromSessions": "from sessions",
+    "manuallySet": "manually set"
   },
   "session": {
     "add": "Add Session",
@@ -60,10 +62,12 @@
     "copyWeek": "Copy week ↓",
     "copyDay": "Copy day ↓",
     "copySession": "Copy",
+    "copySessionPickDay": "Choose a target day",
+    "copySessionRestDayBlocked": "Rest day planned",
     "expand": "Expand week",
     "collapse": "Collapse week",
     "currentWeek": "Current week",
-    "copyWeekConfirmTitle": "Copy Week {{week}} — {{range}} to current week?",
+    "copyWeekConfirmTitle": "Copy Week {{week}} to current week?",
     "copyWeekConfirmBody": "{{count}} sessions will be added to your current week."
   },
   "copy": {

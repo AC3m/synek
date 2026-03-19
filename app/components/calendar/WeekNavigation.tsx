@@ -18,9 +18,10 @@ interface WeekNavigationProps {
   weekId: string;
   basePath: 'coach' | 'athlete';
   selectedDay?: DayOfWeek;
+  isLoading?: boolean;
 }
 
-export function WeekNavigation({ weekId, basePath, selectedDay }: WeekNavigationProps) {
+export function WeekNavigation({ weekId, basePath, selectedDay, isLoading }: WeekNavigationProps) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const localePath = useLocalePath();
@@ -38,6 +39,7 @@ export function WeekNavigation({ weekId, basePath, selectedDay }: WeekNavigation
       <Button
         variant="ghost"
         size="icon"
+        disabled={isLoading}
         className="h-11 w-11 rounded-full shrink-0"
         onClick={() => navigate(localePath(`/${basePath}/week/${getPrevWeekId(weekId)}`))}
       >
@@ -56,6 +58,7 @@ export function WeekNavigation({ weekId, basePath, selectedDay }: WeekNavigation
       <Button
         variant="ghost"
         size="icon"
+        disabled={isLoading}
         className="h-11 w-11 rounded-full shrink-0"
         onClick={() => navigate(localePath(`/${basePath}/week/${getNextWeekId(weekId)}`))}
       >
