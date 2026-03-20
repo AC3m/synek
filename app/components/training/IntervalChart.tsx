@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { formatPaceSpeed } from '~/lib/utils/lap-classification';
@@ -18,11 +19,16 @@ const SEGMENT_COLORS: Record<StravaLap['segmentType'], string> = {
 export function IntervalChart({ laps, className }: IntervalChartProps) {
   const { t } = useTranslation('training');
 
-  const totalTime = laps.reduce((sum, lap) => sum + (lap.elapsedTimeSeconds ?? 0), 0);
-  if (totalTime === 0 || laps.length === 0) return null;
+  const totalTime = useMemo(
+    () => laps.reduce((sum, lap) => sum + (lap.elapsedTimeSeconds ?? 0), 0),
+    [laps]
+  );
+  const presentTypes = useMemo(
+    () => [...new Set(laps.map((l) => l.segmentType))],
+    [laps]
+  );
 
-  // Build deduplicated legend from segment types present in this workout
-  const presentTypes = [...new Set(laps.map((l) => l.segmentType))];
+  if (totalTime === 0 || laps.length === 0) return null;
 
   return (
     <div className={cn('space-y-1.5', className)}>

@@ -28,7 +28,8 @@ import { LapTable } from './LapTable';
 import { StravaLogo } from './StravaLogo';
 import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
 import { useAuth } from '~/lib/context/AuthContext';
-import { GarminModalSection } from './GarminModalSection';
+import { GarminSection } from './GarminSection';
+import { PerformanceChipGroup } from './PerformanceChipGroup';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
 import { SessionExerciseLogger } from '~/components/strength/SessionExerciseLogger';
@@ -154,10 +155,13 @@ export function SessionDetailModal({
 
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
 
-  const lapsEnabled =
-    session.trainingType === 'run' &&
-    session.stravaActivityId != null &&
-    (userRole !== 'coach' || session.isStravaConfirmed === true);
+  const lapsEnabled = useMemo(
+    () =>
+      session.trainingType === 'run' &&
+      session.stravaActivityId != null &&
+      (userRole !== 'coach' || session.isStravaConfirmed === true),
+    [session.trainingType, session.stravaActivityId, session.isStravaConfirmed, userRole]
+  );
 
   const { data: laps, isLoading: lapsLoading, isError: lapsError, refetch: refetchLaps } =
     useSessionLaps(session.id, lapsEnabled);
@@ -204,13 +208,19 @@ export function SessionDetailModal({
     });
   }, [strengthVariantId, session.id, mutateExercises]);
 
-  const hasActualPerformance =
-    session.actualDurationMinutes != null ||
-    session.actualDistanceKm != null ||
-    session.actualPace != null ||
-    session.avgHeartRate != null ||
-    session.maxHeartRate != null ||
-    session.rpe != null;
+  const hasActualPerformance = useMemo(
+    () =>
+      session.actualDurationMinutes != null ||
+      session.actualDistanceKm != null ||
+      session.actualPace != null ||
+      session.avgHeartRate != null ||
+      session.maxHeartRate != null ||
+      session.rpe != null,
+    [
+      session.actualDurationMinutes, session.actualDistanceKm, session.actualPace,
+      session.avgHeartRate, session.maxHeartRate, session.rpe,
+    ]
+  );
 
   const shouldShowActualSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
@@ -490,74 +500,12 @@ export function SessionDetailModal({
         <div>
           <Separator className="mb-5" />
           <SectionLabel>{t('training:sessionDetail.actual')}</SectionLabel>
-          <div
-            className={cn(
-              'flex flex-wrap gap-x-4 gap-y-2',
-              isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
-            )}
-            title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
-          >
-            {(shouldShowMaskedPlaceholders || session.actualDurationMinutes != null) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.duration')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.actualDurationMinutes} ${t('training:units.min')}`}
-                </span>
-              </div>
-            )}
-            {distanceBased && (shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.distance')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.actualDistanceKm} ${t('training:units.km')}`}
-                </span>
-              </div>
-            )}
-            {distanceBased && (shouldShowMaskedPlaceholders || session.actualPace != null) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.pace')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.actualPace} ${t('training:units.perKm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.avgHeartRate != null) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.avgHr')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.avgHeartRate} ${t('training:units.bpm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.maxHeartRate != null) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.maxHr')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.maxHeartRate} ${t('training:units.bpm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.rpe != null) && (
-              <div className="flex flex-col min-w-[60px]">
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.rpe')}
-                </span>
-                <span className="text-sm font-semibold">
-                  {isMasked ? '---' : `${session.rpe}/10`}
-                </span>
-              </div>
-            )}
-          </div>
+          <PerformanceChipGroup
+            session={session}
+            isMasked={isMasked}
+            shouldShowMaskedPlaceholders={shouldShowMaskedPlaceholders}
+            size="default"
+          />
 
           {/* Strava link + logo */}
           {session.stravaActivityId != null && (
@@ -602,11 +550,12 @@ export function SessionDetailModal({
       )}
 
       {/* Garmin performance — PoC: Junction integration */}
-      <GarminModalSection
+      <GarminSection
         appUserId={user?.id ?? ''}
         calendarDate={calendarDate}
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
+        variant="modal"
       />
 
       {/* ACTIONS */}

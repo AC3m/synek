@@ -1,21 +1,20 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { ConfirmDialog } from '~/components/ui/confirm-dialog';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { AppLoader } from '~/components/ui/app-loader';
 import { StaggerIn } from '~/components/ui/stagger-in';
 import { SessionForm } from '~/components/training/SessionForm';
+import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmationDialog';
+import { useSessionFormState } from '~/lib/hooks/useSessionFormState';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
 import { useAuth } from '~/lib/context/AuthContext';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
 import type {
-  DayOfWeek,
-  TrainingSession,
   CreateSessionInput,
   UpdateSessionInput,
   AthleteSessionUpdate,
@@ -27,7 +26,7 @@ export default function CoachWeekView() {
   const { t } = useTranslation('coach');
   const { user, effectiveAthleteId } = useAuth();
 
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
+  const selectedDay = getTodayDayOfWeek();
 
   const isViewingSelf = !!effectiveAthleteId && effectiveAthleteId === user?.id;
 
@@ -64,27 +63,15 @@ export default function CoachWeekView() {
   }, [weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
 
   // Form state
-  const [formOpen, setFormOpen] = useState(false);
-  const [formDay, setFormDay] = useState<DayOfWeek | undefined>();
-  const [editingSession, setEditingSession] = useState<TrainingSession | null>(null);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-
-  const handleAddSession = useCallback((day: DayOfWeek) => {
-    setEditingSession(null);
-    setFormDay(day);
-    setFormOpen(true);
-  }, []);
-
-  const handleEditSession = useCallback((session: TrainingSession) => {
-    setEditingSession(session);
-    setFormDay(session.dayOfWeek);
-    setFormOpen(true);
-  }, []);
-
-  const handleDeleteSession = useCallback(
-    (sessionId: string) => { setDeleteConfirmId(sessionId); },
-    []
-  );
+  const {
+    formOpen, setFormOpen,
+    formDay,
+    editingSession,
+    deleteConfirmId, setDeleteConfirmId,
+    handleAddSession,
+    handleEditSession,
+    handleDeleteSession,
+  } = useSessionFormState();
 
   const handleFormSubmit = useCallback(
     (data: CreateSessionInput | UpdateSessionInput) => {
@@ -142,8 +129,14 @@ export default function CoachWeekView() {
   const isInitialLoad = weekLoading && !weekPlan && !getOrCreate.isPending;
   const showSkeleton = isInitialLoad || (getOrCreate.isPending && !weekPlan);
 
-  const sessionsByDay = !showSkeleton && weekPlan ? groupSessionsByDay(sessions) : null;
-  const stats = !showSkeleton && weekPlan ? computeWeekStats(sessions) : null;
+  const sessionsByDay = useMemo(
+    () => (!showSkeleton && weekPlan ? groupSessionsByDay(sessions) : null),
+    [showSkeleton, weekPlan, sessions]
+  );
+  const stats = useMemo(
+    () => (!showSkeleton && weekPlan ? computeWeekStats(sessions) : null),
+    [showSkeleton, weekPlan, sessions]
+  );
 
   return (
     <>
@@ -196,14 +189,15 @@ export default function CoachWeekView() {
       )}
 
       {/* Delete session confirmation */}
-      <ConfirmDialog
+      <DeleteConfirmationDialog
         open={!!deleteConfirmId}
         onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
         title={t('session.delete')}
         description={t('session.deleteConfirm')}
-        confirmLabel={t('common:actions.delete' as never)}
+        confirmLabel={t('session.delete')}
+        cancelLabel={t('common:actions.cancel' as never)}
         onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}
-        destructive
+        isPending={deleteSessionMut.isPending}
       />
     </div>
     </>

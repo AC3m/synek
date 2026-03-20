@@ -5,8 +5,9 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Button } from '~/components/ui/button';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
+import { PerformanceChipGroup } from '~/components/training/PerformanceChipGroup';
 import { StravaLogo } from '~/components/training/StravaLogo';
-import { GarminCardSection } from '~/components/training/GarminCardSection';
+import { GarminSection } from '~/components/training/GarminSection';
 import { SessionDetailModal } from '~/components/training/SessionDetailModal';
 import { useAuth } from '~/lib/context/AuthContext';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
@@ -201,98 +202,45 @@ export function SessionCard({
 
       {/* Actual performance chips — shown when completed */}
       {shouldShowPerformanceSection && (
-          <div
-            className={cn(
-              animatePerformance && 'animate-in fade-in slide-in-from-bottom-2 duration-300',
-              'flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]',
-              isMasked ? 'blur-[3px] select-none pointer-events-none' : ''
-            )}
-            title={isMasked ? t('common:strava.waitingForConfirmation') : ''}
-          >
-            {(shouldShowMaskedPlaceholders || session.actualDurationMinutes != null) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[50ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.duration')}
-                </span>
-                <span className="text-[10px] font-semibold">
-                  {isMasked ? '---' : `${session.actualDurationMinutes} ${t('training:units.min')}`}
-                </span>
+        <div
+          className={cn(
+            animatePerformance && 'animate-in fade-in slide-in-from-bottom-2 duration-300',
+            'mt-2 pt-1.5 border-t border-[color:var(--separator)]',
+          )}
+        >
+          <PerformanceChipGroup
+            session={session}
+            isMasked={isMasked}
+            shouldShowMaskedPlaceholders={shouldShowMaskedPlaceholders}
+            size="compact"
+            animate={animatePerformance}
+          />
+          {session.stravaActivityId != null && (
+            <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[200ms]', 'w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed')}>
+              <a
+                href={`https://www.strava.com/activities/${session.stravaActivityId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold hover:underline whitespace-nowrap"
+                style={{ color: '#FC5200' }}
+              >
+                View on Strava
+              </a>
+              <div className="flex justify-end mt-1">
+                <StravaLogo />
               </div>
-            )}
-            {distanceBased && (shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[75ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.distance')}
-                </span>
-                <span className="text-[10px] font-semibold">
-                  {isMasked ? '---' : `${session.actualDistanceKm} ${t('training:units.km')}`}
-                </span>
-              </div>
-            )}
-            {distanceBased && (shouldShowMaskedPlaceholders || session.actualPace != null) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[100ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.pace')}
-                </span>
-                <span className="text-[10px] font-semibold">
-                  {isMasked ? '---' : `${session.actualPace} ${t('training:units.perKm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.avgHeartRate != null) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[125ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.avgHr')}
-                </span>
-                <span className="text-[10px] font-semibold">
-                  {isMasked ? '---' : `${session.avgHeartRate} ${t('training:units.bpm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.maxHeartRate != null) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[150ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.maxHr')}
-                </span>
-                <span className="text-[10px] font-semibold">
-                  {isMasked ? '---' : `${session.maxHeartRate} ${t('training:units.bpm')}`}
-                </span>
-              </div>
-            )}
-            {(shouldShowMaskedPlaceholders || session.rpe != null) && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[175ms]', 'flex flex-col min-w-[60px]')}>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                  {t('training:actualPerformance.rpe')}
-                </span>
-                <span className="text-[10px] font-semibold">{isMasked ? '---' : `${session.rpe}/10`}</span>
-              </div>
-            )}
-
-            {session.stravaActivityId != null && (
-              <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[200ms]', 'w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed')}>
-                <a
-                  href={`https://www.strava.com/activities/${session.stravaActivityId}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[10px] font-bold hover:underline whitespace-nowrap"
-                  style={{ color: '#FC5200' }}
-                >
-                  View on Strava
-                </a>
-                <div className="flex justify-end mt-1">
-                  <StravaLogo />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* PoC: Junction Garmin — remove after evaluation */}
-      <GarminCardSection
+      <GarminSection
         appUserId={user?.id ?? ''}
         calendarDate={calendarDate}
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
+        variant="card"
       />
 
       {/* Athlete-specific features */}

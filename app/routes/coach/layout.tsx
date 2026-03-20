@@ -24,13 +24,10 @@ export default function CoachLayout() {
 
   if (isLoading) return <AppLoader />;
 
-  // FR-004: Unauthenticated → login
   if (!user) return <Navigate to="/login" replace />;
 
-  // FR-005: Athletes cannot access coach routes
   if (user.role !== 'coach') return <Navigate to={`/${locale}/athlete`} replace />;
 
-  // FR-007: Coach must select an athlete before seeing the workspace
   if (!selectedAthleteId) {
     return <AthletePicker />;
   }

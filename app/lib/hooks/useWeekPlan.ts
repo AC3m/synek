@@ -18,7 +18,7 @@ export function useWeekPlan(weekStart: string) {
 }
 
 export function useGetOrCreateWeekPlan() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { effectiveAthleteId } = useAuth();
 
   return useMutation({
@@ -32,7 +32,7 @@ export function useGetOrCreateWeekPlan() {
       weekNumber: number;
     }) => getOrCreateWeekPlan(weekStart, year, weekNumber, effectiveAthleteId!),
     onSuccess: (data) => {
-      queryClient.setQueryData(
+      qc.setQueryData(
         queryKeys.weeks.byId(data.weekStart, data.athleteId),
         data
       );
@@ -41,19 +41,19 @@ export function useGetOrCreateWeekPlan() {
 }
 
 export function useUpdateWeekPlan() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
 
   return useMutation({
     mutationFn: (input: UpdateWeekPlanInput) => updateWeekPlan(input),
     onMutate: async (input) => {
-      const queries = queryClient.getQueriesData<WeekPlan>({
+      const queries = qc.getQueriesData<WeekPlan>({
         queryKey: queryKeys.weeks.all,
       });
       for (const [key, data] of queries) {
         if (data?.id === input.id) {
-          await queryClient.cancelQueries({ queryKey: key });
+          await qc.cancelQueries({ queryKey: key });
           const previous = data;
-          queryClient.setQueryData<WeekPlan>(key, {
+          qc.setQueryData<WeekPlan>(key, {
             ...previous,
             ...(input.loadType !== undefined && { loadType: input.loadType }),
             ...(input.totalPlannedKm !== undefined && {
@@ -72,11 +72,11 @@ export function useUpdateWeekPlan() {
     },
     onError: (_err, _input, context) => {
       if (context?.previous && context?.key) {
-        queryClient.setQueryData(context.key, context.previous);
+        qc.setQueryData(context.key, context.previous);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.weeks.all });
+      qc.invalidateQueries({ queryKey: queryKeys.weeks.all });
     },
   });
 }

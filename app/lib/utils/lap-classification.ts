@@ -1,13 +1,9 @@
 import type { StravaLapSegmentType } from '~/types/strava';
 
-export interface RawLap {
+interface RawLap {
   lapIndex: number;
   name?: string | null;
   intensity?: 'active' | 'rest' | null;
-}
-
-export interface ClassifiedLap extends RawLap {
-  segmentType: StravaLapSegmentType;
 }
 
 /** Convert Strava average speed (m/s) to a human-readable pace string. */

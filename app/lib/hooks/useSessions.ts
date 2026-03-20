@@ -63,13 +63,13 @@ export function useSessions(weekPlanId: string | undefined) {
 }
 
 export function useCreateSession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: CreateSessionInput) => createSession(input),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: queryKeys.sessions.byWeek(data.weekPlanId),
       });
       toast.success(t('toast.sessionCreated'));
@@ -81,14 +81,14 @@ export function useCreateSession() {
 }
 
 export function useUpdateSession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: UpdateSessionInput) => updateSession(input),
     onMutate: async (input) => {
       let weekPlanId: string | undefined;
-      const result = await patchAllSessionQueries(queryClient, (sessions) => {
+      const result = await patchAllSessionQueries(qc, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === input.id);
         if (idx === -1) return null;
         if (!weekPlanId) weekPlanId = sessions[idx].weekPlanId;
@@ -103,12 +103,12 @@ export function useUpdateSession() {
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
-        queryClient.setQueryData(key, data);
+        qc.setQueryData(key, data);
       });
       toast.error(t('toast.sessionUpdateFailed'));
     },
     onSettled: (_data, _err, _input, context) => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: context?.weekPlanId
           ? queryKeys.sessions.byWeek(context.weekPlanId)
           : queryKeys.sessions.all,
@@ -118,13 +118,13 @@ export function useUpdateSession() {
 }
 
 export function useDeleteSession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (sessionId: string) => deleteSession(sessionId),
     onMutate: async (sessionId) =>
-      patchAllSessionQueries(queryClient, (sessions) => {
+      patchAllSessionQueries(qc, (sessions) => {
         if (!sessions.some((s) => s.id === sessionId)) return null;
         return sessions.filter((s) => s.id !== sessionId);
       }),
@@ -133,12 +133,12 @@ export function useDeleteSession() {
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
-        queryClient.setQueryData(key, data);
+        qc.setQueryData(key, data);
       });
       toast.error(t('toast.sessionDeleteFailed'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
     },
@@ -146,13 +146,13 @@ export function useDeleteSession() {
 }
 
 export function useUpdateAthleteSession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (input: AthleteSessionUpdate) => updateAthleteSession(input),
     onMutate: async (input) =>
-      patchAllSessionQueries(queryClient, (sessions) => {
+      patchAllSessionQueries(qc, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === input.id);
         if (idx === -1) return null;
 
@@ -175,12 +175,12 @@ export function useUpdateAthleteSession() {
       }),
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
-        queryClient.setQueryData(key, data);
+        qc.setQueryData(key, data);
       });
       toast.error(t('toast.performanceUpdateFailed'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
     },
@@ -188,13 +188,13 @@ export function useUpdateAthleteSession() {
 }
 
 export function useConfirmStravaSession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (sessionId: string) => confirmStravaSession(sessionId),
     onMutate: async (sessionId) =>
-      patchAllSessionQueries(queryClient, (sessions) => {
+      patchAllSessionQueries(qc, (sessions) => {
         const idx = sessions.findIndex((s) => s.id === sessionId);
         if (idx === -1) return null;
         const updated = [...sessions];
@@ -206,12 +206,12 @@ export function useConfirmStravaSession() {
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
-        queryClient.setQueryData(key, data);
+        qc.setQueryData(key, data);
       });
       toast.error(t('toast.stravaSessionShareFailed'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
     },
@@ -219,13 +219,13 @@ export function useConfirmStravaSession() {
 }
 
 export function useCopyWeekSessions() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('coach');
 
   return useMutation({
     mutationFn: (input: CopyWeekInput) => copyWeekSessions(input),
     onSuccess: (count, input) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
+      qc.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
       toast.success(t('copy.successWeek', { count }));
     },
     onError: () => {
@@ -235,7 +235,7 @@ export function useCopyWeekSessions() {
 }
 
 export function useCopySession() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('coach');
 
   return useMutation({
@@ -249,7 +249,7 @@ export function useCopySession() {
       targetDay: DayOfWeek;
     }) => createSession(buildCopySessionInput(session, targetWeekPlanId, targetDay)),
     onSuccess: (_data, { targetWeekPlanId }) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(targetWeekPlanId) });
+      qc.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(targetWeekPlanId) });
       toast.success(t('copy.successSession'));
     },
     onError: () => {
@@ -259,13 +259,13 @@ export function useCopySession() {
 }
 
 export function useCopyDaySessions() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('coach');
 
   return useMutation({
     mutationFn: (input: CopyDayInput) => copyDaySessions(input),
     onSuccess: (count, input) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
+      qc.invalidateQueries({ queryKey: queryKeys.sessions.byWeek(input.targetWeekPlanId) });
       toast.success(t('copy.successDay', { count }));
     },
     onError: () => {
@@ -275,13 +275,13 @@ export function useCopyDaySessions() {
 }
 
 export function useBulkConfirmStravaSessions() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { t } = useTranslation('common');
 
   return useMutation({
     mutationFn: (weekPlanId: string) => bulkConfirmStravaSessions(weekPlanId),
     onMutate: async (weekPlanId) =>
-      patchAllSessionQueries(queryClient, (sessions) => {
+      patchAllSessionQueries(qc, (sessions) => {
         let changed = false;
         const updated = sessions.map((session) => {
           if (
@@ -301,12 +301,12 @@ export function useBulkConfirmStravaSessions() {
     },
     onError: (_err, _variables, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {
-        queryClient.setQueryData(key, data);
+        qc.setQueryData(key, data);
       });
       toast.error(t('toast.stravaAllShareFailed'));
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
+      qc.invalidateQueries({
         queryKey: queryKeys.sessions.all,
       });
     },

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router';
 import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
@@ -141,7 +141,7 @@ export function WeekGrid({
   const dndEnabled = !readonly && !!onReorderSession;
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
-  function handleDragEnd(event: DragEndEvent) {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event;
     const activeDay = (active.data.current as { day: DayOfWeek } | undefined)?.day ?? null;
     if (!activeDay) return;
@@ -152,7 +152,7 @@ export function WeekGrid({
       sessionsByDay
     );
     if (result) onReorderSession?.(result);
-  }
+  }, [sessionsByDay, onReorderSession]);
 
   const isControlled = controlledSelectedDay !== undefined;
   const selectedDay = controlledSelectedDay ?? internalSelectedDay;
@@ -188,7 +188,7 @@ export function WeekGrid({
     setSelectedDay(getDefaultSelectedDay(weekStart));
   }, [weekStart, location.state?.resetToToday, setSelectedDay, isControlled]);
 
-  const dayColumnProps = {
+  const dayColumnProps = useMemo(() => ({
     readonly,
     athleteMode,
     showAthleteControls,
@@ -209,7 +209,13 @@ export function WeekGrid({
     onCopySession,
     droppable: dndEnabled,
     draggableSessions: dndEnabled,
-  };
+  }), [
+    readonly, athleteMode, showAthleteControls,
+    onAddSession, onEditSession, onDeleteSession, onToggleComplete,
+    weekStart, onUpdateNotes, onUpdatePerformance, onUpdateCoachPostFeedback,
+    stravaConnected, junctionConnected, onSyncStrava, onConfirmStrava,
+    userRole, onCopyDay, onCopySession, dndEnabled,
+  ]);
 
   const gridContent = (
     <div>
