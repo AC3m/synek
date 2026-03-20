@@ -59,6 +59,7 @@ export function useSessions(weekPlanId: string | undefined) {
     queryKey: queryKeys.sessions.byWeek(weekPlanId ?? ''),
     queryFn: () => fetchSessionsByWeekPlan(weekPlanId!),
     enabled: !!weekPlanId,
+    placeholderData: (prev) => prev,
   });
 }
 

@@ -5,6 +5,7 @@ import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { AppLoader } from '~/components/ui/app-loader';
+import { StaggerIn } from '~/components/ui/stagger-in';
 import { SessionForm } from '~/components/training/SessionForm';
 import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmationDialog';
 import { useSessionFormState } from '~/lib/hooks/useSessionFormState';
@@ -44,7 +45,7 @@ export default function AthleteWeekView() {
   const { data: canSelfPlan = true } = useSelfPlanPermission(user?.id ?? '');
 
   // Queries
-  const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
+  const { data: weekPlan, isLoading: weekLoading, isFetching: weekFetching } = useWeekPlan(weekStart);
   const sessionsQuery = useSessions(weekPlan?.id);
   const sessions = sessionsQuery.data ?? [];
   const updateAthlete = useUpdateAthleteSession();
@@ -171,8 +172,9 @@ export default function AthleteWeekView() {
 
   if (!weekId) return null;
 
+  const sessionsLoading = !!weekPlan && sessionsQuery.isLoading;
   const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
-  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan);
+  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan) || sessionsLoading;
 
   return (
     <>
@@ -180,26 +182,35 @@ export default function AthleteWeekView() {
       <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
       {!showSkeleton && (!weekPlan ? (
         <>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-            <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} />
-          </div>
-          <div className="text-center py-20 text-muted-foreground">
-            {t('noTrainingPlan')}
-          </div>
+          <StaggerIn>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+              <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekFetching} />
+            </div>
+          </StaggerIn>
+          <StaggerIn delay={60}>
+            <div className="text-center py-20 text-muted-foreground">
+              {t('noTrainingPlan')}
+            </div>
+          </StaggerIn>
         </>
       ) : (
         <>
           {/* Header with navigation */}
-          <div className="flex items-center gap-2">
-            <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-            <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekLoading} />
-          </div>
+          <StaggerIn>
+            <div className="flex items-center gap-2">
+              <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
+              <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekFetching} />
+            </div>
+          </StaggerIn>
 
           {/* Week Summary (readonly with progress bar) */}
-          <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+          <StaggerIn delay={60}>
+            <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+          </StaggerIn>
 
           {/* Week Grid */}
+          <StaggerIn delay={120}>
           <WeekGrid
             sessionsByDay={sessionsByDay}
             weekStart={weekStart}
@@ -220,6 +231,7 @@ export default function AthleteWeekView() {
               onDeleteSession: handleDeleteSession,
             })}
           />
+          </StaggerIn>
 
           {/* Session Form — only shown when self-planning is enabled */}
           {canSelfPlan && (

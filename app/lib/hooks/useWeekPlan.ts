@@ -14,6 +14,7 @@ export function useWeekPlan(weekStart: string) {
     queryKey: queryKeys.weeks.byId(weekStart, effectiveAthleteId ?? ''),
     queryFn: () => fetchWeekPlanByDate(weekStart, effectiveAthleteId!),
     enabled: !!weekStart && !!effectiveAthleteId,
+    placeholderData: (prev) => prev,
   });
 }
 

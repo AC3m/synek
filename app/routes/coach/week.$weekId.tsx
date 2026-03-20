@@ -36,7 +36,7 @@ export default function CoachWeekView() {
     : { year: 0, weekNumber: 0 };
 
   // Queries
-  const { data: weekPlan, isLoading: weekLoading } = useWeekPlan(weekStart);
+  const { data: weekPlan, isLoading: weekLoading, isFetching: weekFetching } = useWeekPlan(weekStart);
   const getOrCreate = useGetOrCreateWeekPlan();
   const updateWeek = useUpdateWeekPlan();
   const sessionsQuery = useSessions(weekPlan?.id);
@@ -147,7 +147,7 @@ export default function CoachWeekView() {
           {/* Header with navigation */}
           <StaggerIn className="flex items-center gap-2">
             <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-            <WeekNavigation weekId={weekId} basePath="coach" selectedDay={selectedDay} isLoading={weekLoading} />
+            <WeekNavigation weekId={weekId} basePath="coach" selectedDay={selectedDay} isLoading={weekFetching} />
           </StaggerIn>
 
           {/* Week Summary */}
