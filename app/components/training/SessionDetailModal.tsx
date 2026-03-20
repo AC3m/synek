@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { getSessionCalendarDate } from '~/lib/utils/date';
-import { Pencil, Trash2, X, Zap, Loader2, Share2, RotateCcw } from 'lucide-react';
+import { Pencil, Trash2, X, Zap, RotateCcw } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { Separator } from '~/components/ui/separator';
@@ -26,8 +26,11 @@ import { AthleteFeedback } from './AthleteFeedback';
 import { IntervalChart } from './IntervalChart';
 import { LapTable } from './LapTable';
 import { StravaLogo } from './StravaLogo';
+import { StravaSyncButton } from './StravaSyncButton';
+import { StravaConfirmButton } from './StravaConfirmButton';
 import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
 import { useAuth } from '~/lib/context/AuthContext';
+import { useSessionActions } from '~/lib/context/SessionActionsContext';
 import { GarminSection } from './GarminSection';
 import { PerformanceChipGroup } from './PerformanceChipGroup';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
@@ -40,10 +43,8 @@ import {
   useLastSessionExercises,
   useUpsertSessionExercises,
 } from '~/lib/hooks/useStrengthVariants';
-import type { UserRole } from '~/lib/auth';
 import type {
   TrainingSession,
-  AthleteSessionUpdate,
   RunData,
   CyclingData,
   StrengthData,
@@ -60,20 +61,6 @@ interface SessionDetailModalProps {
   onOpenChange: (open: boolean) => void;
   session: TrainingSession;
   weekStart?: string;
-  readonly?: boolean;
-  athleteMode?: boolean;
-  showAthleteControls?: boolean;
-  stravaConnected?: boolean;
-  junctionConnected?: boolean;
-  onEdit?: (session: TrainingSession) => void;
-  onDelete?: (sessionId: string) => void;
-  onToggleComplete?: (sessionId: string, completed: boolean) => void;
-  onUpdateNotes?: (sessionId: string, notes: string | null) => void;
-  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
-  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
-  onSyncStrava?: (sessionId: string) => Promise<void>;
-  onConfirmStrava?: (sessionId: string) => Promise<void>;
-  userRole?: UserRole;
 }
 
 function formatIntervalBlock(block: IntervalBlock, restLabel: string): string {
@@ -115,28 +102,25 @@ export function SessionDetailModal({
   onOpenChange,
   session,
   weekStart,
-  readonly = false,
-  athleteMode = false,
-  showAthleteControls = false,
-  stravaConnected = false,
-  junctionConnected = false,
-  onEdit,
-  onDelete,
-  onToggleComplete,
-  onUpdateNotes,
-  onUpdatePerformance,
-  onUpdateCoachPostFeedback,
-  onSyncStrava,
-  onConfirmStrava,
-  userRole,
 }: SessionDetailModalProps) {
   const { t } = useTranslation(['training', 'common']);
   const isMobile = useIsMobile();
   const { user, effectiveAthleteId } = useAuth();
+  const {
+    readonly,
+    athleteMode,
+    showAthleteControls,
+    junctionConnected,
+    userRole,
+    onEdit,
+    onDelete,
+    onToggleComplete,
+    onUpdateNotes,
+    onUpdatePerformance,
+    onUpdateCoachPostFeedback,
+  } = useSessionActions();
 
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
-  const [isSyncingStrava, setIsSyncingStrava] = useState(false);
-  const [isConfirmingStrava, setIsConfirmingStrava] = useState(false);
   const coachFeedbackRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -575,50 +559,17 @@ export function SessionDetailModal({
               />
             )}
 
-            {session.isCompleted && !session.stravaActivityId && stravaConnected && (
-              <button
-                onClick={async () => {
-                  setIsSyncingStrava(true);
-                  try {
-                    await onSyncStrava?.(session.id);
-                  } finally {
-                    setIsSyncingStrava(false);
-                  }
-                }}
-                disabled={isSyncingStrava}
-                className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-400 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {isSyncingStrava
-                  ? <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                  : <Zap className="h-2.5 w-2.5" />
-                }
-                {t('common:strava.sync')}
-              </button>
-            )}
+            <StravaSyncButton
+              sessionId={session.id}
+              isCompleted={session.isCompleted}
+              hasStravaActivity={session.stravaActivityId != null}
+            />
 
-            {session.stravaActivityId && !session.isStravaConfirmed && userRole === 'athlete' && (
-              <Button
-                size="sm"
-                variant="outline"
-                disabled={isConfirmingStrava}
-                className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300 disabled:opacity-60 disabled:cursor-not-allowed"
-                onClick={async () => {
-                  setIsConfirmingStrava(true);
-                  try {
-                    await onConfirmStrava?.(session.id);
-                  } finally {
-                    setIsConfirmingStrava(false);
-                  }
-                }}
-                title={t('common:strava.confirmAndShare')}
-              >
-                {isConfirmingStrava
-                  ? <Loader2 className="h-2.5 w-2.5 animate-spin shrink-0" />
-                  : <Share2 className="h-2.5 w-2.5 shrink-0" />
-                }
-                <span className="truncate">{t('common:strava.confirmAndShare')}</span>
-              </Button>
-            )}
+            <StravaConfirmButton
+              sessionId={session.id}
+              hasStravaActivity={session.stravaActivityId != null}
+              isStravaConfirmed={session.isStravaConfirmed}
+            />
 
             <AthleteFeedback
               notes={session.athleteNotes}

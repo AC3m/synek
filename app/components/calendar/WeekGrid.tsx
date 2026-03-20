@@ -17,6 +17,8 @@ import { computeDragResult } from '~/lib/utils/week-view';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SessionActionsProvider } from '~/lib/context/SessionActionsContext';
+import type { SessionActionsContextValue } from '~/lib/context/SessionActionsContext';
 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
@@ -188,36 +190,42 @@ export function WeekGrid({
     setSelectedDay(getDefaultSelectedDay(weekStart));
   }, [weekStart, location.state?.resetToToday, setSelectedDay, isControlled]);
 
-  const dayColumnProps = useMemo(() => ({
+  const contextValue = useMemo<SessionActionsContextValue>(() => ({
     readonly,
     athleteMode,
     showAthleteControls,
-    onAddSession,
-    onEditSession,
-    onDeleteSession,
+    stravaConnected: stravaConnected ?? false,
+    junctionConnected: junctionConnected ?? false,
+    userRole,
+    onEdit: onEditSession,
+    onDelete: onDeleteSession,
     onToggleComplete,
-    weekStart,
     onUpdateNotes,
     onUpdatePerformance,
     onUpdateCoachPostFeedback,
-    stravaConnected,
-    junctionConnected,
     onSyncStrava,
     onConfirmStrava,
-    userRole,
+  }), [
+    readonly, athleteMode, showAthleteControls,
+    stravaConnected, junctionConnected, userRole,
+    onEditSession, onDeleteSession, onToggleComplete,
+    onUpdateNotes, onUpdatePerformance, onUpdateCoachPostFeedback,
+    onSyncStrava, onConfirmStrava,
+  ]);
+
+  const dayColumnProps = useMemo(() => ({
+    weekStart,
+    onAddSession,
     onCopyDay,
     onCopySession,
     droppable: dndEnabled,
     draggableSessions: dndEnabled,
   }), [
-    readonly, athleteMode, showAthleteControls,
-    onAddSession, onEditSession, onDeleteSession, onToggleComplete,
-    weekStart, onUpdateNotes, onUpdatePerformance, onUpdateCoachPostFeedback,
-    stravaConnected, junctionConnected, onSyncStrava, onConfirmStrava,
-    userRole, onCopyDay, onCopySession, dndEnabled,
+    weekStart, onAddSession, onCopyDay, onCopySession, dndEnabled,
   ]);
 
   const gridContent = (
+    <SessionActionsProvider value={contextValue}>
     <div>
       {/* Mobile: day strip + single day view */}
       <div className="md:hidden">
@@ -276,6 +284,7 @@ export function WeekGrid({
         </div>
       </div>
     </div>
+    </SessionActionsProvider>
   );
 
   if (dndEnabled) {

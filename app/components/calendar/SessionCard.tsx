@@ -1,71 +1,40 @@
 import { useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Zap, Loader2, Share2, Copy as CopyIcon, GripVertical } from 'lucide-react';
+import { Zap, Copy as CopyIcon, GripVertical } from 'lucide-react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Button } from '~/components/ui/button';
 import { CompletionToggle } from '~/components/training/CompletionToggle';
 import { PerformanceChipGroup } from '~/components/training/PerformanceChipGroup';
 import { StravaLogo } from '~/components/training/StravaLogo';
 import { GarminSection } from '~/components/training/GarminSection';
 import { SessionDetailModal } from '~/components/training/SessionDetailModal';
+import { StravaSyncButton } from '~/components/training/StravaSyncButton';
+import { StravaConfirmButton } from '~/components/training/StravaConfirmButton';
 import { useAuth } from '~/lib/context/AuthContext';
+import { useSessionActions } from '~/lib/context/SessionActionsContext';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { cn } from '~/lib/utils';
-import type { UserRole } from '~/lib/auth';
-import { type TrainingSession, type AthleteSessionUpdate, type RunData } from '~/types/training';
+import { type TrainingSession, type RunData } from '~/types/training';
 
 interface SessionCardProps {
   session: TrainingSession;
   weekStart?: string;
-  readonly?: boolean;
-  /** Athlete mode: controls feedback UI direction (coach textarea vs athlete read-only) */
-  athleteMode?: boolean;
-  /** Show completion/notes/performance controls regardless of athleteMode (e.g. coach viewing own plan) */
-  showAthleteControls?: boolean;
-  stravaConnected?: boolean;
-  junctionConnected?: boolean;
-  onEdit?: (session: TrainingSession) => void;
-  onDelete?: (sessionId: string) => void;
-  onToggleComplete?: (sessionId: string, completed: boolean) => void;
-  onUpdateNotes?: (sessionId: string, notes: string | null) => void;
-  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
-  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
-  onSyncStrava?: (sessionId: string) => Promise<void>;
-  onConfirmStrava?: (sessionId: string) => Promise<void>;
-  userRole?: UserRole;
-  /** In read-only history mode: opens the day-picker to copy this session */
-  onCopy?: (session: TrainingSession) => void;
-  /** Enable drag-and-drop reordering via @dnd-kit/sortable */
   draggable?: boolean;
+  onCopy?: (session: TrainingSession) => void;
 }
 
 export function SessionCard({
   session,
   weekStart,
-  readonly = false,
-  athleteMode = false,
-  showAthleteControls = false,
-  stravaConnected = false,
-  junctionConnected = false,
-  onEdit,
-  onDelete,
-  onToggleComplete,
-  onUpdateNotes,
-  onUpdatePerformance,
-  onUpdateCoachPostFeedback,
-  onSyncStrava,
-  onConfirmStrava,
-  userRole,
-  onCopy,
   draggable = false,
+  onCopy,
 }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training', 'coach']);
-  const [isSyncingStrava, setIsSyncingStrava] = useState(false);
-  const [isConfirmingStrava, setIsConfirmingStrava] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const { readonly, athleteMode, showAthleteControls, junctionConnected, onToggleComplete, userRole } = useSessionActions();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: session.id,
@@ -120,6 +89,8 @@ export function SessionCard({
   const sortableStyle = draggable
     ? { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : undefined }
     : undefined;
+
+  const hasStravaActivity = session.stravaActivityId != null;
 
   return (
     <div
@@ -253,57 +224,21 @@ export function SessionCard({
             }
           />
 
-          {session.isCompleted && !session.stravaActivityId && stravaConnected && (
-            <button
-              onClick={async () => {
-                setIsSyncingStrava(true);
-                try {
-                  await onSyncStrava?.(session.id);
-                } finally {
-                  setIsSyncingStrava(false);
-                }
-              }}
-              disabled={isSyncingStrava}
-              className="inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 hover:bg-orange-200 dark:bg-orange-950 dark:text-orange-400 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {isSyncingStrava
-                ? <Loader2 className="h-2.5 w-2.5 animate-spin" />
-                : <Zap className="h-2.5 w-2.5" />
-              }
-              {t('common:strava.sync')}
-            </button>
-          )}
+          <StravaSyncButton
+            sessionId={session.id}
+            isCompleted={session.isCompleted}
+            hasStravaActivity={hasStravaActivity}
+          />
 
           {/* Confirm & Share is only shown to athletes, never to coaches — even when a coach
               uses showAthleteControls to manage their own self-planned sessions. A coach acting
               as their own athlete has no one to share data with, so the confirmation step is
               meaningless and intentionally omitted. */}
-          {session.stravaActivityId &&
-            !session.isStravaConfirmed &&
-            userRole === 'athlete' && (
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={isConfirmingStrava}
-              className="w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300 disabled:opacity-60 disabled:cursor-not-allowed"
-              onClick={async () => {
-                setIsConfirmingStrava(true);
-                try {
-                  await onConfirmStrava?.(session.id);
-                } finally {
-                  setIsConfirmingStrava(false);
-                }
-              }}
-              title={t('common:strava.confirmAndShare')}
-            >
-              {isConfirmingStrava
-                ? <Loader2 className="h-2.5 w-2.5 animate-spin shrink-0" />
-                : <Share2 className="h-2.5 w-2.5 shrink-0" />
-              }
-              <span className="truncate">{t('common:strava.confirmAndShare')}</span>
-            </Button>
-          )}
-
+          <StravaConfirmButton
+            sessionId={session.id}
+            hasStravaActivity={hasStravaActivity}
+            isStravaConfirmed={session.isStravaConfirmed}
+          />
         </div>
       )}
 
@@ -312,20 +247,6 @@ export function SessionCard({
         onOpenChange={setDetailOpen}
         session={session}
         weekStart={weekStart}
-        readonly={readonly}
-        athleteMode={athleteMode}
-        showAthleteControls={showAthleteControls}
-        stravaConnected={stravaConnected}
-        junctionConnected={junctionConnected}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onToggleComplete={onToggleComplete}
-        onUpdateNotes={onUpdateNotes}
-        onUpdatePerformance={onUpdatePerformance}
-        onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
-        onSyncStrava={onSyncStrava}
-        onConfirmStrava={onConfirmStrava}
-        userRole={userRole}
       />
     </div>
   );

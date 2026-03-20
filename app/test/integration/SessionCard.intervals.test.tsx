@@ -2,6 +2,8 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { SessionCard } from '~/components/calendar/SessionCard';
+import { SessionActionsProvider } from '~/lib/context/SessionActionsContext';
+import type { SessionActionsContextValue } from '~/lib/context/SessionActionsContext';
 import { resetMockLaps } from '~/lib/mock-data/strava-laps';
 import { fetchSessionLaps } from '~/lib/queries/strava-laps';
 import { createTestQueryClient } from '~/test/utils/query-client';
@@ -30,10 +32,28 @@ vi.mock('~/lib/hooks/useJunctionConnection', () => ({
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeWrapper() {
+function makeContext(overrides: Partial<SessionActionsContextValue> = {}): SessionActionsContextValue {
+  return {
+    readonly: false,
+    athleteMode: false,
+    showAthleteControls: false,
+    stravaConnected: false,
+    junctionConnected: false,
+    ...overrides,
+  };
+}
+
+function makeWrapper(context?: SessionActionsContextValue) {
   const qc = createTestQueryClient();
+  const ctx = context ?? makeContext();
   function Wrapper({ children }: { children: ReactNode }) {
-    return <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
+    return (
+      <QueryClientProvider client={qc}>
+        <SessionActionsProvider value={ctx}>
+          {children}
+        </SessionActionsProvider>
+      </QueryClientProvider>
+    );
   }
   return { Wrapper, qc };
 }
@@ -162,9 +182,9 @@ beforeEach(() => {
 
 describe('SessionCard — interval affordance via detail modal', () => {
   it('opens detail modal when card is clicked', async () => {
-    const { Wrapper, } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     const { container } = render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      <SessionCard session={makeSession()} />,
       { wrapper: Wrapper }
     );
 
@@ -182,9 +202,9 @@ describe('SessionCard — interval affordance via detail modal', () => {
       () => new Promise(() => {})
     );
 
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     const { container } = render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      <SessionCard session={makeSession()} />,
       { wrapper: Wrapper }
     );
 
@@ -200,9 +220,9 @@ describe('SessionCard — interval affordance via detail modal', () => {
   it('shows interval table columns in modal when laps load with structured intervals', async () => {
     mockLapResult = STRUCTURED_LAPS;
 
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     const { container } = render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      <SessionCard session={makeSession()} />,
       { wrapper: Wrapper }
     );
 
@@ -218,9 +238,9 @@ describe('SessionCard — interval affordance via detail modal', () => {
   it('shows retry button in modal when lap fetch fails', async () => {
     mockLapShouldFail = true;
 
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     const { container } = render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      <SessionCard session={makeSession()} />,
       { wrapper: Wrapper }
     );
 
@@ -232,12 +252,10 @@ describe('SessionCard — interval affordance via detail modal', () => {
   });
 
   it('does not load laps for an unsynced run session', async () => {
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     render(
       <SessionCard
         session={makeSession({ stravaActivityId: null })}
-        userRole="athlete"
-        athleteMode
       />,
       { wrapper: Wrapper }
     );
@@ -246,11 +264,10 @@ describe('SessionCard — interval affordance via detail modal', () => {
   });
 
   it('does not load laps for coach on unconfirmed session', async () => {
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
     render(
       <SessionCard
         session={makeSession({ isStravaConfirmed: false })}
-        userRole="coach"
       />,
       { wrapper: Wrapper }
     );
@@ -261,11 +278,10 @@ describe('SessionCard — interval affordance via detail modal', () => {
   it('loads laps for coach on confirmed session and shows interval table', async () => {
     mockLapResult = STRUCTURED_LAPS;
 
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
     const { container } = render(
       <SessionCard
         session={makeSession({ isStravaConfirmed: true })}
-        userRole="coach"
       />,
       { wrapper: Wrapper }
     );
@@ -278,9 +294,9 @@ describe('SessionCard — interval affordance via detail modal', () => {
   });
 
   it('does not open modal when interactive element on card is clicked', async () => {
-    const { Wrapper } = makeWrapper();
+    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
     render(
-      <SessionCard session={makeSession()} userRole="athlete" athleteMode />,
+      <SessionCard session={makeSession()} />,
       { wrapper: Wrapper }
     );
 

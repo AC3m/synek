@@ -5,29 +5,14 @@ import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { SessionCard } from './SessionCard';
-import type { UserRole } from '~/lib/auth';
-import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type AthleteSessionUpdate } from '~/types/training';
+import { useSessionActions } from '~/lib/context/SessionActionsContext';
+import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession } from '~/types/training';
 
 interface DayColumnProps {
   day: DayOfWeek;
   sessions: TrainingSession[];
   weekStart?: string;
-  readonly?: boolean;
-  athleteMode?: boolean;
-  /** Show completion/notes/performance controls even when athleteMode is false (e.g. coach viewing own plan) */
-  showAthleteControls?: boolean;
   onAddSession?: (day: DayOfWeek) => void;
-  onEditSession?: (session: TrainingSession) => void;
-  onDeleteSession?: (sessionId: string) => void;
-  onToggleComplete?: (sessionId: string, completed: boolean) => void;
-  onUpdateNotes?: (sessionId: string, notes: string | null) => void;
-  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
-  onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
-  stravaConnected?: boolean;
-  junctionConnected?: boolean;
-  onSyncStrava?: (sessionId: string) => Promise<void>;
-  onConfirmStrava?: (sessionId: string) => Promise<void>;
-  userRole?: UserRole;
   /** In read-only mode: copy this day's sessions to the target week */
   onCopyDay?: (day: DayOfWeek) => void;
   /** In read-only mode: opens day-picker to copy a single session */
@@ -42,21 +27,7 @@ export function DayColumn({
   day,
   sessions,
   weekStart,
-  readonly = false,
-  athleteMode = false,
-  showAthleteControls = false,
   onAddSession,
-  onEditSession,
-  onDeleteSession,
-  onToggleComplete,
-  onUpdateNotes,
-  onUpdatePerformance,
-  onUpdateCoachPostFeedback,
-  stravaConnected,
-  junctionConnected,
-  onSyncStrava,
-  onConfirmStrava,
-  userRole,
   onCopyDay,
   onCopySession,
   droppable = false,
@@ -64,6 +35,7 @@ export function DayColumn({
 }: DayColumnProps) {
   const { t } = useTranslation();
   const { t: tCoach } = useTranslation('coach');
+  const { readonly } = useSessionActions();
 
   const { setNodeRef: setDropRef, isOver } = useDroppable({ id: day, disabled: !droppable });
 
@@ -133,20 +105,6 @@ export function DayColumn({
             key={session.id}
             session={session}
             weekStart={weekStart}
-            readonly={readonly}
-            athleteMode={athleteMode}
-            showAthleteControls={showAthleteControls}
-            onEdit={onEditSession}
-            onDelete={onDeleteSession}
-            onToggleComplete={onToggleComplete}
-            onUpdateNotes={onUpdateNotes}
-            onUpdatePerformance={onUpdatePerformance}
-            onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
-            stravaConnected={stravaConnected}
-            junctionConnected={junctionConnected}
-            onSyncStrava={onSyncStrava}
-            onConfirmStrava={onConfirmStrava}
-            userRole={userRole}
             onCopy={onCopySession}
             draggable={draggableSessions}
           />
