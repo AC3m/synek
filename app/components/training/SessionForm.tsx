@@ -1,25 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from '~/components/ui/sheet';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '~/components/ui/dialog';
-import { Button } from '~/components/ui/button';
+import { FormModal } from '~/components/ui/form-modal';
 import { SessionFormFields, type FormTab } from './SessionFormFields';
-import { useIsMobile } from '~/lib/hooks/useIsMobile';
+import { useAuth } from '~/lib/context/AuthContext';
+import { useStrengthVariants, useLastSessionExercises } from '~/lib/hooks/useStrengthVariants';
 import {
   type TrainingType,
   type DayOfWeek,
   type TrainingSession,
   type TypeSpecificData,
+  type StrengthData,
   type CreateSessionInput,
   type UpdateSessionInput,
 } from '~/types/training';
@@ -45,8 +35,8 @@ export function SessionForm({
   isCoach = false,
 }: SessionFormProps) {
   const { t } = useTranslation(['coach', 'common']);
-  const isMobile = useIsMobile();
   const isEditing = !!session;
+  const { user, effectiveAthleteId } = useAuth();
 
   const [trainingType, setTrainingType] = useState<TrainingType>(
     session?.trainingType ?? 'run'
@@ -62,20 +52,21 @@ export function SessionForm({
   const [typeData, setTypeData] = useState<Partial<TypeSpecificData>>(
     session?.typeSpecificData ?? { type: 'run' }
   );
-  const [actualDuration, setActualDuration] = useState(
-    session?.actualDurationMinutes?.toString() ?? ''
-  );
-  const [actualDistance, setActualDistance] = useState(
-    session?.actualDistanceKm?.toString() ?? ''
-  );
-  const [actualPace, setActualPace] = useState(session?.actualPace ?? '');
-  const [avgHr, setAvgHr] = useState(session?.avgHeartRate?.toString() ?? '');
-  const [maxHr, setMaxHr] = useState(session?.maxHeartRate?.toString() ?? '');
-  const [rpe, setRpe] = useState(session?.rpe?.toString() ?? '');
-  const [coachPostFeedback, setCoachPostFeedback] = useState(
-    session?.coachPostFeedback ?? ''
-  );
   const [activeTab, setActiveTab] = useState<FormTab>('plan');
+
+  // Strength variant pre-fill
+  const athleteId = effectiveAthleteId ?? user?.id ?? '';
+  const { data: strengthVariants } = useStrengthVariants(athleteId);
+  const currentVariantId =
+    trainingType === 'strength' ? (typeData as Partial<StrengthData>).variantId : undefined;
+  const currentVariant = currentVariantId
+    ? strengthVariants?.find((v) => v.id === currentVariantId)
+    : undefined;
+  const variantExerciseIds = useMemo(
+    () => currentVariant?.exercises.map((ex) => ex.id) ?? [],
+    [currentVariantId],
+  );
+  const { data: prefillResult } = useLastSessionExercises(athleteId, variantExerciseIds);
 
   useEffect(() => {
     setActiveTab('plan');
@@ -89,13 +80,6 @@ export function SessionForm({
       setDurationMinutes(session.plannedDurationMinutes?.toString() ?? '');
       setDistanceKm(session.plannedDistanceKm?.toString() ?? '');
       setTypeData(session.typeSpecificData ?? { type: session.trainingType });
-      setActualDuration(session.actualDurationMinutes?.toString() ?? '');
-      setActualDistance(session.actualDistanceKm?.toString() ?? '');
-      setActualPace(session.actualPace ?? '');
-      setAvgHr(session.avgHeartRate?.toString() ?? '');
-      setMaxHr(session.maxHeartRate?.toString() ?? '');
-      setRpe(session.rpe?.toString() ?? '');
-      setCoachPostFeedback(session.coachPostFeedback ?? '');
     } else {
       setTrainingType('run');
       setDescription('');
@@ -103,13 +87,6 @@ export function SessionForm({
       setDurationMinutes('');
       setDistanceKm('');
       setTypeData({ type: 'run' });
-      setActualDuration('');
-      setActualDistance('');
-      setActualPace('');
-      setAvgHr('');
-      setMaxHr('');
-      setRpe('');
-      setCoachPostFeedback('');
     }
   }, [session, open]);
 
@@ -118,17 +95,25 @@ export function SessionForm({
     setTypeData({ type: newType } as TypeSpecificData);
   };
 
+  const handleVariantChange = (variantId: string | undefined) => {
+    setTypeData((prev) => ({
+      ...(prev as Partial<StrengthData>),
+      type: 'strength' as const,
+      variantId,
+    }));
+
+    // Auto-set description to variant name unless the user has typed a custom value.
+    // "Custom" means the description differs from the previously selected variant's name.
+    const prevAutoName = currentVariant?.name ?? '';
+    const isAutoDescription = description === '' || description === prevAutoName;
+    if (isAutoDescription) {
+      const nextVariant = variantId ? strengthVariants?.find((v) => v.id === variantId) : undefined;
+      setDescription(nextVariant?.name ?? '');
+    }
+  };
+
   const handleSubmit = () => {
     const typeSpecificData = { ...typeData, type: trainingType } as TypeSpecificData;
-    const actualFields = {
-      actualDurationMinutes: actualDuration ? parseInt(actualDuration) : null,
-      actualDistanceKm: actualDistance ? parseFloat(actualDistance) : null,
-      actualPace: actualPace || null,
-      avgHeartRate: avgHr ? parseInt(avgHr) : null,
-      maxHeartRate: maxHr ? parseInt(maxHr) : null,
-      rpe: rpe ? parseInt(rpe) : null,
-      coachPostFeedback: coachPostFeedback || null,
-    };
 
     if (isEditing && session) {
       onSubmit({
@@ -139,7 +124,6 @@ export function SessionForm({
         plannedDurationMinutes: durationMinutes ? parseInt(durationMinutes) : null,
         plannedDistanceKm: distanceKm ? parseFloat(distanceKm) : null,
         typeSpecificData,
-        ...actualFields,
       } satisfies UpdateSessionInput);
     } else {
       onSubmit({
@@ -151,9 +135,6 @@ export function SessionForm({
         plannedDurationMinutes: durationMinutes ? parseInt(durationMinutes) : undefined,
         plannedDistanceKm: distanceKm ? parseFloat(distanceKm) : undefined,
         typeSpecificData,
-        ...Object.fromEntries(
-          Object.entries(actualFields).map(([k, v]) => [k, v ?? undefined])
-        ),
       } satisfies CreateSessionInput);
     }
     onClose();
@@ -173,82 +154,22 @@ export function SessionForm({
       onDistanceChange={setDistanceKm}
       typeData={typeData}
       onTypeDataChange={setTypeData}
-      actualDuration={actualDuration}
-      onActualDurationChange={setActualDuration}
-      actualDistance={actualDistance}
-      onActualDistanceChange={setActualDistance}
-      actualPace={actualPace}
-      onActualPaceChange={setActualPace}
-      avgHr={avgHr}
-      onAvgHrChange={setAvgHr}
-      maxHr={maxHr}
-      onMaxHrChange={setMaxHr}
-      rpe={rpe}
-      onRpeChange={setRpe}
-      coachPostFeedback={coachPostFeedback}
-      onCoachPostFeedbackChange={setCoachPostFeedback}
       isCoach={isCoach}
       activeTab={activeTab}
       onTabChange={setActiveTab}
+      strengthVariants={strengthVariants}
+      onVariantChange={handleVariantChange}
+      strengthPrefillData={prefillResult?.data}
+      strengthPrefillDate={prefillResult?.date}
     />
   );
 
   const title = isEditing ? t('coach:session.edit') : t('coach:session.create');
   const saveLabel = isEditing ? t('common:actions.save') : t('coach:session.create');
 
-  if (isMobile) {
-    return (
-      <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-        <SheetContent
-          side="bottom"
-          showCloseButton={false}
-          className="rounded-t-2xl max-h-[92vh] flex flex-col gap-0 p-0"
-        >
-          {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-1 shrink-0">
-            <div className="h-1 w-10 rounded-full bg-border" />
-          </div>
-
-          <SheetHeader className="px-5 pt-3 pb-3 border-b shrink-0">
-            <SheetTitle>{title}</SheetTitle>
-          </SheetHeader>
-
-          <div className="h-[58vh] overflow-y-auto px-5 py-4">
-            {formFields}
-          </div>
-
-          <div className="px-5 pt-4 pb-4 border-t flex gap-2 justify-end shrink-0">
-            <Button variant="outline" onClick={onClose}>
-              {t('common:actions.cancel')}
-            </Button>
-            <Button onClick={handleSubmit}>{saveLabel}</Button>
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent
-        showCloseButton={false}
-        className="max-w-lg max-h-[85vh] flex flex-col p-0 gap-0"
-      >
-        <DialogHeader className="px-6 pt-6 pb-4 border-b shrink-0">
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
-
-        <div className="h-[55vh] overflow-y-auto px-6 py-4">
-          {formFields}
-        </div>
-
-        <div className="px-6 py-4 border-t flex gap-2 justify-end shrink-0">
-          <Button variant="outline" onClick={onClose}>
-            {t('common:actions.cancel')}
-          </Button>
-          <Button onClick={handleSubmit}>{saveLabel}</Button>
-        </div>
-      </DialogContent>
-    </Dialog>
+    <FormModal open={open} onClose={onClose} title={title} onSave={handleSubmit} saveLabel={saveLabel}>
+      {formFields}
+    </FormModal>
   );
 }

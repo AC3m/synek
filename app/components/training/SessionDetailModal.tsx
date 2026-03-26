@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { getSessionCalendarDate } from '~/lib/utils/date';
@@ -29,8 +29,16 @@ import { StravaLogo } from './StravaLogo';
 import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
 import { useAuth } from '~/lib/context/AuthContext';
 import { GarminModalSection } from './GarminModalSection';
-import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
+import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
+import { SessionExerciseLogger } from '~/components/strength/SessionExerciseLogger';
+import type { LogRowChange } from '~/components/strength/SessionExerciseLogger';
+import {
+  useStrengthVariant,
+  useStrengthSessionExercises,
+  useLastSessionExercises,
+  useUpsertSessionExercises,
+} from '~/lib/hooks/useStrengthVariants';
 import type { UserRole } from '~/lib/auth';
 import type {
   TrainingSession,
@@ -123,7 +131,7 @@ export function SessionDetailModal({
 }: SessionDetailModalProps) {
   const { t } = useTranslation(['training', 'common']);
   const isMobile = useIsMobile();
-  const { user } = useAuth();
+  const { user, effectiveAthleteId } = useAuth();
 
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
   const [isSyncingStrava, setIsSyncingStrava] = useState(false);
@@ -161,6 +169,41 @@ export function SessionDetailModal({
   const dayDate = calendarDate ? parseISO(calendarDate) : null;
   const dateStr = dayDate ? format(dayDate, 'EEEE · MMM d') : null;
 
+  // Strength variant logging
+  const strengthData = session.trainingType === 'strength'
+    ? (session.typeSpecificData as StrengthData)
+    : null;
+  const strengthVariantId = strengthData?.variantId;
+  const { data: strengthVariant } = useStrengthVariant(strengthVariantId ?? '');
+  const { data: sessionExercises = [] } = useStrengthSessionExercises(
+    strengthVariantId ? session.id : '',
+  );
+  const exerciseIds = useMemo(
+    () => strengthVariant?.exercises.map((ex) => ex.id) ?? [],
+    [strengthVariant?.id],
+  );
+  const athleteId = effectiveAthleteId ?? user?.id ?? '';
+  const { data: prefillResult } = useLastSessionExercises(
+    strengthVariantId ? athleteId : '',
+    strengthVariantId ? exerciseIds : [],
+  );
+  const upsertExercises = useUpsertSessionExercises();
+
+  function handleStrengthLogChange(changes: LogRowChange[]) {
+    if (!strengthVariantId) return;
+    upsertExercises.mutate({
+      sessionId: session.id,
+      exercises: changes.map((c, i) => ({
+        variantExerciseId: c.variantExerciseId,
+        actualReps: c.actualReps,
+        loadKg: c.loadKg,
+        progression: c.progression,
+        setsData: c.setsData,
+        sortOrder: i,
+      })),
+    });
+  }
+
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
     session.actualDistanceKm != null ||
@@ -173,6 +216,7 @@ export function SessionDetailModal({
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
 
   const typeData = session.typeSpecificData;
+  const distanceBased = isDistanceBased(session.trainingType);
 
   function renderTypeSpecificFields() {
     if (!typeData) return null;
@@ -408,7 +452,7 @@ export function SessionDetailModal({
               {session.plannedDurationMinutes} {t('training:units.min')}
             </span>
           )}
-          {session.plannedDistanceKm != null && (
+          {distanceBased && session.plannedDistanceKm != null && (
             <span className="text-sm text-muted-foreground">
               {session.plannedDistanceKm} {t('training:units.km')}
             </span>
@@ -425,6 +469,21 @@ export function SessionDetailModal({
           <p className="text-sm text-muted-foreground italic mt-2">{session.coachComments}</p>
         )}
       </div>
+
+      {/* STRENGTH LOGGER — shown when session is linked to a variant */}
+      {strengthVariantId && strengthVariant && (
+        <div>
+          <Separator className="mb-5" />
+          <SessionExerciseLogger
+            exercises={strengthVariant.exercises}
+            loggedExercises={sessionExercises}
+            prefillData={prefillResult?.data}
+            readOnly={userRole === 'coach' && !showAthleteControls}
+            variantName={strengthVariant.name}
+            onChange={handleStrengthLogChange}
+          />
+        </div>
+      )}
 
       {/* ACTUAL */}
       {shouldShowActualSection && (
@@ -448,7 +507,7 @@ export function SessionDetailModal({
                 </span>
               </div>
             )}
-            {(shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
+            {distanceBased && (shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
@@ -458,7 +517,7 @@ export function SessionDetailModal({
                 </span>
               </div>
             )}
-            {(shouldShowMaskedPlaceholders || session.actualPace != null) && (
+            {distanceBased && (shouldShowMaskedPlaceholders || session.actualPace != null) && (
               <div className="flex flex-col min-w-[60px]">
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.pace')}

@@ -32,6 +32,18 @@ export const queryKeys = {
     all: ['sessionLaps'] as const,
     bySession: (sessionId: string) => ['sessionLaps', sessionId] as const,
   },
+  strengthVariants: {
+    all: ['strengthVariants'] as const,
+    // Specific key for the flat list — does NOT cascade to byId / sessionExercises / etc.
+    lists: () => ['strengthVariants', 'list'] as const,
+    byId: (id: string) => ['strengthVariants', id] as const,
+    exercises: (variantId: string) => ['strengthVariants', variantId, 'exercises'] as const,
+    sessionExercises: (sessionId: string) => ['strengthVariants', 'session', sessionId] as const,
+    lastSession: (athleteId: string, exerciseIds: string[]) =>
+      ['strengthVariants', 'lastSession', athleteId, ...exerciseIds] as const,
+    progressLogs: (variantId: string, athleteId: string) =>
+      ['strengthVariants', 'progressLogs', variantId, athleteId] as const,
+  },
   // PoC: Junction Garmin integration — remove after evaluation
   junctionPoc: {
     all: ['junction-poc'] as const,

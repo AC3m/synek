@@ -78,6 +78,12 @@ export const trainingTypeConfig: Record<
   },
 };
 
+export const DISTANCE_BASED_TYPES = ['run', 'cycling', 'swimming', 'walk', 'hike'] as const;
+
+export function isDistanceBased(trainingType: TrainingType): boolean {
+  return (DISTANCE_BASED_TYPES as readonly string[]).includes(trainingType);
+}
+
 export const loadTypeConfig: Record<
   LoadType,
   { color: string; bgColor: string; label: string }

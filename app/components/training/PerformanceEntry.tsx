@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronDown, ChevronUp, BarChart2 } from 'lucide-react';
 import { Input } from '~/components/ui/input';
+import { isDistanceBased } from '~/lib/utils/training-types';
 import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
 
 interface PerformanceEntryProps {
@@ -11,6 +12,7 @@ interface PerformanceEntryProps {
 
 export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
   const { t } = useTranslation('training');
+  const distanceBased = isDistanceBased(session.trainingType);
 
   const hasData =
     session.actualDurationMinutes != null ||
@@ -93,35 +95,39 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
             />
           </div>
 
-          <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
-              {t('actualPerformance.distance')} (km)
-            </label>
-            <Input
-              type="number"
-              step="0.01"
-              min="0"
-              placeholder="—"
-              value={distance}
-              onChange={(e) => setDistance(e.target.value)}
-              onBlur={() => saveNumber('actualDistanceKm', distance, session.actualDistanceKm)}
-              className="h-6 text-[10px] px-1.5"
-            />
-          </div>
+          {distanceBased && (
+            <div>
+              <label className="text-[9px] text-muted-foreground block mb-0.5">
+                {t('actualPerformance.distance')} (km)
+              </label>
+              <Input
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="—"
+                value={distance}
+                onChange={(e) => setDistance(e.target.value)}
+                onBlur={() => saveNumber('actualDistanceKm', distance, session.actualDistanceKm)}
+                className="h-6 text-[10px] px-1.5"
+              />
+            </div>
+          )}
 
-          <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
-              {t('actualPerformance.pace')} (/km)
-            </label>
-            <Input
-              type="text"
-              placeholder="5:30"
-              value={pace}
-              onChange={(e) => setPace(e.target.value)}
-              onBlur={() => saveString('actualPace', pace, session.actualPace)}
-              className="h-6 text-[10px] px-1.5"
-            />
-          </div>
+          {distanceBased && (
+            <div>
+              <label className="text-[9px] text-muted-foreground block mb-0.5">
+                {t('actualPerformance.pace')} (/km)
+              </label>
+              <Input
+                type="text"
+                placeholder="5:30"
+                value={pace}
+                onChange={(e) => setPace(e.target.value)}
+                onBlur={() => saveString('actualPace', pace, session.actualPace)}
+                className="h-6 text-[10px] px-1.5"
+              />
+            </div>
+          )}
 
           <div>
             <label className="text-[9px] text-muted-foreground block mb-0.5">

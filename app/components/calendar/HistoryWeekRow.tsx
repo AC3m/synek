@@ -11,6 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog';
+import { ConfirmDialog } from '~/components/ui/confirm-dialog';
 import { WeekGrid } from './WeekGrid';
 import { WeekSkeleton } from './WeekSkeleton';
 import { getWeekDateRange, parseWeekId } from '~/lib/utils/date';
@@ -200,27 +201,14 @@ export function HistoryWeekRow({
       </Dialog>
 
       {/* Copy Week confirmation dialog */}
-      <Dialog open={copyWeekPending} onOpenChange={(open) => { if (!open) setCopyWeekPending(false); }}>
-        <DialogContent showCloseButton={false} className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>
-              {t('history.copyWeekConfirmTitle', { week: weekNumber })}
-            </DialogTitle>
-            <DialogDescription>
-              {t('history.copyWeekConfirmBody', { count: copyableCount })}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" size="sm" onClick={() => setCopyWeekPending(false)}>
-              {tCommon('actions.cancel')}
-            </Button>
-            <Button size="sm" onClick={confirmCopyWeek}>
-              <Copy className="h-3 w-3 mr-1.5" />
-              {t('history.copyWeek')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={copyWeekPending}
+        onOpenChange={(open) => { if (!open) setCopyWeekPending(false); }}
+        title={t('history.copyWeekConfirmTitle', { week: weekNumber })}
+        description={t('history.copyWeekConfirmBody', { count: copyableCount })}
+        confirmLabel={t('history.copyWeek')}
+        onConfirm={confirmCopyWeek}
+      />
     </div>
   );
 }

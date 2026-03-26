@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Button } from '~/components/ui/button';
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
-} from '~/components/ui/dialog';
+import { ConfirmDialog } from '~/components/ui/confirm-dialog';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
@@ -260,22 +257,15 @@ export default function AthleteWeekView() {
       ))}
 
       {/* Delete session confirmation */}
-      <Dialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
-        <DialogContent showCloseButton={false} className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{t('common:session.delete' as never)}</DialogTitle>
-            <DialogDescription>{t('common:session.deleteConfirm' as never)}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(null)}>
-              {t('common:actions.cancel' as never)}
-            </Button>
-            <Button variant="destructive" size="sm" onClick={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}>
-              {t('common:session.delete' as never)}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!deleteConfirmId}
+        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
+        title={t('common:session.delete' as never)}
+        description={t('common:session.deleteConfirm' as never)}
+        confirmLabel={t('common:actions.delete' as never)}
+        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}
+        destructive
+      />
     </div>
     </>
   );

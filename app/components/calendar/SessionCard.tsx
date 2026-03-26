@@ -9,7 +9,7 @@ import { StravaLogo } from '~/components/training/StravaLogo';
 import { GarminCardSection } from '~/components/training/GarminCardSection';
 import { SessionDetailModal } from '~/components/training/SessionDetailModal';
 import { useAuth } from '~/lib/context/AuthContext';
-import { trainingTypeConfig, iconMap } from '~/lib/utils/training-types';
+import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { cn } from '~/lib/utils';
 import type { UserRole } from '~/lib/auth';
@@ -95,6 +95,7 @@ export function SessionCard({
   const config = trainingTypeConfig[session.trainingType];
   const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
   const isRestDay = session.trainingType === 'rest_day';
+  const distanceBased = isDistanceBased(session.trainingType);
 
   const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
@@ -184,7 +185,7 @@ export function SessionCard({
             {session.plannedDurationMinutes} {t('training:units.min')}
           </span>
         )}
-        {session.plannedDistanceKm != null && (
+        {distanceBased && session.plannedDistanceKm != null && (
           <span className="text-xs text-[color:var(--foreground-secondary)]">
             {session.plannedDistanceKm} {t('training:units.km')}
           </span>
@@ -218,7 +219,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {(shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
+            {distanceBased && (shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0)) && (
               <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[75ms]', 'flex flex-col min-w-[60px]')}>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.distance')}
@@ -228,7 +229,7 @@ export function SessionCard({
                 </span>
               </div>
             )}
-            {(shouldShowMaskedPlaceholders || session.actualPace != null) && (
+            {distanceBased && (shouldShowMaskedPlaceholders || session.actualPace != null) && (
               <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[100ms]', 'flex flex-col min-w-[60px]')}>
                 <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
                   {t('training:actualPerformance.pace')}

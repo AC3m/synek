@@ -28,6 +28,8 @@ export default [
         layout('routes/coach/layout.tsx', [
           index('routes/coach/week.tsx'),
           route('week/:weekId', 'routes/coach/week.$weekId.tsx'),
+          route('strength', 'routes/coach/strength.tsx'),
+          route('strength/:variantId', 'routes/coach/strength.$variantId.tsx'),
         ]),
       ]),
 
@@ -35,6 +37,8 @@ export default [
         layout('routes/athlete/layout.tsx', [
           index('routes/athlete/week.tsx'),
           route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
+          route('strength', 'routes/athlete/strength.tsx'),
+          route('strength/:variantId', 'routes/athlete/strength.$variantId.tsx'),
         ]),
       ]),
 
