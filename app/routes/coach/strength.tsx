@@ -4,11 +4,12 @@ import { useAuth } from '~/lib/context/AuthContext';
 
 export default function CoachStrengthLibrary() {
   const { locale = 'pl' } = useParams<{ locale?: string }>();
-  const { user } = useAuth();
+  const { user, effectiveAthleteId } = useAuth();
+  const userId = effectiveAthleteId ?? user?.id ?? '';
   return (
     <StrengthLibraryView
-      userId={user?.id ?? ''}
-      canManage={true}
+      userId={userId}
+      canManage={!effectiveAthleteId}
       baseRoute={`/${locale}/coach/strength`}
     />
   );
