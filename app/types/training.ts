@@ -73,9 +73,125 @@ export interface Exercise {
 
 export interface StrengthData {
   type: 'strength';
+  variantId?: string;
   exercises?: Exercise[];
   muscle_groups?: string[];
   equipment?: string[];
+}
+
+// ── Strength Variant ────────────────────────────────────────────────────────
+
+export type LoadUnit = 'kg' | 'sec';
+
+export interface StrengthVariantExercise {
+  id: string;
+  variantId: string;
+  name: string;
+  videoUrl: string | null;
+  sets: number;
+  repsMin: number;
+  repsMax: number;
+  loadUnit: LoadUnit;
+  sortOrder: number;
+  supersetGroup: number | null;
+  createdAt: string;
+}
+
+export interface StrengthVariant {
+  id: string;
+  userId: string;
+  name: string;
+  description: string | null;
+  exercises: StrengthVariantExercise[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ── Session Exercise Log ─────────────────────────────────────────────────────
+
+export type ProgressionIntent = 'up' | 'maintain' | 'down';
+
+export interface SetEntry {
+  reps: number | null;
+  loadKg: number | null;
+}
+
+export interface StrengthSessionExercise {
+  id: string;
+  sessionId: string;
+  variantExerciseId: string | null;
+  actualReps: number | null;
+  loadKg: number | null;
+  progression: ProgressionIntent | null;
+  notes: string | null;
+  sortOrder: number;
+  createdAt: string;
+  setsData: SetEntry[];
+}
+
+// ── Progress Chart ────────────────────────────────────────────────────────────
+
+export interface ProgressLog {
+  id: string;
+  sessionId: string;
+  sessionDate: string;
+  exerciseId: string;
+  exerciseName: string;
+  actualReps: number | null;
+  loadKg: number | null;
+  progression: ProgressionIntent | null;
+  sets: number;
+}
+
+// ── Input Types ──────────────────────────────────────────────────────────────
+
+export interface CreateStrengthVariantInput {
+  name: string;
+  description?: string;
+  exercises: Array<{
+    name: string;
+    videoUrl?: string;
+    sets: number;
+    repsMin: number;
+    repsMax: number;
+    loadUnit?: LoadUnit;
+    sortOrder: number;
+    supersetGroup?: number | null;
+  }>;
+}
+
+export interface UpdateStrengthVariantInput {
+  id: string;
+  name?: string;
+  description?: string | null;
+}
+
+export interface UpsertVariantExercisesInput {
+  variantId: string;
+  exercises: Array<{
+    id?: string;
+    name: string;
+    videoUrl?: string | null;
+    sets: number;
+    repsMin: number;
+    repsMax: number;
+    loadUnit?: LoadUnit;
+    sortOrder: number;
+    supersetGroup?: number | null;
+  }>;
+}
+
+export interface UpsertSessionExercisesInput {
+  sessionId: string;
+  exercises: Array<{
+    variantExerciseId: string;
+    actualReps?: number | null;
+    loadKg?: number | null;
+    progression?: ProgressionIntent | null;
+    notes?: string | null;
+    sortOrder: number;
+    setsData?: SetEntry[];
+  }>;
 }
 
 export interface YogaMobilityData {

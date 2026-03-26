@@ -5,7 +5,8 @@
     "athlete": "Athlete",
     "week": "Week",
     "team": "Team",
-    "settings": "Settings"
+    "settings": "Settings",
+    "strength": "Strength"
   },
   "days": {
     "monday": "Monday",
@@ -31,7 +32,8 @@
     "delete": "Delete",
     "edit": "Edit",
     "add": "Add",
-    "close": "Close"
+    "close": "Close",
+    "confirm": "Confirm"
   },
   "loadType": {
     "easy": "Easy",
@@ -141,6 +143,10 @@
       "passwordTooShort": "Password must be at least 8 characters",
       "wrongPassword": "Current password is incorrect"
     }
+  },
+  "session": {
+    "delete": "Delete session",
+    "deleteConfirm": "This will permanently remove this session and all logged data. This cannot be undone."
   },
   "toast": {
     "sessionCreated": "Session created",

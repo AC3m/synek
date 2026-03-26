@@ -7,6 +7,7 @@ import { cn } from '~/lib/utils';
 import { RunFields } from './type-fields/RunFields';
 import { CyclingFields } from './type-fields/CyclingFields';
 import { StrengthFields } from './type-fields/StrengthFields';
+import { StrengthVariantField } from '~/components/strength/StrengthVariantField';
 import { YogaMobilityFields } from './type-fields/YogaMobilityFields';
 import { SwimmingFields } from './type-fields/SwimmingFields';
 import { RestDayFields } from './type-fields/RestDayFields';
@@ -22,9 +23,11 @@ import {
   type SwimmingData,
   type WalkData,
   type RestDayData,
+  type StrengthVariant,
+  type StrengthSessionExercise,
 } from '~/types/training';
 
-export type FormTab = 'plan' | 'details' | 'results';
+export type FormTab = 'plan' | 'details';
 
 interface SessionFormFieldsProps {
   trainingType: TrainingType;
@@ -39,23 +42,14 @@ interface SessionFormFieldsProps {
   onDistanceChange: (v: string) => void;
   typeData: Partial<TypeSpecificData>;
   onTypeDataChange: (v: Partial<TypeSpecificData>) => void;
-  actualDuration: string;
-  onActualDurationChange: (v: string) => void;
-  actualDistance: string;
-  onActualDistanceChange: (v: string) => void;
-  actualPace: string;
-  onActualPaceChange: (v: string) => void;
-  avgHr: string;
-  onAvgHrChange: (v: string) => void;
-  maxHr: string;
-  onMaxHrChange: (v: string) => void;
-  rpe: string;
-  onRpeChange: (v: string) => void;
-  coachPostFeedback: string;
-  onCoachPostFeedbackChange: (v: string) => void;
   isCoach: boolean;
   activeTab: FormTab;
   onTabChange: (tab: FormTab) => void;
+  // Strength variant pre-fill (optional — only used for strength sessions)
+  strengthVariants?: StrengthVariant[];
+  onVariantChange?: (variantId: string | undefined) => void;
+  strengthPrefillData?: Record<string, StrengthSessionExercise>;
+  strengthPrefillDate?: string | null;
 }
 
 export function SessionFormFields({
@@ -71,25 +65,16 @@ export function SessionFormFields({
   onDistanceChange,
   typeData,
   onTypeDataChange,
-  actualDuration,
-  onActualDurationChange,
-  actualDistance,
-  onActualDistanceChange,
-  actualPace,
-  onActualPaceChange,
-  avgHr,
-  onAvgHrChange,
-  maxHr,
-  onMaxHrChange,
-  rpe,
-  onRpeChange,
-  coachPostFeedback,
-  onCoachPostFeedbackChange,
   isCoach,
   activeTab,
   onTabChange,
+  strengthVariants,
+  onVariantChange,
+  strengthPrefillData,
+  strengthPrefillDate,
 }: SessionFormFieldsProps) {
   const { t } = useTranslation(['coach', 'common', 'training']);
+  const isDistanceBased = ['run', 'cycling', 'swimming', 'walk', 'hike'].includes(trainingType);
 
   const renderTypeFields = () => {
     switch (trainingType) {
@@ -98,7 +83,14 @@ export function SessionFormFields({
       case 'cycling':
         return <CyclingFields data={typeData as Partial<CyclingData>} onChange={onTypeDataChange} />;
       case 'strength':
-        return <StrengthFields data={typeData as Partial<StrengthData>} onChange={onTypeDataChange} />;
+        return (
+          <StrengthFields
+            data={typeData as Partial<StrengthData>}
+            variants={strengthVariants}
+            prefillData={strengthPrefillData}
+            prefillDate={strengthPrefillDate}
+          />
+        );
       case 'yoga':
       case 'mobility':
         return <YogaMobilityFields data={typeData as Partial<YogaMobilityData>} onChange={onTypeDataChange} />;
@@ -118,7 +110,7 @@ export function SessionFormFields({
     <div>
       {/* Tab Navigation */}
       <div className="flex gap-1 p-1 bg-muted rounded-xl mb-6">
-        {(['plan', 'details', 'results'] as const).map((tab) => (
+        {(['plan', 'details'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -165,6 +157,15 @@ export function SessionFormFields({
             </div>
           </div>
 
+          {trainingType === 'strength' && strengthVariants !== undefined && (
+            <StrengthVariantField
+              variants={strengthVariants}
+              selectedVariantId={(typeData as Partial<StrengthData>).variantId ?? null}
+              onSelect={(id) => onVariantChange?.(id ?? undefined)}
+              isCoach={isCoach}
+            />
+          )}
+
           <div className="space-y-2">
             <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               {t('coach:session.description')}
@@ -177,7 +178,7 @@ export function SessionFormFields({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className={cn('grid gap-4', isDistanceBased ? 'grid-cols-2' : 'grid-cols-1 max-w-[50%]')}>
             <div className="space-y-2">
               <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 {t('coach:session.duration')}
@@ -189,18 +190,20 @@ export function SessionFormFields({
                 onChange={(e) => onDurationChange(e.target.value)}
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                {t('coach:session.distance')}
-              </label>
-              <Input
-                type="number"
-                step="0.1"
-                placeholder="0"
-                value={distanceKm}
-                onChange={(e) => onDistanceChange(e.target.value)}
-              />
-            </div>
+            {isDistanceBased && (
+              <div className="space-y-2">
+                <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                  {t('coach:session.distance')}
+                </label>
+                <Input
+                  type="number"
+                  step="0.1"
+                  placeholder="0"
+                  value={distanceKm}
+                  onChange={(e) => onDistanceChange(e.target.value)}
+                />
+              </div>
+            )}
           </div>
 
           {trainingType === 'run' && (
@@ -252,99 +255,6 @@ export function SessionFormFields({
         </div>
       )}
 
-      {/* Results Tab */}
-      {activeTab === 'results' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                {t('training:actualPerformance.duration')} ({t('training:units.min')})
-              </label>
-              <Input
-                type="number"
-                placeholder="0"
-                value={actualDuration}
-                onChange={(e) => onActualDurationChange(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                {t('training:actualPerformance.distance')} ({t('training:units.km')})
-              </label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="0"
-                value={actualDistance}
-                onChange={(e) => onActualDistanceChange(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-              {t('training:actualPerformance.pace')} ({t('training:units.perKm')})
-            </label>
-            <Input
-              placeholder="5:30"
-              value={actualPace}
-              onChange={(e) => onActualPaceChange(e.target.value)}
-            />
-          </div>
-
-          <div className="grid grid-cols-3 gap-3 items-end">
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
-                {t('training:actualPerformance.avgHr')} ({t('training:units.bpm')})
-              </label>
-              <Input
-                type="number"
-                placeholder="0"
-                value={avgHr}
-                onChange={(e) => onAvgHrChange(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
-                {t('training:actualPerformance.maxHr')} ({t('training:units.bpm')})
-              </label>
-              <Input
-                type="number"
-                placeholder="0"
-                value={maxHr}
-                onChange={(e) => onMaxHrChange(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground leading-tight">
-                {t('training:actualPerformance.rpe')} (1–10)
-              </label>
-              <Input
-                type="number"
-                min="1"
-                max="10"
-                placeholder="–"
-                value={rpe}
-                onChange={(e) => onRpeChange(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {isCoach && (
-            <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                {t('training:coachPostFeedback.label')}
-              </label>
-              <Textarea
-                placeholder={t('training:coachPostFeedback.placeholder')}
-                value={coachPostFeedback}
-                onChange={(e) => onCoachPostFeedbackChange(e.target.value)}
-                rows={3}
-              />
-            </div>
-          )}
-        </div>
-      )}
     </div>
   );
 }

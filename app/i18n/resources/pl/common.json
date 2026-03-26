@@ -5,7 +5,8 @@
     "athlete": "Zawodnik",
     "week": "Tydzień",
     "team": "Zespół",
-    "settings": "Ustawienia"
+    "settings": "Ustawienia",
+    "strength": "Siła"
   },
   "days": {
     "monday": "Poniedziałek",
@@ -31,7 +32,8 @@
     "delete": "Usuń",
     "edit": "Edytuj",
     "add": "Dodaj",
-    "close": "Zamknij"
+    "close": "Zamknij",
+    "confirm": "Potwierdź"
   },
   "loadType": {
     "easy": "Lekki",
@@ -141,6 +143,10 @@
       "passwordTooShort": "Hasło musi mieć co najmniej 8 znaków",
       "wrongPassword": "Obecne hasło jest nieprawidłowe"
     }
+  },
+  "session": {
+    "delete": "Usuń trening",
+    "deleteConfirm": "Ten trening i wszystkie zapisane dane zostaną trwale usunięte. Tej operacji nie można cofnąć."
   },
   "toast": {
     "sessionCreated": "Sesja została utworzona",

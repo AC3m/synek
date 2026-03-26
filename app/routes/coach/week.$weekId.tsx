@@ -1,10 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
-} from '~/components/ui/dialog';
-import { Button } from '~/components/ui/button';
+import { ConfirmDialog } from '~/components/ui/confirm-dialog';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
@@ -199,22 +196,15 @@ export default function CoachWeekView() {
       )}
 
       {/* Delete session confirmation */}
-      <Dialog open={!!deleteConfirmId} onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}>
-        <DialogContent showCloseButton={false} className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>{t('session.delete')}</DialogTitle>
-            <DialogDescription>{t('session.deleteConfirm')}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="ghost" size="sm" onClick={() => setDeleteConfirmId(null)}>
-              {t('common:actions.cancel' as never)}
-            </Button>
-            <Button variant="destructive" size="sm" onClick={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}>
-              {t('session.delete')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        open={!!deleteConfirmId}
+        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
+        title={t('session.delete')}
+        description={t('session.deleteConfirm')}
+        confirmLabel={t('common:actions.delete' as never)}
+        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}
+        destructive
+      />
     </div>
     </>
   );
