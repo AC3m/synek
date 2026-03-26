@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.4.0](https://github.com/AC3m/synek/compare/v0.3.1...v0.4.0) (2026-03-26)
+
+### Features
+
+* strength workout module with variant library and session logging ([2dda932](https://github.com/AC3m/synek/commit/2dda932b1f11ed149674e0e480bcde97eaac683e))
+
+### Bug Fixes
+
+* coach strength library shows athlete variants when athlete is selected ([986d6af](https://github.com/AC3m/synek/commit/986d6af8682919094e248bb5b20629458123dc28))
+* scope strength variant cache by userId, add coach RLS policies ([c472486](https://github.com/AC3m/synek/commit/c47248685c25038d62c4157705ccf775dfc67557))
+
 ## [0.3.1](https://github.com/AC3m/synek/compare/v0.3.0...v0.3.1) (2026-03-26)
 
 ## [0.3.0](https://github.com/AC3m/synek/compare/v0.2.0...v0.3.0) (2026-03-19)
