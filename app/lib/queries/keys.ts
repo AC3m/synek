@@ -35,7 +35,7 @@ export const queryKeys = {
   strengthVariants: {
     all: ['strengthVariants'] as const,
     // Specific key for the flat list — does NOT cascade to byId / sessionExercises / etc.
-    lists: () => ['strengthVariants', 'list'] as const,
+    lists: (userId: string) => ['strengthVariants', 'list', userId] as const,
     byId: (id: string) => ['strengthVariants', id] as const,
     exercises: (variantId: string) => ['strengthVariants', variantId, 'exercises'] as const,
     sessionExercises: (sessionId: string) => ['strengthVariants', 'session', sessionId] as const,

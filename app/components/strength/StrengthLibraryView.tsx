@@ -28,7 +28,7 @@ export function StrengthLibraryView({ userId, canManage, baseRoute }: StrengthLi
   const [progressVariantId, setProgressVariantId] = useState<string | null>(null);
 
   const { data: variants = [], isLoading } = useStrengthVariants(userId);
-  const deleteVariant = useDeleteStrengthVariant();
+  const deleteVariant = useDeleteStrengthVariant(userId);
 
   const filteredVariants = useMemo(() => {
     if (!searchQuery.trim()) return variants;

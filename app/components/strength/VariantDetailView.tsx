@@ -22,8 +22,9 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
   const navigate = useNavigate();
 
   const { data: variant, isLoading } = useStrengthVariant(variantId);
-  const updateVariant = useUpdateStrengthVariant();
-  const upsertExercises = useUpsertVariantExercises();
+  const variantUserId = variant?.userId ?? '';
+  const updateVariant = useUpdateStrengthVariant(variantUserId);
+  const upsertExercises = useUpsertVariantExercises(variantUserId);
 
   const [isSaving, setIsSaving] = useState(false);
 

@@ -31,7 +31,7 @@ const keys = queryKeys.strengthVariants;
 
 export function useStrengthVariants(userId: string) {
   return useQuery({
-    queryKey: keys.lists(),
+    queryKey: keys.lists(userId),
     queryFn: () => fetchStrengthVariants(userId),
     enabled: !!userId,
   });
@@ -78,8 +78,8 @@ export function useCreateStrengthVariant(userId: string) {
   return useMutation({
     mutationFn: (input: CreateStrengthVariantInput) => createStrengthVariant(userId, input),
     onMutate: async (input) => {
-      await qc.cancelQueries({ queryKey: keys.lists() });
-      const prev = qc.getQueryData<StrengthVariant[]>(keys.lists());
+      await qc.cancelQueries({ queryKey: keys.lists(userId) });
+      const prev = qc.getQueryData<StrengthVariant[]>(keys.lists(userId));
       const optimistic: StrengthVariant = {
         id: `optimistic-${Date.now()}`,
         userId,
@@ -89,14 +89,14 @@ export function useCreateStrengthVariant(userId: string) {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      qc.setQueryData<StrengthVariant[]>(keys.lists(), (old) => [optimistic, ...(old ?? [])]);
+      qc.setQueryData<StrengthVariant[]>(keys.lists(userId), (old) => [optimistic, ...(old ?? [])]);
       return { prev };
     },
     onError: (_err, _input, ctx) => {
-      if (ctx?.prev !== undefined) qc.setQueryData(keys.lists(), ctx.prev);
+      if (ctx?.prev !== undefined) qc.setQueryData(keys.lists(userId), ctx.prev);
     },
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: keys.lists() });
+      qc.invalidateQueries({ queryKey: keys.lists(userId) });
     },
   });
 }
@@ -105,7 +105,7 @@ export function useCreateStrengthVariant(userId: string) {
 // Mutation: update variant
 // ---------------------------------------------------------------------------
 
-export function useUpdateStrengthVariant() {
+export function useUpdateStrengthVariant(userId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: UpdateStrengthVariantInput) => updateStrengthVariant(input),
@@ -126,7 +126,7 @@ export function useUpdateStrengthVariant() {
     },
     onSettled: (_data, _err, input) => {
       qc.invalidateQueries({ queryKey: keys.byId(input.id) });
-      qc.invalidateQueries({ queryKey: keys.lists() });
+      qc.invalidateQueries({ queryKey: keys.lists(userId) });
     },
   });
 }
@@ -135,21 +135,21 @@ export function useUpdateStrengthVariant() {
 // Mutation: delete variant
 // ---------------------------------------------------------------------------
 
-export function useDeleteStrengthVariant() {
+export function useDeleteStrengthVariant(userId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => deleteStrengthVariant(id),
     onMutate: async (id) => {
-      await qc.cancelQueries({ queryKey: keys.lists() });
-      const prev = qc.getQueryData<StrengthVariant[]>(keys.lists());
-      qc.setQueryData<StrengthVariant[]>(keys.lists(), (old) => (old ?? []).filter((v) => v.id !== id));
+      await qc.cancelQueries({ queryKey: keys.lists(userId) });
+      const prev = qc.getQueryData<StrengthVariant[]>(keys.lists(userId));
+      qc.setQueryData<StrengthVariant[]>(keys.lists(userId), (old) => (old ?? []).filter((v) => v.id !== id));
       return { prev };
     },
     onError: (_err, _id, ctx) => {
-      if (ctx?.prev !== undefined) qc.setQueryData(keys.lists(), ctx.prev);
+      if (ctx?.prev !== undefined) qc.setQueryData(keys.lists(userId), ctx.prev);
     },
     onSettled: () => {
-      qc.invalidateQueries({ queryKey: keys.lists() });
+      qc.invalidateQueries({ queryKey: keys.lists(userId) });
     },
   });
 }
@@ -158,7 +158,7 @@ export function useDeleteStrengthVariant() {
 // Mutation: upsert variant exercises
 // ---------------------------------------------------------------------------
 
-export function useUpsertVariantExercises() {
+export function useUpsertVariantExercises(userId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: UpsertVariantExercisesInput) => upsertVariantExercises(input),
@@ -191,7 +191,7 @@ export function useUpsertVariantExercises() {
     },
     onSettled: (_data, _err, input) => {
       qc.invalidateQueries({ queryKey: keys.byId(input.variantId) });
-      qc.invalidateQueries({ queryKey: keys.lists() });
+      qc.invalidateQueries({ queryKey: keys.lists(userId) });
     },
   });
 }
