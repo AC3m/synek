@@ -95,13 +95,13 @@ export function useWeekView({
   const updateAthlete = useUpdateAthleteSession();
 
   // Auto-create week plan if it doesn't exist.
-  // Use a ref to guard against repeated calls — the mutation object changes
-  // reference every render, so it must not be in the dependency array.
+  // Use a ref to guard against repeated calls within the same navigation.
   const mutatingRef = useRef(false);
+  const getOrCreateMutate = getOrCreate.mutate;
   useEffect(() => {
     if (!canAutoCreate || !weekId || weekLoading || weekPlan || mutatingRef.current) return;
     mutatingRef.current = true;
-    getOrCreate.mutate(
+    getOrCreateMutate(
       { weekStart, year, weekNumber },
       {
         onSettled: () => {
@@ -109,8 +109,7 @@ export function useWeekView({
         },
       },
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canAutoCreate, weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
+  }, [canAutoCreate, weekId, weekLoading, weekPlan, weekStart, year, weekNumber, getOrCreateMutate]);
 
   const {
     formOpen,
@@ -127,7 +126,6 @@ export function useWeekView({
   const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
   const stats = useMemo(
     () => computeWeekStats(sessionsForStats ?? sessions),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [sessionsForStats, sessions],
   );
 

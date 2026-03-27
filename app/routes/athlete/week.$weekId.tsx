@@ -59,14 +59,11 @@ export default function AthleteWeekView() {
   // The hook provides raw `sessions`; augmentation is athlete-only
   const weekView = useWeekView({ canAutoCreate: canSelfPlan });
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const augmentedSessions = useMemo(
     () =>
       weekView && junctionConnected
         ? augmentSessionsWithGarmin(weekView.sessions, garminWeekWorkouts, weekStart)
         : (weekView?.sessions ?? []),
-    // weekView.sessions reference is stable when data hasn't changed
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [junctionConnected, weekView?.sessions, garminWeekWorkouts, weekStart],
   );
 
@@ -254,8 +251,9 @@ export default function AthleteWeekView() {
           confirmLabel={t('common:session.delete' as never)}
           cancelLabel={t('common:actions.cancel' as never)}
           onConfirm={() => {
-            deleteSessionMut.mutate(deleteConfirmId!);
-            setDeleteConfirmId(null);
+            deleteSessionMut.mutate(deleteConfirmId!, {
+              onSettled: () => setDeleteConfirmId(null),
+            });
           }}
           isPending={deleteSessionMut.isPending}
         />
