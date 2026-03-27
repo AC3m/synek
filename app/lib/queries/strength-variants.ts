@@ -86,57 +86,47 @@ function toStrengthSessionExercise(row: Record<string, unknown>): StrengthSessio
 // Variant CRUD
 // ---------------------------------------------------------------------------
 
+// Nested select that fetches variant + exercises in one round-trip.
+const VARIANT_WITH_EXERCISES_SELECT =
+  'id, user_id, name, description, created_at, updated_at, ' +
+  'strength_variant_exercises(id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at)';
+
+function exercisesFromRow(row: Record<string, unknown>): StrengthVariantExercise[] {
+  const exRows = (row.strength_variant_exercises as Record<string, unknown>[] | null) ?? [];
+  return exRows
+    .map(toStrengthVariantExercise)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
 export async function fetchStrengthVariants(userId: string): Promise<StrengthVariant[]> {
   if (isMockMode) return mockFetchStrengthVariants(userId);
 
-  const { data: variantRows, error } = await supabase
+  const { data, error } = await supabase
     .from('strength_variants')
-    .select('id, user_id, name, description, created_at, updated_at')
+    .select(VARIANT_WITH_EXERCISES_SELECT)
     .eq('user_id', userId)
     .order('created_at', { ascending: false });
   if (error) throw error;
-  if (!variantRows || variantRows.length === 0) return [];
 
-  const variantIds = variantRows.map((r) => r.id as string);
-  const { data: exRows, error: exError } = await supabase
-    .from('strength_variant_exercises')
-    .select('id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at')
-    .in('variant_id', variantIds)
-    .order('sort_order', { ascending: true });
-  if (exError) throw exError;
-
-  const exercisesByVariant = new Map<string, StrengthVariantExercise[]>();
-  for (const row of exRows ?? []) {
-    const variantId = row.variant_id as string;
-    if (!exercisesByVariant.has(variantId)) exercisesByVariant.set(variantId, []);
-    exercisesByVariant.get(variantId)!.push(toStrengthVariantExercise(row as Record<string, unknown>));
-  }
-
-  return variantRows.map((r) =>
-    toStrengthVariant(r as Record<string, unknown>, exercisesByVariant.get(r.id as string) ?? []),
-  );
+  return (data ?? []).map((r) => {
+    const row = r as unknown as Record<string, unknown>;
+    return toStrengthVariant(row, exercisesFromRow(row));
+  });
 }
 
 export async function fetchStrengthVariant(id: string): Promise<StrengthVariant | null> {
   if (isMockMode) return mockFetchStrengthVariant(id);
 
-  const { data: variantRow, error } = await supabase
+  const { data, error } = await supabase
     .from('strength_variants')
-    .select('id, user_id, name, description, created_at, updated_at')
+    .select(VARIANT_WITH_EXERCISES_SELECT)
     .eq('id', id)
     .maybeSingle();
   if (error) throw error;
-  if (!variantRow) return null;
+  if (!data) return null;
 
-  const { data: exRows, error: exError } = await supabase
-    .from('strength_variant_exercises')
-    .select('id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at')
-    .eq('variant_id', id)
-    .order('sort_order', { ascending: true });
-  if (exError) throw exError;
-
-  const exercises = (exRows ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>));
-  return toStrengthVariant(variantRow as Record<string, unknown>, exercises);
+  const row = data as unknown as Record<string, unknown>;
+  return toStrengthVariant(row, exercisesFromRow(row));
 }
 
 export async function createStrengthVariant(
@@ -186,19 +176,12 @@ export async function updateStrengthVariant(input: UpdateStrengthVariantInput): 
       ...(input.description !== undefined && { description: input.description }),
     })
     .eq('id', input.id)
-    .select('id, user_id, name, description, created_at, updated_at')
+    .select(VARIANT_WITH_EXERCISES_SELECT)
     .single();
   if (error) throw error;
 
-  const { data: exRows, error: exError } = await supabase
-    .from('strength_variant_exercises')
-    .select('id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at')
-    .eq('variant_id', input.id)
-    .order('sort_order', { ascending: true });
-  if (exError) throw exError;
-
-  const exercises = (exRows ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>));
-  return toStrengthVariant(data as Record<string, unknown>, exercises);
+  const row = data as unknown as Record<string, unknown>;
+  return toStrengthVariant(row, exercisesFromRow(row));
 }
 
 export async function deleteStrengthVariant(id: string): Promise<void> {
@@ -316,16 +299,13 @@ export async function upsertSessionExercises(
     sets_data: (ex.setsData ?? []).map((s) => ({ reps: s.reps, load_kg: s.loadKg })),
   }));
 
-  // Delete existing then re-insert (simpler than true upsert without composite unique key)
-  const { error: delError } = await supabase
-    .from('strength_session_exercises')
-    .delete()
-    .eq('session_id', input.sessionId);
-  if (delError) throw delError;
-
+  // Upsert on the composite unique key — idempotent under concurrent mutations.
+  // Never delete: onChange only sends exercises modified in the current modal session,
+  // not all exercises for the session, so deleting "unlisted" rows would wipe previously
+  // saved exercises that the user simply didn't touch this time.
   const { data, error } = await supabase
     .from('strength_session_exercises')
-    .insert(upsertRows)
+    .upsert(upsertRows, { onConflict: 'session_id,variant_exercise_id' })
     .select(
       'id, session_id, variant_exercise_id, actual_reps, load_kg, progression, notes, sort_order, created_at, sets_data',
     );
@@ -431,8 +411,8 @@ export async function fetchVariantProgressLogs(
     })
     .sort((a, b) => a.sessionDate.localeCompare(b.sessionDate));
 
-  // Deduplicate: DB may have multiple rows for the same (session, exercise) if
-  // upsert had a race condition. Keep the first occurrence after date-sort.
+  // Deduplicate defensively — the unique constraint makes true duplicates impossible,
+  // but guard against any historical data written before the constraint was added.
   const seen = new Set<string>();
   return logs.filter((log) => {
     const key = `${log.sessionId}-${log.exerciseId}`;
