@@ -1,5 +1,7 @@
 # Changelog
 
+## [0.4.2](https://github.com/AC3m/synek/compare/v0.4.1...v0.4.2) (2026-03-27)
+
 ## [0.4.1](https://github.com/AC3m/synek/compare/v0.4.0...v0.4.1) (2026-03-27)
 
 ### Bug Fixes
