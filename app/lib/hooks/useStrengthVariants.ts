@@ -207,19 +207,40 @@ export function useUpsertSessionExercises() {
     onMutate: async (input) => {
       await qc.cancelQueries({ queryKey: keys.sessionExercises(input.sessionId) });
       const prev = qc.getQueryData<StrengthSessionExercise[]>(keys.sessionExercises(input.sessionId));
-      const optimistic: StrengthSessionExercise[] = input.exercises.map((ex) => ({
-        id: `optimistic-${ex.variantExerciseId}`,
-        sessionId: input.sessionId,
-        variantExerciseId: ex.variantExerciseId,
-        actualReps: ex.actualReps ?? null,
-        loadKg: ex.loadKg ?? null,
-        progression: ex.progression ?? null,
-        notes: ex.notes ?? null,
-        sortOrder: ex.sortOrder,
-        createdAt: new Date().toISOString(),
-        setsData: ex.setsData ?? [],
-      }));
-      qc.setQueryData(keys.sessionExercises(input.sessionId), optimistic);
+      const optimisticMap = new Map(
+        input.exercises.map((ex) => [
+          ex.variantExerciseId,
+          {
+            id: `optimistic-${ex.variantExerciseId}`,
+            sessionId: input.sessionId,
+            variantExerciseId: ex.variantExerciseId,
+            actualReps: ex.actualReps ?? null,
+            loadKg: ex.loadKg ?? null,
+            progression: ex.progression ?? null,
+            notes: ex.notes ?? null,
+            sortOrder: ex.sortOrder,
+            createdAt: new Date().toISOString(),
+            setsData: ex.setsData ?? [],
+          } satisfies StrengthSessionExercise,
+        ]),
+      );
+      qc.setQueryData<StrengthSessionExercise[]>(keys.sessionExercises(input.sessionId), (old) => {
+        // Merge: update existing rows in-place, append genuinely new ones.
+        // Do NOT replace the entire array — onChange only sends exercises modified
+        // in the current modal session, so replacing would wipe previously saved rows.
+        const existing = old ?? [];
+        const merged = existing.map((e) =>
+          e.variantExerciseId && optimisticMap.has(e.variantExerciseId)
+            ? optimisticMap.get(e.variantExerciseId)!
+            : e,
+        );
+        for (const o of optimisticMap.values()) {
+          if (!existing.some((e) => e.variantExerciseId === o.variantExerciseId)) {
+            merged.push(o);
+          }
+        }
+        return merged;
+      });
       return { prev };
     },
     onError: (_err, input, ctx) => {

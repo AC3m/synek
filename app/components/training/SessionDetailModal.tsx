@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { getSessionCalendarDate } from '~/lib/utils/date';
@@ -180,18 +180,18 @@ export function SessionDetailModal({
   );
   const exerciseIds = useMemo(
     () => strengthVariant?.exercises.map((ex) => ex.id) ?? [],
-    [strengthVariant?.id],
+    [strengthVariant?.exercises],
   );
   const athleteId = effectiveAthleteId ?? user?.id ?? '';
   const { data: prefillResult } = useLastSessionExercises(
     strengthVariantId ? athleteId : '',
     strengthVariantId ? exerciseIds : [],
   );
-  const upsertExercises = useUpsertSessionExercises();
+  const { mutate: mutateExercises } = useUpsertSessionExercises();
 
-  function handleStrengthLogChange(changes: LogRowChange[]) {
+  const handleStrengthLogChange = useCallback((changes: LogRowChange[]) => {
     if (!strengthVariantId) return;
-    upsertExercises.mutate({
+    mutateExercises({
       sessionId: session.id,
       exercises: changes.map((c, i) => ({
         variantExerciseId: c.variantExerciseId,
@@ -202,7 +202,7 @@ export function SessionDetailModal({
         sortOrder: i,
       })),
     });
-  }
+  }, [strengthVariantId, session.id, mutateExercises]);
 
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
