@@ -32,25 +32,26 @@ export function WeekNavigation({ weekId, basePath, selectedDay, isLoading }: Wee
 
   // If on desktop: disabled if current week is viewed.
   // If on mobile: disabled if current week is viewed AND the selected day is today.
-  const isTodayDisabled = isCurrentWeek && (!isMobile || (!!selectedDay && selectedDay === getTodayDayOfWeek()));
+  const isTodayDisabled =
+    isCurrentWeek && (!isMobile || (!!selectedDay && selectedDay === getTodayDayOfWeek()));
 
   return (
-    <div className="flex flex-1 items-center gap-1 sm:gap-2 ml-auto">
+    <div className="ml-auto flex flex-1 items-center gap-1 sm:gap-2">
       <Button
         variant="ghost"
         size="icon"
         disabled={isLoading}
-        className="h-11 w-11 rounded-full shrink-0"
+        className="h-11 w-11 shrink-0 rounded-full"
         onClick={() => navigate(localePath(`/${basePath}/week/${getPrevWeekId(weekId)}`))}
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
 
-      <div className="flex-1 text-center min-w-0 px-1">
+      <div className="min-w-0 flex-1 px-1 text-center">
         <span className="text-sm font-semibold tracking-tight whitespace-nowrap">
           {t('week')} {weekNumber}
         </span>
-        <span className="hidden sm:inline text-xs text-[color:var(--foreground-secondary)] ml-1.5">
+        <span className="ml-1.5 hidden text-xs text-[color:var(--foreground-secondary)] sm:inline">
           · {formatted}
         </span>
       </div>
@@ -59,7 +60,7 @@ export function WeekNavigation({ weekId, basePath, selectedDay, isLoading }: Wee
         variant="ghost"
         size="icon"
         disabled={isLoading}
-        className="h-11 w-11 rounded-full shrink-0"
+        className="h-11 w-11 shrink-0 rounded-full"
         onClick={() => navigate(localePath(`/${basePath}/week/${getNextWeekId(weekId)}`))}
       >
         <ChevronRight className="h-4 w-4" />
@@ -74,7 +75,7 @@ export function WeekNavigation({ weekId, basePath, selectedDay, isLoading }: Wee
             state: { resetToToday: Date.now() },
           })
         }
-        className="text-xs px-3 py-1.5 rounded-full bg-surface-2 hover:bg-surface-3 min-h-[36px] transition-colors shrink-0"
+        className="min-h-[36px] shrink-0 rounded-full bg-surface-2 px-3 py-1.5 text-xs transition-colors hover:bg-surface-3"
       >
         {t('common:today', 'Today')}
       </Button>

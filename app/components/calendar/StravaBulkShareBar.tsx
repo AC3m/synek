@@ -8,32 +8,36 @@ interface StravaBulkShareBarProps {
   isPending?: boolean;
 }
 
-export function StravaBulkShareBar({ unsharedCount, onShareAll, isPending }: StravaBulkShareBarProps) {
+export function StravaBulkShareBar({
+  unsharedCount,
+  onShareAll,
+  isPending,
+}: StravaBulkShareBarProps) {
   const { t } = useTranslation('common');
 
   if (unsharedCount < 2) return null;
 
   return (
-    <div className="fixed bottom-24 md:bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4 duration-300">
-      <div className="flex items-center gap-4 bg-zinc-900 dark:bg-zinc-800 text-zinc-50 px-4 py-2.5 rounded-full shadow-lg ring-1 ring-white/10">
+    <div className="fixed bottom-24 left-1/2 z-50 -translate-x-1/2 animate-in duration-300 fade-in slide-in-from-bottom-4 md:bottom-6">
+      <div className="flex items-center gap-4 rounded-full bg-zinc-900 px-4 py-2.5 text-zinc-50 shadow-lg ring-1 ring-white/10 dark:bg-zinc-800">
         <div className="flex items-center gap-2.5">
-          <div className="flex items-center justify-center w-6 h-6 rounded-full bg-orange-600 text-white font-bold text-xs">
+          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-600 text-xs font-bold text-white">
             {unsharedCount}
           </div>
-          <span className="text-sm font-medium hidden xs:inline-block">
+          <span className="xs:inline-block hidden text-sm font-medium">
             {t('strava.unsharedSessions', { count: unsharedCount })}
           </span>
         </div>
-        
-        <div className="w-px h-6 bg-zinc-700 mx-1 hidden xs:block" />
-        
+
+        <div className="xs:block mx-1 hidden h-6 w-px bg-zinc-700" />
+
         <Button
           onClick={onShareAll}
           disabled={isPending}
           variant="ghost"
-          className="text-orange-400 hover:text-orange-300 hover:bg-white/5 font-semibold px-2 py-1 h-auto"
+          className="h-auto px-2 py-1 font-semibold text-orange-400 hover:bg-white/5 hover:text-orange-300"
         >
-          {isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {t('strava.shareAll')}
         </Button>
       </div>

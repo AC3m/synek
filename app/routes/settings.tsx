@@ -33,7 +33,7 @@ export default function SettingsPage() {
   // Detect if this page load is an OAuth callback (has code param)
   const isOAuthCallback = useRef(!!searchParams.get('code'));
   const [callbackState, setCallbackState] = useState<CallbackState | null>(
-    isOAuthCallback.current ? 'connecting' : null
+    isOAuthCallback.current ? 'connecting' : null,
   );
   const [callbackError, setCallbackError] = useState<string | null>(null);
 
@@ -74,7 +74,8 @@ export default function SettingsPage() {
 
     localStorage.removeItem(STRAVA_CSRF_KEY);
 
-    connectStrava.mutateAsync({ code, userId: user.id })
+    connectStrava
+      .mutateAsync({ code, userId: user.id })
       .then(() => {
         localStorage.setItem('strava_connected', Date.now().toString());
         setCallbackState('success');
@@ -107,7 +108,9 @@ export default function SettingsPage() {
           <>
             <p className="text-base font-medium text-destructive">Connection failed</p>
             {callbackError && <p className="text-sm text-muted-foreground">{callbackError}</p>}
-            <p className="text-sm text-muted-foreground">You can close this window and try again.</p>
+            <p className="text-sm text-muted-foreground">
+              You can close this window and try again.
+            </p>
           </>
         )}
       </div>
@@ -132,7 +135,7 @@ export default function SettingsPage() {
     window.open(
       `https://www.strava.com/oauth/authorize?${params}`,
       STRAVA_POPUP_NAME,
-      'width=600,height=700,left=400,top=100'
+      'width=600,height=700,left=400,top=100',
     );
   }
 
@@ -154,18 +157,18 @@ export default function SettingsPage() {
           variant="ghost"
           size="sm"
           className="text-muted-foreground hover:text-destructive"
-          onClick={() => { logout(); navigate(`/${locale}/login`, { replace: true }); }}
+          onClick={() => {
+            logout();
+            navigate(`/${locale}/login`, { replace: true });
+          }}
         >
-          <LogOut className="h-4 w-4 mr-1.5" />
+          <LogOut className="mr-1.5 h-4 w-4" />
           {t('auth.signOut')}
         </Button>
       </div>
       <h1 className="mb-6 text-2xl font-semibold">{t('settings.title')}</h1>
 
-      <Tabs
-        value={tab}
-        onValueChange={(v) => setSearchParams({ tab: v }, { replace: true })}
-      >
+      <Tabs value={tab} onValueChange={(v) => setSearchParams({ tab: v }, { replace: true })}>
         <TabsList className="mb-6">
           <TabsTrigger value="user">{t('settings.tabs.user')}</TabsTrigger>
           {user?.role === 'athlete' && (

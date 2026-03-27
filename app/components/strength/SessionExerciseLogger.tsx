@@ -2,7 +2,12 @@ import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
-import { SUPERSET_COLORS, getSupersetColor, formatRepsTarget, groupExercises } from '~/lib/utils/strength';
+import {
+  SUPERSET_COLORS,
+  getSupersetColor,
+  formatRepsTarget,
+  groupExercises,
+} from '~/lib/utils/strength';
 import { DeltaIndicator } from '~/components/strength/DeltaIndicator';
 import { ProgressionToggle } from '~/components/strength/ProgressionToggle';
 import { Input } from '~/components/ui/input';
@@ -133,10 +138,10 @@ const ExerciseCard = memo(function ExerciseCard({
       )}
     >
       {/* Exercise header */}
-      <div className="flex items-start justify-between px-3 py-2.5 border-b bg-muted/30">
+      <div className="flex items-start justify-between border-b bg-muted/30 px-3 py-2.5">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="font-semibold text-sm truncate">{exercise.name}</span>
+            <span className="truncate text-sm font-semibold">{exercise.name}</span>
             {exercise.videoUrl && (
               <a
                 href={exercise.videoUrl}
@@ -149,24 +154,22 @@ const ExerciseCard = memo(function ExerciseCard({
               </a>
             )}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="mt-0.5 text-xs text-muted-foreground">
             {exercise.sets} {t('strength.logger.sets')} · {t('strength.logger.target')}:{' '}
             {formatRepsTarget(exercise.repsMin, exercise.repsMax)} {t('strength.logger.reps')}
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0 ml-2">
+        <div className="ml-2 flex shrink-0 items-center gap-2">
           {currentTopLoad != null && prefill?.loadKg != null && (
             <DeltaIndicator current={currentTopLoad} baseline={prefill.loadKg} unit="kg" />
           )}
-          {saved && (
-            <span className="text-xs font-medium text-green-600 animate-pulse">✓</span>
-          )}
+          {saved && <span className="animate-pulse text-xs font-medium text-green-600">✓</span>}
         </div>
       </div>
 
       {/* Set rows */}
       <div className="px-3 py-2">
-        <div className="grid grid-cols-[2.5rem_1fr_1fr] gap-2 mb-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
+        <div className="mb-1.5 grid grid-cols-[2.5rem_1fr_1fr] gap-2 text-[10px] tracking-widest text-muted-foreground uppercase">
           <span>{t('strength.logger.set')}</span>
           <span>{t('strength.logger.reps')}</span>
           <span>{t('strength.logger.load')}</span>
@@ -176,14 +179,16 @@ const ExerciseCard = memo(function ExerciseCard({
           {sets.map((set, i) => {
             const prefillSet = prefill?.setsData?.[i];
             return (
-              <div key={i} className="grid grid-cols-[2.5rem_1fr_1fr] gap-2 items-center">
+              <div key={i} className="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-2">
                 <span className="text-xs font-medium text-muted-foreground tabular-nums">
                   {i + 1}
                 </span>
                 {readOnly ? (
                   <>
                     <span className="text-sm">{set.reps || '—'}</span>
-                    <span className="text-sm">{set.load ? `${set.load} ${exercise.loadUnit === 'sec' ? 's' : 'kg'}` : '—'}</span>
+                    <span className="text-sm">
+                      {set.load ? `${set.load} ${exercise.loadUnit === 'sec' ? 's' : 'kg'}` : '—'}
+                    </span>
                   </>
                 ) : (
                   <>
@@ -206,10 +211,10 @@ const ExerciseCard = memo(function ExerciseCard({
                         onChange={(e) => updateSet(i, 'load', e.target.value)}
                         onBlur={() => commit()}
                         placeholder={prefillSet?.loadKg?.toString() ?? '—'}
-                        className="h-8 text-sm pr-7"
+                        className="h-8 pr-7 text-sm"
                         aria-label={`Set ${i + 1} load for ${exercise.name}`}
                       />
-                      <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">
+                      <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xs text-muted-foreground">
                         {exercise.loadUnit === 'sec' ? 's' : 'kg'}
                       </span>
                     </div>
@@ -223,7 +228,7 @@ const ExerciseCard = memo(function ExerciseCard({
 
       {/* Next session intent */}
       <div className="border-t px-3 py-2.5">
-        <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1.5">
+        <p className="mb-1.5 text-[10px] tracking-widest text-muted-foreground uppercase">
           {t('strength.logger.nextSession')}
         </p>
         <ProgressionToggle
@@ -272,12 +277,15 @@ export function SessionExerciseLogger({
   const [pending, setPending] = useState<Record<string, LogRowChange>>({});
   const pendingRef = useRef<Record<string, LogRowChange>>({});
 
-  const handleRowChange = useCallback((change: LogRowChange) => {
-    const updated = { ...pendingRef.current, [change.variantExerciseId]: change };
-    pendingRef.current = updated;
-    setPending(updated);
-    onChange(Object.values(updated));
-  }, [onChange]);
+  const handleRowChange = useCallback(
+    (change: LogRowChange) => {
+      const updated = { ...pendingRef.current, [change.variantExerciseId]: change };
+      pendingRef.current = updated;
+      setPending(updated);
+      onChange(Object.values(updated));
+    },
+    [onChange],
+  );
 
   const totalVolume = useMemo(() => {
     let vol = 0;
@@ -307,7 +315,7 @@ export function SessionExerciseLogger({
     <div className={cn('space-y-1', className)}>
       {/* Section header */}
       <div className="pb-1">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
           {t('strength.logger.sectionTitle')}
         </p>
         {variantName && <p className="mt-0.5 text-sm font-medium">{variantName}</p>}
@@ -335,10 +343,12 @@ export function SessionExerciseLogger({
           return (
             <div
               key={group[0].id}
-              className={cn('rounded-lg border overflow-hidden', color.container)}
+              className={cn('overflow-hidden rounded-lg border', color.container)}
             >
               <div className={cn('px-3 py-1.5', color.header)}>
-                <span className={cn('text-[10px] font-semibold uppercase tracking-widest', color.label)}>
+                <span
+                  className={cn('text-[10px] font-semibold tracking-widest uppercase', color.label)}
+                >
                   {t('strength.superset.label')}
                 </span>
               </div>

@@ -1,11 +1,7 @@
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import {
-  useInvites,
-  useCreateInvite,
-  useRevokeInvite,
-} from '~/lib/hooks/useInvites';
+import { useInvites, useCreateInvite, useRevokeInvite } from '~/lib/hooks/useInvites';
 import { createTestQueryClient } from '~/test/utils/query-client';
 import { resetMockInvites, mockListInvites } from '~/lib/mock-data';
 import type { Invite } from '~/types/invites';
@@ -42,9 +38,7 @@ beforeEach(() => {
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }
@@ -93,9 +87,7 @@ describe('useCreateInvite', () => {
     const { queryClient, Wrapper } = makeWrapper();
 
     // Seed cache with NO pending invites to make the count stable
-    const initial: Invite[] = mockListInvites('coach-1').filter(
-      (i) => i.status !== 'pending'
-    );
+    const initial: Invite[] = mockListInvites('coach-1').filter((i) => i.status !== 'pending');
     queryClient.setQueryData(['invites', 'coach-1'], initial);
     const initialCount = initial.length;
 
@@ -103,7 +95,7 @@ describe('useCreateInvite', () => {
     const invitesModule = await import('~/lib/queries/invites');
     const original = invitesModule.createInviteForCoach;
     vi.spyOn(invitesModule, 'createInviteForCoach').mockRejectedValueOnce(
-      new Error('forced error')
+      new Error('forced error'),
     );
 
     const { result } = renderHook(() => useCreateInvite(), { wrapper: Wrapper });
@@ -152,9 +144,7 @@ describe('useRevokeInvite', () => {
     queryClient.setQueryData(['invites', 'coach-1'], invites);
 
     const invitesModule = await import('~/lib/queries/invites');
-    vi.spyOn(invitesModule, 'revokeInvite').mockRejectedValueOnce(
-      new Error('forced error')
-    );
+    vi.spyOn(invitesModule, 'revokeInvite').mockRejectedValueOnce(new Error('forced error'));
 
     const { result } = renderHook(() => useRevokeInvite(), { wrapper: Wrapper });
 

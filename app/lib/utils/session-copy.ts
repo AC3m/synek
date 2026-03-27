@@ -8,7 +8,7 @@ import type { TrainingSession, CreateSessionInput, DayOfWeek } from '~/types/tra
 export function buildCopySessionInput(
   session: TrainingSession,
   targetWeekPlanId: string,
-  targetDay: DayOfWeek
+  targetDay: DayOfWeek,
 ): CreateSessionInput {
   return {
     weekPlanId: targetWeekPlanId,

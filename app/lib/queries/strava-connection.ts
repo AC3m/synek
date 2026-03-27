@@ -54,7 +54,8 @@ export async function getStravaConnectionStatus(userId: string): Promise<StravaC
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) return { connected: false, stravaAthleteName: null, connectedAt: null, lastSyncedAt: null };
+  if (!data)
+    return { connected: false, stravaAthleteName: null, connectedAt: null, lastSyncedAt: null };
 
   return {
     connected: true,
@@ -79,7 +80,7 @@ export async function mockConnectStrava(code: string): Promise<{ stravaAthleteNa
 
 export async function connectStrava(
   code: string,
-  userId: string
+  userId: string,
 ): Promise<{ stravaAthleteName: string }> {
   if (isMockMode) return mockConnectStrava(code);
 
@@ -94,7 +95,10 @@ export async function connectStrava(
 // Sync activities for a week (calls Edge Function)
 // ============================================================
 
-export async function mockSyncStrava(weekStart: string, sessionId?: string): Promise<{ synced: number; lastSyncedAt: string }> {
+export async function mockSyncStrava(
+  weekStart: string,
+  sessionId?: string,
+): Promise<{ synced: number; lastSyncedAt: string }> {
   await new Promise((r) => setTimeout(r, 800));
   void weekStart;
   void sessionId;
@@ -104,7 +108,7 @@ export async function mockSyncStrava(weekStart: string, sessionId?: string): Pro
 
 export async function syncStrava(
   weekStart: string,
-  sessionId?: string
+  sessionId?: string,
 ): Promise<{ synced: number; lastSyncedAt: string }> {
   if (isMockMode) return mockSyncStrava(weekStart, sessionId);
 
@@ -122,9 +126,13 @@ export async function syncStrava(
     body: JSON.stringify(sessionId ? { weekStart, sessionId } : { weekStart }),
   });
 
-  const payload = (await res.json().catch(() => null)) as
-    | { synced?: number; lastSyncedAt?: string; error?: string; code?: number; message?: string }
-    | null;
+  const payload = (await res.json().catch(() => null)) as {
+    synced?: number;
+    lastSyncedAt?: string;
+    error?: string;
+    code?: number;
+    message?: string;
+  } | null;
 
   if (!res.ok) {
     throw new Error(payload?.message ?? payload?.error ?? `strava-sync failed (${res.status})`);

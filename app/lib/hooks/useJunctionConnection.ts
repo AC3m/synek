@@ -30,9 +30,7 @@ export function useJunctionWeekWorkouts(
   weekStart: string,
   junctionConnected: boolean,
 ) {
-  const weekEnd = weekStart
-    ? format(addDays(parseISO(weekStart), 6), 'yyyy-MM-dd')
-    : '';
+  const weekEnd = weekStart ? format(addDays(parseISO(weekStart), 6), 'yyyy-MM-dd') : '';
 
   return useQuery({
     queryKey: queryKeys.junctionPoc.weekWorkouts(appUserId, weekStart),
@@ -95,7 +93,9 @@ export function useJunctionDisconnect() {
   return useMutation({
     mutationFn: async ({ appUserId }: { appUserId: string }) => {
       // Call disconnect Edge Function
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const token = session?.access_token;
       if (!token) throw new Error('not_authenticated');
 
@@ -111,7 +111,7 @@ export function useJunctionDisconnect() {
       );
 
       if (!res.ok) {
-        const body = await res.json().catch(() => ({})) as { error?: string };
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
         throw new Error(body.error ?? 'disconnect_failed');
       }
 

@@ -83,10 +83,7 @@ export function getMockJunctionWorkoutsForWeek(
   weekEnd: string,
 ): JunctionPocWorkout[] {
   return MOCK_JUNCTION_WORKOUTS.filter(
-    (w) =>
-      w.appUserId === appUserId &&
-      w.calendarDate >= weekStart &&
-      w.calendarDate <= weekEnd,
+    (w) => w.appUserId === appUserId && w.calendarDate >= weekStart && w.calendarDate <= weekEnd,
   );
 }
 

@@ -25,15 +25,11 @@ export function AthleteFeedback({ notes, onChange }: AthleteFeedbackProps) {
     <div className="mt-1.5">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <MessageSquare className="h-2.5 w-2.5" />
         {notes ? t('feedback.addNotes') : t('feedback.addNotes')}
-        {expanded ? (
-          <ChevronUp className="h-2.5 w-2.5" />
-        ) : (
-          <ChevronDown className="h-2.5 w-2.5" />
-        )}
+        {expanded ? <ChevronUp className="h-2.5 w-2.5" /> : <ChevronDown className="h-2.5 w-2.5" />}
       </button>
 
       {expanded && (
@@ -43,7 +39,7 @@ export function AthleteFeedback({ notes, onChange }: AthleteFeedbackProps) {
           onChange={(e) => setValue(e.target.value)}
           onBlur={handleBlur}
           rows={2}
-          className="mt-1 text-xs min-h-[50px]"
+          className="mt-1 min-h-[50px] text-xs"
         />
       )}
     </div>

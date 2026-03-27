@@ -19,8 +19,7 @@ export function useStravaConnectionStatus(userId: string) {
 export function useConnectStrava() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ code, userId }: { code: string; userId: string }) =>
-      connectStrava(code, userId),
+    mutationFn: ({ code, userId }: { code: string; userId: string }) => connectStrava(code, userId),
     onSuccess: (_data, { userId }) => {
       qc.invalidateQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
     },
@@ -39,9 +38,7 @@ export function useStravaSync() {
         queryKey: queryKeys.stravaConnection.all,
       });
 
-      await Promise.all(
-        all.map(([key]) => qc.cancelQueries({ queryKey: key }))
-      );
+      await Promise.all(all.map(([key]) => qc.cancelQueries({ queryKey: key })));
 
       const rollbacks: Array<{ key: readonly unknown[]; data: StravaConnectionStatus }> = [];
       for (const [key, data] of all) {
@@ -69,7 +66,7 @@ export function useStravaDisconnect() {
     onMutate: async (userId) => {
       await qc.cancelQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
       const prev = qc.getQueryData<StravaConnectionStatus>(
-        queryKeys.stravaConnection.byUser(userId)
+        queryKeys.stravaConnection.byUser(userId),
       );
       qc.setQueryData(queryKeys.stravaConnection.byUser(userId), {
         connected: false,

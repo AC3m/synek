@@ -1,4 +1,11 @@
-import { DAYS_OF_WEEK, type TrainingSession, type SessionsByDay, type WeekStats, type DayOfWeek, type ReorderSessionInput } from '~/types/training';
+import {
+  DAYS_OF_WEEK,
+  type TrainingSession,
+  type SessionsByDay,
+  type WeekStats,
+  type DayOfWeek,
+  type ReorderSessionInput,
+} from '~/types/training';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { JUNCTION_SPORT_MAP } from '~/types/junction-poc';
 import type { JunctionPocWorkout } from '~/types/junction-poc';
@@ -19,16 +26,11 @@ export function groupSessionsByDay(sessions: TrainingSession[]): SessionsByDay {
 }
 
 export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
-  const totalSessions = sessions.filter(
-    (s) => s.trainingType !== 'rest_day'
-  ).length;
+  const totalSessions = sessions.filter((s) => s.trainingType !== 'rest_day').length;
   const completedSessions = sessions.filter(
-    (s) => s.isCompleted && s.trainingType !== 'rest_day'
+    (s) => s.isCompleted && s.trainingType !== 'rest_day',
   ).length;
-  const totalPlannedKm = sessions.reduce(
-    (sum, s) => sum + (s.plannedDistanceKm ?? 0),
-    0
-  );
+  const totalPlannedKm = sessions.reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
   const totalCompletedKm = sessions
     .filter((s) => s.isCompleted)
     .reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
@@ -44,8 +46,7 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
     completedSessions,
     totalPlannedKm,
     totalCompletedKm,
-    completionPercentage:
-      totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
+    completionPercentage: totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
     totalActualDurationMinutes,
     totalActualRunKm,
   };
@@ -108,9 +109,7 @@ export function augmentSessionsWithGarmin(
     return {
       ...session,
       actualDurationMinutes:
-        match.movingTimeSeconds !== null
-          ? Math.round(match.movingTimeSeconds / 60)
-          : null,
+        match.movingTimeSeconds !== null ? Math.round(match.movingTimeSeconds / 60) : null,
       actualDistanceKm:
         match.distanceMeters != null && match.distanceMeters > 0
           ? Math.round(match.distanceMeters / 10) / 100

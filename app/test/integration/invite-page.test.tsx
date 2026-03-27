@@ -45,7 +45,7 @@ function renderInvitePage() {
       <MemoryRouter initialEntries={['/invite/valid-token-123']}>
         <InviteTokenPage />
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 

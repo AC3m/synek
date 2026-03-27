@@ -52,10 +52,9 @@ export interface StravaLap {
   distanceMeters: number | null;
   elapsedTimeSeconds: number | null;
   movingTimeSeconds: number | null;
-  averageSpeed: number | null;       // m/s — convert to min/km for display
+  averageSpeed: number | null; // m/s — convert to min/km for display
   averageHeartrate: number | null;
   maxHeartrate: number | null;
   averageCadence: number | null;
-  paceZone: number | null;           // 1–5; fallback when averageHeartrate is null
+  paceZone: number | null; // 1–5; fallback when averageHeartrate is null
 }
-

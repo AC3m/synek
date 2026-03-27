@@ -39,7 +39,7 @@ export function UserTab({ className }: UserTabProps) {
   const uploadAvatar = useUploadAvatar();
   const changePassword = useChangePassword();
   const { data: canSelfPlan = true } = useSelfPlanPermission(
-    user?.role === 'athlete' ? (user?.id ?? '') : ''
+    user?.role === 'athlete' ? (user?.id ?? '') : '',
   );
   const updateSelfPlan = useUpdateSelfPlanPermission();
 
@@ -81,7 +81,7 @@ export function UserTab({ className }: UserTabProps) {
     } catch (err) {
       const msg = err instanceof Error ? err.message : '';
       setPasswordError(
-        msg === 'wrong_password' ? t('settings.user.wrongPassword') : t('errors.generic')
+        msg === 'wrong_password' ? t('settings.user.wrongPassword') : t('errors.generic'),
       );
     }
   }
@@ -92,11 +92,7 @@ export function UserTab({ className }: UserTabProps) {
       <form onSubmit={handleSaveName} className="space-y-2">
         <label className="text-sm font-medium">{t('settings.user.name')}</label>
         <div className="flex gap-2">
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="max-w-sm"
-          />
+          <Input value={name} onChange={(e) => setName(e.target.value)} className="max-w-sm" />
           <Button type="submit" disabled={updateName.isPending}>
             {nameSaved ? t('settings.user.saved') : t('settings.user.saveChanges')}
           </Button>
@@ -187,9 +183,7 @@ export function UserTab({ className }: UserTabProps) {
               </div>
               <Switch
                 checked={canSelfPlan}
-                onCheckedChange={(value) =>
-                  updateSelfPlan.mutate({ athleteId: user.id, value })
-                }
+                onCheckedChange={(value) => updateSelfPlan.mutate({ athleteId: user.id, value })}
               />
             </div>
           </div>
@@ -202,9 +196,7 @@ export function UserTab({ className }: UserTabProps) {
         <h3 className="text-sm font-medium text-destructive">
           {t('settings.deleteAccount.dangerZone')}
         </h3>
-        <p className="text-sm text-muted-foreground">
-          {t('settings.deleteAccount.description')}
-        </p>
+        <p className="text-sm text-muted-foreground">{t('settings.deleteAccount.description')}</p>
         <DeleteAccountDialog />
       </div>
     </div>

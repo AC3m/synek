@@ -1,7 +1,11 @@
 import { computeDragResult } from '~/lib/utils/week-view';
 import { DAYS_OF_WEEK, type SessionsByDay, type TrainingSession } from '~/types/training';
 
-function makeSession(id: string, day: TrainingSession['dayOfWeek'], sortOrder: number): TrainingSession {
+function makeSession(
+  id: string,
+  day: TrainingSession['dayOfWeek'],
+  sortOrder: number,
+): TrainingSession {
   return {
     id,
     weekPlanId: 'wp-1',
@@ -32,7 +36,7 @@ function makeSession(id: string, day: TrainingSession['dayOfWeek'], sortOrder: n
 
 const emptyWeek: SessionsByDay = DAYS_OF_WEEK.reduce(
   (acc, d) => ({ ...acc, [d]: [] }),
-  {} as SessionsByDay
+  {} as SessionsByDay,
 );
 
 describe('computeDragResult', () => {

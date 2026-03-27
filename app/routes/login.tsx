@@ -57,7 +57,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium leading-none">
+              <label htmlFor="email" className="text-sm leading-none font-medium">
                 {t('auth.email')}
               </label>
               <Input
@@ -72,7 +72,7 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium leading-none">
+              <label htmlFor="password" className="text-sm leading-none font-medium">
                 {t('auth.password')}
               </label>
               <div className="relative">
@@ -109,10 +109,7 @@ export default function LoginPage() {
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">
-              <Link
-                to={`/${locale}/register`}
-                className="underline hover:text-foreground"
-              >
+              <Link to={`/${locale}/register`} className="underline hover:text-foreground">
                 {t('auth.registerAccount')}
               </Link>
             </p>
@@ -120,19 +117,16 @@ export default function LoginPage() {
 
           {/* Mock mode hint */}
           {isMockMode && (
-            <div className="rounded-md border border-muted bg-muted/40 p-4 text-xs text-muted-foreground space-y-1">
+            <div className="space-y-1 rounded-md border border-muted bg-muted/40 p-4 text-xs text-muted-foreground">
               <p className="font-semibold text-foreground">{t('auth.demoCredentials')}</p>
               <p>
-                <span className="font-medium">Coach:</span>{' '}
-                coach@synek.app / coach123
+                <span className="font-medium">Coach:</span> coach@synek.app / coach123
               </p>
               <p>
-                <span className="font-medium">Alice (athlete):</span>{' '}
-                alice@synek.app / alice123
+                <span className="font-medium">Alice (athlete):</span> alice@synek.app / alice123
               </p>
               <p>
-                <span className="font-medium">Bob (athlete):</span>{' '}
-                bob@synek.app / bob123
+                <span className="font-medium">Bob (athlete):</span> bob@synek.app / bob123
               </p>
             </div>
           )}

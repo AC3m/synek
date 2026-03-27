@@ -38,19 +38,15 @@ export function SessionForm({
   const isEditing = !!session;
   const { user, effectiveAthleteId } = useAuth();
 
-  const [trainingType, setTrainingType] = useState<TrainingType>(
-    session?.trainingType ?? 'run'
-  );
+  const [trainingType, setTrainingType] = useState<TrainingType>(session?.trainingType ?? 'run');
   const [description, setDescription] = useState(session?.description ?? '');
   const [coachComments, setCoachComments] = useState(session?.coachComments ?? '');
   const [durationMinutes, setDurationMinutes] = useState(
-    session?.plannedDurationMinutes?.toString() ?? ''
+    session?.plannedDurationMinutes?.toString() ?? '',
   );
-  const [distanceKm, setDistanceKm] = useState(
-    session?.plannedDistanceKm?.toString() ?? ''
-  );
+  const [distanceKm, setDistanceKm] = useState(session?.plannedDistanceKm?.toString() ?? '');
   const [typeData, setTypeData] = useState<Partial<TypeSpecificData>>(
-    session?.typeSpecificData ?? { type: 'run' }
+    session?.typeSpecificData ?? { type: 'run' },
   );
   const [activeTab, setActiveTab] = useState<FormTab>('plan');
 
@@ -168,7 +164,13 @@ export function SessionForm({
   const saveLabel = isEditing ? t('common:actions.save') : t('coach:session.create');
 
   return (
-    <FormModal open={open} onClose={onClose} title={title} onSave={handleSubmit} saveLabel={saveLabel}>
+    <FormModal
+      open={open}
+      onClose={onClose}
+      title={title}
+      onSave={handleSubmit}
+      saveLabel={saveLabel}
+    >
       {formFields}
     </FormModal>
   );

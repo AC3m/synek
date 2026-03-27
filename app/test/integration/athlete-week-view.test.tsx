@@ -2,10 +2,7 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { useSessions, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
-import {
-  mockFetchSessionsByWeekPlan,
-  mockUpdateAthleteSession,
-} from '~/lib/mock-data';
+import { mockFetchSessionsByWeekPlan, mockUpdateAthleteSession } from '~/lib/mock-data';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
 /**
@@ -48,15 +45,13 @@ const ALICE_W10_PLAN_ID = 'wp-w10-a1';
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }
 
 describe('Athlete week view — data layer', () => {
-  it('loads sessions for the athlete\'s week plan', async () => {
+  it("loads sessions for the athlete's week plan", async () => {
     const { Wrapper } = makeWrapper();
     const { result } = renderHook(() => useSessions(ALICE_W10_PLAN_ID), {
       wrapper: Wrapper,

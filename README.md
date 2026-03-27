@@ -38,6 +38,11 @@ Copy `.env.example` to `.env` and fill in your Supabase credentials:
 ```
 VITE_SUPABASE_URL=https://<project>.supabase.co
 VITE_SUPABASE_ANON_KEY=<anon-key>
+# VITE_MOCK_MODE=true
+VITE_STRAVA_CLIENT_ID=<client-id>
+SUPABASE_ACCESS_TOKEN=<access-token>
+STRAVA_WEBHOOK_VERIFY_TOKEN=<verify-token>
+SUPABASE_INTERNAL_FUNCTIONS_TOKEN=<internal-function-token>
 ```
 
 > **Mock mode**: If credentials are missing or placeholder, the app automatically runs against
@@ -77,12 +82,14 @@ app/
 ├── components/
 │   ├── ui/           # shadcn components (do not edit manually)
 │   ├── calendar/     # week planning calendar widgets
-│   ├── training/     # session form + sport-specific field components
+│   ├── training/     # session form, session detail modal, sport-specific fields
+│   ├── landing/      # landing page sections
 │   └── layout/       # Header, LanguageToggle, RoleSwitcher
 ├── lib/
 │   ├── queries/      # Supabase CRUD + mock implementations
 │   ├── hooks/        # React Query hooks
-│   └── utils/        # date, week-view, training-types helpers
+│   ├── mock-data/    # in-memory mock data (sessions, weeks, profile, strava)
+│   └── utils/        # date, week-view, training-types, lap-classification helpers
 ├── types/            # Domain types (training.ts, strava.ts)
 ├── i18n/             # config + resources/en/ + resources/pl/
 └── routes/

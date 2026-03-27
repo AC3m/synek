@@ -25,7 +25,7 @@ export function Header() {
             <Logo size="sm" />
           </Link>
           {user && (
-            <nav className="hidden md:flex items-center gap-1">
+            <nav className="hidden items-center gap-1 md:flex">
               <NavLink
                 to={localePath(`/${user.role}/strength`)}
                 className={({ isActive }) =>
@@ -44,9 +44,7 @@ export function Header() {
           )}
         </div>
         <div className="flex items-center gap-2">
-          <div className="hidden md:block">
-            {user && <UserMenu />}
-          </div>
+          <div className="hidden md:block">{user && <UserMenu />}</div>
           <ThemeToggle />
           <LanguageToggle />
         </div>

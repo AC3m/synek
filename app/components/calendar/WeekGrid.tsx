@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router';
 import { addDays, format, isToday, parseISO } from 'date-fns';
 import { cn } from '~/lib/utils';
@@ -17,6 +17,8 @@ import { computeDragResult } from '~/lib/utils/week-view';
 import { DndContext, PointerSensor, KeyboardSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SessionActionsProvider } from '~/lib/context/SessionActionsContext';
+import type { SessionActionsContextValue } from '~/lib/context/SessionActionsContext';
 
 interface WeekGridProps {
   sessionsByDay: SessionsByDay;
@@ -63,11 +65,16 @@ interface MobileDayStripProps {
   onSelectDay: (day: DayOfWeek) => void;
 }
 
-function MobileDayStrip({ weekStart, sessionsByDay, selectedDay, onSelectDay }: MobileDayStripProps) {
+function MobileDayStrip({
+  weekStart,
+  sessionsByDay,
+  selectedDay,
+  onSelectDay,
+}: MobileDayStripProps) {
   const monday = weekStart ? parseISO(weekStart) : null;
 
   return (
-    <div className="flex justify-between px-1 mb-2">
+    <div className="mb-2 flex justify-between px-1">
       {DAYS_OF_WEEK.map((day, i) => {
         const dayDate = monday ? addDays(monday, i) : null;
         const isCurrentDay = dayDate ? isToday(dayDate) : false;
@@ -75,16 +82,18 @@ function MobileDayStrip({ weekStart, sessionsByDay, selectedDay, onSelectDay }: 
         const sessions = sessionsByDay[day] ?? [];
         const hasSessions = sessions.length > 0;
         const firstSessionType = hasSessions ? sessions[0].trainingType : null;
-        const dotColor = firstSessionType ? trainingTypeConfig[firstSessionType].bgColor : 'bg-foreground/30';
+        const dotColor = firstSessionType
+          ? trainingTypeConfig[firstSessionType].bgColor
+          : 'bg-foreground/30';
 
         return (
           <button
             key={day}
             data-testid={`mobile-day-btn-${day}`}
             onClick={() => onSelectDay(day)}
-            className="flex flex-col items-center justify-center gap-0.5 min-h-[44px] min-w-[44px] py-1"
+            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-0.5 py-1"
           >
-            <span className="text-[10px] font-semibold uppercase text-[color:var(--foreground-tertiary)]">
+            <span className="text-[10px] font-semibold text-[color:var(--foreground-tertiary)] uppercase">
               {dayDate ? format(dayDate, 'EEEEE') : day[0].toUpperCase()}
             </span>
             <span
@@ -92,15 +101,15 @@ function MobileDayStrip({ weekStart, sessionsByDay, selectedDay, onSelectDay }: 
                 'flex h-7 w-7 items-center justify-center rounded-full text-sm font-medium',
                 isCurrentDay && 'bg-foreground text-background',
                 isSelected && !isCurrentDay && 'ring-1 ring-foreground/50',
-                !isCurrentDay && !isSelected && 'text-foreground'
+                !isCurrentDay && !isSelected && 'text-foreground',
               )}
             >
               {dayDate ? format(dayDate, 'd') : ''}
             </span>
             {hasSessions ? (
-              <span className={cn('h-1 w-1 rounded-full mt-0.5', dotColor)} />
+              <span className={cn('mt-0.5 h-1 w-1 rounded-full', dotColor)} />
             ) : (
-              <span className="h-1 w-1 mt-0.5" />
+              <span className="mt-0.5 h-1 w-1" />
             )}
           </button>
         );
@@ -135,24 +144,27 @@ export function WeekGrid({
 }: WeekGridProps) {
   const location = useLocation();
   const [internalSelectedDay, setInternalSelectedDay] = useState<DayOfWeek>(() =>
-    getDefaultSelectedDay(weekStart)
+    getDefaultSelectedDay(weekStart),
   );
 
   const dndEnabled = !readonly && !!onReorderSession;
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor));
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event;
-    const activeDay = (active.data.current as { day: DayOfWeek } | undefined)?.day ?? null;
-    if (!activeDay) return;
-    const result = computeDragResult(
-      String(active.id),
-      activeDay,
-      over ? (String(over.id) as DayOfWeek) : null,
-      sessionsByDay
-    );
-    if (result) onReorderSession?.(result);
-  }
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event;
+      const activeDay = (active.data.current as { day: DayOfWeek } | undefined)?.day ?? null;
+      if (!activeDay) return;
+      const result = computeDragResult(
+        String(active.id),
+        activeDay,
+        over ? (String(over.id) as DayOfWeek) : null,
+        sessionsByDay,
+      );
+      if (result) onReorderSession?.(result);
+    },
+    [sessionsByDay, onReorderSession],
+  );
 
   const isControlled = controlledSelectedDay !== undefined;
   const selectedDay = controlledSelectedDay ?? internalSelectedDay;
@@ -188,88 +200,110 @@ export function WeekGrid({
     setSelectedDay(getDefaultSelectedDay(weekStart));
   }, [weekStart, location.state?.resetToToday, setSelectedDay, isControlled]);
 
-  const dayColumnProps = {
-    readonly,
-    athleteMode,
-    showAthleteControls,
-    onAddSession,
-    onEditSession,
-    onDeleteSession,
-    onToggleComplete,
-    weekStart,
-    onUpdateNotes,
-    onUpdatePerformance,
-    onUpdateCoachPostFeedback,
-    stravaConnected,
-    junctionConnected,
-    onSyncStrava,
-    onConfirmStrava,
-    userRole,
-    onCopyDay,
-    onCopySession,
-    droppable: dndEnabled,
-    draggableSessions: dndEnabled,
-  };
+  const contextValue = useMemo<SessionActionsContextValue>(
+    () => ({
+      readonly,
+      athleteMode,
+      showAthleteControls,
+      stravaConnected: stravaConnected ?? false,
+      junctionConnected: junctionConnected ?? false,
+      userRole,
+      onEdit: onEditSession,
+      onDelete: onDeleteSession,
+      onToggleComplete,
+      onUpdateNotes,
+      onUpdatePerformance,
+      onUpdateCoachPostFeedback,
+      onSyncStrava,
+      onConfirmStrava,
+    }),
+    [
+      readonly,
+      athleteMode,
+      showAthleteControls,
+      stravaConnected,
+      junctionConnected,
+      userRole,
+      onEditSession,
+      onDeleteSession,
+      onToggleComplete,
+      onUpdateNotes,
+      onUpdatePerformance,
+      onUpdateCoachPostFeedback,
+      onSyncStrava,
+      onConfirmStrava,
+    ],
+  );
+
+  const dayColumnProps = useMemo(
+    () => ({
+      weekStart,
+      onAddSession,
+      onCopyDay,
+      onCopySession,
+      droppable: dndEnabled,
+      draggableSessions: dndEnabled,
+    }),
+    [weekStart, onAddSession, onCopyDay, onCopySession, dndEnabled],
+  );
 
   const gridContent = (
-    <div>
-      {/* Mobile: day strip + single day view */}
-      <div className="md:hidden">
-        <MobileDayStrip
-          weekStart={weekStart}
-          sessionsByDay={sessionsByDay}
-          selectedDay={selectedDay}
-          onSelectDay={setSelectedDay}
-        />
-        <div className="mt-3" data-testid="mobile-single-day">
-          <SortableContext
-            items={(sessionsByDay[selectedDay] ?? []).map((s) => s.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <DayColumn
-              day={selectedDay}
-              sessions={sessionsByDay[selectedDay] ?? []}
-              {...dayColumnProps}
-            />
-          </SortableContext>
+    <SessionActionsProvider value={contextValue}>
+      <div>
+        {/* Mobile: day strip + single day view */}
+        <div className="md:hidden">
+          <MobileDayStrip
+            weekStart={weekStart}
+            sessionsByDay={sessionsByDay}
+            selectedDay={selectedDay}
+            onSelectDay={setSelectedDay}
+          />
+          <div className="mt-3" data-testid="mobile-single-day">
+            <SortableContext
+              items={(sessionsByDay[selectedDay] ?? []).map((s) => s.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <DayColumn
+                day={selectedDay}
+                sessions={sessionsByDay[selectedDay] ?? []}
+                {...dayColumnProps}
+              />
+            </SortableContext>
+          </div>
         </div>
-      </div>
 
-      {/* Desktop: 7-column grid — scrollable when viewport < ~1192px */}
-      <div className="hidden md:block relative">
-        {/* Left fade — visible once user has scrolled right */}
-        <div
-          className={cn(
-            'pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-background to-transparent transition-opacity duration-200',
-            showLeftFade ? 'opacity-100' : 'opacity-0'
-          )}
-        />
-        {/* Right fade — signals more columns to the right */}
-        <div
-          className={cn(
-            'pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent transition-opacity duration-200',
-            showRightFade ? 'opacity-100' : 'opacity-0'
-          )}
-        />
-        <div ref={scrollRef} className="overflow-x-auto py-[2px] px-[2px]">
-          <div className="grid grid-cols-2 lg:grid-cols-7 gap-1.5 lg:min-w-[1400px]">
-            {DAYS_OF_WEEK.map((day) => (
-              <SortableContext
-                key={day}
-                items={(sessionsByDay[day] ?? []).map((s) => s.id)}
-                strategy={verticalListSortingStrategy}
-              >
-                <DayColumn
-                  day={day}
-                  sessions={sessionsByDay[day] ?? []}
-                  {...dayColumnProps}
-                />
-              </SortableContext>
-            ))}
+        {/* Desktop: 7-column grid — scrollable when viewport < ~1192px */}
+        <div className="relative hidden md:block">
+          {/* Left fade — visible once user has scrolled right */}
+          <div
+            className={cn(
+              'pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-background to-transparent transition-opacity duration-200',
+              showLeftFade ? 'opacity-100' : 'opacity-0',
+            )}
+          />
+          {/* Right fade — signals more columns to the right */}
+          <div
+            className={cn(
+              'pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-background to-transparent transition-opacity duration-200',
+              showRightFade ? 'opacity-100' : 'opacity-0',
+            )}
+          />
+          <div ref={scrollRef} className="overflow-x-auto px-[2px] py-[2px]">
+            <div className="grid grid-cols-2 gap-1.5 lg:min-w-[1400px] lg:grid-cols-7">
+              {DAYS_OF_WEEK.map((day) => (
+                <SortableContext
+                  key={day}
+                  items={(sessionsByDay[day] ?? []).map((s) => s.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <DayColumn day={day} sessions={sessionsByDay[day] ?? []} {...dayColumnProps} />
+                </SortableContext>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </SessionActionsProvider>
   );
 
   if (dndEnabled) {

@@ -8,10 +8,8 @@ export default function AthleteLayout() {
 
   if (isLoading) return <AppLoader />;
 
-  // FR-004: Unauthenticated → login
   if (!user) return <Navigate to="/login" replace />;
 
-  // FR-005: Coaches cannot access athlete routes
   if (user.role !== 'athlete') return <Navigate to={`/${locale}/coach`} replace />;
 
   return <Outlet />;

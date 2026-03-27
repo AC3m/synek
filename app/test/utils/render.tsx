@@ -49,17 +49,12 @@ interface RenderWithProvidersOptions extends Omit<RenderOptions, 'wrapper'> {
   initialRoute?: string;
 }
 
-export function renderWithProviders(
-  ui: ReactNode,
-  options: RenderWithProvidersOptions = {}
-) {
+export function renderWithProviders(ui: ReactNode, options: RenderWithProvidersOptions = {}) {
   const { mockUser, initialRoute, ...renderOptions } = options;
   const queryClient = createTestQueryClient();
 
   const effectiveAthleteId =
-    mockUser?.role === 'athlete'
-      ? mockUser.id
-      : (mockUser?.selectedAthleteId ?? null);
+    mockUser?.role === 'athlete' ? mockUser.id : (mockUser?.selectedAthleteId ?? null);
 
   const authValue: MockAuthContextValue = {
     user: mockUser
@@ -85,16 +80,12 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: ReactNode }) {
     const content = (
       <QueryClientProvider client={queryClient}>
-        <MockAuthContext.Provider value={authValue}>
-          {children}
-        </MockAuthContext.Provider>
+        <MockAuthContext.Provider value={authValue}>{children}</MockAuthContext.Provider>
       </QueryClientProvider>
     );
 
     if (initialRoute !== undefined) {
-      return (
-        <MemoryRouter initialEntries={[initialRoute]}>{content}</MemoryRouter>
-      );
+      return <MemoryRouter initialEntries={[initialRoute]}>{content}</MemoryRouter>;
     }
 
     return content;

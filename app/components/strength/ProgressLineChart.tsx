@@ -125,7 +125,7 @@ export const ProgressLineChart = memo(function ProgressLineChart({
                     const ex = exercises.find((e) => e.id === entry.dataKey);
                     return (
                       <p key={entry.dataKey as string} style={{ color: entry.color }}>
-                        {ex?.name ?? entry.dataKey as string}: {entry.value} kg
+                        {ex?.name ?? (entry.dataKey as string)}: {entry.value} kg
                       </p>
                     );
                   })}

@@ -8,10 +8,7 @@ import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import type { WeekPlan, TrainingSession, SessionsByDay } from '~/types/training';
 import { DAYS_OF_WEEK } from '~/types/training';
 import { createTestQueryClient } from '~/test/utils/query-client';
-import {
-  mockFetchWeekPlanByDate,
-  mockFetchSessionsByWeekPlan,
-} from '~/lib/mock-data';
+import { mockFetchWeekPlanByDate, mockFetchSessionsByWeekPlan } from '~/lib/mock-data';
 
 // Spies to verify internal mutation calls
 import * as sessionsQueries from '~/lib/queries/sessions';
@@ -37,7 +34,32 @@ vi.mock('~/lib/queries/sessions', async () => {
   const m = await import('~/lib/mock-data');
   return {
     fetchSessionsByWeekPlan: m.mockFetchSessionsByWeekPlan,
-    createSession: vi.fn().mockResolvedValue({ id: 'new-session', weekPlanId: 'wp-current', dayOfWeek: 'thursday', trainingType: 'run', sortOrder: 0, description: null, coachComments: null, plannedDurationMinutes: null, plannedDistanceKm: null, typeSpecificData: { type: 'run' }, isCompleted: false, completedAt: null, actualDurationMinutes: null, actualDistanceKm: null, actualPace: null, avgHeartRate: null, maxHeartRate: null, rpe: null, coachPostFeedback: null, athleteNotes: null, stravaActivityId: null, stravaSyncedAt: null, createdAt: '', updatedAt: '' }),
+    createSession: vi.fn().mockResolvedValue({
+      id: 'new-session',
+      weekPlanId: 'wp-current',
+      dayOfWeek: 'thursday',
+      trainingType: 'run',
+      sortOrder: 0,
+      description: null,
+      coachComments: null,
+      plannedDurationMinutes: null,
+      plannedDistanceKm: null,
+      typeSpecificData: { type: 'run' },
+      isCompleted: false,
+      completedAt: null,
+      actualDurationMinutes: null,
+      actualDistanceKm: null,
+      actualPace: null,
+      avgHeartRate: null,
+      maxHeartRate: null,
+      rpe: null,
+      coachPostFeedback: null,
+      athleteNotes: null,
+      stravaActivityId: null,
+      stravaSyncedAt: null,
+      createdAt: '',
+      updatedAt: '',
+    }),
     updateSession: vi.fn(),
     deleteSession: vi.fn(),
     updateAthleteSession: vi.fn(),
@@ -50,7 +72,7 @@ vi.mock('~/lib/queries/sessions', async () => {
 
 const emptySessionsByDay: SessionsByDay = DAYS_OF_WEEK.reduce(
   (acc, d) => ({ ...acc, [d]: [] }),
-  {} as SessionsByDay
+  {} as SessionsByDay,
 );
 
 const mockCurrentWeekPlan: WeekPlan = {
@@ -100,14 +122,17 @@ describe('MultiWeekView', () => {
     render(
       <Wrapper>
         <MultiWeekView {...defaultProps} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // Wait for history weeks to load
-    await waitFor(() => {
-      const weekLabels = screen.queryAllByText(/W1[0-1]|W0[89]/);
-      return weekLabels.length > 0;
-    }, { timeout: 3000 });
+    await waitFor(
+      () => {
+        const weekLabels = screen.queryAllByText(/W1[0-1]|W0[89]/);
+        return weekLabels.length > 0;
+      },
+      { timeout: 3000 },
+    );
 
     // Should show 4 history week rows (W11, W10, W09, W08 from Alice's seed + empty)
     const historyRows = screen.getAllByTestId('history-week-row');
@@ -119,7 +144,7 @@ describe('MultiWeekView', () => {
     render(
       <Wrapper>
         <MultiWeekView {...defaultProps} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // History rows should not contain add buttons — they are read-only
@@ -133,11 +158,13 @@ describe('MultiWeekView', () => {
     render(
       <Wrapper>
         <MultiWeekView {...defaultProps} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // Wait for history rows
-    await waitFor(() => expect(screen.queryAllByTestId('history-week-row').length).toBe(4), { timeout: 3000 });
+    await waitFor(() => expect(screen.queryAllByTestId('history-week-row').length).toBe(4), {
+      timeout: 3000,
+    });
 
     // Expand the oldest history row (last one in DOM = oldest after reverse)
     const toggles = screen.getAllByTestId('history-week-toggle');
@@ -151,7 +178,9 @@ describe('MultiWeekView', () => {
     // The current week section should now also have Thursday selected
     const currentWeekSection = screen.getByTestId('current-week-section');
     // The selected thursday button in current week should have the ring style
-    const currentThursdayBtn = currentWeekSection.querySelector('[data-testid="mobile-day-btn-thursday"]');
+    const currentThursdayBtn = currentWeekSection.querySelector(
+      '[data-testid="mobile-day-btn-thursday"]',
+    );
     expect(currentThursdayBtn).not.toBeNull();
     // The currently-selected day button renders the single-day content — verify thursday is shown
     const mobileSingleDay = currentWeekSection.querySelector('[data-testid="mobile-single-day"]');
@@ -164,11 +193,13 @@ describe('MultiWeekView', () => {
     render(
       <Wrapper>
         <MultiWeekView {...defaultProps} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // Wait for W11 row to appear (it has sessions and a "Copy week" button)
-    await waitFor(() => expect(screen.queryAllByTestId('history-week-row').length).toBe(4), { timeout: 3000 });
+    await waitFor(() => expect(screen.queryAllByTestId('history-week-row').length).toBe(4), {
+      timeout: 3000,
+    });
 
     // Expand the first history row (W11)
     const toggles = screen.getAllByTestId('history-week-toggle');
@@ -177,17 +208,25 @@ describe('MultiWeekView', () => {
     // Find and click the first "Copy week" button (W11, which has sessions) — opens dialog
     // EN: "Copy week ↓", PL: "Kopiuj tydzień ↓"
     // Generous timeout: button only appears after 2 sequential mock requests (each ~150ms) per week slot
-    const copyWeekBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i }, { timeout: 5000 });
+    const copyWeekBtns = await screen.findAllByRole(
+      'button',
+      { name: /copy week|kopiuj tydzień/i },
+      { timeout: 5000 },
+    );
     fireEvent.click(copyWeekBtns[0]);
 
     // Confirm in the dialog — a second "Copy week" button appears inside the dialog footer
-    const confirmBtns = await screen.findAllByRole('button', { name: /copy week|kopiuj tydzień/i }, { timeout: 5000 });
+    const confirmBtns = await screen.findAllByRole(
+      'button',
+      { name: /copy week|kopiuj tydzień/i },
+      { timeout: 5000 },
+    );
     fireEvent.click(confirmBtns[confirmBtns.length - 1]);
 
     await waitFor(() =>
       expect(copyWeekSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ targetWeekPlanId: 'wp-current' })
-      )
+        expect.objectContaining({ targetWeekPlanId: 'wp-current' }),
+      ),
     );
   });
 });

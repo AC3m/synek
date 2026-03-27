@@ -15,11 +15,9 @@ export function AthletePicker() {
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="w-full max-w-sm space-y-4">
-        <div className="text-center space-y-1">
+        <div className="space-y-1 text-center">
           <h2 className="text-xl font-semibold">{t('athletePicker.title')}</h2>
-          <p className="text-sm text-muted-foreground">
-            {t('athletePicker.subtitle')}
-          </p>
+          <p className="text-sm text-muted-foreground">{t('athletePicker.subtitle')}</p>
         </div>
 
         <div className="space-y-2">
@@ -30,18 +28,18 @@ export function AthletePicker() {
               className="cursor-pointer border-primary/40 bg-primary/5 transition-colors hover:border-primary hover:bg-primary/10"
               onClick={() => selectAthlete(user.id)}
             >
-              <CardHeader className="pb-1 pt-4 px-4">
+              <CardHeader className="px-4 pt-4 pb-1">
                 <div className="flex items-center gap-2">
                   <CardTitle className="text-base">{t('athletePicker.myself')}</CardTitle>
                   <Badge
                     variant="secondary"
-                    className="text-[10px] px-1.5 py-0 bg-primary/15 text-primary border-0"
+                    className="border-0 bg-primary/15 px-1.5 py-0 text-[10px] text-primary"
                   >
                     {t('athletePicker.myselfBadge')}
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="pb-4 px-4">
+              <CardContent className="px-4 pb-4">
                 <p className="text-sm text-muted-foreground">{t('athletePicker.myselfSubtitle')}</p>
                 <Button
                   size="sm"
@@ -65,10 +63,10 @@ export function AthletePicker() {
               className="cursor-pointer transition-colors hover:border-primary hover:bg-accent"
               onClick={() => selectAthlete(athlete.id)}
             >
-              <CardHeader className="pb-1 pt-4 px-4">
+              <CardHeader className="px-4 pt-4 pb-1">
                 <CardTitle className="text-base">{athlete.name}</CardTitle>
               </CardHeader>
-              <CardContent className="pb-4 px-4">
+              <CardContent className="px-4 pb-4">
                 <p className="text-sm text-muted-foreground">{athlete.email}</p>
                 <Button
                   size="sm"
@@ -86,11 +84,9 @@ export function AthletePicker() {
           ))}
 
           {athletes.length === 0 && (
-            <div className="pt-4 text-center space-y-3">
+            <div className="space-y-3 pt-4 text-center">
               <Users className="mx-auto h-8 w-8 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">
-                {t('athletePicker.noAthletes')}
-              </p>
+              <p className="text-sm text-muted-foreground">{t('athletePicker.noAthletes')}</p>
               <Link
                 to={localePath('/settings?tab=athletes')}
                 className="text-sm text-primary underline hover:text-primary/80"

@@ -18,7 +18,7 @@ export const isMockMode =
 
 if (isMockMode) {
   console.info(
-    '[Mock Mode] Using in-memory mock data. Remove VITE_MOCK_MODE=true from .env.local to use real Supabase.'
+    '[Mock Mode] Using in-memory mock data. Remove VITE_MOCK_MODE=true from .env.local to use real Supabase.',
   );
 }
 
@@ -30,5 +30,5 @@ export const supabase = createClient(
       // Suppress automatic token refresh logs in non-mock mode
       debug: false,
     },
-  }
+  },
 );

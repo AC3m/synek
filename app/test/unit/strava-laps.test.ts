@@ -77,7 +77,7 @@ describe('classifyLaps', () => {
     ];
 
     const result = classifyLaps(laps);
-    expect(result[0].segmentType).toBe('warmup');   // name-based
+    expect(result[0].segmentType).toBe('warmup'); // name-based
     expect(result[1].segmentType).toBe('interval'); // active + has name + has rest lap
     expect(result[2].segmentType).toBe('recovery'); // rest + has name
     expect(result[3].segmentType).toBe('interval'); // active + has name + has rest lap

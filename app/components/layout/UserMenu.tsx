@@ -39,8 +39,7 @@ export function UserMenu() {
         >
           <User className="h-3.5 w-3.5" />
           <span className="hidden sm:inline">
-            {user.name}{' '}
-            <span className="text-xs text-muted-foreground/70">({roleLabel})</span>
+            {user.name} <span className="text-xs text-muted-foreground/70">({roleLabel})</span>
           </span>
         </Button>
       </DropdownMenuTrigger>

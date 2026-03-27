@@ -57,9 +57,7 @@ export function RunFields({ data, onChange }: RunFieldsProps) {
           onChange={(e) =>
             onChange({
               ...data,
-              elevation_gain_m: e.target.value
-                ? parseInt(e.target.value)
-                : undefined,
+              elevation_gain_m: e.target.value ? parseInt(e.target.value) : undefined,
             })
           }
         />

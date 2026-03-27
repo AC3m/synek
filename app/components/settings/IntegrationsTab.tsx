@@ -28,7 +28,11 @@ interface IntegrationsTabProps {
   className?: string;
 }
 
-export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }: IntegrationsTabProps) {
+export function IntegrationsTab({
+  onConnectStrava,
+  currentWeekStart,
+  className,
+}: IntegrationsTabProps) {
   const { t } = useTranslation('common');
   const { user } = useAuth();
 
@@ -58,7 +62,9 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
   }
 
   if (isLoading) {
-    return <div className={cn('text-sm text-muted-foreground', className)}>{t('strava.syncing')}</div>;
+    return (
+      <div className={cn('text-sm text-muted-foreground', className)}>{t('strava.syncing')}</div>
+    );
   }
 
   return (
@@ -94,7 +100,12 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
             )}
             {currentWeekStart && selectedWeekStart && (
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={handlePrevWeek} aria-label="Previous week">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handlePrevWeek}
+                  aria-label="Previous week"
+                >
                   {'<'}
                 </Button>
                 <span className="text-sm tabular-nums">
@@ -109,12 +120,7 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
                 >
                   {'>'}
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleSync}
-                  disabled={sync.isPending}
-                >
+                <Button variant="outline" size="sm" onClick={handleSync} disabled={sync.isPending}>
                   {sync.isPending ? t('strava.syncing') : t('strava.syncNow')}
                 </Button>
               </div>
@@ -132,7 +138,10 @@ export function IntegrationsTab({ onConnectStrava, currentWeekStart, className }
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">{t('strava.description')}</p>
-            <button onClick={onConnectStrava} className="p-0 border-0 bg-transparent hover:opacity-90 transition-opacity">
+            <button
+              onClick={onConnectStrava}
+              className="border-0 bg-transparent p-0 transition-opacity hover:opacity-90"
+            >
               <img
                 src={stravaAssets.connectWithStravaOrangeUrl}
                 alt="Connect with Strava"

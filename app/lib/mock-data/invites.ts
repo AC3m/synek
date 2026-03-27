@@ -1,13 +1,13 @@
-import type { Invite, InvitePreview } from '~/types/invites'
-import { DAILY_INVITE_LIMIT } from '~/lib/config'
+import type { Invite, InvitePreview } from '~/types/invites';
+import { DAILY_INVITE_LIMIT } from '~/lib/config';
 
 // ---------------------------------------------------------------------------
 // Seed data — 4 invites for coach-1, one per status
 // ---------------------------------------------------------------------------
 
-const now = new Date()
-const future = new Date(now.getTime() + 23 * 60 * 60 * 1000).toISOString()
-const past = new Date(now.getTime() - 25 * 60 * 60 * 1000).toISOString()
+const now = new Date();
+const future = new Date(now.getTime() + 23 * 60 * 60 * 1000).toISOString();
+const past = new Date(now.getTime() - 25 * 60 * 60 * 1000).toISOString();
 
 const MOCK_INVITES: Invite[] = [
   {
@@ -50,13 +50,13 @@ const MOCK_INVITES: Invite[] = [
     usedBy: null,
     usedAt: null,
   },
-]
+];
 
 // Mutable store — deep-cloned so tests can reset without affecting MOCK_INVITES
-let inviteStore: Invite[] = MOCK_INVITES.map((i) => ({ ...i }))
+let inviteStore: Invite[] = MOCK_INVITES.map((i) => ({ ...i }));
 
 export function resetMockInvites() {
-  inviteStore = MOCK_INVITES.map((i) => ({ ...i }))
+  inviteStore = MOCK_INVITES.map((i) => ({ ...i }));
 }
 
 // ---------------------------------------------------------------------------
@@ -66,21 +66,21 @@ export function resetMockInvites() {
 export function mockListInvites(coachId: string): Invite[] {
   return inviteStore
     .filter((i) => i.coachId === coachId)
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export function mockCreateInvite(coachId: string): string {
-  const todayUtc = new Date()
-  todayUtc.setUTCHours(0, 0, 0, 0)
+  const todayUtc = new Date();
+  todayUtc.setUTCHours(0, 0, 0, 0);
   const count = inviteStore.filter(
-    (i) => i.coachId === coachId && new Date(i.createdAt) >= todayUtc
-  ).length
+    (i) => i.coachId === coachId && new Date(i.createdAt) >= todayUtc,
+  ).length;
 
-  if (count >= DAILY_INVITE_LIMIT) throw new Error('rate_limit_exceeded')
+  if (count >= DAILY_INVITE_LIMIT) throw new Error('rate_limit_exceeded');
 
   const token = Array.from(crypto.getRandomValues(new Uint8Array(16)))
     .map((b) => b.toString(16).padStart(2, '0'))
-    .join('')
+    .join('');
 
   const invite: Invite = {
     id: `inv-${Date.now()}`,
@@ -91,23 +91,23 @@ export function mockCreateInvite(coachId: string): string {
     expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
     usedBy: null,
     usedAt: null,
-  }
-  inviteStore.push(invite)
-  return token
+  };
+  inviteStore.push(invite);
+  return token;
 }
 
 export function mockRevokeInvite(inviteId: string): void {
-  const invite = inviteStore.find((i) => i.id === inviteId)
-  if (invite) invite.status = 'revoked'
+  const invite = inviteStore.find((i) => i.id === inviteId);
+  if (invite) invite.status = 'revoked';
 }
 
 export function mockGetInvitePreview(token: string): InvitePreview {
-  const invite = inviteStore.find((i) => i.token === token)
-  if (!invite) return { valid: false, reason: 'not_found' }
-  if (invite.status === 'used') return { valid: false, reason: 'used' }
-  if (invite.status === 'revoked') return { valid: false, reason: 'revoked' }
+  const invite = inviteStore.find((i) => i.token === token);
+  if (!invite) return { valid: false, reason: 'not_found' };
+  if (invite.status === 'used') return { valid: false, reason: 'used' };
+  if (invite.status === 'revoked') return { valid: false, reason: 'revoked' };
   if (invite.status === 'expired' || new Date(invite.expiresAt) < new Date()) {
-    return { valid: false, reason: 'expired' }
+    return { valid: false, reason: 'expired' };
   }
-  return { valid: true, coachName: 'Coach' }
+  return { valid: true, coachName: 'Coach' };
 }

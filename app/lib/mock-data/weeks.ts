@@ -3,7 +3,7 @@ import { weekPlans, getAthleteMap, delay, nextId } from './_shared';
 
 export async function mockFetchWeekPlanByDate(
   weekStart: string,
-  athleteId: string
+  athleteId: string,
 ): Promise<WeekPlan | null> {
   await delay();
   return weekPlans.get(athleteId)?.get(weekStart) ?? null;
@@ -62,7 +62,7 @@ export async function mockGetOrCreateWeekPlan(
   weekStart: string,
   year: number,
   weekNumber: number,
-  athleteId: string
+  athleteId: string,
 ): Promise<WeekPlan> {
   const existing = await mockFetchWeekPlanByDate(weekStart, athleteId);
   if (existing) return existing;

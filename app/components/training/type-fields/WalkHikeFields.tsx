@@ -30,7 +30,7 @@ export function WalkHikeFields({ data, onChange, className }: WalkHikeFieldsProp
                 'rounded-md border px-3 py-1 text-sm',
                 data.terrain === opt
                   ? 'border-primary bg-primary text-primary-foreground'
-                  : 'border-border bg-background hover:bg-muted'
+                  : 'border-border bg-background hover:bg-muted',
               )}
             >
               {t(`walkHike.terrainOptions.${opt}`)}

@@ -45,7 +45,7 @@ function renderNav() {
   return render(
     <MemoryRouter>
       <LandingNav />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -94,20 +94,14 @@ describe('LandingNav — marketing links on landing page (/pl)', () => {
     // anchor tags — not router Links (no /pl prefix)
     expect(screen.getByRole('link', { name: 'nav.getStarted' })).toHaveAttribute(
       'href',
-      '#get-started'
+      '#get-started',
     );
     expect(screen.getByRole('link', { name: 'nav.whySynek' })).toHaveAttribute(
       'href',
-      '#why-synek'
+      '#why-synek',
     );
-    expect(screen.getByRole('link', { name: 'nav.features' })).toHaveAttribute(
-      'href',
-      '#features'
-    );
-    expect(screen.getByRole('link', { name: 'nav.contact' })).toHaveAttribute(
-      'href',
-      '#contact'
-    );
+    expect(screen.getByRole('link', { name: 'nav.features' })).toHaveAttribute('href', '#features');
+    expect(screen.getByRole('link', { name: 'nav.contact' })).toHaveAttribute('href', '#contact');
   });
 });
 
@@ -122,11 +116,11 @@ describe('LandingNav — marketing links on non-landing page (/pl/login)', () =>
     // resolveHref prepends "/" to the anchor href
     expect(screen.getByRole('link', { name: 'nav.getStarted' })).toHaveAttribute(
       'href',
-      '/#get-started'
+      '/#get-started',
     );
     expect(screen.getByRole('link', { name: 'nav.whySynek' })).toHaveAttribute(
       'href',
-      '/#why-synek'
+      '/#why-synek',
     );
   });
 

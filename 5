@@ -1,0 +1,126 @@
+1c50327 fix: pass missing handlers to MultiWeekView and fix isViewing self
+5c72c79 fix: gate strengh_session calls on modal open and clean-up calls upon session delete
+941c8d0 chore: condition laps call on modal open and remove redundant useMemo
+30c4c49 chore: add prettier with tailwindcss plugin
+220b03d fix: resolve hooks violation, delete dialog timing, and kcal i18n
+253fd12 fix: smooth week navigation and eliminate first-load blink on athlete view
+0acd7a0 refactor: eliminate prop drilling via SessionActionsContext
+33b40cd refactor: optimise for React best practices part 1
+c4552fd chore: release v0.4.2
+7114144 Merge pull request #54 from AC3m/docs/optimise-claude-md-readme-constitution
+56b8148 docs: optimise CLAUDE.md, README, and constitution
+5133f09 chore: release v0.4.1
+401c645 Merge pull request #53 from AC3m/fix/strength-exercise-duplicate-key
+4709a78 docs: update specs for feat/013
+4b3336b fix: resolve strength session exercise data loss and React Query issues
+a954ce1 chore: release v0.4.0
+8d8b152 Merge pull request #52 from AC3m/013-strength-workout-module
+c472486 fix: scope strength variant cache by userId, add coach RLS policies
+2fadb7f chore: release v0.3.1
+986d6af fix: coach strength library shows athlete variants when athlete is selected
+fe2f9ce chore: bump GitHub Actions to Node.js 24-compatible versions
+2dda932 feat: strength workout module with variant library and session logging
+d67ec2c chore: release v0.3.0
+d0a39b7 Merge pull request #50 from AC3m/fix/ui-tweaks
+b17122b fix: add missing Polish plural forms for history session count
+b70687e feat: unified loading experience with stagger animations
+0052237 feat: multi-week view UI polish — animations, dialogs, and UX fixes
+97f9117 Merge pull request #49 from AC3m/012-multi-week-planning
+db39671 feat: multi-week planning view with copy, DnD reorder, and history
+55ae778 Merge pull request #48 from AC3m/011-junction-garmin-poc
+e660feb feat: back-fill week stats from Garmin workout data
+abab741 feat: integrate junction/graming poc on the FE
+346ed31 feat: integrate junction/graming poc to receive raw workout webhooks
+76d5b06 Merge pull request #43 from AC3m/feat/session-detail-modal
+f0e423a fix: add small padding to show calendar edges
+9e091dd refactor: simplify session detail modal and polish UI details
+7fa41da feat: add session detail modal and simplify existing UJ
+154d3e3 Merge pull request #42 from AC3m/refactor/strava-run-intervals
+de54669 refactor: add horizontal scroll for narrow desktop view
+d49402d refactor: unify intervals modal, add translations to toasts, add loader to confirm and share with coach btn
+da577c5 Merge pull request #39 from AC3m/010-strava-run-intervals
+e341ad5 feat: per-session Strava sync and unified StravaActionsBar
+db4aa49 feat: contextual pace chip with Zap icon and form hint for interval runs
+f86d5fb feat: add interval lap breakdown to run session cards
+ab31254 chore: release v0.2.0
+426b9c6 Merge pull request #22 from AC3m/feat/adopt-strava-reqs
+6419398 refactor: fix redundant null check and document confirm button intent
+58a7e47 fix: keep week skeleton visible until sessions load
+13ef909 ci: configure git author for release job
+d144f4c refactor: clean up code
+a7e34db refactor: clean up strava reqs adoption
+487cf44 feat: update landing page on strava status
+10860d7 docs: add architecture overview and strava api submission form details
+c870fe2 fix: resolve ReferenceError by importing bulkConfirmStravaSessions
+a39e521 chore: keep console log for bulk confirm errors
+a53c481 fix: resolve RPC authorization issue by removing security definer and correcting auth check
+967bfc6 fix: only apply blur masking to sessions that originated from Strava
+28ea2cb style: move floating action bar up on mobile to avoid overlapping with bottom navigation
+1203c06 feat: add floating action bar for bulk strava session confirmation
+b615805 feat: add bulk confirm rpc for strava sessions
+3c0f647 style: change confirm button to use ellipsis instead of wrapping for compactness
+80c316b style: fix confirm button text overflow on narrow columns
+f21151b fix: move strava confirmation flag to training_sessions table so UI can fetch it correctly
+9d697fe fix: implement strava confirmation in mock mode
+d6ddb32 fix: add optimistic update to strava confirm hook to resolve UI unresponsiveness
+f27b113 fix: resolve sql migration relation and naming errors for remote push
+41fb328 i18n: add polish translations for strava features and fix button translation
+00e351c fix: resolve ReferenceError by destructuring onConfirmStrava in WeekGrid and implement in CoachWeekView
+32726ae fix: implement strava confirmation logic and refine branding UI
+1bbc10d fix: resolve strava attribution responsiveness and resize connect button
+6740b83 feat: use official strava assets and improve responsiveness of branding elements
+ac33219 feat: move strava attribution to under the results for better contextual placement
+ce35440 test: mock useAuth in strava sync cta tests
+1b2abee feat: implement strava ui compliance and confirmation flow
+1f116df feat: add background token refresh service via pg_cron
+2cbb489 feat: add strava webhook edge function
+57395b5 chore: add strava activities schema updates and secure view
+de2d624 docs: add implementation plan for strava api limit extension
+906b8b7 docs: fix insecure data masking and data orphan risk in strava spec
+3dcb1e6 docs: add technical spec for strava api limit extension
+10c1a5e Merge pull request #21 from AC3m/fix/acitivity-types-mapping-strava
+0b2e55e fix: make mobility training sync
+317678c Merge pull request #20 from AC3m/fix/ui-bugs-2
+641fa17 fix: update mobile bottom bar and athlete context of coach layout
+1823f6b Merge pull request #19 from AC3m/fix/ui-bugs-2
+226bb5c fix: offload the hero section
+42aff80 chore: update the landing page copy and UI
+2184e7f feat: refine UI, fix navigation bugs and update branded assets
+8d08c88 Merge pull request #18 from AC3m/fix/ui-bugs
+7b1cf03 chore: update favicon
+3900881 Merge pull request #17 from AC3m/fix/ui-bugs
+632e6b5 fix: remove loader flash, Sync Now header button, and update login logo
+741565b Merge pull request #16 from AC3m/feat/redesign
+2f90ad3 feat: redesign UI with mobile nav, fix feedback form RLS and success state
+a644e52 Merge pull request #15 from AC3m/008-landing-page
+ba6f1f7 fix: improve mobile layout across landing page
+ca7a91f Merge pull request #14 from AC3m/008-landing-page
+f8a7b92 feat: landing page with registration flow and unified nav controls
+3243f33 Merge pull request #13 from AC3m/fix/training-types
+0984c9f feat: calendar UX improvements — today highlight, nav padding, header layout
+5336312 Merge pull request #12 from AC3m/007-athlete-planning
+b694328 feat: athlete self-planning and coach personal profile
+7ccc02e Merge pull request #11 from AC3m/feat/strava-sync-on-week-view
+95a89aa feat: add Strava Sync CTA to athlete week view and session cards
+b4bccd4 Merge pull request #10 from AC3m/006-coach-athlete-invite
+78b0bc5 chore: update translations
+552ada7 feat: coach-athlete invite flow, coach registration, and account deletion
+22fd14a Merge pull request #9 from AC3m/005-tests-refactor
+2cd6732 feat: add Vitest test suite, mock-data refactor, URL locale routing, and changelog automation
+a9e4e33 Merge pull request #8 from AC3m/004-settings-strava
+e28afb6 fix: use VITE_APP_URL for Strava redirect_uri and deploy edge functions without JWT verification
+dfa1026 Merge pull request #7 from AC3m/004-settings-strava
+37b497d feat: Strava sync fixes, week selector, UI polish
+2015dab feat: add settings page with profile management and Strava integration
+7a6474e Merge pull request #6 from AC3m/feat/dark-mode
+35a6523 feat: add dark mode and athlete performance update
+3ca3f25 Merge pull request #5 from AC3m/003-sheets-data-migration
+cee6279 feat: migrate the google sheet data for archee user and extend performance data
+95c90e4 Merge pull request #3 from AC3m/003-sheets-data-migration
+d94879b feat: add WeekSummary enhancements — collapsible card, Run KM, Total Time
+f589057 Merge pull request #2 from AC3m/001-vercel-cicd-setup
+30bb8e2 feat: integrate the app with Vercel
+c1867b9 Merge pull request #1 from AC3m/001-auth-role-management
+296885e feat: auth-based role management with coach/athlete login
+3b0f882 feat: create Synek app and connect it to Supabase
+1d1de57 first commit

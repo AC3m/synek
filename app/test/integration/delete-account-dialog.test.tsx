@@ -40,7 +40,7 @@ function renderDialog() {
       <MemoryRouter>
         <DeleteAccountDialog />
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -58,90 +58,64 @@ describe('DeleteAccountDialog', () => {
   it('renders the trigger button', () => {
     renderDialog();
     expect(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
+      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }),
     ).toBeInTheDocument();
   });
 
   it('opens step 1 dialog when trigger is clicked', async () => {
     renderDialog();
     const user = userEvent.setup();
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    expect(
-      screen.getByText(/settings\.deleteAccount\.description/i)
-    ).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    expect(screen.getByText(/settings\.deleteAccount\.description/i)).toBeInTheDocument();
   });
 
   it('advances to step 2 when "Continue" is clicked', async () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
 
-    expect(
-      screen.getByText(/settings\.deleteAccount\.typeUsername/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/settings\.deleteAccount\.typeUsername/i)).toBeInTheDocument();
   });
 
   it('submit button is disabled when input is empty', async () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
 
-    expect(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })).toBeDisabled();
   });
 
   it('submit button is disabled when input does not match username', async () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
     await user.type(
       screen.getByPlaceholderText(/settings\.deleteAccount\.typeUsernamePlaceholder/i),
-      'alice'
+      'alice',
     );
 
-    expect(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })).toBeDisabled();
   });
 
   it('submit button is enabled when input matches exact username', async () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
     await user.type(
       screen.getByPlaceholderText(/settings\.deleteAccount\.typeUsernamePlaceholder/i),
-      'Alice Johnson'
+      'Alice Johnson',
     );
 
     expect(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
+      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i }),
     ).not.toBeDisabled();
   });
 
@@ -149,45 +123,31 @@ describe('DeleteAccountDialog', () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
     await user.type(
       screen.getByPlaceholderText(/settings\.deleteAccount\.typeUsernamePlaceholder/i),
-      'Alice Johnson'
+      'Alice Johnson',
     );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i }));
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
     const [url, options] = mockFetch.mock.calls[0] as [string, RequestInit];
     expect(url).toContain('delete-account');
-    expect((options.headers as Record<string, string>)['Authorization']).toBe(
-      'Bearer test-token'
-    );
+    expect((options.headers as Record<string, string>)['Authorization']).toBe('Bearer test-token');
   });
 
   it('calls logout() and navigates to /login on successful deletion', async () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
     await user.type(
       screen.getByPlaceholderText(/settings\.deleteAccount\.typeUsernamePlaceholder/i),
-      'Alice Johnson'
+      'Alice Johnson',
     );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i }));
 
     await waitFor(() => expect(mockLogout).toHaveBeenCalledTimes(1));
     expect(mockNavigate).toHaveBeenCalledWith('/login', { replace: true });
@@ -202,19 +162,13 @@ describe('DeleteAccountDialog', () => {
     renderDialog();
     const user = userEvent.setup();
 
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i })
-    );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.cta/i }));
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.confirmStep/i }));
     await user.type(
       screen.getByPlaceholderText(/settings\.deleteAccount\.typeUsernamePlaceholder/i),
-      'Alice Johnson'
+      'Alice Johnson',
     );
-    await user.click(
-      screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i })
-    );
+    await user.click(screen.getByRole('button', { name: /settings\.deleteAccount\.submit/i }));
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
     expect(mockLogout).not.toHaveBeenCalled();

@@ -6,7 +6,12 @@ import { StaggerIn } from '~/components/ui/stagger-in';
 import { WeekGrid } from './WeekGrid';
 import { HistoryWeekRow } from './HistoryWeekRow';
 import { useWeekHistory } from '~/lib/hooks/useWeekHistory';
-import { useCopyWeekSessions, useCopyDaySessions, useCopySession, useUpdateSession } from '~/lib/hooks/useSessions';
+import {
+  useCopyWeekSessions,
+  useCopyDaySessions,
+  useCopySession,
+  useUpdateSession,
+} from '~/lib/hooks/useSessions';
 import { getWeekDateRange, getTodayDayOfWeek, parseWeekId } from '~/lib/utils/date';
 import type { UserRole } from '~/lib/auth';
 import type {
@@ -16,6 +21,7 @@ import type {
   SessionsByDay,
   ReorderSessionInput,
   CopyDayInput,
+  AthleteSessionUpdate,
 } from '~/types/training';
 
 interface MultiWeekViewProps {
@@ -27,6 +33,9 @@ interface MultiWeekViewProps {
   onEditSession: (session: TrainingSession) => void;
   onDeleteSession: (sessionId: string) => void;
   onUpdateCoachPostFeedback: (sessionId: string, feedback: string | null) => void;
+  onToggleComplete?: (sessionId: string, completed: boolean) => void;
+  onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   userRole?: UserRole;
   showAthleteControls?: boolean;
   className?: string;
@@ -41,6 +50,9 @@ export function MultiWeekView({
   onEditSession,
   onDeleteSession,
   onUpdateCoachPostFeedback,
+  onToggleComplete,
+  onUpdateNotes,
+  onUpdatePerformance,
   userRole,
   showAthleteControls,
   className,
@@ -67,12 +79,13 @@ export function MultiWeekView({
   const targetWeekPlanId = currentWeekPlan?.id ?? '';
 
   const currentRestDays = useMemo(
-    () => new Set(
-      Object.entries(currentSessionsByDay)
-        .filter(([, sessions]) => sessions.some((s) => s.trainingType === 'rest_day'))
-        .map(([day]) => day as DayOfWeek)
-    ),
-    [currentSessionsByDay]
+    () =>
+      new Set(
+        Object.entries(currentSessionsByDay)
+          .filter(([, sessions]) => sessions.some((s) => s.trainingType === 'rest_day'))
+          .map(([day]) => day as DayOfWeek),
+      ),
+    [currentSessionsByDay],
   );
 
   function handleCopyWeek(sourceWeekPlanId: string) {
@@ -88,16 +101,24 @@ export function MultiWeekView({
   }
 
   function handleCopySession(session: TrainingSession, targetDay: DayOfWeek) {
-    if (!targetWeekPlanId || session.trainingType === 'rest_day' || currentRestDays.has(targetDay)) return;
-    copySessionMutation.mutate({ session, targetWeekPlanId, targetDay }, {
-      onSuccess: () => setSelectedDay(targetDay),
-    });
+    if (!targetWeekPlanId || session.trainingType === 'rest_day' || currentRestDays.has(targetDay))
+      return;
+    copySessionMutation.mutate(
+      { session, targetWeekPlanId, targetDay },
+      {
+        onSuccess: () => setSelectedDay(targetDay),
+      },
+    );
   }
 
   const reversedHistory = useMemo(() => [...history].reverse(), [history]);
 
   function handleReorderSession(input: ReorderSessionInput) {
-    updateSessionMutation.mutate({ id: input.sessionId, dayOfWeek: input.dayOfWeek, sortOrder: input.sortOrder });
+    updateSessionMutation.mutate({
+      id: input.sessionId,
+      dayOfWeek: input.dayOfWeek,
+      sortOrder: input.sortOrder,
+    });
   }
 
   return (
@@ -134,7 +155,7 @@ export function MultiWeekView({
       {/* Current week header */}
       <div className="flex items-center gap-2 pt-1">
         <div className="h-px flex-1 bg-[color:var(--border)]" />
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-primary px-2">
+        <span className="px-2 text-[10px] font-semibold tracking-widest text-primary uppercase">
           {t('history.currentWeek')} {currentWeekNumber} · {currentWeekLabel}
         </span>
         <div className="h-px flex-1 bg-[color:var(--border)]" />
@@ -150,6 +171,9 @@ export function MultiWeekView({
           onEditSession={onEditSession}
           onDeleteSession={onDeleteSession}
           onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
+          onToggleComplete={onToggleComplete}
+          onUpdateNotes={onUpdateNotes}
+          onUpdatePerformance={onUpdatePerformance}
           onReorderSession={handleReorderSession}
           userRole={userRole}
           showAthleteControls={showAthleteControls}

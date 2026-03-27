@@ -38,7 +38,11 @@ export function JunctionGarminSection({ className }: JunctionGarminSectionProps)
     if (user && pendingJunctionUserId.current) {
       connect.mutate(
         { appUserId: user.id, junctionUserId: pendingJunctionUserId.current },
-        { onSettled: () => { pendingJunctionUserId.current = null; } },
+        {
+          onSettled: () => {
+            pendingJunctionUserId.current = null;
+          },
+        },
       );
     } else {
       pendingJunctionUserId.current = null;
@@ -52,7 +56,9 @@ export function JunctionGarminSection({ className }: JunctionGarminSectionProps)
     setOpenError(null);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const token = session?.access_token;
       if (!token) throw new Error('not_authenticated');
 
@@ -69,7 +75,7 @@ export function JunctionGarminSection({ className }: JunctionGarminSectionProps)
 
       if (!res.ok) throw new Error('create_user_failed');
 
-      const { linkWebUrl, junctionUserId } = await res.json() as {
+      const { linkWebUrl, junctionUserId } = (await res.json()) as {
         linkWebUrl: string;
         junctionUserId: string;
       };
@@ -123,12 +129,20 @@ export function JunctionGarminSection({ className }: JunctionGarminSectionProps)
       <div className="flex items-center gap-3">
         <svg viewBox="0 0 40 40" className="h-8 w-8" aria-hidden>
           <rect width="40" height="40" rx="6" fill="#007CC3" />
-          <text x="20" y="26" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" fontFamily="sans-serif">G</text>
+          <text
+            x="20"
+            y="26"
+            textAnchor="middle"
+            fill="white"
+            fontSize="14"
+            fontWeight="bold"
+            fontFamily="sans-serif"
+          >
+            G
+          </text>
         </svg>
         <span className="font-semibold">Garmin</span>
-        {isConnected && (
-          <Badge variant="secondary">{t('junction.connectedBadge')}</Badge>
-        )}
+        {isConnected && <Badge variant="secondary">{t('junction.connectedBadge')}</Badge>}
       </div>
 
       {isConnected ? (
@@ -152,9 +166,7 @@ export function JunctionGarminSection({ className }: JunctionGarminSectionProps)
           >
             {isOpening ? t('junction.connecting') : t('junction.connectButton')}
           </Button>
-          {openError && (
-            <p className="text-xs text-destructive">{openError}</p>
-          )}
+          {openError && <p className="text-xs text-destructive">{openError}</p>}
         </div>
       )}
     </div>

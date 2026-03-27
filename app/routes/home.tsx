@@ -1,4 +1,5 @@
 import { Navigate, useParams } from 'react-router';
+import { AppLoader } from '~/components/ui/app-loader';
 import { useAuth } from '~/lib/context/AuthContext';
 
 export function meta() {
@@ -12,7 +13,7 @@ export default function Home() {
   const { user, isLoading } = useAuth();
   const { locale = 'pl' } = useParams<{ locale?: string }>();
 
-  if (isLoading) return null;
+  if (isLoading) return <AppLoader />;
 
   if (!user) return <Navigate to={`/${locale}/login`} replace />;
 

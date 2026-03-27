@@ -4,6 +4,8 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router';
 import { createTestQueryClient } from '~/test/utils/query-client';
 import { SessionCard } from '~/components/calendar/SessionCard';
+import { SessionActionsProvider } from '~/lib/context/SessionActionsContext';
+import type { SessionActionsContextValue } from '~/lib/context/SessionActionsContext';
 import type { UserRole } from '~/lib/auth';
 import type { TrainingSession } from '~/types/training';
 
@@ -33,7 +35,6 @@ vi.mock('~/lib/hooks/useJunctionConnection', () => ({
  *   - Disables "Sync Now" and shows "Syncing…" when isPending
  *   - Calls mutate with correct args on click
  */
-
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -67,22 +68,45 @@ function makeSession(overrides: Partial<TrainingSession> = {}): TrainingSession 
   };
 }
 
+function makeContext(
+  overrides: Partial<SessionActionsContextValue> = {},
+): SessionActionsContextValue {
+  return {
+    readonly: false,
+    athleteMode: false,
+    showAthleteControls: false,
+    stravaConnected: false,
+    junctionConnected: false,
+    ...overrides,
+  };
+}
+
 function renderCard(
   session: TrainingSession,
   props: {
     athleteMode?: boolean;
     stravaConnected?: boolean;
     onSyncStrava?: (sessionId: string) => Promise<void>;
+    onConfirmStrava?: (sessionId: string) => Promise<void>;
     userRole?: UserRole;
-  } = {}
+  } = {},
 ) {
   const qc = createTestQueryClient();
+  const ctx = makeContext({
+    athleteMode: props.athleteMode,
+    stravaConnected: props.stravaConnected,
+    onSyncStrava: props.onSyncStrava,
+    onConfirmStrava: props.onConfirmStrava,
+    userRole: props.userRole,
+  });
   return render(
     <QueryClientProvider client={qc}>
       <MemoryRouter>
-        <SessionCard session={session} {...props} />
+        <SessionActionsProvider value={ctx}>
+          <SessionCard session={session} />
+        </SessionActionsProvider>
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -132,7 +156,12 @@ describe('SessionCard — Strava Sync chip', () => {
   it('calls onSyncStrava when Sync chip is clicked', async () => {
     const onSyncStrava = vi.fn();
     const session = makeSession({ isCompleted: true, stravaActivityId: null });
-    renderCard(session, { athleteMode: true, stravaConnected: true, onSyncStrava, userRole: 'athlete' });
+    renderCard(session, {
+      athleteMode: true,
+      stravaConnected: true,
+      onSyncStrava,
+      userRole: 'athlete',
+    });
 
     const chip = screen.getByRole('button', { name: /strava\.sync/i });
     await userEvent.click(chip);
@@ -149,17 +178,15 @@ describe('SessionCard — Strava Sync chip', () => {
     const onConfirmStrava = vi.fn();
 
     const qc = createTestQueryClient();
+    const ctx = makeContext({ athleteMode: true, userRole: 'athlete', onConfirmStrava });
     render(
       <QueryClientProvider client={qc}>
         <MemoryRouter>
-          <SessionCard
-            session={session}
-            athleteMode
-            onConfirmStrava={onConfirmStrava}
-            userRole="athlete"
-          />
+          <SessionActionsProvider value={ctx}>
+            <SessionCard session={session} />
+          </SessionActionsProvider>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     expect(screen.getByRole('button', { name: /strava\.confirmAndShare/i })).toBeInTheDocument();
@@ -173,17 +200,15 @@ describe('SessionCard — Strava Sync chip', () => {
     });
     const onConfirmStrava = vi.fn();
     const qc = createTestQueryClient();
+    const ctx = makeContext({ athleteMode: true, userRole: 'athlete', onConfirmStrava });
     render(
       <QueryClientProvider client={qc}>
         <MemoryRouter>
-          <SessionCard
-            session={session}
-            athleteMode
-            onConfirmStrava={onConfirmStrava}
-            userRole="athlete"
-          />
+          <SessionActionsProvider value={ctx}>
+            <SessionCard session={session} />
+          </SessionActionsProvider>
         </MemoryRouter>
-      </QueryClientProvider>
+      </QueryClientProvider>,
     );
 
     await userEvent.click(screen.getByRole('button', { name: /strava\.confirmAndShare/i }));
@@ -198,7 +223,9 @@ describe('SessionCard — Strava Sync chip', () => {
     });
     renderCard(session, { athleteMode: true, userRole: 'coach' });
 
-    expect(screen.queryByRole('button', { name: /strava\.confirmAndShare/i })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /strava\.confirmAndShare/i }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows blurred placeholders for coach on unconfirmed Strava data', () => {

@@ -1,13 +1,9 @@
 import type { StravaLapSegmentType } from '~/types/strava';
 
-export interface RawLap {
+interface RawLap {
   lapIndex: number;
   name?: string | null;
   intensity?: 'active' | 'rest' | null;
-}
-
-export interface ClassifiedLap extends RawLap {
-  segmentType: StravaLapSegmentType;
 }
 
 /** Convert Strava average speed (m/s) to a human-readable pace string. */
@@ -41,7 +37,9 @@ export function formatPaceSpeed(averageSpeed: number | null, suffix = ''): strin
  * If there are no rest laps, all laps are classified as 'interval'
  * (callers should suppress the interval affordance in this case).
  */
-export function classifyLaps<T extends RawLap>(rawLaps: T[]): Array<T & { segmentType: StravaLapSegmentType }> {
+export function classifyLaps<T extends RawLap>(
+  rawLaps: T[],
+): Array<T & { segmentType: StravaLapSegmentType }> {
   if (rawLaps.length === 0) return [];
 
   const hasRestLap = rawLaps.some((l) => l.intensity === 'rest');

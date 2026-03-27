@@ -15,7 +15,14 @@ import { ConfirmDialog } from '~/components/ui/confirm-dialog';
 import { WeekGrid } from './WeekGrid';
 import { WeekSkeleton } from './WeekSkeleton';
 import { getWeekDateRange, parseWeekId } from '~/lib/utils/date';
-import { DAYS_OF_WEEK, type DayOfWeek, type TrainingSession, type WeekPlan, type SessionsByDay, type CopyDayInput } from '~/types/training';
+import {
+  DAYS_OF_WEEK,
+  type DayOfWeek,
+  type TrainingSession,
+  type WeekPlan,
+  type SessionsByDay,
+  type CopyDayInput,
+} from '~/types/training';
 
 interface HistoryWeekRowProps {
   weekId: string;
@@ -73,7 +80,7 @@ export function HistoryWeekRow({
       ...acc,
       [day]: sessions.filter((s) => s.dayOfWeek === day),
     }),
-    {} as SessionsByDay
+    {} as SessionsByDay,
   );
 
   function confirmCopyWeek() {
@@ -94,18 +101,18 @@ export function HistoryWeekRow({
           aria-label={isExpanded ? t('history.collapse') : t('history.expand')}
           aria-expanded={isExpanded}
           onClick={onToggleExpand}
-          className="flex flex-1 items-center gap-2 text-left hover:opacity-80 transition-opacity min-w-0"
+          className="flex min-w-0 flex-1 items-center gap-2 text-left transition-opacity hover:opacity-80"
         >
           <ChevronRight
             className={cn(
               'h-4 w-4 shrink-0 text-[color:var(--foreground-secondary)] transition-transform duration-300 ease-out',
-              isExpanded && 'rotate-90'
+              isExpanded && 'rotate-90',
             )}
           />
-          <span className="text-sm font-medium truncate">
+          <span className="truncate text-sm font-medium">
             {t('history.weekLabel', { week: weekNumber, range: dateRange })}
           </span>
-          <span className="text-xs text-[color:var(--foreground-secondary)] shrink-0">
+          <span className="shrink-0 text-xs text-[color:var(--foreground-secondary)]">
             {weekPlan
               ? t('history.sessionCount', { count: sessionCount })
               : t('history.noSessions')}
@@ -117,10 +124,10 @@ export function HistoryWeekRow({
           <Button
             variant="outline"
             size="sm"
-            className="hidden sm:inline-flex h-7 px-2.5 text-xs shrink-0 border-primary/30 text-primary hover:bg-primary/5 hover:border-primary/60 transition-colors"
+            className="hidden h-7 shrink-0 border-primary/30 px-2.5 text-xs text-primary transition-colors hover:border-primary/60 hover:bg-primary/5 sm:inline-flex"
             onClick={() => setCopyWeekPending(true)}
           >
-            <Copy className="h-3 w-3 mr-1.5" />
+            <Copy className="mr-1.5 h-3 w-3" />
             {t('history.copyWeek')}
           </Button>
         )}
@@ -134,12 +141,12 @@ export function HistoryWeekRow({
         <div
           className={cn(
             'overflow-hidden transition-opacity duration-300 ease-out',
-            isExpanded ? 'opacity-100' : 'opacity-0'
+            isExpanded ? 'opacity-100' : 'opacity-0',
           )}
         >
           <div className="px-3 pb-3">
-            {everExpanded && (
-              isLoading ? (
+            {everExpanded &&
+              (isLoading ? (
                 <WeekSkeleton />
               ) : (
                 <>
@@ -159,16 +166,19 @@ export function HistoryWeekRow({
                     selectedDay={selectedDay}
                     onSelectDay={onSelectDay}
                   />
-
                 </>
-              )
-            )}
+              ))}
           </div>
         </div>
       </div>
 
       {/* Copy Session day-picker dialog */}
-      <Dialog open={!!copyPickSession} onOpenChange={(open) => { if (!open) setCopyPickSession(null); }}>
+      <Dialog
+        open={!!copyPickSession}
+        onOpenChange={(open) => {
+          if (!open) setCopyPickSession(null);
+        }}
+      >
         <DialogContent showCloseButton={false} className="max-w-sm">
           <DialogHeader>
             <DialogTitle>{t('history.copySession')}</DialogTitle>
@@ -183,7 +193,10 @@ export function HistoryWeekRow({
                   variant="outline"
                   size="sm"
                   disabled={isRestDay}
-                  onClick={() => { onCopySession(copyPickSession!, day); setCopyPickSession(null); }}
+                  onClick={() => {
+                    onCopySession(copyPickSession!, day);
+                    setCopyPickSession(null);
+                  }}
                   className="capitalize"
                   title={isRestDay ? t('history.copySessionRestDayBlocked') : undefined}
                 >
@@ -203,7 +216,9 @@ export function HistoryWeekRow({
       {/* Copy Week confirmation dialog */}
       <ConfirmDialog
         open={copyWeekPending}
-        onOpenChange={(open) => { if (!open) setCopyWeekPending(false); }}
+        onOpenChange={(open) => {
+          if (!open) setCopyWeekPending(false);
+        }}
         title={t('history.copyWeekConfirmTitle', { week: weekNumber })}
         description={t('history.copyWeekConfirmBody', { count: copyableCount })}
         confirmLabel={t('history.copyWeek')}

@@ -9,7 +9,7 @@ export function LanguageToggle() {
   const { pathname } = useLocation();
   const { i18n } = useTranslation();
 
-  const currentLocale = locale ?? (localStorage.getItem('locale') ?? 'pl');
+  const currentLocale = locale ?? localStorage.getItem('locale') ?? 'pl';
   const newLocale = currentLocale === 'en' ? 'pl' : 'en';
 
   const toggleLanguage = () => {
@@ -25,12 +25,7 @@ export function LanguageToggle() {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={toggleLanguage}
-      className="gap-1.5"
-    >
+    <Button variant="ghost" size="sm" onClick={toggleLanguage} className="gap-1.5">
       <Languages className="h-4 w-4" />
       {currentLocale === 'en' ? 'PL' : 'EN'}
     </Button>

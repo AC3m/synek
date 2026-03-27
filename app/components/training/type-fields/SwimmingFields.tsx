@@ -59,7 +59,7 @@ export function SwimmingFields({ data, onChange }: SwimmingFieldsProps) {
               <option key={opt} value={opt}>
                 {t(`swimming.strokeOptions.${opt}`)}
               </option>
-            )
+            ),
           )}
         </select>
       </div>

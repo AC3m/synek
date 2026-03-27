@@ -11,8 +11,10 @@ interface StatCardProps {
 export const StatCard = memo(function StatCard({ label, value, trend, className }: StatCardProps) {
   return (
     <div className={cn('rounded-lg border bg-card p-3', className)}>
-      <p className="text-[10px] uppercase tracking-widest text-muted-foreground leading-tight">{label}</p>
-      <p className="mt-1.5 text-xl font-semibold truncate">{value}</p>
+      <p className="text-[10px] leading-tight tracking-widest text-muted-foreground uppercase">
+        {label}
+      </p>
+      <p className="mt-1.5 truncate text-xl font-semibold">{value}</p>
       {trend && (
         <span
           className={cn(

@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import { useNavigate, Link, useParams } from 'react-router'
-import { Eye, EyeOff } from 'lucide-react'
-import { useTranslation } from 'react-i18next'
-import { z } from 'zod'
-import { useAuth } from '~/lib/context/AuthContext'
-import { supabase, isMockMode } from '~/lib/supabase'
-import { mockRegisterUser, mockLogin } from '~/lib/auth'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
-import { cn } from '~/lib/utils'
-import { LandingNav } from '~/components/landing/LandingNav'
-import type { UserRole } from '~/lib/auth'
+import { useState } from 'react';
+import { useNavigate, Link, useParams } from 'react-router';
+import { Eye, EyeOff } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { z } from 'zod';
+import { useAuth } from '~/lib/context/AuthContext';
+import { supabase, isMockMode } from '~/lib/supabase';
+import { mockRegisterUser, mockLogin } from '~/lib/auth';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { cn } from '~/lib/utils';
+import { LandingNav } from '~/components/landing/LandingNav';
+import type { UserRole } from '~/lib/auth';
 
 export function meta() {
-  return [{ title: 'Register — Synek' }]
+  return [{ title: 'Register — Synek' }];
 }
 
 const registerSchema = z.object({
@@ -24,47 +24,47 @@ const registerSchema = z.object({
     .min(8, 'Min 8 characters')
     .regex(/[A-Z]/, 'Must contain uppercase')
     .regex(/[0-9]/, 'Must contain a number'),
-})
+});
 
 export default function RegisterPage() {
-  const { t } = useTranslation('landing')
-  const { login } = useAuth()
-  const navigate = useNavigate()
-  const { locale = 'pl' } = useParams<{ locale: string }>()
+  const { t } = useTranslation('landing');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const { locale = 'pl' } = useParams<{ locale: string }>();
 
-  const [role, setRole] = useState<UserRole | null>(null)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [honeypot, setHoneypot] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
-  const [isPending, setIsPending] = useState(false)
+  const [role, setRole] = useState<UserRole | null>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [isPending, setIsPending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (honeypot) return
+    e.preventDefault();
+    if (honeypot) return;
 
     if (!role) {
-      setError(t('beta.selectRole'))
-      return
+      setError(t('beta.selectRole'));
+      return;
     }
 
-    const result = registerSchema.safeParse({ name: name.trim(), email: email.trim(), password })
+    const result = registerSchema.safeParse({ name: name.trim(), email: email.trim(), password });
     if (!result.success) {
-      const errs: Record<string, string> = {}
+      const errs: Record<string, string> = {};
       for (const issue of result.error.issues) {
-        const field = String(issue.path[0])
-        errs[field] = issue.message
+        const field = String(issue.path[0]);
+        errs[field] = issue.message;
       }
-      setFieldErrors(errs)
-      return
+      setFieldErrors(errs);
+      return;
     }
 
-    setFieldErrors({})
-    setError(null)
-    setIsPending(true)
+    setFieldErrors({});
+    setError(null);
+    setIsPending(true);
 
     try {
       if (isMockMode) {
@@ -72,49 +72,46 @@ export default function RegisterPage() {
           result.data.email,
           result.data.password,
           result.data.name,
-          role
-        )
-        await mockLogin(registered.email, result.data.password)
-        await login(registered.email, result.data.password)
+          role,
+        );
+        await mockLogin(registered.email, result.data.password);
+        await login(registered.email, result.data.password);
       } else {
-        const res = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/register-user`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-            },
-            body: JSON.stringify({
-              name: result.data.name,
-              email: result.data.email,
-              password: result.data.password,
-              role,
-            }),
-          }
-        )
-        const payload = await res.json() as { success?: boolean; error?: string }
+        const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/register-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            name: result.data.name,
+            email: result.data.email,
+            password: result.data.password,
+            role,
+          }),
+        });
+        const payload = (await res.json()) as { success?: boolean; error?: string };
 
         if (!res.ok) {
           if (payload.error === 'email_taken') {
-            setFieldErrors({ email: t('beta.emailAlreadyRegistered') })
-            setIsPending(false)
-            return
+            setFieldErrors({ email: t('beta.emailAlreadyRegistered') });
+            setIsPending(false);
+            return;
           }
-          throw new Error(payload.error ?? 'internal_error')
+          throw new Error(payload.error ?? 'internal_error');
         }
 
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email: result.data.email,
           password: result.data.password,
-        })
-        if (signInError) throw signInError
+        });
+        if (signInError) throw signInError;
       }
 
-      navigate(`/${locale}/${role}`, { replace: true })
+      navigate(`/${locale}/${role}`, { replace: true });
     } catch {
-      setError(t('beta.selectRole'))
-      setIsPending(false)
+      setError(t('beta.selectRole'));
+      setIsPending(false);
     }
   }
 
@@ -131,7 +128,10 @@ export default function RegisterPage() {
             <p className="mt-1 text-sm text-muted-foreground">{t('beta.subtitle')}</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border bg-background p-6 shadow-sm sm:p-8">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5 rounded-xl border bg-background p-6 shadow-sm sm:p-8"
+          >
             {/* Beta note */}
             <p className="rounded-lg bg-primary/5 p-3 text-sm text-muted-foreground">
               {t('beta.betaNote')}
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                       'rounded-lg border px-4 py-3 text-sm font-medium transition-colors',
                       role === r
                         ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:bg-muted'
+                        : 'border-border bg-background hover:bg-muted',
                     )}
                   >
                     {t(r === 'coach' ? 'beta.roleCoach' : 'beta.roleAthlete')}
@@ -171,9 +171,7 @@ export default function RegisterPage() {
                 autoComplete="name"
                 required
               />
-              {fieldErrors.name && (
-                <p className="text-xs text-destructive">{fieldErrors.name}</p>
-              )}
+              {fieldErrors.name && <p className="text-xs text-destructive">{fieldErrors.name}</p>}
             </div>
 
             {/* Email */}
@@ -189,9 +187,7 @@ export default function RegisterPage() {
                 autoComplete="email"
                 required
               />
-              {fieldErrors.email && (
-                <p className="text-xs text-destructive">{fieldErrors.email}</p>
-              )}
+              {fieldErrors.email && <p className="text-xs text-destructive">{fieldErrors.email}</p>}
             </div>
 
             {/* Password */}
@@ -212,7 +208,7 @@ export default function RegisterPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  className="absolute top-1/2 right-2.5 -translate-y-1/2 text-muted-foreground"
                   tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -250,5 +246,5 @@ export default function RegisterPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

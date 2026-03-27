@@ -12,14 +12,14 @@ export function CompletionToggle({ isCompleted, onChange }: CompletionToggleProp
   const { t } = useTranslation('athlete');
 
   return (
-    <label className="flex items-center gap-1.5 cursor-pointer group/toggle">
+    <label className="group/toggle flex cursor-pointer items-center gap-1.5">
       <Checkbox
         checked={isCompleted}
         onCheckedChange={(checked) => onChange(checked === true)}
         className={cn(
           'h-3.5 w-3.5',
-          'data-[state=checked]:bg-green-600 data-[state=checked]:border-green-600',
-          'dark:data-[state=checked]:bg-green-500 dark:data-[state=checked]:border-green-500',
+          'data-[state=checked]:border-green-600 data-[state=checked]:bg-green-600',
+          'dark:data-[state=checked]:border-green-500 dark:data-[state=checked]:bg-green-500',
         )}
       />
       <span

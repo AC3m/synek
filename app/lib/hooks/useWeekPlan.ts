@@ -1,10 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '~/lib/queries/keys';
-import {
-  fetchWeekPlanByDate,
-  getOrCreateWeekPlan,
-  updateWeekPlan,
-} from '~/lib/queries/weeks';
+import { fetchWeekPlanByDate, getOrCreateWeekPlan, updateWeekPlan } from '~/lib/queries/weeks';
 import { useAuth } from '~/lib/context/AuthContext';
 import type { UpdateWeekPlanInput, WeekPlan } from '~/types/training';
 
@@ -14,11 +10,12 @@ export function useWeekPlan(weekStart: string) {
     queryKey: queryKeys.weeks.byId(weekStart, effectiveAthleteId ?? ''),
     queryFn: () => fetchWeekPlanByDate(weekStart, effectiveAthleteId!),
     enabled: !!weekStart && !!effectiveAthleteId,
+    placeholderData: (prev) => prev,
   });
 }
 
 export function useGetOrCreateWeekPlan() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
   const { effectiveAthleteId } = useAuth();
 
   return useMutation({
@@ -32,28 +29,25 @@ export function useGetOrCreateWeekPlan() {
       weekNumber: number;
     }) => getOrCreateWeekPlan(weekStart, year, weekNumber, effectiveAthleteId!),
     onSuccess: (data) => {
-      queryClient.setQueryData(
-        queryKeys.weeks.byId(data.weekStart, data.athleteId),
-        data
-      );
+      qc.setQueryData(queryKeys.weeks.byId(data.weekStart, data.athleteId), data);
     },
   });
 }
 
 export function useUpdateWeekPlan() {
-  const queryClient = useQueryClient();
+  const qc = useQueryClient();
 
   return useMutation({
     mutationFn: (input: UpdateWeekPlanInput) => updateWeekPlan(input),
     onMutate: async (input) => {
-      const queries = queryClient.getQueriesData<WeekPlan>({
+      const queries = qc.getQueriesData<WeekPlan>({
         queryKey: queryKeys.weeks.all,
       });
       for (const [key, data] of queries) {
         if (data?.id === input.id) {
-          await queryClient.cancelQueries({ queryKey: key });
+          await qc.cancelQueries({ queryKey: key });
           const previous = data;
-          queryClient.setQueryData<WeekPlan>(key, {
+          qc.setQueryData<WeekPlan>(key, {
             ...previous,
             ...(input.loadType !== undefined && { loadType: input.loadType }),
             ...(input.totalPlannedKm !== undefined && {
@@ -72,11 +66,11 @@ export function useUpdateWeekPlan() {
     },
     onError: (_err, _input, context) => {
       if (context?.previous && context?.key) {
-        queryClient.setQueryData(context.key, context.previous);
+        qc.setQueryData(context.key, context.previous);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.weeks.all });
+      qc.invalidateQueries({ queryKey: queryKeys.weeks.all });
     },
   });
 }

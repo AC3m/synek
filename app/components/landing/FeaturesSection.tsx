@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next'
-import { cn } from '~/lib/utils'
-import { StravaLogo } from '~/components/training/StravaLogo'
+import { useTranslation } from 'react-i18next';
+import { cn } from '~/lib/utils';
+import { StravaLogo } from '~/components/training/StravaLogo';
 
 interface FeaturesSectionProps {
-  className?: string
+  className?: string;
 }
 
 function BrandedBullet() {
@@ -15,28 +15,25 @@ function BrandedBullet() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      <path
-        d="M17 22.5L20.5 1.5H24.5L21 22.5H17Z"
-        fill="currentColor"
-      />
+      <path d="M17 22.5L20.5 1.5H24.5L21 22.5H17Z" fill="currentColor" />
     </svg>
-  )
+  );
 }
 
 export function FeaturesSection({ className }: FeaturesSectionProps) {
-  const { t } = useTranslation('landing')
+  const { t } = useTranslation('landing');
 
   const items = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
     n,
     title: t(`features.item${n}.title` as never) as string,
     desc: t(`features.item${n}.desc` as never) as string,
-  }))
+  }));
 
   return (
     <section id="features" className={cn('px-4 py-24 sm:py-32', className)}>
       <div className="mx-auto max-w-6xl">
         <div className="mb-20 text-center">
-          <h2 className="text-3xl font-black italic uppercase tracking-tighter sm:text-5xl lg:text-6xl">
+          <h2 className="text-3xl font-black tracking-tighter uppercase italic sm:text-5xl lg:text-6xl">
             {t('features.title')}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg font-medium text-muted-foreground/80">
@@ -49,13 +46,16 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
             <div key={n} className="flex gap-4">
               <BrandedBullet />
               <div>
-                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight">
+                <h3 className="text-lg leading-tight font-bold tracking-tight uppercase">
                   {n === 5 ? (
                     <div className="space-y-1.5">
                       <div className="flex items-center">
                         <StravaLogo />
                       </div>
-                      <span style={{ color: '#FC5200' }} className="block text-[10px] font-black italic">
+                      <span
+                        style={{ color: '#FC5200' }}
+                        className="block text-[10px] font-black italic"
+                      >
                         {t('features.item5.approvalBadge')}
                       </span>
                     </div>
@@ -70,5 +70,5 @@ export function FeaturesSection({ className }: FeaturesSectionProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }

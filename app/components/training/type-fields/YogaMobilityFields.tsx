@@ -18,9 +18,7 @@ export function YogaMobilityFields({ data, onChange }: YogaMobilityFieldsProps) 
         <Input
           placeholder="e.g. hips, shoulders, full body"
           value={data.focus_area ?? ''}
-          onChange={(e) =>
-            onChange({ ...data, focus_area: e.target.value || undefined })
-          }
+          onChange={(e) => onChange({ ...data, focus_area: e.target.value || undefined })}
         />
       </div>
       <div>
@@ -28,9 +26,7 @@ export function YogaMobilityFields({ data, onChange }: YogaMobilityFieldsProps) 
         <Input
           placeholder="e.g. Vinyasa, Yin, Hatha"
           value={data.style ?? ''}
-          onChange={(e) =>
-            onChange({ ...data, style: e.target.value || undefined })
-          }
+          onChange={(e) => onChange({ ...data, style: e.target.value || undefined })}
         />
       </div>
       <div>
@@ -42,9 +38,7 @@ export function YogaMobilityFields({ data, onChange }: YogaMobilityFieldsProps) 
           onChange={(e) =>
             onChange({
               ...data,
-              poses: e.target.value
-                ? e.target.value.split('\n').filter(Boolean)
-                : undefined,
+              poses: e.target.value ? e.target.value.split('\n').filter(Boolean) : undefined,
             })
           }
         />
