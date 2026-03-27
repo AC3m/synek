@@ -135,9 +135,9 @@ export function SessionDetailModal({
   const strengthData =
     session.trainingType === 'strength' ? (session.typeSpecificData as StrengthData) : null;
   const strengthVariantId = strengthData?.variantId;
-  const { data: strengthVariant } = useStrengthVariant(strengthVariantId ?? '');
+  const { data: strengthVariant } = useStrengthVariant(open && strengthVariantId ? strengthVariantId : '');
   const { data: sessionExercises = [] } = useStrengthSessionExercises(
-    strengthVariantId ? session.id : '',
+    open && strengthVariantId ? session.id : '',
   );
   const exerciseIds = useMemo(
     () => strengthVariant?.exercises.map((ex) => ex.id) ?? [],
@@ -145,8 +145,8 @@ export function SessionDetailModal({
   );
   const athleteId = effectiveAthleteId ?? user?.id ?? '';
   const { data: prefillResult } = useLastSessionExercises(
-    strengthVariantId ? athleteId : '',
-    strengthVariantId ? exerciseIds : [],
+    open && strengthVariantId ? athleteId : '',
+    open && strengthVariantId ? exerciseIds : [],
   );
   const { mutate: mutateExercises } = useUpsertSessionExercises();
 

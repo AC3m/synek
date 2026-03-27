@@ -142,10 +142,9 @@ export function useDeleteSession() {
       });
       toast.error(t('toast.sessionDeleteFailed'));
     },
-    onSettled: () => {
-      qc.invalidateQueries({
-        queryKey: queryKeys.sessions.all,
-      });
+    onSettled: (_data, _err, _sessionId, context) => {
+      const keys = context?.rollbacks?.map(({ key }) => key) ?? [queryKeys.sessions.all];
+      keys.forEach((key) => qc.invalidateQueries({ queryKey: key }));
     },
   });
 }
