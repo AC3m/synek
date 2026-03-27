@@ -199,11 +199,17 @@ export default function AthleteWeekView() {
 
   if (!weekId) return null;
 
-  const sessionsLoading = !!weekPlan && sessionsQuery.isLoading;
   const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
   const isStaleWeek = weekFetching && weekPlan != null && weekPlan.weekStart !== weekStart;
-  const showSkeleton =
-    isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan) || sessionsLoading;
+  const isStaleSessions =
+    !isStaleWeek &&
+    weekPlan != null &&
+    (sessionsQuery.isLoading ||
+      (sessionsQuery.isFetching &&
+        sessionsQuery.data != null &&
+        sessionsQuery.data.some((s) => s.weekPlanId !== weekPlan.id)));
+  const showStaleContent = isStaleWeek || isStaleSessions;
+  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan);
 
   return (
     <>
@@ -248,13 +254,13 @@ export default function AthleteWeekView() {
 
               {/* Week Summary (readonly with progress bar) */}
               <StaggerIn delay={60}>
-                <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+                <WeekSummary weekPlan={weekPlan} stats={showStaleContent ? computeWeekStats([]) : stats} readonly />
               </StaggerIn>
 
               {/* Week Grid */}
               <StaggerIn delay={120}>
                 <WeekGrid
-                  sessionsByDay={isStaleWeek ? {} as SessionsByDay : sessionsByDay}
+                  sessionsByDay={showStaleContent ? {} as SessionsByDay : sessionsByDay}
                   weekStart={weekStart}
                   athleteMode
                   onToggleComplete={handleToggleComplete}
