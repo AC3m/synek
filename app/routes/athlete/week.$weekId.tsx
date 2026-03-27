@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
@@ -23,15 +23,22 @@ import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
 import type { DayOfWeek } from '~/types/training';
-import { useParams } from 'react-router';
+import { useParams, useLocation } from 'react-router';
 
 export default function AthleteWeekView() {
   const { weekId } = useParams();
+  const location = useLocation();
   const { t } = useTranslation('athlete');
   const { user } = useAuth();
   const qc = useQueryClient();
 
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
+
+  useEffect(() => {
+    if (location.state?.resetToToday) {
+      setSelectedDay(getTodayDayOfWeek());
+    }
+  }, [location.state?.resetToToday]);
 
   // Derive weekStart before the hook call — needed for useJunctionWeekWorkouts below
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
