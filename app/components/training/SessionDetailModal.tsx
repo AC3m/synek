@@ -2,23 +2,20 @@ import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
 import { getSessionCalendarDate } from '~/lib/utils/date';
-import { Pencil, Trash2, X, Zap, RotateCcw } from 'lucide-react';
+import { Pencil, Trash2, X, Zap } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { Separator } from '~/components/ui/separator';
-import { Skeleton } from '~/components/ui/skeleton';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from '~/components/ui/dialog';
 import { Sheet, SheetContent, SheetTitle, SheetClose } from '~/components/ui/sheet';
 import { useIsMobile } from '~/lib/hooks/useIsMobile';
 import { CompletionToggle } from './CompletionToggle';
 import { PerformanceEntry } from './PerformanceEntry';
 import { AthleteFeedback } from './AthleteFeedback';
-import { IntervalChart } from './IntervalChart';
-import { LapTable } from './LapTable';
 import { StravaLogo } from './StravaLogo';
 import { StravaSyncButton } from './StravaSyncButton';
 import { StravaConfirmButton } from './StravaConfirmButton';
-import { useSessionLaps } from '~/lib/hooks/useSessionLaps';
+import { SessionIntervals } from './SessionIntervals';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useSessionActions } from '~/lib/context/SessionActionsContext';
 import { GarminSection } from './GarminSection';
@@ -129,25 +126,6 @@ export function SessionDetailModal({
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
-
-  const lapsEnabled = useMemo(
-    () =>
-      session.trainingType === 'run' &&
-      session.stravaActivityId != null &&
-      (userRole !== 'coach' || session.isStravaConfirmed === true),
-    [session.trainingType, session.stravaActivityId, session.isStravaConfirmed, userRole],
-  );
-
-  const {
-    data: laps,
-    isLoading: lapsLoading,
-    isError: lapsError,
-    refetch: refetchLaps,
-  } = useSessionLaps(session.id, lapsEnabled);
-
-  const intervalCount =
-    lapsEnabled && laps ? laps.filter((l) => l.segmentType === 'interval').length : 0;
-  const hasRealIntervals = intervalCount > 2;
 
   const calendarDate = getSessionCalendarDate(weekStart, session.dayOfWeek);
   const dayDate = calendarDate ? parseISO(calendarDate) : null;
@@ -539,29 +517,12 @@ export function SessionDetailModal({
             </div>
           )}
 
-          {/* Intervals — lazy loaded, run + Strava only */}
-          {lapsEnabled && (
-            <div className="mt-3 space-y-3">
-              {lapsLoading && <Skeleton className="h-32 w-full rounded-lg" />}
-              {!lapsLoading && lapsError && (
-                <button
-                  onClick={() => refetchLaps()}
-                  className="inline-flex items-center gap-1 text-sm text-destructive hover:underline"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  {t('training:intervals.retry')}
-                </button>
-              )}
-              {!lapsLoading && !lapsError && hasRealIntervals && laps && (
-                <>
-                  <Separator />
-                  <IntervalChart laps={laps} />
-                  <Separator />
-                  <LapTable laps={laps} />
-                </>
-              )}
-            </div>
-          )}
+          <SessionIntervals
+            session={session}
+            open={open}
+            userRole={userRole}
+            className="mt-3 animate-in space-y-3 duration-300 fade-in"
+          />
         </div>
       )}
 
