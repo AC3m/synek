@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useParams } from 'react-router';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
@@ -8,18 +8,7 @@ import { AppLoader } from '~/components/ui/app-loader';
 import { StaggerIn } from '~/components/ui/stagger-in';
 import { SessionForm } from '~/components/training/SessionForm';
 import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmationDialog';
-import { useSessionFormState } from '~/lib/hooks/useSessionFormState';
-import { useWeekPlan, useGetOrCreateWeekPlan } from '~/lib/hooks/useWeekPlan';
-import {
-  useSessions,
-  useUpdateAthleteSession,
-  useCreateSession,
-  useUpdateSession,
-  useDeleteSession,
-  useConfirmStravaSession,
-  useBulkConfirmStravaSessions,
-} from '~/lib/hooks/useSessions';
-import { useQueryClient } from '@tanstack/react-query';
+import { useConfirmStravaSession, useBulkConfirmStravaSessions } from '~/lib/hooks/useSessions';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
 import {
   useJunctionConnectionStatus,
@@ -29,83 +18,32 @@ import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
-import {
-  groupSessionsByDay,
-  computeWeekStats,
-  augmentSessionsWithGarmin,
-} from '~/lib/utils/week-view';
+import { computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
-import type {
-  DayOfWeek,
-  AthleteSessionUpdate,
-  CreateSessionInput,
-  UpdateSessionInput,
-  SessionsByDay,
-} from '~/types/training';
+import { useWeekView } from '~/lib/hooks/useWeekView';
+import type { DayOfWeek, SessionsByDay } from '~/types/training';
+import { useParams } from 'react-router';
 
 export default function AthleteWeekView() {
   const { weekId } = useParams();
   const { t } = useTranslation('athlete');
   const { user } = useAuth();
+  const qc = useQueryClient();
 
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
 
+  // Derive weekStart before the hook call — needed for useJunctionWeekWorkouts below
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
-  const { year, weekNumber } = weekId ? parseWeekId(weekId) : { year: 0, weekNumber: 0 };
 
   const { data: canSelfPlan = true } = useSelfPlanPermission(user?.id ?? '');
 
-  // Queries
-  const {
-    data: weekPlan,
-    isLoading: weekLoading,
-    isFetching: weekFetching,
-  } = useWeekPlan(weekStart);
-  const sessionsQuery = useSessions(weekPlan?.id);
-  const sessions = sessionsQuery.data ?? [];
-  const updateAthlete = useUpdateAthleteSession();
-  const qc = useQueryClient();
+  // Athlete-only: Strava + Garmin
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
   const { data: junctionConnection } = useJunctionConnectionStatus(user?.id ?? '');
   const stravaSyncSingle = useStravaSync();
   const stravaSyncBulk = useStravaSync();
-
-  // Planning hooks — only used when canSelfPlan
-  const getOrCreate = useGetOrCreateWeekPlan();
-  const createSession = useCreateSession();
-  const updateSession = useUpdateSession();
-  const deleteSessionMut = useDeleteSession();
   const confirmStrava = useConfirmStravaSession();
   const bulkConfirmStrava = useBulkConfirmStravaSessions();
-
-  // Auto-create week plan when self-planning is enabled and no plan exists
-  const mutatingRef = useRef(false);
-  useEffect(() => {
-    if (!canSelfPlan || !weekId || weekLoading || weekPlan || mutatingRef.current) return;
-    mutatingRef.current = true;
-    getOrCreate.mutate(
-      { weekStart, year, weekNumber },
-      {
-        onSettled: () => {
-          mutatingRef.current = false;
-        },
-      },
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canSelfPlan, weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
-
-  // Planning form state
-  const {
-    formOpen,
-    setFormOpen,
-    formDay,
-    editingSession,
-    deleteConfirmId,
-    setDeleteConfirmId,
-    handleAddSession,
-    handleEditSession,
-    handleDeleteSession,
-  } = useSessionFormState();
 
   const stravaConnected = stravaStatus?.connected ?? false;
   const junctionConnected = junctionConnection?.status === 'active';
@@ -117,38 +55,27 @@ export default function AthleteWeekView() {
     junctionConnected,
   );
 
-  const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
-  // PoC: Junction Garmin integration — remove after evaluation
+  // Garmin-augmented sessions fed into the hook for stats computation
+  // The hook provides raw `sessions`; augmentation is athlete-only
+  const weekView = useWeekView({ canAutoCreate: canSelfPlan });
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const augmentedSessions = useMemo(
     () =>
-      junctionConnected
-        ? augmentSessionsWithGarmin(sessions, garminWeekWorkouts, weekStart)
-        : sessions,
-    [junctionConnected, sessions, garminWeekWorkouts, weekStart],
-  );
-  const stats = useMemo(() => computeWeekStats(augmentedSessions), [augmentedSessions]);
-
-  const handleToggleComplete = useCallback(
-    (sessionId: string, completed: boolean) => {
-      updateAthlete.mutate({ id: sessionId, isCompleted: completed });
-    },
-    [updateAthlete],
+      weekView && junctionConnected
+        ? augmentSessionsWithGarmin(weekView.sessions, garminWeekWorkouts, weekStart)
+        : (weekView?.sessions ?? []),
+    // weekView.sessions reference is stable when data hasn't changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [junctionConnected, weekView?.sessions, garminWeekWorkouts, weekStart],
   );
 
-  const handleUpdateNotes = useCallback(
-    (sessionId: string, notes: string | null) => {
-      updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
-    },
-    [updateAthlete],
+  const stats = useMemo(
+    () => computeWeekStats(augmentedSessions),
+    [augmentedSessions],
   );
 
-  const handleUpdatePerformance = useCallback(
-    (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => {
-      updateAthlete.mutate({ id: sessionId, ...update });
-    },
-    [updateAthlete],
-  );
-
+  // Strava handlers — athlete only
   const handleSyncStrava = useCallback(
     async (sessionId: string) => {
       if (!user) return;
@@ -157,12 +84,12 @@ export default function AthleteWeekView() {
       } catch {
         // mutation errors are handled by useStravaSync's onError
       } finally {
-        if (weekPlan?.id) {
-          void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
+        if (weekView?.weekPlan?.id) {
+          void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekView.weekPlan.id) });
         }
       }
     },
-    [stravaSyncSingle, user, weekStart, qc, weekPlan?.id],
+    [stravaSyncSingle, user, weekStart, qc, weekView?.weekPlan?.id],
   );
 
   const handleSyncAllStrava = useCallback(() => {
@@ -175,46 +102,46 @@ export default function AthleteWeekView() {
   );
 
   const handleBulkConfirmStrava = useCallback(async () => {
-    if (!weekPlan) return;
+    if (!weekView?.weekPlan) return;
     try {
-      await bulkConfirmStrava.mutateAsync(weekPlan.id);
+      await bulkConfirmStrava.mutateAsync(weekView.weekPlan.id);
     } catch {
       // handled by hook's onError
     } finally {
-      void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
+      void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekView.weekPlan.id) });
     }
-  }, [bulkConfirmStrava, weekPlan, qc]);
+  }, [bulkConfirmStrava, weekView?.weekPlan, qc]);
 
-  const handleFormSubmit = useCallback(
-    (data: CreateSessionInput | UpdateSessionInput) => {
-      if ('weekPlanId' in data) {
-        createSession.mutate(data);
-      } else {
-        updateSession.mutate(data);
-      }
-      setFormOpen(false);
-    },
-    [createSession, updateSession],
-  );
+  if (!weekView) return null;
 
-  if (!weekId) return null;
-
-  const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
-  const isStaleWeek = weekFetching && weekPlan != null && weekPlan.weekStart !== weekStart;
-  const isStaleSessions =
-    !isStaleWeek &&
-    weekPlan != null &&
-    (sessionsQuery.isLoading ||
-      (sessionsQuery.isFetching &&
-        sessionsQuery.data != null &&
-        sessionsQuery.data.some((s) => s.weekPlanId !== weekPlan.id)));
-  const showStaleContent = isStaleWeek || isStaleSessions;
-  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan);
+  const {
+    weekId: currentWeekId,
+    weekPlan,
+    weekFetching,
+    sessions,
+    sessionsByDay,
+    showStaleContent,
+    showSkeleton,
+    formOpen,
+    setFormOpen,
+    formDay,
+    editingSession,
+    deleteConfirmId,
+    setDeleteConfirmId,
+    handleAddSession,
+    handleEditSession,
+    handleDeleteSession,
+    handleFormSubmit,
+    handleToggleComplete,
+    handleUpdateNotes,
+    handleUpdatePerformance,
+    deleteSessionMut,
+  } = weekView;
 
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
+      <div key={currentWeekId} className="animate-in space-y-6 duration-200 fade-in">
         {!showSkeleton &&
           (!weekPlan ? (
             <>
@@ -224,7 +151,7 @@ export default function AthleteWeekView() {
                     {t('title')}
                   </h1>
                   <WeekNavigation
-                    weekId={weekId}
+                    weekId={currentWeekId}
                     basePath="athlete"
                     selectedDay={selectedDay}
                     isLoading={weekFetching}
@@ -244,7 +171,7 @@ export default function AthleteWeekView() {
                     {t('title')}
                   </h1>
                   <WeekNavigation
-                    weekId={weekId}
+                    weekId={currentWeekId}
                     basePath="athlete"
                     selectedDay={selectedDay}
                     isLoading={weekFetching}
@@ -254,13 +181,17 @@ export default function AthleteWeekView() {
 
               {/* Week Summary (readonly with progress bar) */}
               <StaggerIn delay={60}>
-                <WeekSummary weekPlan={weekPlan} stats={showStaleContent ? computeWeekStats([]) : stats} readonly />
+                <WeekSummary
+                  weekPlan={weekPlan}
+                  stats={showStaleContent ? computeWeekStats([]) : stats}
+                  readonly
+                />
               </StaggerIn>
 
               {/* Week Grid */}
               <StaggerIn delay={120}>
                 <WeekGrid
-                  sessionsByDay={showStaleContent ? {} as SessionsByDay : sessionsByDay}
+                  sessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
                   weekStart={weekStart}
                   athleteMode
                   onToggleComplete={handleToggleComplete}
