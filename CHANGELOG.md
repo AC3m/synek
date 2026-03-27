@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.4.1](https://github.com/AC3m/synek/compare/v0.4.0...v0.4.1) (2026-03-27)
+
+### Bug Fixes
+
+* resolve strength session exercise data loss and React Query issues ([4b3336b](https://github.com/AC3m/synek/commit/4b3336bbb98a30f1563683ea6a20563f2766259d))
+
 ## [0.4.0](https://github.com/AC3m/synek/compare/v0.3.1...v0.4.0) (2026-03-26)
 
 ### Features
