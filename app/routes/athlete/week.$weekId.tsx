@@ -40,6 +40,7 @@ import type {
   AthleteSessionUpdate,
   CreateSessionInput,
   UpdateSessionInput,
+  SessionsByDay,
 } from '~/types/training';
 
 export default function AthleteWeekView() {
@@ -200,6 +201,7 @@ export default function AthleteWeekView() {
 
   const sessionsLoading = !!weekPlan && sessionsQuery.isLoading;
   const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
+  const isStaleWeek = weekFetching && weekPlan != null && weekPlan.weekStart !== weekStart;
   const showSkeleton =
     isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan) || sessionsLoading;
 
@@ -252,7 +254,7 @@ export default function AthleteWeekView() {
               {/* Week Grid */}
               <StaggerIn delay={120}>
                 <WeekGrid
-                  sessionsByDay={sessionsByDay}
+                  sessionsByDay={isStaleWeek ? {} as SessionsByDay : sessionsByDay}
                   weekStart={weekStart}
                   athleteMode
                   onToggleComplete={handleToggleComplete}

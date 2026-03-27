@@ -25,6 +25,7 @@ import type {
   UpdateSessionInput,
   AthleteSessionUpdate,
   WeekPlan,
+  SessionsByDay,
 } from '~/types/training';
 
 export default function CoachWeekView() {
@@ -144,6 +145,7 @@ export default function CoachWeekView() {
   if (!weekId) return null;
 
   const isInitialLoad = weekLoading && !weekPlan && !getOrCreate.isPending;
+  const isStaleWeek = weekFetching && weekPlan != null && weekPlan.weekStart !== weekStart;
   const showSkeleton = isInitialLoad || (getOrCreate.isPending && !weekPlan);
 
   return (
@@ -174,9 +176,9 @@ export default function CoachWeekView() {
             <StaggerIn delay={120}>
               <MultiWeekView
                 currentWeekId={weekId}
-                currentWeekPlan={weekPlan}
-                currentSessions={sessions}
-                currentSessionsByDay={sessionsByDay}
+                currentWeekPlan={isStaleWeek ? null : weekPlan}
+                currentSessions={isStaleWeek ? [] : sessions}
+                currentSessionsByDay={isStaleWeek ? {} as SessionsByDay : sessionsByDay}
                 onAddSession={handleAddSession}
                 onEditSession={handleEditSession}
                 onDeleteSession={handleDeleteSession}

@@ -627,6 +627,7 @@ export function SessionDetailModal({
         <SheetContent
           side="bottom"
           showCloseButton={false}
+          aria-describedby={undefined}
           className="flex max-h-[92vh] flex-col gap-0 rounded-t-2xl p-0"
         >
           <div className="flex shrink-0 justify-center pt-3 pb-1">
@@ -654,6 +655,7 @@ export function SessionDetailModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         showCloseButton={false}
+        aria-describedby={undefined}
         className="flex max-h-[90vh] max-w-2xl flex-col gap-0 p-0"
       >
         <div className="shrink-0 border-b px-6 pt-5 pb-4">
