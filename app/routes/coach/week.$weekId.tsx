@@ -10,6 +10,7 @@ import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmati
 import { useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useAuth } from '~/lib/context/AuthContext';
 import { getTodayDayOfWeek } from '~/lib/utils/date';
+import { computeWeekStats } from '~/lib/utils/week-view';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import type { WeekPlan, SessionsByDay } from '~/types/training';
 
@@ -77,21 +78,27 @@ export default function CoachWeekView() {
         {!showSkeleton && weekPlan && (
           <>
             {/* Header with navigation */}
-            <StaggerIn className="flex items-center gap-2">
-              <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
-                {t('title')}
-              </h1>
-              <WeekNavigation
-                weekId={weekId}
-                basePath="coach"
-                selectedDay={selectedDay}
-                isLoading={weekFetching}
-              />
+            <StaggerIn>
+              <div className="flex items-center gap-2">
+                <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
+                  {t('title')}
+                </h1>
+                <WeekNavigation
+                  weekId={weekId}
+                  basePath="coach"
+                  selectedDay={selectedDay}
+                  isLoading={weekFetching}
+                />
+              </div>
             </StaggerIn>
 
             {/* Week Summary */}
             <StaggerIn delay={60}>
-              <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
+              <WeekSummary
+                weekPlan={weekPlan}
+                stats={showStaleContent ? computeWeekStats([]) : stats}
+                onUpdate={handleWeekUpdate}
+              />
             </StaggerIn>
 
             {/* Multi-Week View (current week + 4 history rows) */}
