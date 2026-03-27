@@ -1,6 +1,6 @@
 # Synek
 
-Athlete training planning platform with coach and athlete roles. Coaches create ISO-week training plans; athletes view and complete sessions.
+Athlete training planning platform with coach and athlete roles. Coaches create ISO-week training plans; athletes view and complete sessions. Built as a SPA (no SSR).
 
 ## Tech Stack
 
@@ -62,6 +62,14 @@ pnpm start      # serve the production build
 pnpm typecheck  # react-router typegen + tsc
 ```
 
+### Tests
+
+```bash
+pnpm test           # watch mode
+pnpm test:run       # single run
+pnpm test:coverage  # coverage report
+```
+
 ## Project Structure
 
 ```
@@ -78,37 +86,32 @@ app/
 ├── types/            # Domain types (training.ts, strava.ts)
 ├── i18n/             # config + resources/en/ + resources/pl/
 └── routes/
-    ├── home.tsx
-    ├── coach/        # week.$weekId.tsx
-    └── athlete/      # week.$weekId.tsx
+    ├── landing.tsx
+    ├── login.tsx / register.tsx / invite.$token.tsx
+    ├── settings.tsx
+    ├── coach/        # week.$weekId.tsx, strength.tsx, strength.$variantId.tsx
+    └── athlete/      # week.$weekId.tsx, strength.tsx, strength.$variantId.tsx
 
 supabase/
-└── migrations/       # SQL migrations (week_plans, training_sessions, strava tables)
+├── functions/        # Deno Edge Functions (strava-auth, strava-webhook, etc.)
+└── migrations/       # SQL migrations — source of truth for schema
 ```
 
 ## Roles
 
 | Role | Access |
 |---|---|
-| Coach | Create and edit ISO-week training plans; add/remove sessions per day |
-| Athlete | View the plan for the current week; mark sessions complete |
+| Coach | Create and edit ISO-week training plans; manage sessions per day; build strength variants |
+| Athlete | View assigned weekly plans; mark sessions complete; log performance; self-plan if `can_self_plan` is enabled |
 
 Use the role switcher in the header to toggle between roles during development.
 
 ## Supported Training Types
 
-`run` · `cycling` · `strength` · `yoga` · `mobility` · `swimming` · `rest_day`
+`run` · `cycling` · `strength` · `yoga` · `mobility` · `swimming` · `walk` · `hike` · `rest_day`
 
 Each type has sport-specific fields and a colour token defined in
 `app/lib/utils/training-types.ts`.
-
-## Adding shadcn Components
-
-```bash
-pnpm dlx shadcn@latest add <component-name>
-```
-
-Never edit files in `app/components/ui/` manually.
 
 ## Database
 
@@ -118,9 +121,11 @@ Migrations live in `supabase/migrations/`. Apply them via the Supabase CLI:
 supabase db push
 ```
 
-Tables: `week_plans`, `training_sessions`, `strava_activities`, `strava_tokens`
+Core tables: `week_plans`, `training_sessions`, `invites`, `strength_variants`,
+`strength_variant_exercises`, `strength_session_exercises`, `strava_activities`,
+`strava_tokens`, `strava_laps`. See `supabase/migrations/` for the full schema.
 
-## Supabase Deploy (Strava Changes)
+## Supabase Deploy
 
 Required environment variables:
 
