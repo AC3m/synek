@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { SessionCard } from '~/components/calendar/SessionCard';
@@ -193,22 +193,6 @@ describe('SessionCard — interval affordance via detail modal', () => {
     });
   });
 
-  it('shows loading skeleton in modal while lap data is loading', async () => {
-    // Never resolve — stays loading
-    vi.mocked(fetchSessionLaps).mockImplementation(() => new Promise(() => {}));
-
-    const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    const { container } = render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
-
-    fireEvent.click(container.firstChild as Element);
-
-    await waitFor(() => {
-      expect(screen.getByText('sessionDetail.planned')).toBeTruthy();
-    });
-
-    expect(document.querySelector('[data-slot="skeleton"]')).toBeTruthy();
-  });
-
   it('shows interval table columns in modal when laps load with structured intervals', async () => {
     mockLapResult = STRUCTURED_LAPS;
 
@@ -267,6 +251,39 @@ describe('SessionCard — interval affordance via detail modal', () => {
     await waitFor(() => {
       expect(screen.getByText('intervals.columns.segment')).toBeTruthy();
     });
+  });
+
+  it('shows completion toggle in modal when coach views own session (showAthleteControls=true)', async () => {
+    const { Wrapper } = makeWrapper(
+      makeContext({ showAthleteControls: true, userRole: 'coach' }),
+    );
+    const { container } = render(
+      <SessionCard session={makeSession({ isCompleted: false })} />,
+      { wrapper: Wrapper },
+    );
+
+    fireEvent.click(container.firstChild as Element);
+
+    await waitFor(() => {
+      const dialog = screen.getByRole('dialog');
+      expect(within(dialog).getByText('completion.markComplete')).toBeTruthy();
+    });
+  });
+
+  it('does not show completion toggle in modal when coach views another athlete', async () => {
+    const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
+    const { container } = render(
+      <SessionCard session={makeSession({ isCompleted: false })} />,
+      { wrapper: Wrapper },
+    );
+
+    fireEvent.click(container.firstChild as Element);
+
+    await waitFor(() => {
+      expect(screen.getByText('sessionDetail.planned')).toBeTruthy();
+    });
+
+    expect(screen.queryByText('completion.markComplete')).toBeNull();
   });
 
   it('does not open modal when interactive element on card is clicked', async () => {

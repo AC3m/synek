@@ -34,7 +34,7 @@ export default function CoachWeekView() {
 
   const selectedDay = getTodayDayOfWeek();
 
-  const isViewingSelf = !!effectiveAthleteId && effectiveAthleteId === user?.id;
+  const isViewingSelf = !effectiveAthleteId || effectiveAthleteId === user?.id;
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
   const { year, weekNumber } = weekId ? parseWeekId(weekId) : { year: 0, weekNumber: 0 };
@@ -181,6 +181,9 @@ export default function CoachWeekView() {
                 onEditSession={handleEditSession}
                 onDeleteSession={handleDeleteSession}
                 onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+                onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
+                onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
+                onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
                 userRole={user?.role}
                 showAthleteControls={isViewingSelf}
               />

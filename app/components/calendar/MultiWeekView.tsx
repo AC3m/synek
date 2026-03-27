@@ -21,6 +21,7 @@ import type {
   SessionsByDay,
   ReorderSessionInput,
   CopyDayInput,
+  AthleteSessionUpdate,
 } from '~/types/training';
 
 interface MultiWeekViewProps {
@@ -32,6 +33,9 @@ interface MultiWeekViewProps {
   onEditSession: (session: TrainingSession) => void;
   onDeleteSession: (sessionId: string) => void;
   onUpdateCoachPostFeedback: (sessionId: string, feedback: string | null) => void;
+  onToggleComplete?: (sessionId: string, completed: boolean) => void;
+  onUpdateNotes?: (sessionId: string, notes: string | null) => void;
+  onUpdatePerformance?: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
   userRole?: UserRole;
   showAthleteControls?: boolean;
   className?: string;
@@ -46,6 +50,9 @@ export function MultiWeekView({
   onEditSession,
   onDeleteSession,
   onUpdateCoachPostFeedback,
+  onToggleComplete,
+  onUpdateNotes,
+  onUpdatePerformance,
   userRole,
   showAthleteControls,
   className,
@@ -164,6 +171,9 @@ export function MultiWeekView({
           onEditSession={onEditSession}
           onDeleteSession={onDeleteSession}
           onUpdateCoachPostFeedback={onUpdateCoachPostFeedback}
+          onToggleComplete={onToggleComplete}
+          onUpdateNotes={onUpdateNotes}
+          onUpdatePerformance={onUpdatePerformance}
           onReorderSession={handleReorderSession}
           userRole={userRole}
           showAthleteControls={showAthleteControls}

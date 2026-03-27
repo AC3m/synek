@@ -9,7 +9,7 @@ import type { TrainingSession } from '~/types/training';
 interface SessionIntervalsProps {
   session: TrainingSession;
   open: boolean;
-  userRole: 'coach' | 'athlete';
+  userRole?: 'coach' | 'athlete';
   className?: string;
 }
 
