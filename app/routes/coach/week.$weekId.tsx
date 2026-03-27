@@ -124,25 +124,19 @@ export default function CoachWeekView() {
     [updateAthlete]
   );
 
+  const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
+  const stats = useMemo(() => computeWeekStats(sessions), [sessions]);
+
   if (!weekId) return null;
 
   const isInitialLoad = weekLoading && !weekPlan && !getOrCreate.isPending;
   const showSkeleton = isInitialLoad || (getOrCreate.isPending && !weekPlan);
 
-  const sessionsByDay = useMemo(
-    () => (!showSkeleton && weekPlan ? groupSessionsByDay(sessions) : null),
-    [showSkeleton, weekPlan, sessions]
-  );
-  const stats = useMemo(
-    () => (!showSkeleton && weekPlan ? computeWeekStats(sessions) : null),
-    [showSkeleton, weekPlan, sessions]
-  );
-
   return (
     <>
       {showSkeleton && <AppLoader />}
       <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
-      {!showSkeleton && weekPlan && sessionsByDay && stats && (
+      {!showSkeleton && weekPlan && (
         <>
           {/* Header with navigation */}
           <StaggerIn className="flex items-center gap-2">
@@ -196,7 +190,7 @@ export default function CoachWeekView() {
         description={t('session.deleteConfirm')}
         confirmLabel={t('session.delete')}
         cancelLabel={t('common:actions.cancel' as never)}
-        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}
+        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!, { onSettled: () => setDeleteConfirmId(null) }); }}
         isPending={deleteSessionMut.isPending}
       />
     </div>

@@ -184,7 +184,8 @@
     "km": "km",
     "min": "min",
     "bpm": "bpm",
-    "perKm": "/km"
+    "perKm": "/km",
+    "kcal": "kcal"
   },
   "sessionDetail": {
     "planned": "Plan",

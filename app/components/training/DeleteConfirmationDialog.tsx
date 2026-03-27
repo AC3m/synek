@@ -2,6 +2,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
 } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
 
 interface DeleteConfirmationDialogProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface DeleteConfirmationDialogProps {
   cancelLabel: string;
   onConfirm: () => void;
   isPending?: boolean;
+  className?: string;
 }
 
 export function DeleteConfirmationDialog({
@@ -23,10 +25,11 @@ export function DeleteConfirmationDialog({
   cancelLabel,
   onConfirm,
   isPending,
+  className,
 }: DeleteConfirmationDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="max-w-sm">
+      <DialogContent showCloseButton={false} className={cn('max-w-sm', className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

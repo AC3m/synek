@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useJunctionWorkout } from '~/lib/hooks/useJunctionConnection';
 import { GarminBadge } from './GarminBadge';
 import { cn } from '~/lib/utils';
+import type { JunctionPocWorkout } from '~/types/junction-poc';
 
 interface GarminSectionProps {
   appUserId: string;
@@ -11,6 +12,47 @@ interface GarminSectionProps {
   junctionConnected: boolean;
   variant: 'card' | 'modal';
   className?: string;
+}
+
+interface ChipData {
+  label: string;
+  value: string;
+}
+
+interface GarminChipListProps {
+  chips: ChipData[];
+  valueClass: string;
+  animate: boolean;
+}
+
+function GarminChipList({ chips, valueClass, animate }: GarminChipListProps) {
+  const chipClass = cn('flex flex-col min-w-[60px]', animate && 'animate-in fade-in duration-200');
+  return (
+    <>
+      {chips.map((chip) => (
+        <div key={chip.label} className={chipClass}>
+          <span className="text-[10px] text-muted-foreground uppercase tracking-tight">{chip.label}</span>
+          <span className={valueClass}>{chip.value}</span>
+        </div>
+      ))}
+    </>
+  );
+}
+
+function buildChips(
+  workout: JunctionPocWorkout,
+  durationMin: number | null,
+  distanceKm: string | null,
+  labels: { duration: string; distance: string; avgHr: string; maxHr: string; kcal: string },
+  units: { min: string; km: string; bpm: string },
+): ChipData[] {
+  const chips: ChipData[] = [];
+  if (durationMin != null) chips.push({ label: labels.duration, value: `${durationMin} ${units.min}` });
+  if (distanceKm != null) chips.push({ label: labels.distance, value: `${distanceKm} ${units.km}` });
+  if (workout.averageHr != null) chips.push({ label: labels.avgHr, value: `${Math.round(workout.averageHr)} ${units.bpm}` });
+  if (workout.maxHr != null) chips.push({ label: labels.maxHr, value: `${Math.round(workout.maxHr)} ${units.bpm}` });
+  if (workout.calories != null) chips.push({ label: labels.kcal, value: `${workout.calories}` });
+  return chips;
 }
 
 export function GarminSection({
@@ -44,59 +86,26 @@ export function GarminSection({
 
   const isCard = variant === 'card';
   const valueClass = isCard ? 'text-[10px] font-semibold' : 'text-sm font-semibold';
-  const chipClass = isCard ? 'animate-in fade-in duration-200 flex flex-col min-w-[60px]' : 'flex flex-col min-w-[60px]';
+
+  const chips = buildChips(
+    workout,
+    durationMin,
+    distanceKm,
+    {
+      duration: t('actualPerformance.duration'),
+      distance: t('actualPerformance.distance'),
+      avgHr: t('actualPerformance.avgHr'),
+      maxHr: t('actualPerformance.maxHr'),
+      kcal: t('units.kcal'),
+    },
+    { min: t('units.min'), km: t('units.km'), bpm: t('units.bpm') },
+  );
 
   if (isCard) {
     return (
       <div className={className}>
         <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]">
-          {durationMin != null && (
-            <div className={chipClass}>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                {t('actualPerformance.duration')}
-              </span>
-              <span className={valueClass}>
-                {durationMin} {t('units.min')}
-              </span>
-            </div>
-          )}
-          {distanceKm != null && (
-            <div className={chipClass}>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                {t('actualPerformance.distance')}
-              </span>
-              <span className={valueClass}>
-                {distanceKm} {t('units.km')}
-              </span>
-            </div>
-          )}
-          {workout.averageHr != null && (
-            <div className={chipClass}>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                {t('actualPerformance.avgHr')}
-              </span>
-              <span className={valueClass}>
-                {Math.round(workout.averageHr)} {t('units.bpm')}
-              </span>
-            </div>
-          )}
-          {workout.maxHr != null && (
-            <div className={chipClass}>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-                {t('actualPerformance.maxHr')}
-              </span>
-              <span className={valueClass}>
-                {Math.round(workout.maxHr)} {t('units.bpm')}
-              </span>
-            </div>
-          )}
-          {workout.calories != null && (
-            <div className={chipClass}>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-tight">kcal</span>
-              <span className={valueClass}>{workout.calories}</span>
-            </div>
-          )}
-
+          <GarminChipList chips={chips} valueClass={valueClass} animate={true} />
           <div className="animate-in fade-in duration-200 w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed flex justify-end">
             <GarminBadge />
           </div>
@@ -108,52 +117,7 @@ export function GarminSection({
   return (
     <div className={cn('mt-3 pt-3 border-t border-dashed border-[color:var(--separator)]', className)}>
       <div className="flex flex-wrap gap-x-4 gap-y-2 mb-2">
-        {durationMin != null && (
-          <div className={chipClass}>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-              {t('actualPerformance.duration')}
-            </span>
-            <span className={valueClass}>
-              {durationMin} {t('units.min')}
-            </span>
-          </div>
-        )}
-        {distanceKm != null && (
-          <div className={chipClass}>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-              {t('actualPerformance.distance')}
-            </span>
-            <span className={valueClass}>
-              {distanceKm} {t('units.km')}
-            </span>
-          </div>
-        )}
-        {workout.averageHr != null && (
-          <div className={chipClass}>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-              {t('actualPerformance.avgHr')}
-            </span>
-            <span className={valueClass}>
-              {Math.round(workout.averageHr)} {t('units.bpm')}
-            </span>
-          </div>
-        )}
-        {workout.maxHr != null && (
-          <div className={chipClass}>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">
-              {t('actualPerformance.maxHr')}
-            </span>
-            <span className={valueClass}>
-              {Math.round(workout.maxHr)} {t('units.bpm')}
-            </span>
-          </div>
-        )}
-        {workout.calories != null && (
-          <div className={chipClass}>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">kcal</span>
-            <span className={valueClass}>{workout.calories}</span>
-          </div>
-        )}
+        <GarminChipList chips={chips} valueClass={valueClass} animate={false} />
       </div>
       <GarminBadge />
     </div>

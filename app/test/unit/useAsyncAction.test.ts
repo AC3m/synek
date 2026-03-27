@@ -57,4 +57,39 @@ describe('useAsyncAction', () => {
     await act(async () => { await result.current.trigger('s1'); });
     expect(result.current.isPending).toBe(false);
   });
+
+  it('trigger reference is stable when isPending flips', async () => {
+    const fn = vi.fn().mockResolvedValue(undefined);
+    const { result } = renderHook(() => useAsyncAction(fn));
+
+    const triggerBefore = result.current.trigger;
+    await act(async () => { await result.current.trigger('s1'); });
+    const triggerAfter = result.current.trigger;
+
+    expect(triggerBefore).toBe(triggerAfter);
+  });
+
+  it('completion of a replaced fn does not invoke the new fn', async () => {
+    let resolveOld!: () => void;
+    const oldFn = vi.fn(() => new Promise<void>((r) => { resolveOld = r; }));
+    const newFn = vi.fn().mockResolvedValue(undefined);
+
+    const { result, rerender } = renderHook(
+      ({ fn }: { fn: (id: string) => Promise<void> }) => useAsyncAction(fn),
+      { initialProps: { fn: oldFn } }
+    );
+
+    // Start flight with oldFn
+    act(() => { void result.current.trigger('s1'); });
+    expect(oldFn).toHaveBeenCalledTimes(1);
+
+    // Swap fn reference mid-flight
+    rerender({ fn: newFn });
+
+    // Complete oldFn's promise
+    await act(async () => { resolveOld(); });
+
+    // newFn should NOT have been called automatically
+    expect(newFn).not.toHaveBeenCalled();
+  });
 });
