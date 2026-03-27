@@ -109,7 +109,16 @@ export function useWeekView({
         },
       },
     );
-  }, [canAutoCreate, weekId, weekLoading, weekPlan, weekStart, year, weekNumber, getOrCreateMutate]);
+  }, [
+    canAutoCreate,
+    weekId,
+    weekLoading,
+    weekPlan,
+    weekStart,
+    year,
+    weekNumber,
+    getOrCreateMutate,
+  ]);
 
   const {
     formOpen,

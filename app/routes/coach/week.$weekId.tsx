@@ -10,8 +10,8 @@ import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmati
 import { useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useAuth } from '~/lib/context/AuthContext';
 import { getTodayDayOfWeek } from '~/lib/utils/date';
-import { computeWeekStats } from '~/lib/utils/week-view';
 import { useWeekView } from '~/lib/hooks/useWeekView';
+import { cn } from '~/lib/utils';
 import type { WeekPlan, SessionsByDay } from '~/types/training';
 
 export default function CoachWeekView() {
@@ -94,30 +94,34 @@ export default function CoachWeekView() {
 
             {/* Week Summary */}
             <StaggerIn delay={60}>
-              <WeekSummary
-                weekPlan={weekPlan}
-                stats={showStaleContent ? computeWeekStats([]) : stats}
-                onUpdate={handleWeekUpdate}
-              />
+              <div
+                className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+              >
+                <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
+              </div>
             </StaggerIn>
 
             {/* Multi-Week View (current week + 4 history rows) */}
             <StaggerIn delay={120}>
-              <MultiWeekView
-                currentWeekId={weekId}
-                currentWeekPlan={showStaleContent ? null : weekPlan}
-                currentSessions={showStaleContent ? [] : sessions}
-                currentSessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
-                onAddSession={handleAddSession}
-                onEditSession={handleEditSession}
-                onDeleteSession={handleDeleteSession}
-                onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
-                onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
-                onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
-                onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
-                userRole={user?.role}
-                showAthleteControls={isViewingSelf}
-              />
+              <div
+                className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+              >
+                <MultiWeekView
+                  currentWeekId={weekId}
+                  currentWeekPlan={showStaleContent ? null : weekPlan}
+                  currentSessions={showStaleContent ? [] : sessions}
+                  currentSessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
+                  onAddSession={handleAddSession}
+                  onEditSession={handleEditSession}
+                  onDeleteSession={handleDeleteSession}
+                  onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+                  onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
+                  onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
+                  onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
+                  userRole={user?.role}
+                  showAthleteControls={isViewingSelf}
+                />
+              </div>
             </StaggerIn>
 
             {/* Session Form Sheet */}

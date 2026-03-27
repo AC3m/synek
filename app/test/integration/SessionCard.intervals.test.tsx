@@ -254,13 +254,10 @@ describe('SessionCard — interval affordance via detail modal', () => {
   });
 
   it('shows completion toggle in modal when coach views own session (showAthleteControls=true)', async () => {
-    const { Wrapper } = makeWrapper(
-      makeContext({ showAthleteControls: true, userRole: 'coach' }),
-    );
-    const { container } = render(
-      <SessionCard session={makeSession({ isCompleted: false })} />,
-      { wrapper: Wrapper },
-    );
+    const { Wrapper } = makeWrapper(makeContext({ showAthleteControls: true, userRole: 'coach' }));
+    const { container } = render(<SessionCard session={makeSession({ isCompleted: false })} />, {
+      wrapper: Wrapper,
+    });
 
     fireEvent.click(container.firstChild as Element);
 
@@ -272,10 +269,9 @@ describe('SessionCard — interval affordance via detail modal', () => {
 
   it('does not show completion toggle in modal when coach views another athlete', async () => {
     const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
-    const { container } = render(
-      <SessionCard session={makeSession({ isCompleted: false })} />,
-      { wrapper: Wrapper },
-    );
+    const { container } = render(<SessionCard session={makeSession({ isCompleted: false })} />, {
+      wrapper: Wrapper,
+    });
 
     fireEvent.click(container.firstChild as Element);
 

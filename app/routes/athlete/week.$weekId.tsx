@@ -21,7 +21,8 @@ import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date
 import { computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import { useWeekView } from '~/lib/hooks/useWeekView';
-import type { DayOfWeek, SessionsByDay } from '~/types/training';
+import { cn } from '~/lib/utils';
+import type { DayOfWeek } from '~/types/training';
 import { useParams } from 'react-router';
 
 export default function AthleteWeekView() {
@@ -67,10 +68,7 @@ export default function AthleteWeekView() {
     [junctionConnected, weekView?.sessions, garminWeekWorkouts, weekStart],
   );
 
-  const stats = useMemo(
-    () => computeWeekStats(augmentedSessions),
-    [augmentedSessions],
-  );
+  const stats = useMemo(() => computeWeekStats(augmentedSessions), [augmentedSessions]);
 
   // Strava handlers — athlete only
   const handleSyncStrava = useCallback(
@@ -178,35 +176,39 @@ export default function AthleteWeekView() {
 
               {/* Week Summary (readonly with progress bar) */}
               <StaggerIn delay={60}>
-                <WeekSummary
-                  weekPlan={weekPlan}
-                  stats={showStaleContent ? computeWeekStats([]) : stats}
-                  readonly
-                />
+                <div
+                  className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+                >
+                  <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+                </div>
               </StaggerIn>
 
               {/* Week Grid */}
               <StaggerIn delay={120}>
-                <WeekGrid
-                  sessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
-                  weekStart={weekStart}
-                  athleteMode
-                  onToggleComplete={handleToggleComplete}
-                  onUpdateNotes={handleUpdateNotes}
-                  onUpdatePerformance={handleUpdatePerformance}
-                  stravaConnected={stravaConnected}
-                  junctionConnected={junctionConnected}
-                  onSyncStrava={handleSyncStrava}
-                  onConfirmStrava={handleConfirmStrava}
-                  userRole={user?.role}
-                  selectedDay={selectedDay}
-                  onSelectDay={setSelectedDay}
-                  {...(canSelfPlan && {
-                    onAddSession: handleAddSession,
-                    onEditSession: handleEditSession,
-                    onDeleteSession: handleDeleteSession,
-                  })}
-                />
+                <div
+                  className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+                >
+                  <WeekGrid
+                    sessionsByDay={sessionsByDay}
+                    weekStart={weekStart}
+                    athleteMode
+                    onToggleComplete={handleToggleComplete}
+                    onUpdateNotes={handleUpdateNotes}
+                    onUpdatePerformance={handleUpdatePerformance}
+                    stravaConnected={stravaConnected}
+                    junctionConnected={junctionConnected}
+                    onSyncStrava={handleSyncStrava}
+                    onConfirmStrava={handleConfirmStrava}
+                    userRole={user?.role}
+                    selectedDay={selectedDay}
+                    onSelectDay={setSelectedDay}
+                    {...(canSelfPlan && {
+                      onAddSession: handleAddSession,
+                      onEditSession: handleEditSession,
+                      onDeleteSession: handleDeleteSession,
+                    })}
+                  />
+                </div>
               </StaggerIn>
 
               {/* Session Form — only shown when self-planning is enabled */}
