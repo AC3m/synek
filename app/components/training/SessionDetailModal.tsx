@@ -135,7 +135,9 @@ export function SessionDetailModal({
   const strengthData =
     session.trainingType === 'strength' ? (session.typeSpecificData as StrengthData) : null;
   const strengthVariantId = strengthData?.variantId;
-  const { data: strengthVariant } = useStrengthVariant(open && strengthVariantId ? strengthVariantId : '');
+  const { data: strengthVariant } = useStrengthVariant(
+    open && strengthVariantId ? strengthVariantId : '',
+  );
   const { data: sessionExercises = [] } = useStrengthSessionExercises(
     open && strengthVariantId ? session.id : '',
   );
@@ -521,7 +523,7 @@ export function SessionDetailModal({
             session={session}
             open={open}
             userRole={userRole}
-            className="mt-3 animate-in space-y-3 duration-300 fade-in"
+            className="mt-3 animate-in space-y-3 duration-300 fade-in slide-in-from-bottom-2"
           />
         </div>
       )}

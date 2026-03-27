@@ -28,7 +28,7 @@ export function SessionIntervals({ session, open, userRole, className }: Session
 
   if (isError) {
     return (
-      <div className={className}>
+      <div className={className} style={{ animationFillMode: 'both' }}>
         <button
           onClick={() => refetch()}
           className="inline-flex items-center gap-1 text-sm text-destructive hover:underline"
@@ -47,7 +47,7 @@ export function SessionIntervals({ session, open, userRole, className }: Session
   if (!hasRealIntervals || !laps) return null;
 
   return (
-    <div className={className}>
+    <div className={className} style={{ animationFillMode: 'both' }}>
       <Separator />
       <IntervalChart laps={laps} />
       <Separator />
