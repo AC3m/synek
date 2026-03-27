@@ -81,7 +81,9 @@ export function SessionFormFields({
       case 'run':
         return <RunFields data={typeData as Partial<RunData>} onChange={onTypeDataChange} />;
       case 'cycling':
-        return <CyclingFields data={typeData as Partial<CyclingData>} onChange={onTypeDataChange} />;
+        return (
+          <CyclingFields data={typeData as Partial<CyclingData>} onChange={onTypeDataChange} />
+        );
       case 'strength':
         return (
           <StrengthFields
@@ -93,14 +95,23 @@ export function SessionFormFields({
         );
       case 'yoga':
       case 'mobility':
-        return <YogaMobilityFields data={typeData as Partial<YogaMobilityData>} onChange={onTypeDataChange} />;
+        return (
+          <YogaMobilityFields
+            data={typeData as Partial<YogaMobilityData>}
+            onChange={onTypeDataChange}
+          />
+        );
       case 'swimming':
-        return <SwimmingFields data={typeData as Partial<SwimmingData>} onChange={onTypeDataChange} />;
+        return (
+          <SwimmingFields data={typeData as Partial<SwimmingData>} onChange={onTypeDataChange} />
+        );
       case 'walk':
       case 'hike':
         return <WalkHikeFields data={typeData as Partial<WalkData>} onChange={onTypeDataChange} />;
       case 'rest_day':
-        return <RestDayFields data={typeData as Partial<RestDayData>} onChange={onTypeDataChange} />;
+        return (
+          <RestDayFields data={typeData as Partial<RestDayData>} onChange={onTypeDataChange} />
+        );
       default:
         return null;
     }
@@ -109,17 +120,17 @@ export function SessionFormFields({
   return (
     <div>
       {/* Tab Navigation */}
-      <div className="flex gap-1 p-1 bg-muted rounded-xl mb-6">
+      <div className="mb-6 flex gap-1 rounded-xl bg-muted p-1">
         {(['plan', 'details'] as const).map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => onTabChange(tab)}
             className={cn(
-              'flex-1 py-2.5 text-xs font-semibold rounded-lg transition-colors',
+              'flex-1 rounded-lg py-2.5 text-xs font-semibold transition-colors',
               activeTab === tab
                 ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
+                : 'text-muted-foreground hover:text-foreground',
             )}
           >
             {t(`coach:session.tabs.${tab}` as never)}
@@ -131,7 +142,7 @@ export function SessionFormFields({
       {activeTab === 'plan' && (
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
               {t('coach:session.type')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -144,9 +155,7 @@ export function SessionFormFields({
                     variant={isSelected ? 'default' : 'outline'}
                     className={cn(
                       'cursor-pointer transition-colors',
-                      isSelected
-                        ? `${config.bgColor} ${config.color} border-0`
-                        : 'hover:bg-muted'
+                      isSelected ? `${config.bgColor} ${config.color} border-0` : 'hover:bg-muted',
                     )}
                     onClick={() => onTypeChange(tt)}
                   >
@@ -167,7 +176,7 @@ export function SessionFormFields({
           )}
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
               {t('coach:session.description')}
             </label>
             <Textarea
@@ -178,9 +187,14 @@ export function SessionFormFields({
             />
           </div>
 
-          <div className={cn('grid gap-4', isDistanceBased ? 'grid-cols-2' : 'grid-cols-1 max-w-[50%]')}>
+          <div
+            className={cn(
+              'grid gap-4',
+              isDistanceBased ? 'grid-cols-2' : 'max-w-[50%] grid-cols-1',
+            )}
+          >
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                 {t('coach:session.duration')}
               </label>
               <Input
@@ -192,7 +206,7 @@ export function SessionFormFields({
             </div>
             {isDistanceBased && (
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                   {t('coach:session.distance')}
                 </label>
                 <Input
@@ -208,7 +222,7 @@ export function SessionFormFields({
 
           {trainingType === 'run' && (
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                 {t('training:run.paceTarget')}
               </label>
               <Input
@@ -221,7 +235,7 @@ export function SessionFormFields({
                   })
                 }
               />
-              <p className="text-[10px] text-muted-foreground mt-1">
+              <p className="mt-1 text-[10px] text-muted-foreground">
                 {t('training:run.paceTargetHint')}
               </p>
             </div>
@@ -229,7 +243,7 @@ export function SessionFormFields({
 
           {isCoach && (
             <div className="space-y-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                 {t('coach:session.coachComments')}
               </label>
               <Textarea
@@ -247,14 +261,13 @@ export function SessionFormFields({
       {activeTab === 'details' && (
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
               {t(`common:trainingTypes.${trainingType}`)}
             </label>
             {renderTypeFields()}
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -46,7 +46,12 @@ export async function createJunctionConnection(
   const { data, error } = await supabase
     .from('junction_poc_connections')
     .upsert(
-      { app_user_id: appUserId, junction_user_id: junctionUserId, status: 'active', disconnected_at: null },
+      {
+        app_user_id: appUserId,
+        junction_user_id: junctionUserId,
+        status: 'active',
+        disconnected_at: null,
+      },
       { onConflict: 'app_user_id' },
     )
     .select('id, app_user_id, junction_user_id, connected_at, status, disconnected_at')

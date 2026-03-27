@@ -25,12 +25,13 @@ export async function fetchSessionLaps(sessionId: string): Promise<StravaLap[]> 
 
   const { data, error } = await supabase.functions.invoke<{ laps: Array<Record<string, unknown>> }>(
     'strava-fetch-laps',
-    { body: { sessionId } }
+    { body: { sessionId } },
   );
 
   if (error) {
     const msg = (error as { message?: string }).message ?? 'fetch_failed';
-    if (msg.includes('429') || msg.toLowerCase().includes('rate')) throw new Error('strava_rate_limited');
+    if (msg.includes('429') || msg.toLowerCase().includes('rate'))
+      throw new Error('strava_rate_limited');
     throw new Error(msg);
   }
 

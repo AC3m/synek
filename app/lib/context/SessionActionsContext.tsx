@@ -36,11 +36,7 @@ interface SessionActionsProviderProps {
 }
 
 export function SessionActionsProvider({ value, children }: SessionActionsProviderProps) {
-  return (
-    <SessionActionsContext.Provider value={value}>
-      {children}
-    </SessionActionsContext.Provider>
-  );
+  return <SessionActionsContext.Provider value={value}>{children}</SessionActionsContext.Provider>;
 }
 
 export function useSessionActions(): SessionActionsContextValue {

@@ -15,11 +15,11 @@ const VIDEO_URL_REGEX = /^https?:\/\/.+/;
 // ---------------------------------------------------------------------------
 
 const SUPERSET_COLORS = [
-  { leftBorder: 'border-l-orange-400',  button: 'text-orange-600' },
-  { leftBorder: 'border-l-violet-400',  button: 'text-violet-600' },
+  { leftBorder: 'border-l-orange-400', button: 'text-orange-600' },
+  { leftBorder: 'border-l-violet-400', button: 'text-violet-600' },
   { leftBorder: 'border-l-emerald-400', button: 'text-emerald-600' },
-  { leftBorder: 'border-l-rose-400',    button: 'text-rose-600' },
-  { leftBorder: 'border-l-sky-400',     button: 'text-sky-600' },
+  { leftBorder: 'border-l-rose-400', button: 'text-rose-600' },
+  { leftBorder: 'border-l-sky-400', button: 'text-sky-600' },
 ] as const;
 
 function getSupersetColor(groupId: number) {
@@ -61,9 +61,11 @@ function createEmptyExercise(): FormExercise {
 // ---------------------------------------------------------------------------
 
 function initLinks(exercises: StrengthVariantExercise[]): boolean[] {
-  return exercises.slice(0, -1).map((ex, i) =>
-    ex.supersetGroup !== null && exercises[i + 1].supersetGroup === ex.supersetGroup,
-  );
+  return exercises
+    .slice(0, -1)
+    .map(
+      (ex, i) => ex.supersetGroup !== null && exercises[i + 1].supersetGroup === ex.supersetGroup,
+    );
 }
 
 function computeSupersetGroups(links: boolean[], count: number): (number | null)[] {
@@ -71,7 +73,10 @@ function computeSupersetGroups(links: boolean[], count: number): (number | null)
   let groupId = 0;
   for (let i = 0; i < links.length; i++) {
     if (links[i]) {
-      if (groups[i] === null) { groupId++; groups[i] = groupId; }
+      if (groups[i] === null) {
+        groupId++;
+        groups[i] = groupId;
+      }
       groups[i + 1] = groups[i];
     }
   }
@@ -133,10 +138,7 @@ const ExerciseRow = memo(function ExerciseRow({
 
   return (
     <div
-      className={cn(
-        'rounded-lg border bg-muted/30 p-3',
-        color && `border-l-2 ${color.leftBorder}`,
-      )}
+      className={cn('rounded-lg border bg-muted/30 p-3', color && `border-l-2 ${color.leftBorder}`)}
     >
       <div className="flex items-center gap-2">
         {/* Reorder buttons */}
@@ -230,7 +232,7 @@ const ExerciseRow = memo(function ExerciseRow({
               <button
                 type="button"
                 onClick={() => onChange(index, { sets: 7 })}
-                className="text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground ml-1"
+                className="ml-1 text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
               >
                 6+
               </button>
@@ -309,7 +311,7 @@ const ExerciseRow = memo(function ExerciseRow({
       {/* Load unit toggle */}
       <div className="mt-2 flex items-center gap-2">
         <span className="text-xs text-muted-foreground">{t('strength.exercise.loadUnit')}:</span>
-        <div className="flex rounded-md border overflow-hidden text-xs">
+        <div className="flex overflow-hidden rounded-md border text-xs">
           {(['kg', 'sec'] as const).map((unit) => (
             <button
               key={unit}
@@ -379,16 +381,20 @@ interface VariantFormProps {
   className?: string;
 }
 
-export function VariantForm({ initial, onSave, onCancel, isSaving, hideActions, className }: VariantFormProps) {
+export function VariantForm({
+  initial,
+  onSave,
+  onCancel,
+  isSaving,
+  hideActions,
+  className,
+}: VariantFormProps) {
   const { t } = useTranslation('training');
 
   const [name, setName] = useState(() => initial?.name ?? '');
   const [description, setDescription] = useState(() => initial?.description ?? '');
-  const [exercises, setExercises] = useState<FormExercise[]>(
-    () =>
-      initial?.exercises.length
-        ? convertToFormExercises(initial.exercises)
-        : [createEmptyExercise()],
+  const [exercises, setExercises] = useState<FormExercise[]>(() =>
+    initial?.exercises.length ? convertToFormExercises(initial.exercises) : [createEmptyExercise()],
   );
   const [links, setLinks] = useState<boolean[]>(() =>
     initial?.exercises.length ? initLinks(initial.exercises) : [],
@@ -464,7 +470,10 @@ export function VariantForm({ initial, onSave, onCancel, isSaving, hideActions, 
     e.preventDefault();
     if (!name.trim()) return;
     const supersetGroups = computeSupersetGroups(links, exercises.length);
-    const exercisesWithGroups = exercises.map((ex, i) => ({ ...ex, supersetGroup: supersetGroups[i] }));
+    const exercisesWithGroups = exercises.map((ex, i) => ({
+      ...ex,
+      supersetGroup: supersetGroups[i],
+    }));
     onSave({ name: name.trim(), description: description.trim(), exercises: exercisesWithGroups });
   };
 
@@ -505,8 +514,9 @@ export function VariantForm({ initial, onSave, onCancel, isSaving, hideActions, 
         <div className="space-y-1">
           {exercises.map((ex, i) => {
             const groupId = displayGroups[i];
-            const connectorGroupId = links[i] ? displayGroups[i] ?? displayGroups[i + 1] : null;
-            const connectorColor = connectorGroupId !== null ? getSupersetColor(connectorGroupId!) : null;
+            const connectorGroupId = links[i] ? (displayGroups[i] ?? displayGroups[i + 1]) : null;
+            const connectorColor =
+              connectorGroupId !== null ? getSupersetColor(connectorGroupId!) : null;
 
             return (
               <Fragment key={i}>
@@ -515,7 +525,11 @@ export function VariantForm({ initial, onSave, onCancel, isSaving, hideActions, 
                   index={i}
                   total={exercises.length}
                   supersetGroupId={groupId}
-                  nameRef={{ current: exerciseNameRefs.current.get(i) ?? null } as React.RefObject<HTMLInputElement | null>}
+                  nameRef={
+                    {
+                      current: exerciseNameRefs.current.get(i) ?? null,
+                    } as React.RefObject<HTMLInputElement | null>
+                  }
                   onChange={handleExerciseChange}
                   onRemove={handleRemoveExercise}
                   onMoveUp={handleMoveUp}
@@ -527,7 +541,7 @@ export function VariantForm({ initial, onSave, onCancel, isSaving, hideActions, 
                     type="button"
                     onClick={() => handleToggleLink(i)}
                     className={cn(
-                      'flex items-center gap-1.5 ml-4 py-0.5 px-2 rounded text-xs font-medium transition-colors',
+                      'ml-4 flex items-center gap-1.5 rounded px-2 py-0.5 text-xs font-medium transition-colors',
                       links[i] && connectorColor
                         ? connectorColor.button
                         : 'text-muted-foreground hover:text-foreground',

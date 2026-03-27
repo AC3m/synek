@@ -48,7 +48,7 @@ function renderLogin() {
       <MemoryRouter initialEntries={['/pl/login']}>
         <LoginPage />
       </MemoryRouter>
-    </QueryClientProvider>
+    </QueryClientProvider>,
   );
 }
 
@@ -73,9 +73,7 @@ describe('LoginPage', () => {
     await user.type(screen.getByPlaceholderText('••••••••'), 'coach123');
     await user.click(screen.getByRole('button', { name: 'auth.signIn' }));
 
-    await waitFor(() =>
-      expect(mockLoginFn).toHaveBeenCalledWith('coach@synek.app', 'coach123')
-    );
+    await waitFor(() => expect(mockLoginFn).toHaveBeenCalledWith('coach@synek.app', 'coach123'));
   });
 
   it('shows an error message when login() throws', async () => {
@@ -87,9 +85,7 @@ describe('LoginPage', () => {
     await user.type(screen.getByPlaceholderText('••••••••'), 'badpassword');
     await user.click(screen.getByRole('button', { name: 'auth.signIn' }));
 
-    await waitFor(() =>
-      expect(screen.getByRole('alert')).toHaveTextContent('Invalid credentials')
-    );
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Invalid credentials'));
   });
 
   it('does not show an error initially', () => {

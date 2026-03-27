@@ -2,10 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { useWeekHistory } from '~/lib/hooks/useWeekHistory';
-import {
-  mockFetchWeekPlanByDate,
-  mockFetchSessionsByWeekPlan,
-} from '~/lib/mock-data';
+import { mockFetchWeekPlanByDate, mockFetchSessionsByWeekPlan } from '~/lib/mock-data';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
 vi.mock('~/lib/context/AuthContext', () => ({
@@ -57,7 +54,9 @@ describe('useWeekHistory', () => {
       wrapper: Wrapper,
     });
 
-    await waitFor(() => expect(result.current.every((hw) => !hw.isLoading)).toBe(true), { timeout: 3000 });
+    await waitFor(() => expect(result.current.every((hw) => !hw.isLoading)).toBe(true), {
+      timeout: 3000,
+    });
 
     expect(result.current).toHaveLength(4);
     // Most recent first

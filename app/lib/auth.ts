@@ -65,11 +65,7 @@ const COACH_ATHLETES: Record<string, string[]> = {
 // Mock auth functions
 // ============================================================
 
-export function mockRegisterCoach(
-  email: string,
-  _password: string,
-  name: string
-): AuthUser {
+export function mockRegisterCoach(email: string, _password: string, name: string): AuthUser {
   return mockRegisterUser(email, _password, name, 'coach');
 }
 
@@ -77,7 +73,7 @@ export function mockRegisterUser(
   email: string,
   _password: string,
   name: string,
-  role: UserRole
+  role: UserRole,
 ): AuthUser {
   const newUser: AuthUser & { password: string } = {
     id: crypto.randomUUID(),
@@ -92,14 +88,9 @@ export function mockRegisterUser(
   return authUser;
 }
 
-export async function mockLogin(
-  email: string,
-  password: string
-): Promise<AuthUser> {
+export async function mockLogin(email: string, password: string): Promise<AuthUser> {
   await new Promise((r) => setTimeout(r, 300));
-  const found = MOCK_USERS.find(
-    (u) => u.email === email && u.password === password
-  );
+  const found = MOCK_USERS.find((u) => u.email === email && u.password === password);
   if (!found) throw new Error('Invalid email or password');
   const { password: _pw, ...authUser } = found;
   return authUser;

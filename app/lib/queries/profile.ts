@@ -30,10 +30,7 @@ export async function mockUpdateProfileName(userId: string, name: string): Promi
 
 export async function updateProfileName(userId: string, name: string): Promise<void> {
   if (isMockMode) return mockUpdateProfileName(userId, name);
-  const { error } = await supabase
-    .from('profiles')
-    .update({ name })
-    .eq('id', userId);
+  const { error } = await supabase.from('profiles').update({ name }).eq('id', userId);
   if (error) throw error;
 }
 
@@ -77,7 +74,7 @@ export async function uploadAvatar(userId: string, file: File): Promise<string> 
 export async function mockChangePassword(
   _userId: string,
   currentPassword: string,
-  _newPassword: string
+  _newPassword: string,
 ): Promise<void> {
   await new Promise((r) => setTimeout(r, 300));
   const validPasswords: Record<string, string> = {
@@ -99,7 +96,10 @@ export async function mockFetchSelfPlanPermission(athleteId: string): Promise<bo
   return mockSelfPlan.get(athleteId) ?? true;
 }
 
-export async function mockUpdateSelfPlanPermission(athleteId: string, value: boolean): Promise<void> {
+export async function mockUpdateSelfPlanPermission(
+  athleteId: string,
+  value: boolean,
+): Promise<void> {
   await new Promise((r) => setTimeout(r, 150));
   mockSelfPlan.set(athleteId, value);
 }
@@ -124,10 +124,7 @@ export async function updateSelfPlanPermission(athleteId: string, value: boolean
   if (error) throw error;
 }
 
-export async function changePassword(
-  currentPassword: string,
-  newPassword: string
-): Promise<void> {
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
   if (isMockMode) return mockChangePassword('', currentPassword, newPassword);
 
   // Re-authenticate to verify current password

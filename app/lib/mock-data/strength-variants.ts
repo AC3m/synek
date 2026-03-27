@@ -137,7 +137,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 0,
     createdAt: '2026-02-24T17:00:00Z',
-    setsData: [{ reps: 10, loadKg: 80 }, { reps: 10, loadKg: 80 }, { reps: 9, loadKg: 80 }],
+    setsData: [
+      { reps: 10, loadKg: 80 },
+      { reps: 10, loadKg: 80 },
+      { reps: 9, loadKg: 80 },
+    ],
   },
   {
     id: 'sse-2',
@@ -149,7 +153,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 1,
     createdAt: '2026-02-24T17:00:00Z',
-    setsData: [{ reps: 8, loadKg: 50 }, { reps: 7, loadKg: 50 }, { reps: 7, loadKg: 50 }],
+    setsData: [
+      { reps: 8, loadKg: 50 },
+      { reps: 7, loadKg: 50 },
+      { reps: 7, loadKg: 50 },
+    ],
   },
   {
     id: 'sse-3',
@@ -161,7 +169,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 2,
     createdAt: '2026-02-24T17:00:00Z',
-    setsData: [{ reps: 12, loadKg: 0 }, { reps: 11, loadKg: 0 }, { reps: 10, loadKg: 0 }],
+    setsData: [
+      { reps: 12, loadKg: 0 },
+      { reps: 11, loadKg: 0 },
+      { reps: 10, loadKg: 0 },
+    ],
   },
   {
     id: 'sse-4',
@@ -173,7 +185,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 0,
     createdAt: '2026-03-03T17:30:00Z',
-    setsData: [{ reps: 8, loadKg: 0 }, { reps: 7, loadKg: 0 }, { reps: 6, loadKg: 0 }],
+    setsData: [
+      { reps: 8, loadKg: 0 },
+      { reps: 7, loadKg: 0 },
+      { reps: 6, loadKg: 0 },
+    ],
   },
   {
     id: 'sse-5',
@@ -185,7 +201,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 1,
     createdAt: '2026-03-03T17:30:00Z',
-    setsData: [{ reps: 10, loadKg: 60 }, { reps: 10, loadKg: 60 }, { reps: 9, loadKg: 60 }],
+    setsData: [
+      { reps: 10, loadKg: 60 },
+      { reps: 10, loadKg: 60 },
+      { reps: 9, loadKg: 60 },
+    ],
   },
   {
     id: 'sse-6',
@@ -197,7 +217,11 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     notes: null,
     sortOrder: 2,
     createdAt: '2026-03-03T17:30:00Z',
-    setsData: [{ reps: 12, loadKg: 15 }, { reps: 12, loadKg: 15 }, { reps: 11, loadKg: 15 }],
+    setsData: [
+      { reps: 12, loadKg: 15 },
+      { reps: 12, loadKg: 15 },
+      { reps: 11, loadKg: 15 },
+    ],
   },
 ];
 

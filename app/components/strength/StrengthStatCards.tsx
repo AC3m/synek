@@ -50,18 +50,22 @@ export const StrengthStatCards = memo(function StrengthStatCards({
     return { uniqueSessions, bestLoad, lastDate, trend };
   }, [logs]);
 
-  const trendLabel = stats.trend === 'up'
-    ? t('strength.analysis.trendIncreasing')
-    : stats.trend === 'down'
-    ? t('strength.analysis.trendDecreasing')
-    : stats.trend === 'flat'
-    ? t('strength.analysis.trendStable')
-    : '—';
+  const trendLabel =
+    stats.trend === 'up'
+      ? t('strength.analysis.trendIncreasing')
+      : stats.trend === 'down'
+        ? t('strength.analysis.trendDecreasing')
+        : stats.trend === 'flat'
+          ? t('strength.analysis.trendStable')
+          : '—';
 
   return (
     <div className={cn('grid grid-cols-2 gap-3 sm:grid-cols-4', className)}>
       <StatCard label={t('strength.analysis.statSessions')} value={stats.uniqueSessions} />
-      <StatCard label={t('strength.analysis.statBestLoad')} value={stats.bestLoad > 0 ? `${stats.bestLoad} kg` : '—'} />
+      <StatCard
+        label={t('strength.analysis.statBestLoad')}
+        value={stats.bestLoad > 0 ? `${stats.bestLoad} kg` : '—'}
+      />
       <StatCard
         label={t('strength.analysis.statLastSession')}
         value={stats.lastDate ? format(parseISO(stats.lastDate), 'MMM d') : '—'}

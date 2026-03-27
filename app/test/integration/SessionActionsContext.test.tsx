@@ -3,7 +3,9 @@ import type { ReactNode } from 'react';
 import { useSessionActions, SessionActionsProvider } from '~/lib/context/SessionActionsContext';
 import type { SessionActionsContextValue } from '~/lib/context/SessionActionsContext';
 
-function makeValue(overrides: Partial<SessionActionsContextValue> = {}): SessionActionsContextValue {
+function makeValue(
+  overrides: Partial<SessionActionsContextValue> = {},
+): SessionActionsContextValue {
   return {
     readonly: false,
     athleteMode: false,

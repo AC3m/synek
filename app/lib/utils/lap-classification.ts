@@ -37,7 +37,9 @@ export function formatPaceSpeed(averageSpeed: number | null, suffix = ''): strin
  * If there are no rest laps, all laps are classified as 'interval'
  * (callers should suppress the interval affordance in this case).
  */
-export function classifyLaps<T extends RawLap>(rawLaps: T[]): Array<T & { segmentType: StravaLapSegmentType }> {
+export function classifyLaps<T extends RawLap>(
+  rawLaps: T[],
+): Array<T & { segmentType: StravaLapSegmentType }> {
   if (rawLaps.length === 0) return [];
 
   const hasRestLap = rawLaps.some((l) => l.intensity === 'rest');

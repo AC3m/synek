@@ -7,18 +7,8 @@ import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { Separator } from '~/components/ui/separator';
 import { Skeleton } from '~/components/ui/skeleton';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogClose,
-} from '~/components/ui/dialog';
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetClose,
-} from '~/components/ui/sheet';
+import { Dialog, DialogContent, DialogTitle, DialogClose } from '~/components/ui/dialog';
+import { Sheet, SheetContent, SheetTitle, SheetClose } from '~/components/ui/sheet';
 import { useIsMobile } from '~/lib/hooks/useIsMobile';
 import { CompletionToggle } from './CompletionToggle';
 import { PerformanceEntry } from './PerformanceEntry';
@@ -67,8 +57,8 @@ function formatIntervalBlock(block: IntervalBlock, restLabel: string): string {
   const what = block.distance_m
     ? `${block.distance_m}m`
     : block.duration_seconds
-    ? `${block.duration_seconds}s`
-    : '';
+      ? `${block.duration_seconds}s`
+      : '';
   const pace = block.pace ? ` @ ${block.pace}/km` : '';
   const rest = block.rest_seconds ? `  (${block.rest_seconds}s ${restLabel})` : '';
   return `${block.repeat} × ${what}${pace}${rest}`;
@@ -83,7 +73,7 @@ function FieldRow({ label, value }: FieldRowProps) {
   if (!value && value !== 0) return null;
   return (
     <div className="flex gap-3 text-sm">
-      <span className="text-muted-foreground min-w-[130px] shrink-0">{label}</span>
+      <span className="min-w-[130px] shrink-0 text-muted-foreground">{label}</span>
       <span className="font-medium">{value}</span>
     </div>
   );
@@ -91,7 +81,7 @@ function FieldRow({ label, value }: FieldRowProps) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+    <p className="mb-2 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
       {children}
     </p>
   );
@@ -135,7 +125,8 @@ export function SessionDetailModal({
   const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
   const isRestDay = session.trainingType === 'rest_day';
 
-  const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const isMasked =
+    session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
 
@@ -144,13 +135,18 @@ export function SessionDetailModal({
       session.trainingType === 'run' &&
       session.stravaActivityId != null &&
       (userRole !== 'coach' || session.isStravaConfirmed === true),
-    [session.trainingType, session.stravaActivityId, session.isStravaConfirmed, userRole]
+    [session.trainingType, session.stravaActivityId, session.isStravaConfirmed, userRole],
   );
 
-  const { data: laps, isLoading: lapsLoading, isError: lapsError, refetch: refetchLaps } =
-    useSessionLaps(session.id, lapsEnabled);
+  const {
+    data: laps,
+    isLoading: lapsLoading,
+    isError: lapsError,
+    refetch: refetchLaps,
+  } = useSessionLaps(session.id, lapsEnabled);
 
-  const intervalCount = lapsEnabled && laps ? laps.filter((l) => l.segmentType === 'interval').length : 0;
+  const intervalCount =
+    lapsEnabled && laps ? laps.filter((l) => l.segmentType === 'interval').length : 0;
   const hasRealIntervals = intervalCount > 2;
 
   const calendarDate = getSessionCalendarDate(weekStart, session.dayOfWeek);
@@ -158,9 +154,8 @@ export function SessionDetailModal({
   const dateStr = dayDate ? format(dayDate, 'EEEE · MMM d') : null;
 
   // Strength variant logging
-  const strengthData = session.trainingType === 'strength'
-    ? (session.typeSpecificData as StrengthData)
-    : null;
+  const strengthData =
+    session.trainingType === 'strength' ? (session.typeSpecificData as StrengthData) : null;
   const strengthVariantId = strengthData?.variantId;
   const { data: strengthVariant } = useStrengthVariant(strengthVariantId ?? '');
   const { data: sessionExercises = [] } = useStrengthSessionExercises(
@@ -177,20 +172,23 @@ export function SessionDetailModal({
   );
   const { mutate: mutateExercises } = useUpsertSessionExercises();
 
-  const handleStrengthLogChange = useCallback((changes: LogRowChange[]) => {
-    if (!strengthVariantId) return;
-    mutateExercises({
-      sessionId: session.id,
-      exercises: changes.map((c, i) => ({
-        variantExerciseId: c.variantExerciseId,
-        actualReps: c.actualReps,
-        loadKg: c.loadKg,
-        progression: c.progression,
-        setsData: c.setsData,
-        sortOrder: i,
-      })),
-    });
-  }, [strengthVariantId, session.id, mutateExercises]);
+  const handleStrengthLogChange = useCallback(
+    (changes: LogRowChange[]) => {
+      if (!strengthVariantId) return;
+      mutateExercises({
+        sessionId: session.id,
+        exercises: changes.map((c, i) => ({
+          variantExerciseId: c.variantExerciseId,
+          actualReps: c.actualReps,
+          loadKg: c.loadKg,
+          progression: c.progression,
+          setsData: c.setsData,
+          sortOrder: i,
+        })),
+      });
+    },
+    [strengthVariantId, session.id, mutateExercises],
+  );
 
   const hasActualPerformance = useMemo(
     () =>
@@ -201,9 +199,13 @@ export function SessionDetailModal({
       session.maxHeartRate != null ||
       session.rpe != null,
     [
-      session.actualDurationMinutes, session.actualDistanceKm, session.actualPace,
-      session.avgHeartRate, session.maxHeartRate, session.rpe,
-    ]
+      session.actualDurationMinutes,
+      session.actualDistanceKm,
+      session.actualPace,
+      session.avgHeartRate,
+      session.maxHeartRate,
+      session.rpe,
+    ],
   );
 
   const shouldShowActualSection =
@@ -220,7 +222,10 @@ export function SessionDetailModal({
         const d = typeData as RunData;
         return (
           <div className="space-y-1.5">
-            <FieldRow label={t('training:run.hrZone')} value={d.hr_zone ? `Zone ${d.hr_zone}` : null} />
+            <FieldRow
+              label={t('training:run.hrZone')}
+              value={d.hr_zone ? `Zone ${d.hr_zone}` : null}
+            />
             <FieldRow
               label={t('training:run.terrain')}
               value={d.terrain ? t(`training:run.terrainOptions.${d.terrain}` as never) : null}
@@ -231,12 +236,12 @@ export function SessionDetailModal({
             />
             {d.intervals && d.intervals.length > 0 && (
               <div className="pt-1">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                <p className="mb-1 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                   {t('training:sessionDetail.plannedIntervals')}
                 </p>
                 <ul className="space-y-0.5">
                   {d.intervals.map((block, i) => (
-                    <li key={i} className="text-sm font-medium font-mono">
+                    <li key={i} className="font-mono text-sm font-medium">
                       {formatIntervalBlock(block, t('training:sessionDetail.rest'))}
                     </li>
                   ))}
@@ -258,7 +263,10 @@ export function SessionDetailModal({
               label={t('training:cycling.powerTarget')}
               value={d.power_target_watts != null ? `${d.power_target_watts} W` : null}
             />
-            <FieldRow label={t('training:cycling.hrZone')} value={d.hr_zone ? `Zone ${d.hr_zone}` : null} />
+            <FieldRow
+              label={t('training:cycling.hrZone')}
+              value={d.hr_zone ? `Zone ${d.hr_zone}` : null}
+            />
             <FieldRow
               label={t('training:cycling.terrain')}
               value={d.terrain ? t(`training:cycling.terrainOptions.${d.terrain}` as never) : null}
@@ -284,17 +292,25 @@ export function SessionDetailModal({
             />
             {d.exercises && d.exercises.length > 0 && (
               <div className="pt-1">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                <p className="mb-1 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                   {t('training:strength.exercises')}
                 </p>
                 <div className="overflow-x-auto">
-                  <table className="text-xs w-full">
+                  <table className="w-full text-xs">
                     <thead>
-                      <tr className="text-muted-foreground border-b">
-                        <th className="text-left pb-1 pr-3 font-medium">{t('training:strength.exercise.name')}</th>
-                        <th className="text-right pb-1 pr-2 font-medium">{t('training:strength.exercise.sets')}</th>
-                        <th className="text-right pb-1 pr-2 font-medium">{t('training:strength.exercise.reps')}</th>
-                        <th className="text-right pb-1 font-medium">{t('training:strength.exercise.weight')}</th>
+                      <tr className="border-b text-muted-foreground">
+                        <th className="pr-3 pb-1 text-left font-medium">
+                          {t('training:strength.exercise.name')}
+                        </th>
+                        <th className="pr-2 pb-1 text-right font-medium">
+                          {t('training:strength.exercise.sets')}
+                        </th>
+                        <th className="pr-2 pb-1 text-right font-medium">
+                          {t('training:strength.exercise.reps')}
+                        </th>
+                        <th className="pb-1 text-right font-medium">
+                          {t('training:strength.exercise.weight')}
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -303,7 +319,9 @@ export function SessionDetailModal({
                           <td className="py-1 pr-3 font-medium">{ex.name}</td>
                           <td className="py-1 pr-2 text-right">{ex.sets ?? '—'}</td>
                           <td className="py-1 pr-2 text-right">{ex.reps ?? '—'}</td>
-                          <td className="py-1 text-right">{ex.weight_kg != null ? `${ex.weight_kg} kg` : '—'}</td>
+                          <td className="py-1 text-right">
+                            {ex.weight_kg != null ? `${ex.weight_kg} kg` : '—'}
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -323,10 +341,10 @@ export function SessionDetailModal({
             <FieldRow label={t('training:yogaMobility.style')} value={d.style ?? null} />
             {d.poses && d.poses.length > 0 && (
               <div className="pt-1">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1">
+                <p className="mb-1 text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                   {t('training:yogaMobility.poses')}
                 </p>
-                <ul className="list-disc list-inside space-y-0.5 text-sm">
+                <ul className="list-inside list-disc space-y-0.5 text-sm">
                   {d.poses.map((pose, i) => (
                     <li key={i}>{pose}</li>
                   ))}
@@ -344,12 +362,22 @@ export function SessionDetailModal({
               label={t('training:swimming.poolLength')}
               value={d.pool_length_m != null ? `${d.pool_length_m} m` : null}
             />
-            <FieldRow label={t('training:swimming.laps')} value={d.laps != null ? String(d.laps) : null} />
+            <FieldRow
+              label={t('training:swimming.laps')}
+              value={d.laps != null ? String(d.laps) : null}
+            />
             <FieldRow
               label={t('training:swimming.strokeType')}
-              value={d.stroke_type ? t(`training:swimming.strokeOptions.${d.stroke_type}` as never) : null}
+              value={
+                d.stroke_type
+                  ? t(`training:swimming.strokeOptions.${d.stroke_type}` as never)
+                  : null
+              }
             />
-            <FieldRow label={t('training:swimming.drillDescription')} value={d.drill_description ?? null} />
+            <FieldRow
+              label={t('training:swimming.drillDescription')}
+              value={d.drill_description ?? null}
+            />
           </div>
         );
       }
@@ -372,7 +400,10 @@ export function SessionDetailModal({
       case 'rest_day': {
         const d = typeData as RestDayData;
         return (
-          <FieldRow label={t('training:restDay.activitySuggestion')} value={d.activity_suggestion ?? null} />
+          <FieldRow
+            label={t('training:restDay.activitySuggestion')}
+            value={d.activity_suggestion ?? null}
+          />
         );
       }
       default:
@@ -385,9 +416,9 @@ export function SessionDetailModal({
     <div className="flex items-center gap-1">
       <span
         className={cn(
-          'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full',
+          'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium',
           config.bgColor,
-          config.color
+          config.color,
         )}
       >
         <Icon className="h-2.5 w-2.5" />
@@ -427,7 +458,7 @@ export function SessionDetailModal({
             </Button>
           )}
           {/* Thin vertical rule separates destructive actions from the neutral close */}
-          <div className="w-px h-4 bg-border mx-1" />
+          <div className="mx-1 h-4 w-px bg-border" />
         </>
       )}
 
@@ -436,11 +467,11 @@ export function SessionDetailModal({
   );
 
   const bodyContent = (
-    <div className="flex-1 overflow-y-auto px-6 py-4 space-y-5">
+    <div className="flex-1 space-y-5 overflow-y-auto px-6 py-4">
       {/* PLANNED */}
       <div>
         <SectionLabel>{t('training:sessionDetail.planned')}</SectionLabel>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
+        <div className="mb-3 flex flex-wrap gap-x-4 gap-y-1">
           {session.plannedDurationMinutes != null && (
             <span className="text-sm text-muted-foreground">
               {session.plannedDurationMinutes} {t('training:units.min')}
@@ -454,13 +485,14 @@ export function SessionDetailModal({
           {session.trainingType === 'run' && (session.typeSpecificData as RunData).pace_target && (
             <span className="inline-flex items-center gap-0.5 text-sm font-medium text-blue-700 dark:text-blue-400">
               <Zap className="h-3 w-3" />
-              {(session.typeSpecificData as RunData).pace_target}{t('training:units.perKm')}
+              {(session.typeSpecificData as RunData).pace_target}
+              {t('training:units.perKm')}
             </span>
           )}
         </div>
         {renderTypeSpecificFields()}
         {session.coachComments && (
-          <p className="text-sm text-muted-foreground italic mt-2">{session.coachComments}</p>
+          <p className="mt-2 text-sm text-muted-foreground italic">{session.coachComments}</p>
         )}
       </div>
 
@@ -493,7 +525,7 @@ export function SessionDetailModal({
 
           {/* Strava link + logo */}
           {session.stravaActivityId != null && (
-            <div className="flex items-center justify-between mt-3 pt-3 border-t border-dashed border-[color:var(--separator)]">
+            <div className="mt-3 flex items-center justify-between border-t border-dashed border-[color:var(--separator)] pt-3">
               <a
                 href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                 target="_blank"
@@ -594,7 +626,7 @@ export function SessionDetailModal({
                   value={coachFeedback}
                   placeholder={t('training:coachPostFeedback.placeholder')}
                   rows={3}
-                  className="text-sm resize-none"
+                  className="resize-none text-sm"
                   onChange={(e) => setCoachFeedback(e.target.value)}
                   onBlur={() => {
                     const val = coachFeedback || null;
@@ -625,22 +657,29 @@ export function SessionDetailModal({
     </div>
   );
 
-  const titleText = session.description ?? t(`common:trainingTypes.${session.trainingType}` as never);
+  const titleText =
+    session.description ?? t(`common:trainingTypes.${session.trainingType}` as never);
 
   if (isMobile) {
     return (
       <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent side="bottom" showCloseButton={false} className="rounded-t-2xl max-h-[92vh] flex flex-col gap-0 p-0">
-          <div className="flex justify-center pt-3 pb-1 shrink-0">
+        <SheetContent
+          side="bottom"
+          showCloseButton={false}
+          className="flex max-h-[92vh] flex-col gap-0 rounded-t-2xl p-0"
+        >
+          <div className="flex shrink-0 justify-center pt-3 pb-1">
             <div className="h-1 w-10 rounded-full bg-border" />
           </div>
-          <div className="px-6 pt-3 pb-4 border-b shrink-0">
+          <div className="shrink-0 border-b px-6 pt-3 pb-4">
             {actionBar(null)}
-            <SheetTitle className="text-lg font-semibold mt-2 leading-tight">{titleText}</SheetTitle>
-            {dateStr && <p className="text-sm text-muted-foreground mt-0.5">{dateStr}</p>}
+            <SheetTitle className="mt-2 text-lg leading-tight font-semibold">
+              {titleText}
+            </SheetTitle>
+            {dateStr && <p className="mt-0.5 text-sm text-muted-foreground">{dateStr}</p>}
           </div>
           {bodyContent}
-          <div className="px-6 py-4 border-t flex justify-end shrink-0">
+          <div className="flex shrink-0 justify-end border-t px-6 py-4">
             <SheetClose asChild>
               <Button variant="outline">{t('common:actions.close')}</Button>
             </SheetClose>
@@ -652,20 +691,25 @@ export function SessionDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent showCloseButton={false} className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0">
-        <div className="px-6 pt-5 pb-4 border-b shrink-0">
+      <DialogContent
+        showCloseButton={false}
+        className="flex max-h-[90vh] max-w-2xl flex-col gap-0 p-0"
+      >
+        <div className="shrink-0 border-b px-6 pt-5 pb-4">
           {actionBar(
             <DialogClose asChild>
               <Button variant="ghost" size="icon" className="h-7 w-7">
                 <X className="h-4 w-4" />
               </Button>
-            </DialogClose>
+            </DialogClose>,
           )}
-          <DialogTitle className="text-lg font-semibold mt-2 leading-tight">{titleText}</DialogTitle>
-          {dateStr && <p className="text-sm text-muted-foreground mt-0.5">{dateStr}</p>}
+          <DialogTitle className="mt-2 text-lg leading-tight font-semibold">
+            {titleText}
+          </DialogTitle>
+          {dateStr && <p className="mt-0.5 text-sm text-muted-foreground">{dateStr}</p>}
         </div>
         {bodyContent}
-        <div className="px-6 py-4 border-t flex justify-end shrink-0">
+        <div className="flex shrink-0 justify-end border-t px-6 py-4">
           <DialogClose asChild>
             <Button variant="outline">{t('common:actions.close')}</Button>
           </DialogClose>

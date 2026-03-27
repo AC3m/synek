@@ -39,15 +39,13 @@ vi.mock('~/lib/queries/weeks', async () => {
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }
 
 describe('useWeekPlan', () => {
-  it('fetches Alice\'s W10 plan by weekStart', async () => {
+  it("fetches Alice's W10 plan by weekStart", async () => {
     const { Wrapper } = makeWrapper();
     const { result } = renderHook(() => useWeekPlan('2026-03-02'), {
       wrapper: Wrapper,
@@ -101,11 +99,7 @@ describe('useGetOrCreateWeekPlan', () => {
     expect(plan?.weekStart).toBe('2026-03-02');
 
     // The onSuccess handler should have seeded the cache
-    const cached = queryClient.getQueryData([
-      'weeks',
-      plan!.weekStart,
-      plan!.athleteId,
-    ]);
+    const cached = queryClient.getQueryData(['weeks', plan!.weekStart, plan!.athleteId]);
     expect(cached).toBeDefined();
   });
 });
@@ -126,11 +120,7 @@ describe('useUpdateWeekPlan', () => {
     });
 
     // Optimistic update should be visible before the mutation settles
-    const cached = queryClient.getQueryData<typeof existing>([
-      'weeks',
-      '2026-03-02',
-      'athlete-1',
-    ]);
+    const cached = queryClient.getQueryData<typeof existing>(['weeks', '2026-03-02', 'athlete-1']);
     expect(cached?.description).toBe('Updated description');
   });
 });

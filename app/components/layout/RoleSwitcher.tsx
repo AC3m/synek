@@ -7,9 +7,7 @@ export function RoleSwitcher() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const currentRole = location.pathname.startsWith('/athlete')
-    ? 'athlete'
-    : 'coach';
+  const currentRole = location.pathname.startsWith('/athlete') ? 'athlete' : 'coach';
 
   const handleRoleChange = (role: string) => {
     if (role !== currentRole) {

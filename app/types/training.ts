@@ -205,12 +205,7 @@ export interface SwimmingData {
   type: 'swimming';
   laps?: number;
   pool_length_m?: number;
-  stroke_type?:
-    | 'freestyle'
-    | 'backstroke'
-    | 'breaststroke'
-    | 'butterfly'
-    | 'mixed';
+  stroke_type?: 'freestyle' | 'backstroke' | 'breaststroke' | 'butterfly' | 'mixed';
   drill_description?: string;
 }
 

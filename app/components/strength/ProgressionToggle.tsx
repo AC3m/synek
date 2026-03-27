@@ -32,9 +32,9 @@ export const ProgressionToggle = memo(function ProgressionToggle({
   const { t } = useTranslation('training');
 
   const options: Array<{ intent: ProgressionIntent; Icon: typeof ArrowUp; label: string }> = [
-    { intent: 'up',       Icon: ArrowUp,    label: t('strength.progression.up') },
-    { intent: 'maintain', Icon: Minus,      label: t('strength.progression.maintain') },
-    { intent: 'down',     Icon: ArrowDown,  label: t('strength.progression.down') },
+    { intent: 'up', Icon: ArrowUp, label: t('strength.progression.up') },
+    { intent: 'maintain', Icon: Minus, label: t('strength.progression.maintain') },
+    { intent: 'down', Icon: ArrowDown, label: t('strength.progression.down') },
   ];
 
   if (readOnly) {

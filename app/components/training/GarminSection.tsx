@@ -31,7 +31,9 @@ function GarminChipList({ chips, valueClass, animate }: GarminChipListProps) {
     <>
       {chips.map((chip) => (
         <div key={chip.label} className={chipClass}>
-          <span className="text-[10px] text-muted-foreground uppercase tracking-tight">{chip.label}</span>
+          <span className="text-[10px] tracking-tight text-muted-foreground uppercase">
+            {chip.label}
+          </span>
           <span className={valueClass}>{chip.value}</span>
         </div>
       ))}
@@ -47,10 +49,14 @@ function buildChips(
   units: { min: string; km: string; bpm: string },
 ): ChipData[] {
   const chips: ChipData[] = [];
-  if (durationMin != null) chips.push({ label: labels.duration, value: `${durationMin} ${units.min}` });
-  if (distanceKm != null) chips.push({ label: labels.distance, value: `${distanceKm} ${units.km}` });
-  if (workout.averageHr != null) chips.push({ label: labels.avgHr, value: `${Math.round(workout.averageHr)} ${units.bpm}` });
-  if (workout.maxHr != null) chips.push({ label: labels.maxHr, value: `${Math.round(workout.maxHr)} ${units.bpm}` });
+  if (durationMin != null)
+    chips.push({ label: labels.duration, value: `${durationMin} ${units.min}` });
+  if (distanceKm != null)
+    chips.push({ label: labels.distance, value: `${distanceKm} ${units.km}` });
+  if (workout.averageHr != null)
+    chips.push({ label: labels.avgHr, value: `${Math.round(workout.averageHr)} ${units.bpm}` });
+  if (workout.maxHr != null)
+    chips.push({ label: labels.maxHr, value: `${Math.round(workout.maxHr)} ${units.bpm}` });
   if (workout.calories != null) chips.push({ label: labels.kcal, value: `${workout.calories}` });
   return chips;
 }
@@ -72,15 +78,19 @@ export function GarminSection({
 
   if (!workout) return null;
 
-  const durationMin = workout.movingTimeSeconds != null
-    ? Math.round(workout.movingTimeSeconds / 60)
-    : null;
-  const distanceKm = workout.distanceMeters != null && workout.distanceMeters > 0
-    ? (workout.distanceMeters / 1000).toFixed(2)
-    : null;
+  const durationMin =
+    workout.movingTimeSeconds != null ? Math.round(workout.movingTimeSeconds / 60) : null;
+  const distanceKm =
+    workout.distanceMeters != null && workout.distanceMeters > 0
+      ? (workout.distanceMeters / 1000).toFixed(2)
+      : null;
 
-  const hasAnyData = durationMin != null || distanceKm != null ||
-    workout.averageHr != null || workout.maxHr != null || workout.calories != null;
+  const hasAnyData =
+    durationMin != null ||
+    distanceKm != null ||
+    workout.averageHr != null ||
+    workout.maxHr != null ||
+    workout.calories != null;
 
   if (!hasAnyData) return null;
 
@@ -104,9 +114,9 @@ export function GarminSection({
   if (isCard) {
     return (
       <div className={className}>
-        <div className="flex flex-wrap gap-x-4 gap-y-2 mt-2 pt-1.5 border-t border-[color:var(--separator)]">
+        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 border-t border-[color:var(--separator)] pt-1.5">
           <GarminChipList chips={chips} valueClass={valueClass} animate={true} />
-          <div className="animate-in fade-in duration-200 w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed flex justify-end">
+          <div className="mt-1.5 flex w-full animate-in justify-end border-t border-dashed border-[color:var(--separator)] pt-1.5 duration-200 fade-in">
             <GarminBadge />
           </div>
         </div>
@@ -115,8 +125,10 @@ export function GarminSection({
   }
 
   return (
-    <div className={cn('mt-3 pt-3 border-t border-dashed border-[color:var(--separator)]', className)}>
-      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-2">
+    <div
+      className={cn('mt-3 border-t border-dashed border-[color:var(--separator)] pt-3', className)}
+    >
+      <div className="mb-2 flex flex-wrap gap-x-4 gap-y-2">
         <GarminChipList chips={chips} valueClass={valueClass} animate={false} />
       </div>
       <GarminBadge />

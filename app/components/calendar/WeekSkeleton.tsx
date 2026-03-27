@@ -28,13 +28,13 @@ export function WeekSkeleton() {
           <Skeleton className="h-9 w-32" />
           <Skeleton className="h-16 w-full" />
           <Skeleton className="h-16 w-full" />
-          <div className="pt-2 border-t flex gap-4">
-            <div className="text-center space-y-1">
-              <Skeleton className="h-6 w-8 mx-auto" />
+          <div className="flex gap-4 border-t pt-2">
+            <div className="space-y-1 text-center">
+              <Skeleton className="mx-auto h-6 w-8" />
               <Skeleton className="h-3 w-14" />
             </div>
-            <div className="text-center space-y-1">
-              <Skeleton className="h-6 w-8 mx-auto" />
+            <div className="space-y-1 text-center">
+              <Skeleton className="mx-auto h-6 w-8" />
               <Skeleton className="h-3 w-16" />
             </div>
           </div>
@@ -42,12 +42,9 @@ export function WeekSkeleton() {
       </Card>
 
       {/* Week grid skeleton — 7 columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7">
         {Array.from({ length: 7 }).map((_, i) => (
-          <div
-            key={i}
-            className="rounded-lg border bg-card p-2 min-h-[200px] space-y-2"
-          >
+          <div key={i} className="min-h-[200px] space-y-2 rounded-lg border bg-card p-2">
             <Skeleton className="h-4 w-8" />
             <Skeleton className="h-20 w-full rounded-md" />
             {i % 3 !== 2 && <Skeleton className="h-16 w-full rounded-md" />}

@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router'
-import { Eye, EyeOff, AlertTriangle } from 'lucide-react'
-import { useTranslation, Trans } from 'react-i18next'
-import { z } from 'zod'
-import { useAuth } from '~/lib/context/AuthContext'
-import { supabase } from '~/lib/supabase'
-import { useInvitePreview } from '~/lib/hooks/useInvites'
-import { Button } from '~/components/ui/button'
-import { Input } from '~/components/ui/input'
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router';
+import { Eye, EyeOff, AlertTriangle } from 'lucide-react';
+import { useTranslation, Trans } from 'react-i18next';
+import { z } from 'zod';
+import { useAuth } from '~/lib/context/AuthContext';
+import { supabase } from '~/lib/supabase';
+import { useInvitePreview } from '~/lib/hooks/useInvites';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
 
 export function meta() {
-  return [{ title: 'Join Synek' }]
+  return [{ title: 'Join Synek' }];
 }
 
 const registerSchema = z.object({
@@ -21,45 +21,45 @@ const registerSchema = z.object({
     .min(8)
     .regex(/[A-Z]/, 'Must contain uppercase')
     .regex(/[0-9]/, 'Must contain a number'),
-})
+});
 
 export default function InviteTokenPage() {
-  const { token = '' } = useParams<{ token: string }>()
-  const navigate = useNavigate()
-  const { user, logout } = useAuth()
-  const { t, i18n } = useTranslation('common')
+  const { token = '' } = useParams<{ token: string }>();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation('common');
 
-  const { data: preview, isLoading } = useInvitePreview(token)
+  const { data: preview, isLoading } = useInvitePreview(token);
 
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [honeypot, setHoneypot] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [isPending, setIsPending] = useState(false)
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isPending, setIsPending] = useState(false);
 
   // Detect browser locale on mount
   useEffect(() => {
-    const browserLocale = navigator.language.startsWith('en') ? 'en' : 'pl'
-    i18n.changeLanguage(browserLocale)
-  }, [i18n])
+    const browserLocale = navigator.language.startsWith('en') ? 'en' : 'pl';
+    i18n.changeLanguage(browserLocale);
+  }, [i18n]);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (honeypot) return
+    e.preventDefault();
+    if (honeypot) return;
 
-    const result = registerSchema.safeParse({ name: name.trim(), email: email.trim(), password })
+    const result = registerSchema.safeParse({ name: name.trim(), email: email.trim(), password });
     if (!result.success) {
-      setError(result.error.issues[0]?.message ?? 'Invalid input')
-      return
+      setError(result.error.issues[0]?.message ?? 'Invalid input');
+      return;
     }
 
-    setError(null)
-    setIsPending(true)
+    setError(null);
+    setIsPending(true);
 
     try {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? ''
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL ?? '';
       const res = await fetch(`${supabaseUrl}/functions/v1/claim-invite`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,39 +69,39 @@ export default function InviteTokenPage() {
           email: result.data.email,
           password: result.data.password,
         }),
-      })
+      });
 
-      const data = await res.json() as { success?: boolean; error?: string; reason?: string }
+      const data = (await res.json()) as { success?: boolean; error?: string; reason?: string };
 
       if (!res.ok) {
         if (data.error === 'email_taken') {
-          setError(t('auth.invalidCredentials'))
+          setError(t('auth.invalidCredentials'));
         } else if (data.error === 'invalid_token') {
-          setError(t(`invite.invalid${capitalize(data.reason ?? 'NotFound')}` as never))
+          setError(t(`invite.invalid${capitalize(data.reason ?? 'NotFound')}` as never));
         } else {
-          setError(t('errors.generic'))
+          setError(t('errors.generic'));
         }
-        setIsPending(false)
-        return
+        setIsPending(false);
+        return;
       }
 
       // Issue fresh session — prevents session fixation
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: result.data.email,
         password: result.data.password,
-      })
+      });
 
       if (signInError) {
-        setError(t('errors.generic'))
-        setIsPending(false)
-        return
+        setError(t('errors.generic'));
+        setIsPending(false);
+        return;
       }
 
-      const locale = navigator.language.startsWith('en') ? 'en' : 'pl'
-      navigate(`/${locale}/athlete`, { replace: true })
+      const locale = navigator.language.startsWith('en') ? 'en' : 'pl';
+      navigate(`/${locale}/athlete`, { replace: true });
     } catch {
-      setError(t('errors.generic'))
-      setIsPending(false)
+      setError(t('errors.generic'));
+      setIsPending(false);
     }
   }
 
@@ -117,7 +117,7 @@ export default function InviteTokenPage() {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -125,11 +125,11 @@ export default function InviteTokenPage() {
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
-    )
+    );
   }
 
   if (!preview?.valid) {
-    const reasonKey = preview?.reason ?? 'not_found'
+    const reasonKey = preview?.reason ?? 'not_found';
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4">
         <div className="w-full max-w-sm space-y-4 text-center">
@@ -141,15 +141,15 @@ export default function InviteTokenPage() {
           <p className="text-xs text-muted-foreground">{t('invite.askNewInvite')}</p>
         </div>
       </div>
-    )
+    );
   }
 
-  const privacyNoticeUrl = import.meta.env.VITE_PRIVACY_NOTICE_URL ?? '/privacy'
+  const privacyNoticeUrl = import.meta.env.VITE_PRIVACY_NOTICE_URL ?? '/privacy';
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm space-y-8">
-        <div className="text-center space-y-1">
+        <div className="space-y-1 text-center">
           <h1 className="text-xl font-bold">
             {t('invite.welcomeTitle', { coachName: preview.coachName })}
           </h1>
@@ -168,7 +168,7 @@ export default function InviteTokenPage() {
           />
 
           <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium leading-none">
+            <label htmlFor="name" className="text-sm leading-none font-medium">
               {t('auth.fullName')}
             </label>
             <Input
@@ -183,7 +183,7 @@ export default function InviteTokenPage() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium leading-none">
+            <label htmlFor="email" className="text-sm leading-none font-medium">
               {t('auth.email')}
             </label>
             <Input
@@ -198,7 +198,7 @@ export default function InviteTokenPage() {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="text-sm font-medium leading-none">
+            <label htmlFor="password" className="text-sm leading-none font-medium">
               {t('auth.password')}
             </label>
             <div className="relative">
@@ -257,9 +257,9 @@ export default function InviteTokenPage() {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 function capitalize(s: string) {
-  return s.charAt(0).toUpperCase() + s.slice(1).replace(/_([a-z])/g, (_, c) => c.toUpperCase())
+  return s.charAt(0).toUpperCase() + s.slice(1).replace(/_([a-z])/g, (_, c) => c.toUpperCase());
 }

@@ -2,10 +2,7 @@ import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { useSelfPlanPermission, useUpdateSelfPlanPermission } from '~/lib/hooks/useProfile';
-import {
-  mockFetchSelfPlanPermission,
-  resetMockSelfPlan,
-} from '~/lib/queries/profile';
+import { mockFetchSelfPlanPermission, resetMockSelfPlan } from '~/lib/queries/profile';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
 // Hoisted mutable reference so we can override updateSelfPlanPermission per test
@@ -29,9 +26,7 @@ vi.mock('~/lib/queries/profile', async () => {
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }

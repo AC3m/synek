@@ -48,7 +48,10 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
   ]);
 
   const saveNumber = (
-    field: keyof Pick<AthleteSessionUpdate, 'actualDurationMinutes' | 'actualDistanceKm' | 'avgHeartRate' | 'maxHeartRate' | 'rpe'>,
+    field: keyof Pick<
+      AthleteSessionUpdate,
+      'actualDurationMinutes' | 'actualDistanceKm' | 'avgHeartRate' | 'maxHeartRate' | 'rpe'
+    >,
     raw: string,
     current: number | null | undefined,
   ) => {
@@ -70,7 +73,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
     <div className="mt-1.5">
       <button
         onClick={() => setExpanded((v) => !v)}
-        className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
       >
         <BarChart2 className="h-2.5 w-2.5" />
         {t('actualPerformance.logButton')}
@@ -78,9 +81,9 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
       </button>
 
       {expanded && (
-        <div className="animate-in fade-in slide-in-from-top-1 duration-150 mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1.5">
+        <div className="mt-1.5 grid animate-in grid-cols-2 gap-x-2 gap-y-1.5 duration-150 fade-in slide-in-from-top-1">
           <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
+            <label className="mb-0.5 block text-[9px] text-muted-foreground">
               {t('actualPerformance.duration')} (min)
             </label>
             <Input
@@ -90,14 +93,16 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
               placeholder="—"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              onBlur={() => saveNumber('actualDurationMinutes', duration, session.actualDurationMinutes)}
-              className="h-6 text-[10px] px-1.5"
+              onBlur={() =>
+                saveNumber('actualDurationMinutes', duration, session.actualDurationMinutes)
+              }
+              className="h-6 px-1.5 text-[10px]"
             />
           </div>
 
           {distanceBased && (
             <div>
-              <label className="text-[9px] text-muted-foreground block mb-0.5">
+              <label className="mb-0.5 block text-[9px] text-muted-foreground">
                 {t('actualPerformance.distance')} (km)
               </label>
               <Input
@@ -108,14 +113,14 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
                 value={distance}
                 onChange={(e) => setDistance(e.target.value)}
                 onBlur={() => saveNumber('actualDistanceKm', distance, session.actualDistanceKm)}
-                className="h-6 text-[10px] px-1.5"
+                className="h-6 px-1.5 text-[10px]"
               />
             </div>
           )}
 
           {distanceBased && (
             <div>
-              <label className="text-[9px] text-muted-foreground block mb-0.5">
+              <label className="mb-0.5 block text-[9px] text-muted-foreground">
                 {t('actualPerformance.pace')} (/km)
               </label>
               <Input
@@ -124,13 +129,13 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
                 value={pace}
                 onChange={(e) => setPace(e.target.value)}
                 onBlur={() => saveString('actualPace', pace, session.actualPace)}
-                className="h-6 text-[10px] px-1.5"
+                className="h-6 px-1.5 text-[10px]"
               />
             </div>
           )}
 
           <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
+            <label className="mb-0.5 block text-[9px] text-muted-foreground">
               {t('actualPerformance.rpe')} ({t('actualPerformance.rpeHint')})
             </label>
             <Input
@@ -142,12 +147,12 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
               value={rpe}
               onChange={(e) => setRpe(e.target.value)}
               onBlur={() => saveNumber('rpe', rpe, session.rpe)}
-              className="h-6 text-[10px] px-1.5"
+              className="h-6 px-1.5 text-[10px]"
             />
           </div>
 
           <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
+            <label className="mb-0.5 block text-[9px] text-muted-foreground">
               {t('actualPerformance.avgHr')} (bpm)
             </label>
             <Input
@@ -158,12 +163,12 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
               value={avgHr}
               onChange={(e) => setAvgHr(e.target.value)}
               onBlur={() => saveNumber('avgHeartRate', avgHr, session.avgHeartRate)}
-              className="h-6 text-[10px] px-1.5"
+              className="h-6 px-1.5 text-[10px]"
             />
           </div>
 
           <div>
-            <label className="text-[9px] text-muted-foreground block mb-0.5">
+            <label className="mb-0.5 block text-[9px] text-muted-foreground">
               {t('actualPerformance.maxHr')} (bpm)
             </label>
             <Input
@@ -174,7 +179,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
               value={maxHr}
               onChange={(e) => setMaxHr(e.target.value)}
               onBlur={() => saveNumber('maxHeartRate', maxHr, session.maxHeartRate)}
-              className="h-6 text-[10px] px-1.5"
+              className="h-6 px-1.5 text-[10px]"
             />
           </div>
         </div>

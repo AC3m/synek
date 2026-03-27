@@ -44,7 +44,9 @@ describe('useSessionFormState', () => {
   it('handleAddSession(day): sets formOpen=true, formDay, clears editingSession', () => {
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleAddSession('monday'); });
+    act(() => {
+      result.current.handleAddSession('monday');
+    });
 
     expect(result.current.formOpen).toBe(true);
     expect(result.current.formDay).toBe('monday');
@@ -55,7 +57,9 @@ describe('useSessionFormState', () => {
     const session = makeSession();
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleEditSession(session); });
+    act(() => {
+      result.current.handleEditSession(session);
+    });
 
     expect(result.current.formOpen).toBe(true);
     expect(result.current.formDay).toBe('tuesday');
@@ -65,7 +69,9 @@ describe('useSessionFormState', () => {
   it('handleDeleteSession(id): sets deleteConfirmId, does not open form', () => {
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleDeleteSession('s42'); });
+    act(() => {
+      result.current.handleDeleteSession('s42');
+    });
 
     expect(result.current.deleteConfirmId).toBe('s42');
     expect(result.current.formOpen).toBe(false);
@@ -75,10 +81,14 @@ describe('useSessionFormState', () => {
     const session = makeSession();
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleEditSession(session); });
+    act(() => {
+      result.current.handleEditSession(session);
+    });
     expect(result.current.editingSession).toBe(session);
 
-    act(() => { result.current.setFormOpen(false); });
+    act(() => {
+      result.current.setFormOpen(false);
+    });
 
     expect(result.current.formOpen).toBe(false);
     expect(result.current.editingSession).toBe(session);
@@ -88,10 +98,14 @@ describe('useSessionFormState', () => {
     const session = makeSession();
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleEditSession(session); });
+    act(() => {
+      result.current.handleEditSession(session);
+    });
     expect(result.current.editingSession).toBe(session);
 
-    act(() => { result.current.handleAddSession('friday'); });
+    act(() => {
+      result.current.handleAddSession('friday');
+    });
 
     expect(result.current.editingSession).toBeNull();
     expect(result.current.formDay).toBe('friday');
@@ -100,10 +114,14 @@ describe('useSessionFormState', () => {
   it('setDeleteConfirmId(null) clears deleteConfirmId', () => {
     const { result } = renderHook(() => useSessionFormState());
 
-    act(() => { result.current.handleDeleteSession('s1'); });
+    act(() => {
+      result.current.handleDeleteSession('s1');
+    });
     expect(result.current.deleteConfirmId).toBe('s1');
 
-    act(() => { result.current.setDeleteConfirmId(null); });
+    act(() => {
+      result.current.setDeleteConfirmId(null);
+    });
     expect(result.current.deleteConfirmId).toBeNull();
   });
 });

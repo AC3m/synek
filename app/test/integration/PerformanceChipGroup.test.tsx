@@ -42,7 +42,7 @@ describe('PerformanceChipGroup', () => {
         isMasked={false}
         shouldShowMaskedPlaceholders={false}
         animate={true}
-      />
+      />,
     );
     // The single rendered chip div should have delay-[125ms] class
     const chipDiv = container.querySelector('[class*="delay-"]');
@@ -57,7 +57,7 @@ describe('PerformanceChipGroup', () => {
         session={session}
         isMasked={true}
         shouldShowMaskedPlaceholders={true}
-      />
+      />,
     );
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.className).toContain('blur-[3px]');
@@ -71,7 +71,7 @@ describe('PerformanceChipGroup', () => {
         session={session}
         isMasked={true}
         shouldShowMaskedPlaceholders={true}
-      />
+      />,
     );
     const maskedValues = screen.getAllByText('---');
     expect(maskedValues.length).toBeGreaterThan(0);
@@ -84,7 +84,7 @@ describe('PerformanceChipGroup', () => {
         session={session}
         isMasked={false}
         shouldShowMaskedPlaceholders={false}
-      />
+      />,
     );
     expect(screen.getByText(/45/)).toBeTruthy();
   });
@@ -96,7 +96,7 @@ describe('PerformanceChipGroup', () => {
         session={session}
         isMasked={true}
         shouldShowMaskedPlaceholders={true}
-      />
+      />,
     );
     // All 6 chips should be rendered
     const chipDivs = container.querySelectorAll('.flex.flex-col');
@@ -111,7 +111,7 @@ describe('PerformanceChipGroup', () => {
         isMasked={false}
         shouldShowMaskedPlaceholders={false}
         size="compact"
-      />
+      />,
     );
     const valueSpan = container.querySelector('span.text-\\[10px\\].font-semibold');
     expect(valueSpan).not.toBeNull();
@@ -125,7 +125,7 @@ describe('PerformanceChipGroup', () => {
         isMasked={false}
         shouldShowMaskedPlaceholders={false}
         animate={true}
-      />
+      />,
     );
     const chipDiv = container.querySelector('[class*="animate-in"]');
     expect(chipDiv).not.toBeNull();

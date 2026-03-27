@@ -67,9 +67,7 @@ const BOB_W10_PLAN_ID = 'wp-w10-a2';
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }
@@ -79,7 +77,7 @@ describe('Coach week view — data layer', () => {
     mockEffectiveAthleteId = 'athlete-1';
   });
 
-  it('loads Alice\'s week plan when she is the selected athlete', async () => {
+  it("loads Alice's week plan when she is the selected athlete", async () => {
     const { Wrapper } = makeWrapper();
     const { result } = renderHook(() => useWeekPlan(WEEK_START), { wrapper: Wrapper });
 
@@ -89,7 +87,7 @@ describe('Coach week view — data layer', () => {
     expect(result.current.data?.id).toBe(ALICE_W10_PLAN_ID);
   });
 
-  it('loads sessions for the selected athlete\'s week plan', async () => {
+  it("loads sessions for the selected athlete's week plan", async () => {
     const { Wrapper } = makeWrapper();
     const alicePlan = await mockFetchWeekPlanByDate(WEEK_START, 'athlete-1');
 

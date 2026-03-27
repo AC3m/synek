@@ -7,6 +7,6 @@ export function useSessionLaps(sessionId: string, enabled: boolean) {
     queryKey: queryKeys.sessionLaps.bySession(sessionId),
     queryFn: () => fetchSessionLaps(sessionId),
     enabled: !!sessionId && enabled,
-    staleTime: Infinity,  // lap data never changes once fetched — cached permanently
+    staleTime: Infinity, // lap data never changes once fetched — cached permanently
   });
 }

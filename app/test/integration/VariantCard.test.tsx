@@ -30,7 +30,7 @@ const mockVariant: StrengthVariant = {
 
 function renderCard(onDelete = vi.fn(), onEdit = vi.fn()) {
   return renderWithProviders(
-    <VariantCard variant={mockVariant} onEdit={onEdit} onDelete={onDelete} />
+    <VariantCard variant={mockVariant} onEdit={onEdit} onDelete={onDelete} />,
   );
 }
 

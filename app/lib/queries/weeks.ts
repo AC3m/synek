@@ -5,11 +5,7 @@ import {
   mockUpdateWeekPlan,
   mockGetOrCreateWeekPlan,
 } from '~/lib/mock-data';
-import type {
-  WeekPlan,
-  CreateWeekPlanInput,
-  UpdateWeekPlanInput,
-} from '~/types/training';
+import type { WeekPlan, CreateWeekPlanInput, UpdateWeekPlanInput } from '~/types/training';
 
 // DB row → app type mapper
 export function toWeekPlan(row: Record<string, unknown>): WeekPlan {
@@ -31,7 +27,7 @@ export function toWeekPlan(row: Record<string, unknown>): WeekPlan {
 
 export async function fetchWeekPlanByDate(
   weekStart: string,
-  athleteId: string
+  athleteId: string,
 ): Promise<WeekPlan | null> {
   if (isMockMode) return mockFetchWeekPlanByDate(weekStart, athleteId);
   const { data, error } = await supabase
@@ -45,9 +41,7 @@ export async function fetchWeekPlanByDate(
   return data ? toWeekPlan(data) : null;
 }
 
-export async function createWeekPlan(
-  input: CreateWeekPlanInput
-): Promise<WeekPlan> {
+export async function createWeekPlan(input: CreateWeekPlanInput): Promise<WeekPlan> {
   if (isMockMode) return mockCreateWeekPlan(input);
   const { data, error } = await supabase
     .from('week_plans')
@@ -68,19 +62,14 @@ export async function createWeekPlan(
   return toWeekPlan(data);
 }
 
-export async function updateWeekPlan(
-  input: UpdateWeekPlanInput
-): Promise<WeekPlan> {
+export async function updateWeekPlan(input: UpdateWeekPlanInput): Promise<WeekPlan> {
   if (isMockMode) return mockUpdateWeekPlan(input);
   const updates: Record<string, unknown> = {};
   if (input.loadType !== undefined) updates.load_type = input.loadType;
-  if (input.totalPlannedKm !== undefined)
-    updates.total_planned_km = input.totalPlannedKm;
+  if (input.totalPlannedKm !== undefined) updates.total_planned_km = input.totalPlannedKm;
   if (input.description !== undefined) updates.description = input.description;
-  if (input.coachComments !== undefined)
-    updates.coach_comments = input.coachComments;
-  if (input.actualTotalKm !== undefined)
-    updates.actual_total_km = input.actualTotalKm;
+  if (input.coachComments !== undefined) updates.coach_comments = input.coachComments;
+  if (input.actualTotalKm !== undefined) updates.actual_total_km = input.actualTotalKm;
 
   const { data, error } = await supabase
     .from('week_plans')
@@ -97,10 +86,9 @@ export async function getOrCreateWeekPlan(
   weekStart: string,
   year: number,
   weekNumber: number,
-  athleteId: string
+  athleteId: string,
 ): Promise<WeekPlan> {
-  if (isMockMode)
-    return mockGetOrCreateWeekPlan(weekStart, year, weekNumber, athleteId);
+  if (isMockMode) return mockGetOrCreateWeekPlan(weekStart, year, weekNumber, athleteId);
   const existing = await fetchWeekPlanByDate(weekStart, athleteId);
   if (existing) return existing;
   return createWeekPlan({ weekStart, year, weekNumber, athleteId });

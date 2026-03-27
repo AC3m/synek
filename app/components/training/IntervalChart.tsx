@@ -21,19 +21,16 @@ export function IntervalChart({ laps, className }: IntervalChartProps) {
 
   const totalTime = useMemo(
     () => laps.reduce((sum, lap) => sum + (lap.elapsedTimeSeconds ?? 0), 0),
-    [laps]
+    [laps],
   );
-  const presentTypes = useMemo(
-    () => [...new Set(laps.map((l) => l.segmentType))],
-    [laps]
-  );
+  const presentTypes = useMemo(() => [...new Set(laps.map((l) => l.segmentType))], [laps]);
 
   if (totalTime === 0 || laps.length === 0) return null;
 
   return (
     <div className={cn('space-y-1.5', className)}>
       {/* Bars row */}
-      <div className="flex items-end gap-0.5 h-12">
+      <div className="flex h-12 items-end gap-0.5">
         {laps.map((lap) => {
           const elapsed = lap.elapsedTimeSeconds ?? 0;
           // Width as percentage of total, minimum 4px
@@ -41,16 +38,19 @@ export function IntervalChart({ laps, className }: IntervalChartProps) {
           return (
             <div
               key={lap.lapIndex}
-              className="flex flex-col justify-end h-full"
+              className="flex h-full flex-col justify-end"
               style={{ flexBasis: `${widthPct}%`, minWidth: '4px' }}
               title={`${t(`intervals.segments.${lap.segmentType}` as never)} — ${formatPaceSpeed(lap.averageSpeed)} /km`}
             >
               <div
                 className={cn('w-full rounded-sm transition-all', SEGMENT_COLORS[lap.segmentType])}
                 style={{
-                  height: lap.segmentType === 'recovery' || lap.segmentType === 'warmup' || lap.segmentType === 'cooldown'
-                    ? '50%'
-                    : '100%',
+                  height:
+                    lap.segmentType === 'recovery' ||
+                    lap.segmentType === 'warmup' ||
+                    lap.segmentType === 'cooldown'
+                      ? '50%'
+                      : '100%',
                 }}
               />
             </div>
@@ -69,7 +69,7 @@ export function IntervalChart({ laps, className }: IntervalChartProps) {
               className="overflow-hidden"
               style={{ flexBasis: `${widthPct}%`, minWidth: '4px' }}
             >
-              <span className="text-[9px] text-muted-foreground leading-none block truncate">
+              <span className="block truncate text-[9px] leading-none text-muted-foreground">
                 {lap.segmentType === 'interval' ? formatPaceSpeed(lap.averageSpeed) : ''}
               </span>
             </div>
@@ -80,8 +80,11 @@ export function IntervalChart({ laps, className }: IntervalChartProps) {
       {/* Legend */}
       <div className="flex flex-wrap gap-x-3 gap-y-1 pt-0.5">
         {presentTypes.map((type) => (
-          <span key={type} className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-            <span className={cn('h-2 w-2 rounded-sm shrink-0', SEGMENT_COLORS[type])} />
+          <span
+            key={type}
+            className="inline-flex items-center gap-1 text-[10px] text-muted-foreground"
+          >
+            <span className={cn('h-2 w-2 shrink-0 rounded-sm', SEGMENT_COLORS[type])} />
             {t(`intervals.segments.${type}` as never)}
           </span>
         ))}

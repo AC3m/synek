@@ -30,7 +30,11 @@ export const trainingTypeConfig: Record<
   TrainingType,
   { color: string; bgColor: string; icon: string }
 > = {
-  run: { color: 'text-blue-700 dark:text-blue-300', bgColor: 'bg-blue-100 dark:bg-blue-900', icon: 'Footprints' },
+  run: {
+    color: 'text-blue-700 dark:text-blue-300',
+    bgColor: 'bg-blue-100 dark:bg-blue-900',
+    icon: 'Footprints',
+  },
   cycling: {
     color: 'text-green-700 dark:text-green-300',
     bgColor: 'bg-green-100 dark:bg-green-900',
@@ -84,15 +88,20 @@ export function isDistanceBased(trainingType: TrainingType): boolean {
   return (DISTANCE_BASED_TYPES as readonly string[]).includes(trainingType);
 }
 
-export const loadTypeConfig: Record<
-  LoadType,
-  { color: string; bgColor: string; label: string }
-> = {
-  easy: { color: 'text-green-700 dark:text-green-300', bgColor: 'bg-green-100 dark:bg-green-900', label: 'Easy' },
+export const loadTypeConfig: Record<LoadType, { color: string; bgColor: string; label: string }> = {
+  easy: {
+    color: 'text-green-700 dark:text-green-300',
+    bgColor: 'bg-green-100 dark:bg-green-900',
+    label: 'Easy',
+  },
   medium: {
     color: 'text-yellow-700 dark:text-yellow-300',
     bgColor: 'bg-yellow-100 dark:bg-yellow-900',
     label: 'Medium',
   },
-  hard: { color: 'text-red-700 dark:text-red-300', bgColor: 'bg-red-100 dark:bg-red-900', label: 'Hard' },
+  hard: {
+    color: 'text-red-700 dark:text-red-300',
+    bgColor: 'bg-red-100 dark:bg-red-900',
+    label: 'Hard',
+  },
 };

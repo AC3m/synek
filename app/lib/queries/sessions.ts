@@ -64,16 +64,15 @@ export async function confirmStravaSession(sessionId: string): Promise<void> {
 
 export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<void> {
   if (isMockMode) return mockBulkConfirmStravaSessions(weekPlanId);
-  
-  const { error } = await supabase
-    .rpc('confirm_all_strava_sessions_for_week', { p_week_plan_id: weekPlanId });
+
+  const { error } = await supabase.rpc('confirm_all_strava_sessions_for_week', {
+    p_week_plan_id: weekPlanId,
+  });
 
   if (error) throw error;
 }
 
-export async function fetchSessionsByWeekPlan(
-  weekPlanId: string
-): Promise<TrainingSession[]> {
+export async function fetchSessionsByWeekPlan(weekPlanId: string): Promise<TrainingSession[]> {
   if (isMockMode) return mockFetchSessionsByWeekPlan(weekPlanId);
   const { data, error } = await supabase
     .from('secure_training_sessions')
@@ -85,9 +84,7 @@ export async function fetchSessionsByWeekPlan(
   return (data ?? []).map(toSession);
 }
 
-export async function createSession(
-  input: CreateSessionInput
-): Promise<TrainingSession> {
+export async function createSession(input: CreateSessionInput): Promise<TrainingSession> {
   if (isMockMode) return mockCreateSession(input);
   const { data, error } = await supabase
     .from('training_sessions')
@@ -119,36 +116,26 @@ export async function createSession(
   return toSession(data);
 }
 
-export async function updateSession(
-  input: UpdateSessionInput
-): Promise<TrainingSession> {
+export async function updateSession(input: UpdateSessionInput): Promise<TrainingSession> {
   if (isMockMode) return mockUpdateSession(input);
   const updates: Record<string, unknown> = {};
-  if (input.trainingType !== undefined)
-    updates.training_type = input.trainingType;
+  if (input.trainingType !== undefined) updates.training_type = input.trainingType;
   if (input.dayOfWeek !== undefined) updates.day_of_week = input.dayOfWeek;
   if (input.description !== undefined) updates.description = input.description;
-  if (input.coachComments !== undefined)
-    updates.coach_comments = input.coachComments;
+  if (input.coachComments !== undefined) updates.coach_comments = input.coachComments;
   if (input.plannedDurationMinutes !== undefined)
     updates.planned_duration_minutes = input.plannedDurationMinutes;
-  if (input.plannedDistanceKm !== undefined)
-    updates.planned_distance_km = input.plannedDistanceKm;
-  if (input.typeSpecificData !== undefined)
-    updates.type_specific_data = input.typeSpecificData;
+  if (input.plannedDistanceKm !== undefined) updates.planned_distance_km = input.plannedDistanceKm;
+  if (input.typeSpecificData !== undefined) updates.type_specific_data = input.typeSpecificData;
   if (input.sortOrder !== undefined) updates.sort_order = input.sortOrder;
   if (input.actualDurationMinutes !== undefined)
     updates.actual_duration_minutes = input.actualDurationMinutes;
-  if (input.actualDistanceKm !== undefined)
-    updates.actual_distance_km = input.actualDistanceKm;
+  if (input.actualDistanceKm !== undefined) updates.actual_distance_km = input.actualDistanceKm;
   if (input.actualPace !== undefined) updates.actual_pace = input.actualPace;
-  if (input.avgHeartRate !== undefined)
-    updates.avg_heart_rate = input.avgHeartRate;
-  if (input.maxHeartRate !== undefined)
-    updates.max_heart_rate = input.maxHeartRate;
+  if (input.avgHeartRate !== undefined) updates.avg_heart_rate = input.avgHeartRate;
+  if (input.maxHeartRate !== undefined) updates.max_heart_rate = input.maxHeartRate;
   if (input.rpe !== undefined) updates.rpe = input.rpe;
-  if (input.coachPostFeedback !== undefined)
-    updates.coach_post_feedback = input.coachPostFeedback;
+  if (input.coachPostFeedback !== undefined) updates.coach_post_feedback = input.coachPostFeedback;
 
   const { data, error } = await supabase
     .from('training_sessions')
@@ -163,10 +150,7 @@ export async function updateSession(
 
 export async function deleteSession(sessionId: string): Promise<void> {
   if (isMockMode) return mockDeleteSession(sessionId);
-  const { error } = await supabase
-    .from('training_sessions')
-    .delete()
-    .eq('id', sessionId);
+  const { error } = await supabase.from('training_sessions').delete().eq('id', sessionId);
 
   if (error) throw error;
 }
@@ -193,29 +177,21 @@ export async function copyDaySessions(input: CopyDayInput): Promise<number> {
   return data as number;
 }
 
-export async function updateAthleteSession(
-  input: AthleteSessionUpdate
-): Promise<TrainingSession> {
+export async function updateAthleteSession(input: AthleteSessionUpdate): Promise<TrainingSession> {
   if (isMockMode) return mockUpdateAthleteSession(input);
   const updates: Record<string, unknown> = {};
   if (input.isCompleted !== undefined) {
     updates.is_completed = input.isCompleted;
     updates.completed_at = input.isCompleted ? new Date().toISOString() : null;
   }
-  if (input.athleteNotes !== undefined)
-    updates.trainee_notes = input.athleteNotes;
+  if (input.athleteNotes !== undefined) updates.trainee_notes = input.athleteNotes;
   if (input.actualDurationMinutes !== undefined)
     updates.actual_duration_minutes = input.actualDurationMinutes;
-  if (input.actualDistanceKm !== undefined)
-    updates.actual_distance_km = input.actualDistanceKm;
-  if (input.actualPace !== undefined)
-    updates.actual_pace = input.actualPace;
-  if (input.avgHeartRate !== undefined)
-    updates.avg_heart_rate = input.avgHeartRate;
-  if (input.maxHeartRate !== undefined)
-    updates.max_heart_rate = input.maxHeartRate;
-  if (input.rpe !== undefined)
-    updates.rpe = input.rpe;
+  if (input.actualDistanceKm !== undefined) updates.actual_distance_km = input.actualDistanceKm;
+  if (input.actualPace !== undefined) updates.actual_pace = input.actualPace;
+  if (input.avgHeartRate !== undefined) updates.avg_heart_rate = input.avgHeartRate;
+  if (input.maxHeartRate !== undefined) updates.max_heart_rate = input.maxHeartRate;
+  if (input.rpe !== undefined) updates.rpe = input.rpe;
 
   const { data, error } = await supabase
     .from('training_sessions')

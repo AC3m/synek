@@ -1,8 +1,7 @@
 export const queryKeys = {
   weeks: {
     all: ['weeks'] as const,
-    byId: (weekStart: string, athleteId: string) =>
-      ['weeks', weekStart, athleteId] as const,
+    byId: (weekStart: string, athleteId: string) => ['weeks', weekStart, athleteId] as const,
   },
   sessions: {
     all: ['sessions'] as const,

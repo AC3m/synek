@@ -73,7 +73,7 @@ export function VariantPicker({
     <div className="flex flex-col gap-2">
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -101,7 +101,7 @@ export function VariantPicker({
       {/* Recently used section */}
       {recentVariants.length > 0 && !search && (
         <div>
-          <p className="px-3 py-1 text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          <p className="px-3 py-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
             {t('strength.variant.recentlyUsed')}
           </p>
           <ul role="listbox">
@@ -160,12 +160,8 @@ export function VariantPicker({
       {open && (
         <>
           {/* Click-away overlay */}
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="absolute left-0 top-full z-50 mt-1 w-full min-w-[280px] rounded-md border bg-popover p-2 shadow-md">
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden="true" />
+          <div className="absolute top-full left-0 z-50 mt-1 w-full min-w-[280px] rounded-md border bg-popover p-2 shadow-md">
             {listContent}
           </div>
         </>

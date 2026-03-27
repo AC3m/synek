@@ -14,10 +14,10 @@ interface PerformanceChipGroupProps {
 const CHIPS = [
   { key: 'duration', delay: 'delay-[50ms]' },
   { key: 'distance', delay: 'delay-[75ms]' },
-  { key: 'pace',     delay: 'delay-[100ms]' },
-  { key: 'avgHr',    delay: 'delay-[125ms]' },
-  { key: 'maxHr',    delay: 'delay-[150ms]' },
-  { key: 'rpe',      delay: 'delay-[175ms]' },
+  { key: 'pace', delay: 'delay-[100ms]' },
+  { key: 'avgHr', delay: 'delay-[125ms]' },
+  { key: 'maxHr', delay: 'delay-[150ms]' },
+  { key: 'rpe', delay: 'delay-[175ms]' },
 ] as const;
 
 export function PerformanceChipGroup({
@@ -40,7 +40,9 @@ export function PerformanceChipGroup({
     },
     {
       key: 'distance',
-      show: shouldShowMaskedPlaceholders || (session.actualDistanceKm != null && session.actualDistanceKm > 0),
+      show:
+        shouldShowMaskedPlaceholders ||
+        (session.actualDistanceKm != null && session.actualDistanceKm > 0),
       label: t('training:actualPerformance.distance'),
       value: `${session.actualDistanceKm} ${t('training:units.km')}`,
     },
@@ -74,8 +76,8 @@ export function PerformanceChipGroup({
     <div
       className={cn(
         'flex flex-wrap gap-x-4 gap-y-2',
-        isMasked && 'blur-[3px] select-none pointer-events-none',
-        className
+        isMasked && 'pointer-events-none blur-[3px] select-none',
+        className,
       )}
       title={isMasked ? t('common:strava.waitingForConfirmation') : undefined}
     >
@@ -84,14 +86,16 @@ export function PerformanceChipGroup({
           <div
             key={chip.key}
             className={cn(
-              animate && `animate-in fade-in duration-200 ${CHIPS[i].delay}`,
-              'flex flex-col min-w-[60px]'
+              animate && `animate-in duration-200 fade-in ${CHIPS[i].delay}`,
+              'flex min-w-[60px] flex-col',
             )}
           >
-            <span className="text-[10px] text-muted-foreground uppercase tracking-tight">{chip.label}</span>
+            <span className="text-[10px] tracking-tight text-muted-foreground uppercase">
+              {chip.label}
+            </span>
             <span className={valueClass}>{isMasked ? '---' : chip.value}</span>
           </div>
-        ) : null
+        ) : null,
       )}
     </div>
   );

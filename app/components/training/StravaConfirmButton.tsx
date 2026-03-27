@@ -12,7 +12,12 @@ interface StravaConfirmButtonProps {
   className?: string;
 }
 
-export function StravaConfirmButton({ sessionId, hasStravaActivity, isStravaConfirmed, className }: StravaConfirmButtonProps) {
+export function StravaConfirmButton({
+  sessionId,
+  hasStravaActivity,
+  isStravaConfirmed,
+  className,
+}: StravaConfirmButtonProps) {
   const { t } = useTranslation('common');
   const { userRole, onConfirmStrava } = useSessionActions();
   const { trigger, isPending } = useAsyncAction(onConfirmStrava);
@@ -25,8 +30,8 @@ export function StravaConfirmButton({ sessionId, hasStravaActivity, isStravaConf
       variant="outline"
       disabled={isPending}
       className={cn(
-        'w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300 disabled:opacity-60 disabled:cursor-not-allowed',
-        className
+        'h-7 w-full border-orange-200 px-2 text-[10px] text-orange-600 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300',
+        className,
       )}
       onClick={(e) => {
         e.stopPropagation();
@@ -34,10 +39,11 @@ export function StravaConfirmButton({ sessionId, hasStravaActivity, isStravaConf
       }}
       title={t('strava.confirmAndShare')}
     >
-      {isPending
-        ? <Loader2 className="h-2.5 w-2.5 animate-spin shrink-0" />
-        : <Share2 className="h-2.5 w-2.5 shrink-0" />
-      }
+      {isPending ? (
+        <Loader2 className="h-2.5 w-2.5 shrink-0 animate-spin" />
+      ) : (
+        <Share2 className="h-2.5 w-2.5 shrink-0" />
+      )}
       <span className="truncate">{t('strava.confirmAndShare')}</span>
     </Button>
   );

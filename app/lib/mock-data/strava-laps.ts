@@ -16,7 +16,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 1500,
     elapsedTimeSeconds: 480,
     movingTimeSeconds: 480,
-    averageSpeed: 3.125,     // ~8:00/km
+    averageSpeed: 3.125, // ~8:00/km
     averageHeartrate: 138,
     maxHeartrate: 148,
     averageCadence: 170,
@@ -31,7 +31,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 1000,
     elapsedTimeSeconds: 255,
     movingTimeSeconds: 255,
-    averageSpeed: 3.922,     // ~4:15/km
+    averageSpeed: 3.922, // ~4:15/km
     averageHeartrate: 172,
     maxHeartrate: 178,
     averageCadence: 186,
@@ -46,7 +46,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 500,
     elapsedTimeSeconds: 180,
     movingTimeSeconds: 180,
-    averageSpeed: 2.778,     // ~6:00/km
+    averageSpeed: 2.778, // ~6:00/km
     averageHeartrate: 155,
     maxHeartrate: 165,
     averageCadence: 174,
@@ -61,7 +61,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 1000,
     elapsedTimeSeconds: 258,
     movingTimeSeconds: 258,
-    averageSpeed: 3.876,     // ~4:18/km
+    averageSpeed: 3.876, // ~4:18/km
     averageHeartrate: 175,
     maxHeartrate: 181,
     averageCadence: 185,
@@ -76,7 +76,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 500,
     elapsedTimeSeconds: 185,
     movingTimeSeconds: 185,
-    averageSpeed: 2.703,     // ~6:10/km
+    averageSpeed: 2.703, // ~6:10/km
     averageHeartrate: 158,
     maxHeartrate: 168,
     averageCadence: 173,
@@ -91,7 +91,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 1000,
     elapsedTimeSeconds: 252,
     movingTimeSeconds: 252,
-    averageSpeed: 3.968,     // ~4:12/km
+    averageSpeed: 3.968, // ~4:12/km
     averageHeartrate: 178,
     maxHeartrate: 184,
     averageCadence: 188,
@@ -106,7 +106,7 @@ const STRUCTURED_SEED: StravaLap[] = [
     distanceMeters: 1200,
     elapsedTimeSeconds: 420,
     movingTimeSeconds: 420,
-    averageSpeed: 2.857,     // ~5:50/km
+    averageSpeed: 2.857, // ~5:50/km
     averageHeartrate: 145,
     maxHeartrate: 158,
     averageCadence: 172,
@@ -159,8 +159,14 @@ let mockLapStore: Map<string, StravaLap[]> = new Map();
 
 function buildStore(): Map<string, StravaLap[]> {
   const store = new Map<string, StravaLap[]>();
-  store.set(STRUCTURED_SESSION_ID, STRUCTURED_SEED.map((l) => ({ ...l })));
-  store.set(AUTO_LAP_SESSION_ID, AUTO_LAP_SEED.map((l) => ({ ...l })));
+  store.set(
+    STRUCTURED_SESSION_ID,
+    STRUCTURED_SEED.map((l) => ({ ...l })),
+  );
+  store.set(
+    AUTO_LAP_SESSION_ID,
+    AUTO_LAP_SEED.map((l) => ({ ...l })),
+  );
   return store;
 }
 

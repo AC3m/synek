@@ -80,17 +80,27 @@ export function LapTable({ laps, className }: LapTableProps) {
   });
 
   return (
-    <div className={cn('overflow-auto max-h-72', className)}>
-      <table className="w-full text-[11px] border-collapse">
+    <div className={cn('max-h-72 overflow-auto', className)}>
+      <table className="w-full border-collapse text-[11px]">
         <thead>
           <tr className="border-b border-[color:var(--separator)]">
-            <th className="text-left py-1 pr-2 font-medium text-muted-foreground w-4">#</th>
-            <th className="text-left py-1 pr-2 font-medium text-muted-foreground">{t('intervals.columns.segment')}</th>
-            <th className="text-right py-1 pr-2 font-medium text-muted-foreground whitespace-nowrap">{t('intervals.columns.duration')}</th>
-            <th className="text-right py-1 pr-2 font-medium text-muted-foreground whitespace-nowrap">{t('intervals.columns.distance')}</th>
-            <th className="text-right py-1 pr-2 font-medium text-muted-foreground whitespace-nowrap">{t('intervals.columns.pace')}</th>
+            <th className="w-4 py-1 pr-2 text-left font-medium text-muted-foreground">#</th>
+            <th className="py-1 pr-2 text-left font-medium text-muted-foreground">
+              {t('intervals.columns.segment')}
+            </th>
+            <th className="py-1 pr-2 text-right font-medium whitespace-nowrap text-muted-foreground">
+              {t('intervals.columns.duration')}
+            </th>
+            <th className="py-1 pr-2 text-right font-medium whitespace-nowrap text-muted-foreground">
+              {t('intervals.columns.distance')}
+            </th>
+            <th className="py-1 pr-2 text-right font-medium whitespace-nowrap text-muted-foreground">
+              {t('intervals.columns.pace')}
+            </th>
             {hasHrOrZone && (
-              <th className="text-right py-1 font-medium text-muted-foreground whitespace-nowrap">{t('intervals.columns.heartRate')}</th>
+              <th className="py-1 text-right font-medium whitespace-nowrap text-muted-foreground">
+                {t('intervals.columns.heartRate')}
+              </th>
             )}
           </tr>
         </thead>
@@ -100,16 +110,22 @@ export function LapTable({ laps, className }: LapTableProps) {
               key={lap.lapIndex}
               className={cn(
                 'border-b border-[color:var(--separator)] last:border-0',
-                SEGMENT_ROW_COLORS[lap.segmentType]
+                SEGMENT_ROW_COLORS[lap.segmentType],
               )}
             >
               <td className="py-1 pr-2 text-muted-foreground">{i + 1}</td>
               <td className={cn('py-1 pr-2 font-medium', SEGMENT_LABEL_COLORS[lap.segmentType])}>
                 {label}
               </td>
-              <td className="py-1 pr-2 text-right tabular-nums">{formatDuration(lap.elapsedTimeSeconds)}</td>
-              <td className="py-1 pr-2 text-right tabular-nums">{formatDistance(lap.distanceMeters)}</td>
-              <td className="py-1 pr-2 text-right tabular-nums">{formatPaceSpeed(lap.averageSpeed, ' /km')}</td>
+              <td className="py-1 pr-2 text-right tabular-nums">
+                {formatDuration(lap.elapsedTimeSeconds)}
+              </td>
+              <td className="py-1 pr-2 text-right tabular-nums">
+                {formatDistance(lap.distanceMeters)}
+              </td>
+              <td className="py-1 pr-2 text-right tabular-nums">
+                {formatPaceSpeed(lap.averageSpeed, ' /km')}
+              </td>
               {hasHrOrZone && (
                 <td className="py-1 text-right tabular-nums">{formatHrOrZone(lap)}</td>
               )}

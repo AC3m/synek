@@ -12,7 +12,12 @@ interface StravaSyncButtonProps {
   className?: string;
 }
 
-export function StravaSyncButton({ sessionId, isCompleted, hasStravaActivity, className }: StravaSyncButtonProps) {
+export function StravaSyncButton({
+  sessionId,
+  isCompleted,
+  hasStravaActivity,
+  className,
+}: StravaSyncButtonProps) {
   const { t } = useTranslation('common');
   const { stravaConnected, onSyncStrava } = useSessionActions();
   const { trigger, isPending } = useAsyncAction(onSyncStrava);
@@ -25,15 +30,19 @@ export function StravaSyncButton({ sessionId, isCompleted, hasStravaActivity, cl
       variant="outline"
       disabled={isPending}
       className={cn(
-        'w-full text-[10px] h-7 px-2 border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-700 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300 disabled:opacity-60 disabled:cursor-not-allowed',
-        className
+        'h-7 w-full border-orange-200 px-2 text-[10px] text-orange-600 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-orange-900 dark:text-orange-400 dark:hover:bg-orange-950 dark:hover:text-orange-300',
+        className,
       )}
       onClick={(e) => {
         e.stopPropagation();
         void trigger(sessionId);
       }}
     >
-      {isPending ? <Loader2 className="h-2.5 w-2.5 animate-spin shrink-0" /> : <Zap className="h-2.5 w-2.5 shrink-0" />}
+      {isPending ? (
+        <Loader2 className="h-2.5 w-2.5 shrink-0 animate-spin" />
+      ) : (
+        <Zap className="h-2.5 w-2.5 shrink-0" />
+      )}
       <span className="truncate">{t('strava.sync')}</span>
     </Button>
   );

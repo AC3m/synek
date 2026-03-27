@@ -28,13 +28,17 @@ type SessionQueryRollback = { key: readonly unknown[]; data: TrainingSession[] }
 
 async function patchAllSessionQueries(
   queryClient: QueryClient,
-  patcher: (sessions: TrainingSession[]) => TrainingSession[] | null
+  patcher: (sessions: TrainingSession[]) => TrainingSession[] | null,
 ): Promise<{ rollbacks: SessionQueryRollback[] }> {
   const allQueries = queryClient.getQueriesData<TrainingSession[]>({
     queryKey: queryKeys.sessions.all,
   });
 
-  const updates: Array<{ key: readonly unknown[]; original: TrainingSession[]; updated: TrainingSession[] }> = [];
+  const updates: Array<{
+    key: readonly unknown[];
+    original: TrainingSession[];
+    updated: TrainingSession[];
+  }> = [];
 
   for (const [key, sessions] of allQueries) {
     if (!sessions) continue;
@@ -165,7 +169,9 @@ export function useUpdateAthleteSession() {
             completedAt: input.isCompleted ? new Date().toISOString() : null,
           }),
           ...(input.athleteNotes !== undefined && { athleteNotes: input.athleteNotes }),
-          ...(input.actualDurationMinutes !== undefined && { actualDurationMinutes: input.actualDurationMinutes }),
+          ...(input.actualDurationMinutes !== undefined && {
+            actualDurationMinutes: input.actualDurationMinutes,
+          }),
           ...(input.actualDistanceKm !== undefined && { actualDistanceKm: input.actualDistanceKm }),
           ...(input.actualPace !== undefined && { actualPace: input.actualPace }),
           ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),

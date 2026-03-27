@@ -1,10 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '~/lib/queries/keys';
-import {
-  fetchWeekPlanByDate,
-  getOrCreateWeekPlan,
-  updateWeekPlan,
-} from '~/lib/queries/weeks';
+import { fetchWeekPlanByDate, getOrCreateWeekPlan, updateWeekPlan } from '~/lib/queries/weeks';
 import { useAuth } from '~/lib/context/AuthContext';
 import type { UpdateWeekPlanInput, WeekPlan } from '~/types/training';
 
@@ -33,10 +29,7 @@ export function useGetOrCreateWeekPlan() {
       weekNumber: number;
     }) => getOrCreateWeekPlan(weekStart, year, weekNumber, effectiveAthleteId!),
     onSuccess: (data) => {
-      qc.setQueryData(
-        queryKeys.weeks.byId(data.weekStart, data.athleteId),
-        data
-      );
+      qc.setQueryData(queryKeys.weeks.byId(data.weekStart, data.athleteId), data);
     },
   });
 }

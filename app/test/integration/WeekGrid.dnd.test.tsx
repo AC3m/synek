@@ -10,10 +10,21 @@ import { DAYS_OF_WEEK } from '~/types/training';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
 // Capture the onDragEnd callback from DndContext so we can fire it manually
-let capturedOnDragEnd: ((event: { active: { id: string; data: { current: { day: string } } }; over: { id: string } | null }) => void) | null = null;
+let capturedOnDragEnd:
+  | ((event: {
+      active: { id: string; data: { current: { day: string } } };
+      over: { id: string } | null;
+    }) => void)
+  | null = null;
 
 vi.mock('@dnd-kit/core', () => ({
-  DndContext: ({ children, onDragEnd }: { children: ReactNode; onDragEnd: typeof capturedOnDragEnd }) => {
+  DndContext: ({
+    children,
+    onDragEnd,
+  }: {
+    children: ReactNode;
+    onDragEnd: typeof capturedOnDragEnd;
+  }) => {
     capturedOnDragEnd = onDragEnd ?? null;
     return <>{children}</>;
   },
@@ -58,7 +69,11 @@ function makeWrapper() {
   return Wrapper;
 }
 
-function makeSession(id: string, day: TrainingSession['dayOfWeek'], sortOrder: number): TrainingSession {
+function makeSession(
+  id: string,
+  day: TrainingSession['dayOfWeek'],
+  sortOrder: number,
+): TrainingSession {
   return {
     id,
     weekPlanId: 'wp-1',
@@ -113,7 +128,7 @@ describe('WeekGrid drag-and-drop', () => {
           onReorderSession={onReorderSession}
           weekStart="2026-03-16"
         />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // DndContext should be mounted and capturedOnDragEnd should be set
@@ -127,17 +142,14 @@ describe('WeekGrid drag-and-drop', () => {
     });
 
     expect(onReorderSession).toHaveBeenCalledWith(
-      expect.objectContaining({ sessionId: 's1', dayOfWeek: 'thursday' })
+      expect.objectContaining({ sessionId: 's1', dayOfWeek: 'thursday' }),
     );
   });
 
   it('calls onReorderSession with same dayOfWeek on within-day drop', () => {
     const onReorderSession = vi.fn();
     const sessionsByDay = makeSessionsByDay({
-      monday: [
-        makeSession('s1', 'monday', 0),
-        makeSession('s2', 'monday', 1),
-      ],
+      monday: [makeSession('s1', 'monday', 0), makeSession('s2', 'monday', 1)],
     });
 
     const Wrapper = makeWrapper();
@@ -149,7 +161,7 @@ describe('WeekGrid drag-and-drop', () => {
           onReorderSession={onReorderSession}
           weekStart="2026-03-16"
         />
-      </Wrapper>
+      </Wrapper>,
     );
 
     expect(capturedOnDragEnd).not.toBeNull();
@@ -182,7 +194,7 @@ describe('WeekGrid drag-and-drop', () => {
           onReorderSession={onReorderSession}
           weekStart="2026-03-16"
         />
-      </Wrapper>
+      </Wrapper>,
     );
 
     expect(capturedOnDragEnd).not.toBeNull();

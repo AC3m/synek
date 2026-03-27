@@ -55,9 +55,7 @@ export default memo(function ExerciseProgressChart({
 
   return (
     <div className={cn('space-y-6', className)}>
-      {athleteName && (
-        <p className="text-sm text-muted-foreground">{athleteName}</p>
-      )}
+      {athleteName && <p className="text-sm text-muted-foreground">{athleteName}</p>}
 
       <StrengthStatCards exercises={variant.exercises} logs={logs} />
 
@@ -75,10 +73,7 @@ export default memo(function ExerciseProgressChart({
         visibleExerciseIds={visibleExerciseIds}
       />
 
-      <SessionHistoryTable
-        exercises={variant.exercises}
-        logs={logs}
-      />
+      <SessionHistoryTable exercises={variant.exercises} logs={logs} />
     </div>
   );
 });

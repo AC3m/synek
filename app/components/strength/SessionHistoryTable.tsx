@@ -78,7 +78,7 @@ export const SessionHistoryTable = memo(function SessionHistoryTable({
   function sortHeader(col: SortCol, label: string) {
     return (
       <th
-        className="cursor-pointer select-none whitespace-nowrap pb-2 pr-3 text-left text-xs uppercase tracking-widest text-muted-foreground"
+        className="cursor-pointer pr-3 pb-2 text-left text-xs tracking-widest whitespace-nowrap text-muted-foreground uppercase select-none"
         onClick={() => toggleSort(col)}
       >
         {label}
@@ -93,15 +93,15 @@ export const SessionHistoryTable = memo(function SessionHistoryTable({
         <thead>
           <tr>
             {sortHeader('date', t('strength.analysis.tableDate'))}
-            <th className="pb-2 pr-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+            <th className="pr-3 pb-2 text-left text-xs tracking-widest text-muted-foreground uppercase">
               {t('strength.analysis.tableExercise')}
             </th>
-            <th className="whitespace-nowrap pb-2 pr-3 text-left text-xs uppercase tracking-widest text-muted-foreground">
+            <th className="pr-3 pb-2 text-left text-xs tracking-widest whitespace-nowrap text-muted-foreground uppercase">
               {t('strength.analysis.tableSetsReps')}
             </th>
             {sortHeader('load', t('strength.analysis.tableLoad'))}
             {sortHeader('volume', t('strength.analysis.tableVolume'))}
-            <th className="whitespace-nowrap pb-2 text-left text-xs uppercase tracking-widest text-muted-foreground">
+            <th className="pb-2 text-left text-xs tracking-widest whitespace-nowrap text-muted-foreground uppercase">
               {t('strength.analysis.tableNextIntent')}
             </th>
           </tr>
@@ -117,7 +117,7 @@ export const SessionHistoryTable = memo(function SessionHistoryTable({
                   key={`${session.sessionId}-${log.exerciseId}-${i}`}
                   className={cn('border-b', isFirst && 'border-t border-t-border')}
                 >
-                  <td className="pr-3 py-1.5 text-xs text-muted-foreground align-top whitespace-nowrap">
+                  <td className="py-1.5 pr-3 align-top text-xs whitespace-nowrap text-muted-foreground">
                     {isFirst && session.date ? (
                       <>
                         <div>{format(parseISO(session.date), 'MMM d')}</div>
@@ -142,11 +142,7 @@ export const SessionHistoryTable = memo(function SessionHistoryTable({
                     {Math.round(rowVol) > 0 ? `${Math.round(rowVol)} kg` : '—'}
                   </td>
                   <td className="py-1.5">
-                    <ProgressionToggle
-                      value={log.progression}
-                      onChange={() => {}}
-                      readOnly
-                    />
+                    <ProgressionToggle value={log.progression} onChange={() => {}} readOnly />
                   </td>
                 </tr>
               );

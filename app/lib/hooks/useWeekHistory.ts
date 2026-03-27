@@ -10,7 +10,10 @@ import type { HistoryWeek } from '~/types/training';
  * Uses existing useWeekPlan + useSessions hooks; all queries run in parallel
  * and are cached by React Query.
  */
-export function useWeekHistory(currentWeekId: string, count = 4): (HistoryWeek & { isLoading: boolean })[] {
+export function useWeekHistory(
+  currentWeekId: string,
+  count = 4,
+): (HistoryWeek & { isLoading: boolean })[] {
   const weekIds = computePreviousWeekIds(currentWeekId, count);
 
   // Unconditionally call hooks for all history slots (fixed count — Rules of Hooks safe).

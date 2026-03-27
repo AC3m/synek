@@ -10,7 +10,13 @@ import { SessionForm } from '~/components/training/SessionForm';
 import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmationDialog';
 import { useSessionFormState } from '~/lib/hooks/useSessionFormState';
 import { useWeekPlan, useGetOrCreateWeekPlan, useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
-import { useSessions, useCreateSession, useUpdateSession, useDeleteSession, useUpdateAthleteSession } from '~/lib/hooks/useSessions';
+import {
+  useSessions,
+  useCreateSession,
+  useUpdateSession,
+  useDeleteSession,
+  useUpdateAthleteSession,
+} from '~/lib/hooks/useSessions';
 import { useAuth } from '~/lib/context/AuthContext';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
@@ -31,12 +37,14 @@ export default function CoachWeekView() {
   const isViewingSelf = !!effectiveAthleteId && effectiveAthleteId === user?.id;
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
-  const { year, weekNumber } = weekId
-    ? parseWeekId(weekId)
-    : { year: 0, weekNumber: 0 };
+  const { year, weekNumber } = weekId ? parseWeekId(weekId) : { year: 0, weekNumber: 0 };
 
   // Queries
-  const { data: weekPlan, isLoading: weekLoading, isFetching: weekFetching } = useWeekPlan(weekStart);
+  const {
+    data: weekPlan,
+    isLoading: weekLoading,
+    isFetching: weekFetching,
+  } = useWeekPlan(weekStart);
   const getOrCreate = useGetOrCreateWeekPlan();
   const updateWeek = useUpdateWeekPlan();
   const sessionsQuery = useSessions(weekPlan?.id);
@@ -57,17 +65,23 @@ export default function CoachWeekView() {
     mutatingRef.current = true;
     getOrCreate.mutate(
       { weekStart, year, weekNumber },
-      { onSettled: () => { mutatingRef.current = false; } }
+      {
+        onSettled: () => {
+          mutatingRef.current = false;
+        },
+      },
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
 
   // Form state
   const {
-    formOpen, setFormOpen,
+    formOpen,
+    setFormOpen,
     formDay,
     editingSession,
-    deleteConfirmId, setDeleteConfirmId,
+    deleteConfirmId,
+    setDeleteConfirmId,
     handleAddSession,
     handleEditSession,
     handleDeleteSession,
@@ -81,47 +95,47 @@ export default function CoachWeekView() {
         updateSession.mutate(data);
       }
     },
-    [createSession, updateSession]
+    [createSession, updateSession],
   );
 
   const handleWeekUpdate = useCallback(
     (
       updates: Partial<
         Pick<WeekPlan, 'loadType' | 'totalPlannedKm' | 'actualTotalKm' | 'coachComments'>
-      >
+      >,
     ) => {
       if (!weekPlan) return;
       updateWeek.mutate({ id: weekPlan.id, ...updates });
     },
-    [weekPlan, updateWeek]
+    [weekPlan, updateWeek],
   );
 
   const handleUpdateCoachPostFeedback = useCallback(
     (sessionId: string, feedback: string | null) => {
       updateSession.mutate({ id: sessionId, coachPostFeedback: feedback });
     },
-    [updateSession]
+    [updateSession],
   );
 
   const handleToggleComplete = useCallback(
     (sessionId: string, completed: boolean) => {
       updateAthlete.mutate({ id: sessionId, isCompleted: completed });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
   const handleUpdateNotes = useCallback(
     (sessionId: string, notes: string | null) => {
       updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
   const handleUpdatePerformance = useCallback(
     (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => {
       updateAthlete.mutate({ id: sessionId, ...update });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
   const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
@@ -135,65 +149,74 @@ export default function CoachWeekView() {
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
-      {!showSkeleton && weekPlan && (
-        <>
-          {/* Header with navigation */}
-          <StaggerIn className="flex items-center gap-2">
-            <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-            <WeekNavigation weekId={weekId} basePath="coach" selectedDay={selectedDay} isLoading={weekFetching} />
-          </StaggerIn>
+      <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
+        {!showSkeleton && weekPlan && (
+          <>
+            {/* Header with navigation */}
+            <StaggerIn className="flex items-center gap-2">
+              <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
+                {t('title')}
+              </h1>
+              <WeekNavigation
+                weekId={weekId}
+                basePath="coach"
+                selectedDay={selectedDay}
+                isLoading={weekFetching}
+              />
+            </StaggerIn>
 
-          {/* Week Summary */}
-          <StaggerIn delay={60}>
-            <WeekSummary
-              weekPlan={weekPlan}
-              stats={stats}
-              onUpdate={handleWeekUpdate}
+            {/* Week Summary */}
+            <StaggerIn delay={60}>
+              <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
+            </StaggerIn>
+
+            {/* Multi-Week View (current week + 4 history rows) */}
+            <StaggerIn delay={120}>
+              <MultiWeekView
+                currentWeekId={weekId}
+                currentWeekPlan={weekPlan}
+                currentSessions={sessions}
+                currentSessionsByDay={sessionsByDay}
+                onAddSession={handleAddSession}
+                onEditSession={handleEditSession}
+                onDeleteSession={handleDeleteSession}
+                onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+                userRole={user?.role}
+                showAthleteControls={isViewingSelf}
+              />
+            </StaggerIn>
+
+            {/* Session Form Sheet */}
+            <SessionForm
+              open={formOpen}
+              onClose={() => setFormOpen(false)}
+              weekPlanId={weekPlan.id}
+              day={formDay}
+              session={editingSession}
+              onSubmit={handleFormSubmit}
+              isCoach={true}
             />
-          </StaggerIn>
+          </>
+        )}
 
-          {/* Multi-Week View (current week + 4 history rows) */}
-          <StaggerIn delay={120}>
-            <MultiWeekView
-              currentWeekId={weekId}
-              currentWeekPlan={weekPlan}
-              currentSessions={sessions}
-              currentSessionsByDay={sessionsByDay}
-              onAddSession={handleAddSession}
-              onEditSession={handleEditSession}
-              onDeleteSession={handleDeleteSession}
-              onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
-              userRole={user?.role}
-              showAthleteControls={isViewingSelf}
-            />
-          </StaggerIn>
-
-          {/* Session Form Sheet */}
-          <SessionForm
-            open={formOpen}
-            onClose={() => setFormOpen(false)}
-            weekPlanId={weekPlan.id}
-            day={formDay}
-            session={editingSession}
-            onSubmit={handleFormSubmit}
-            isCoach={true}
-          />
-        </>
-      )}
-
-      {/* Delete session confirmation */}
-      <DeleteConfirmationDialog
-        open={!!deleteConfirmId}
-        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
-        title={t('session.delete')}
-        description={t('session.deleteConfirm')}
-        confirmLabel={t('session.delete')}
-        cancelLabel={t('common:actions.cancel' as never)}
-        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!, { onSettled: () => setDeleteConfirmId(null) }); }}
-        isPending={deleteSessionMut.isPending}
-      />
-    </div>
+        {/* Delete session confirmation */}
+        <DeleteConfirmationDialog
+          open={!!deleteConfirmId}
+          onOpenChange={(open) => {
+            if (!open) setDeleteConfirmId(null);
+          }}
+          title={t('session.delete')}
+          description={t('session.deleteConfirm')}
+          confirmLabel={t('session.delete')}
+          cancelLabel={t('common:actions.cancel' as never)}
+          onConfirm={() => {
+            deleteSessionMut.mutate(deleteConfirmId!, {
+              onSettled: () => setDeleteConfirmId(null),
+            });
+          }}
+          isPending={deleteSessionMut.isPending}
+        />
+      </div>
     </>
   );
 }

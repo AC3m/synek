@@ -142,7 +142,9 @@ export function useDeleteStrengthVariant(userId: string) {
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: keys.lists(userId) });
       const prev = qc.getQueryData<StrengthVariant[]>(keys.lists(userId));
-      qc.setQueryData<StrengthVariant[]>(keys.lists(userId), (old) => (old ?? []).filter((v) => v.id !== id));
+      qc.setQueryData<StrengthVariant[]>(keys.lists(userId), (old) =>
+        (old ?? []).filter((v) => v.id !== id),
+      );
       return { prev };
     },
     onError: (_err, _id, ctx) => {
@@ -206,7 +208,9 @@ export function useUpsertSessionExercises() {
     mutationFn: (input: UpsertSessionExercisesInput) => upsertSessionExercises(input),
     onMutate: async (input) => {
       await qc.cancelQueries({ queryKey: keys.sessionExercises(input.sessionId) });
-      const prev = qc.getQueryData<StrengthSessionExercise[]>(keys.sessionExercises(input.sessionId));
+      const prev = qc.getQueryData<StrengthSessionExercise[]>(
+        keys.sessionExercises(input.sessionId),
+      );
       const optimisticMap = new Map(
         input.exercises.map((ex) => [
           ex.variantExerciseId,

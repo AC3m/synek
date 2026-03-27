@@ -24,17 +24,19 @@ interface SessionCardProps {
   onCopy?: (session: TrainingSession) => void;
 }
 
-export function SessionCard({
-  session,
-  weekStart,
-  draggable = false,
-  onCopy,
-}: SessionCardProps) {
+export function SessionCard({ session, weekStart, draggable = false, onCopy }: SessionCardProps) {
   const { t } = useTranslation(['common', 'training', 'coach']);
   const [detailOpen, setDetailOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const { readonly, athleteMode, showAthleteControls, junctionConnected, onToggleComplete, userRole } = useSessionActions();
+  const {
+    readonly,
+    athleteMode,
+    showAthleteControls,
+    junctionConnected,
+    onToggleComplete,
+    userRole,
+  } = useSessionActions();
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: session.id,
@@ -42,10 +44,13 @@ export function SessionCard({
     disabled: !draggable,
   });
 
-  const mergedRef = useCallback((node: HTMLDivElement | null) => {
-    setNodeRef(node);
-    cardRef.current = node;
-  }, [setNodeRef]);
+  const mergedRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      setNodeRef(node);
+      cardRef.current = node;
+    },
+    [setNodeRef],
+  );
 
   // PoC: Junction Garmin — remove after evaluation
   const { user } = useAuth();
@@ -61,13 +66,13 @@ export function SessionCard({
     setDetailOpen(true);
   };
 
-
   const config = trainingTypeConfig[session.trainingType];
   const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
   const isRestDay = session.trainingType === 'rest_day';
   const distanceBased = isDistanceBased(session.trainingType);
 
-  const isMasked = session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const isMasked =
+    session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
   const hasActualPerformance =
     session.actualDurationMinutes != null ||
@@ -84,10 +89,15 @@ export function SessionCard({
   // completed the session). Skip the animation on initial render so navigating between
   // weeks doesn't flash already-present performance data.
   const performanceVisibleOnMount = useRef(shouldShowPerformanceSection);
-  const animatePerformance = !readonly && shouldShowPerformanceSection && !performanceVisibleOnMount.current;
+  const animatePerformance =
+    !readonly && shouldShowPerformanceSection && !performanceVisibleOnMount.current;
 
   const sortableStyle = draggable
-    ? { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : undefined }
+    ? {
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : undefined,
+      }
     : undefined;
 
   const hasStravaActivity = session.stravaActivityId != null;
@@ -97,18 +107,18 @@ export function SessionCard({
       ref={mergedRef}
       style={sortableStyle}
       className={cn(
-        'group rounded-xl p-3 transition-all ring-1 ring-[color:var(--border)] cursor-pointer',
-        session.isCompleted ? 'bg-surface-2 opacity-70' : 'bg-surface-1'
+        'group cursor-pointer rounded-xl p-3 ring-1 ring-[color:var(--border)] transition-all',
+        session.isCompleted ? 'bg-surface-2 opacity-70' : 'bg-surface-1',
       )}
       onClick={handleCardClick}
     >
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-1 min-w-0">
+        <div className="flex min-w-0 items-center gap-1">
           {draggable && (
             <button
               {...attributes}
               {...listeners}
-              className="cursor-grab active:cursor-grabbing p-0.5 -ml-1 rounded text-[color:var(--foreground-secondary)] opacity-40 hover:opacity-80 shrink-0"
+              className="-ml-1 shrink-0 cursor-grab rounded p-0.5 text-[color:var(--foreground-secondary)] opacity-40 hover:opacity-80 active:cursor-grabbing"
               aria-label="drag to reorder"
               onClick={(e) => e.stopPropagation()}
             >
@@ -118,9 +128,9 @@ export function SessionCard({
           {/* Sport badge pill — sport color only here */}
           <span
             className={cn(
-              'inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full',
+              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium',
               config.bgColor,
-              config.color
+              config.color,
             )}
           >
             <Icon className="h-2.5 w-2.5" />
@@ -131,8 +141,11 @@ export function SessionCard({
           {onCopy && (
             <button
               data-testid="session-copy-btn"
-              className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-black/10"
-              onClick={(e) => { e.stopPropagation(); onCopy(session); }}
+              className="rounded p-0.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-black/10"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCopy(session);
+              }}
               aria-label="copy session"
             >
               <CopyIcon className="h-3.5 w-3.5 text-[color:var(--foreground-secondary)]" />
@@ -142,16 +155,16 @@ export function SessionCard({
       </div>
 
       {session.description && (
-        <p className="text-sm font-medium mt-2 line-clamp-2 leading-snug">{session.description}</p>
+        <p className="mt-2 line-clamp-2 text-sm leading-snug font-medium">{session.description}</p>
       )}
 
       {session.coachComments && (
-        <p className="text-[10px] mt-1 text-muted-foreground italic line-clamp-2">
+        <p className="mt-1 line-clamp-2 text-[10px] text-muted-foreground italic">
           {session.coachComments}
         </p>
       )}
 
-      <div className="flex flex-wrap gap-2 mt-1.5">
+      <div className="mt-1.5 flex flex-wrap gap-2">
         {session.plannedDurationMinutes != null && (
           <span className="text-xs text-[color:var(--foreground-secondary)]">
             {session.plannedDurationMinutes} {t('training:units.min')}
@@ -162,21 +175,21 @@ export function SessionCard({
             {session.plannedDistanceKm} {t('training:units.km')}
           </span>
         )}
-        {session.trainingType === 'run' &&
-          (session.typeSpecificData as RunData).pace_target && (
-            <span className="inline-flex items-center gap-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
-              <Zap className="h-2.5 w-2.5" />
-              {(session.typeSpecificData as RunData).pace_target}{t('training:units.perKm')}
-            </span>
-          )}
+        {session.trainingType === 'run' && (session.typeSpecificData as RunData).pace_target && (
+          <span className="inline-flex items-center gap-0.5 text-xs font-medium text-blue-700 dark:text-blue-400">
+            <Zap className="h-2.5 w-2.5" />
+            {(session.typeSpecificData as RunData).pace_target}
+            {t('training:units.perKm')}
+          </span>
+        )}
       </div>
 
       {/* Actual performance chips — shown when completed */}
       {shouldShowPerformanceSection && (
         <div
           className={cn(
-            animatePerformance && 'animate-in fade-in slide-in-from-bottom-2 duration-300',
-            'mt-2 pt-1.5 border-t border-[color:var(--separator)]',
+            animatePerformance && 'animate-in duration-300 fade-in slide-in-from-bottom-2',
+            'mt-2 border-t border-[color:var(--separator)] pt-1.5',
           )}
         >
           <PerformanceChipGroup
@@ -187,17 +200,22 @@ export function SessionCard({
             animate={animatePerformance}
           />
           {session.stravaActivityId != null && (
-            <div className={cn(animatePerformance && 'animate-in fade-in duration-200 delay-[200ms]', 'w-full mt-1.5 pt-1.5 border-t border-[color:var(--separator)] border-dashed')}>
+            <div
+              className={cn(
+                animatePerformance && 'animate-in delay-[200ms] duration-200 fade-in',
+                'mt-1.5 w-full border-t border-dashed border-[color:var(--separator)] pt-1.5',
+              )}
+            >
               <a
                 href={`https://www.strava.com/activities/${session.stravaActivityId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] font-bold hover:underline whitespace-nowrap"
+                className="text-[10px] font-bold whitespace-nowrap hover:underline"
                 style={{ color: '#FC5200' }}
               >
                 View on Strava
               </a>
-              <div className="flex justify-end mt-1">
+              <div className="mt-1 flex justify-end">
                 <StravaLogo />
               </div>
             </div>
@@ -216,12 +234,10 @@ export function SessionCard({
 
       {/* Athlete-specific features */}
       {(athleteMode || showAthleteControls) && !isRestDay && (
-        <div className="mt-2 pt-1.5 border-t border-[color:var(--separator)] space-y-1">
+        <div className="mt-2 space-y-1 border-t border-[color:var(--separator)] pt-1.5">
           <CompletionToggle
             isCompleted={session.isCompleted}
-            onChange={(completed) =>
-              onToggleComplete?.(session.id, completed)
-            }
+            onChange={(completed) => onToggleComplete?.(session.id, completed)}
           />
 
           <StravaSyncButton

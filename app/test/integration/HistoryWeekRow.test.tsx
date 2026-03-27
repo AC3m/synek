@@ -89,7 +89,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} />
-      </Wrapper>
+      </Wrapper>,
     );
     // Week number should be visible (EN: "W10 —", PL: "Tydzień 10 —")
     expect(screen.getByText(/\b10\b/)).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} onToggleExpand={onToggleExpand} />
-      </Wrapper>
+      </Wrapper>,
     );
     const header = screen.getByTestId('history-week-toggle');
     fireEvent.click(header);
@@ -115,7 +115,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={false} />
-      </Wrapper>
+      </Wrapper>,
     );
     // Day column headers should not be present when collapsed
     expect(screen.queryByText(/monday/i)).not.toBeInTheDocument();
@@ -126,7 +126,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={true} />
-      </Wrapper>
+      </Wrapper>,
     );
     // The session's description should appear in the grid (may render in both mobile+desktop views)
     expect(screen.getAllByText('Easy run').length).toBeGreaterThan(0);
@@ -137,7 +137,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={true} />
-      </Wrapper>
+      </Wrapper>,
     );
     // Plus/add buttons should not appear — it's read-only
     expect(screen.queryByRole('button', { name: /add session/i })).not.toBeInTheDocument();
@@ -149,7 +149,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={true} onCopySession={onCopySession} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     // Click the copy icon on the session card
@@ -168,7 +168,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={true} onCopySession={onCopySession} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     fireEvent.click(screen.getAllByTestId('session-copy-btn')[0]);
@@ -186,7 +186,7 @@ describe('HistoryWeekRow', () => {
     render(
       <Wrapper>
         <HistoryWeekRow {...defaultProps} isExpanded={true} onCopySession={onCopySession} />
-      </Wrapper>
+      </Wrapper>,
     );
 
     fireEvent.click(screen.getAllByTestId('session-copy-btn')[0]);

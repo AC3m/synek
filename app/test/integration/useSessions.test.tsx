@@ -54,9 +54,7 @@ const ALICE_W10_PLAN_ID = 'wp-w10-a1';
 function makeWrapper() {
   const queryClient = createTestQueryClient();
   function Wrapper({ children }: { children: ReactNode }) {
-    return (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   }
   return { queryClient, Wrapper };
 }
@@ -239,7 +237,7 @@ describe('useCopyWeekSessions', () => {
       targetWeekPlanId: 'wp-target',
     });
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') })
+      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') }),
     );
   });
 });
@@ -269,7 +267,7 @@ describe('useCopyDaySessions', () => {
       targetDay: 'monday',
     });
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') })
+      expect.objectContaining({ queryKey: queryKeys.sessions.byWeek('wp-target') }),
     );
   });
 });
@@ -362,7 +360,9 @@ describe('useBulkConfirmStravaSessions', () => {
     ];
     queryClient.setQueryData(['sessions', 'week', ALICE_W10_PLAN_ID], sessions);
 
-    const expectedToConfirm = sessions.filter((s) => s.stravaActivityId != null && !s.isStravaConfirmed);
+    const expectedToConfirm = sessions.filter(
+      (s) => s.stravaActivityId != null && !s.isStravaConfirmed,
+    );
     if (expectedToConfirm.length === 0) {
       throw new Error('Test data: no pending Strava sessions found in Alice W10');
     }

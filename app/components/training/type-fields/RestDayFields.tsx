@@ -13,9 +13,7 @@ export function RestDayFields({ data, onChange }: RestDayFieldsProps) {
   return (
     <div className="space-y-3">
       <div>
-        <label className="text-sm font-medium">
-          {t('restDay.activitySuggestion')}
-        </label>
+        <label className="text-sm font-medium">{t('restDay.activitySuggestion')}</label>
         <Textarea
           placeholder="e.g. Light walk, stretching, foam rolling"
           value={data.activity_suggestion ?? ''}

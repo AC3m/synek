@@ -51,8 +51,7 @@ export async function mockCreateSession(input: CreateSessionInput): Promise<Trai
     coachComments: input.coachComments ?? null,
     plannedDurationMinutes: input.plannedDurationMinutes ?? null,
     plannedDistanceKm: input.plannedDistanceKm ?? null,
-    typeSpecificData:
-      input.typeSpecificData ?? ({ type: input.trainingType } as TypeSpecificData),
+    typeSpecificData: input.typeSpecificData ?? ({ type: input.trainingType } as TypeSpecificData),
     isCompleted: input.isCompleted ?? false,
     completedAt: input.completedAt ?? null,
     actualDurationMinutes: input.actualDurationMinutes ?? null,
@@ -110,7 +109,7 @@ export async function mockDeleteSession(sessionId: string): Promise<void> {
 }
 
 export async function mockUpdateAthleteSession(
-  input: AthleteSessionUpdate
+  input: AthleteSessionUpdate,
 ): Promise<TrainingSession> {
   await delay();
   const existing = sessions.get(input.id);
@@ -161,7 +160,7 @@ export async function mockBulkConfirmStravaSessions(weekPlanId: string): Promise
       sessions.set(session.id, {
         ...session,
         isStravaConfirmed: true,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
     }
   }
@@ -171,7 +170,7 @@ function copyPlannedFields(
   source: TrainingSession,
   targetWeekPlanId: string,
   targetDay: TrainingSession['dayOfWeek'],
-  sortOrder: number
+  sortOrder: number,
 ): TrainingSession {
   const now = new Date().toISOString();
   return {
@@ -206,10 +205,15 @@ function copyPlannedFields(
 export async function mockCopyWeekSessions(input: CopyWeekInput): Promise<number> {
   await delay();
   const sourceSessions = Array.from(sessions.values()).filter(
-    (s) => s.weekPlanId === input.sourceWeekPlanId && s.trainingType !== 'rest_day'
+    (s) => s.weekPlanId === input.sourceWeekPlanId && s.trainingType !== 'rest_day',
   );
   for (const source of sourceSessions) {
-    const copied = copyPlannedFields(source, input.targetWeekPlanId, source.dayOfWeek, source.sortOrder);
+    const copied = copyPlannedFields(
+      source,
+      input.targetWeekPlanId,
+      source.dayOfWeek,
+      source.sortOrder,
+    );
     sessions.set(copied.id, copied);
   }
   return sourceSessions.length;
@@ -218,17 +222,27 @@ export async function mockCopyWeekSessions(input: CopyWeekInput): Promise<number
 export async function mockCopyDaySessions(input: CopyDayInput): Promise<number> {
   await delay();
   const sourceSessions = Array.from(sessions.values())
-    .filter((s) => s.weekPlanId === input.sourceWeekPlanId && s.dayOfWeek === input.sourceDay && s.trainingType !== 'rest_day')
+    .filter(
+      (s) =>
+        s.weekPlanId === input.sourceWeekPlanId &&
+        s.dayOfWeek === input.sourceDay &&
+        s.trainingType !== 'rest_day',
+    )
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
   // Compute sort offset: append after any existing target-day sessions
   const targetDaySessions = Array.from(sessions.values()).filter(
-    (s) => s.weekPlanId === input.targetWeekPlanId && s.dayOfWeek === input.targetDay
+    (s) => s.weekPlanId === input.targetWeekPlanId && s.dayOfWeek === input.targetDay,
   );
   const sortOffset = targetDaySessions.length;
 
   for (let i = 0; i < sourceSessions.length; i++) {
-    const copied = copyPlannedFields(sourceSessions[i], input.targetWeekPlanId, input.targetDay, sortOffset + i);
+    const copied = copyPlannedFields(
+      sourceSessions[i],
+      input.targetWeekPlanId,
+      input.targetDay,
+      sortOffset + i,
+    );
     sessions.set(copied.id, copied);
   }
   return sourceSessions.length;

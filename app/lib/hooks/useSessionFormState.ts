@@ -24,10 +24,12 @@ export function useSessionFormState() {
   }, []);
 
   return {
-    formOpen, setFormOpen,
+    formOpen,
+    setFormOpen,
     formDay,
     editingSession,
-    deleteConfirmId, setDeleteConfirmId,
+    deleteConfirmId,
+    setDeleteConfirmId,
     handleAddSession,
     handleEditSession,
     handleDeleteSession,

@@ -32,7 +32,9 @@ vi.mock('~/lib/hooks/useJunctionConnection', () => ({
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeContext(overrides: Partial<SessionActionsContextValue> = {}): SessionActionsContextValue {
+function makeContext(
+  overrides: Partial<SessionActionsContextValue> = {},
+): SessionActionsContextValue {
   return {
     readonly: false,
     athleteMode: false,
@@ -49,9 +51,7 @@ function makeWrapper(context?: SessionActionsContextValue) {
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <QueryClientProvider client={qc}>
-        <SessionActionsProvider value={ctx}>
-          {children}
-        </SessionActionsProvider>
+        <SessionActionsProvider value={ctx}>{children}</SessionActionsProvider>
       </QueryClientProvider>
     );
   }
@@ -183,10 +183,7 @@ beforeEach(() => {
 describe('SessionCard — interval affordance via detail modal', () => {
   it('opens detail modal when card is clicked', async () => {
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    const { container } = render(
-      <SessionCard session={makeSession()} />,
-      { wrapper: Wrapper }
-    );
+    const { container } = render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
 
     fireEvent.click(container.firstChild as Element);
 
@@ -198,15 +195,10 @@ describe('SessionCard — interval affordance via detail modal', () => {
 
   it('shows loading skeleton in modal while lap data is loading', async () => {
     // Never resolve — stays loading
-    vi.mocked(fetchSessionLaps).mockImplementation(
-      () => new Promise(() => {})
-    );
+    vi.mocked(fetchSessionLaps).mockImplementation(() => new Promise(() => {}));
 
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    const { container } = render(
-      <SessionCard session={makeSession()} />,
-      { wrapper: Wrapper }
-    );
+    const { container } = render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
 
     fireEvent.click(container.firstChild as Element);
 
@@ -221,10 +213,7 @@ describe('SessionCard — interval affordance via detail modal', () => {
     mockLapResult = STRUCTURED_LAPS;
 
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    const { container } = render(
-      <SessionCard session={makeSession()} />,
-      { wrapper: Wrapper }
-    );
+    const { container } = render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
 
     fireEvent.click(container.firstChild as Element);
 
@@ -239,10 +228,7 @@ describe('SessionCard — interval affordance via detail modal', () => {
     mockLapShouldFail = true;
 
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    const { container } = render(
-      <SessionCard session={makeSession()} />,
-      { wrapper: Wrapper }
-    );
+    const { container } = render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
 
     fireEvent.click(container.firstChild as Element);
 
@@ -253,24 +239,16 @@ describe('SessionCard — interval affordance via detail modal', () => {
 
   it('does not load laps for an unsynced run session', async () => {
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    render(
-      <SessionCard
-        session={makeSession({ stravaActivityId: null })}
-      />,
-      { wrapper: Wrapper }
-    );
+    render(<SessionCard session={makeSession({ stravaActivityId: null })} />, { wrapper: Wrapper });
 
     expect(vi.mocked(fetchSessionLaps)).not.toHaveBeenCalled();
   });
 
   it('does not load laps for coach on unconfirmed session', async () => {
     const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
-    render(
-      <SessionCard
-        session={makeSession({ isStravaConfirmed: false })}
-      />,
-      { wrapper: Wrapper }
-    );
+    render(<SessionCard session={makeSession({ isStravaConfirmed: false })} />, {
+      wrapper: Wrapper,
+    });
 
     expect(vi.mocked(fetchSessionLaps)).not.toHaveBeenCalled();
   });
@@ -280,10 +258,8 @@ describe('SessionCard — interval affordance via detail modal', () => {
 
     const { Wrapper } = makeWrapper(makeContext({ userRole: 'coach' }));
     const { container } = render(
-      <SessionCard
-        session={makeSession({ isStravaConfirmed: true })}
-      />,
-      { wrapper: Wrapper }
+      <SessionCard session={makeSession({ isStravaConfirmed: true })} />,
+      { wrapper: Wrapper },
     );
 
     fireEvent.click(container.firstChild as Element);
@@ -295,10 +271,7 @@ describe('SessionCard — interval affordance via detail modal', () => {
 
   it('does not open modal when interactive element on card is clicked', async () => {
     const { Wrapper } = makeWrapper(makeContext({ athleteMode: true, userRole: 'athlete' }));
-    render(
-      <SessionCard session={makeSession()} />,
-      { wrapper: Wrapper }
-    );
+    render(<SessionCard session={makeSession()} />, { wrapper: Wrapper });
 
     // Click the completion toggle (a button) — modal should NOT open
     const toggle = screen.getByRole('checkbox');

@@ -4,7 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { ProgressionToggle } from '~/components/strength/ProgressionToggle';
-import { SUPERSET_COLORS, getSupersetColor, formatRepsTarget, groupExercises } from '~/lib/utils/strength';
+import {
+  SUPERSET_COLORS,
+  getSupersetColor,
+  formatRepsTarget,
+  groupExercises,
+} from '~/lib/utils/strength';
 import type { StrengthVariantExercise, StrengthSessionExercise } from '~/types/training';
 
 interface VariantExerciseListProps {
@@ -37,7 +42,7 @@ function ExerciseItem({
     <div className="flex items-start justify-between gap-2">
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <span className="font-medium text-sm">{ex.name}</span>
+          <span className="text-sm font-medium">{ex.name}</span>
           {ex.videoUrl && (
             <a
               href={ex.videoUrl}
@@ -157,9 +162,14 @@ export function VariantExerciseList({
           // Superset group — color by group ID
           const color = getSupersetColor(group[0].supersetGroup!);
           return (
-            <li key={group[0].id} className={cn('rounded-lg border overflow-hidden', color.container)}>
+            <li
+              key={group[0].id}
+              className={cn('overflow-hidden rounded-lg border', color.container)}
+            >
               <div className={cn('px-3 py-1.5', color.header)}>
-                <span className={cn('text-[10px] font-semibold uppercase tracking-widest', color.label)}>
+                <span
+                  className={cn('text-[10px] font-semibold tracking-widest uppercase', color.label)}
+                >
                   {t('strength.superset.label')}
                 </span>
               </div>

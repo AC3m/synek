@@ -1,27 +1,24 @@
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter, Route, Routes } from 'react-router'
-import CoachWeekView from '~/routes/coach/week.$weekId'
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router';
+import CoachWeekView from '~/routes/coach/week.$weekId';
 
-const {
-  useWeekPlanMock,
-  useSessionsMock,
-} = vi.hoisted(() => ({
+const { useWeekPlanMock, useSessionsMock } = vi.hoisted(() => ({
   useWeekPlanMock: vi.fn(),
   useSessionsMock: vi.fn(),
-}))
+}));
 
 vi.mock('~/lib/context/AuthContext', () => ({
   useAuth: () => ({
     user: { id: 'coach-1', role: 'coach', name: 'Coach', email: 'coach@synek.app' },
     effectiveAthleteId: 'athlete-1',
   }),
-}))
+}));
 
 vi.mock('~/lib/hooks/useWeekPlan', () => ({
   useWeekPlan: useWeekPlanMock,
   useGetOrCreateWeekPlan: () => ({ isPending: false, mutate: vi.fn() }),
   useUpdateWeekPlan: () => ({ mutate: vi.fn() }),
-}))
+}));
 
 vi.mock('~/lib/hooks/useSessions', () => ({
   useSessions: useSessionsMock,
@@ -32,33 +29,33 @@ vi.mock('~/lib/hooks/useSessions', () => ({
   useCopyWeekSessions: () => ({ mutate: vi.fn(), isPending: false }),
   useCopyDaySessions: () => ({ mutate: vi.fn(), isPending: false }),
   useCopySession: () => ({ mutate: vi.fn(), isPending: false }),
-}))
+}));
 
 vi.mock('~/components/calendar/WeekNavigation', () => ({
   WeekNavigation: () => <div data-testid="week-navigation" />,
-}))
+}));
 
 vi.mock('~/components/calendar/WeekSummary', () => ({
   WeekSummary: () => <div data-testid="week-summary" />,
-}))
+}));
 
 vi.mock('~/components/calendar/WeekGrid', () => ({
   WeekGrid: () => <div data-testid="week-grid" />,
-}))
+}));
 
 vi.mock('~/components/training/SessionForm', () => ({
   SessionForm: () => null,
-}))
+}));
 
 vi.mock('~/components/calendar/WeekSkeleton', () => ({
   WeekSkeleton: () => <div data-testid="week-skeleton" />,
-}))
+}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
-}))
+}));
 
 function renderPage() {
   return render(
@@ -66,8 +63,8 @@ function renderPage() {
       <Routes>
         <Route path="/coach/week/:weekId" element={<CoachWeekView />} />
       </Routes>
-    </MemoryRouter>
-  )
+    </MemoryRouter>,
+  );
 }
 
 describe('CoachWeekView loading state', () => {
@@ -75,31 +72,31 @@ describe('CoachWeekView loading state', () => {
     useWeekPlanMock.mockReturnValue({
       data: { id: 'week-plan-1' },
       isLoading: false,
-    })
+    });
     useSessionsMock.mockReturnValue({
       data: undefined,
       isPending: true,
-    })
+    });
 
-    renderPage()
+    renderPage();
 
-    expect(screen.queryByTestId('week-skeleton')).not.toBeInTheDocument()
-    expect(screen.getByTestId('week-grid')).toBeInTheDocument()
-  })
+    expect(screen.queryByTestId('week-skeleton')).not.toBeInTheDocument();
+    expect(screen.getByTestId('week-grid')).toBeInTheDocument();
+  });
 
   it('renders the week layout after the sessions query settles', () => {
     useWeekPlanMock.mockReturnValue({
       data: { id: 'week-plan-1' },
       isLoading: false,
-    })
+    });
     useSessionsMock.mockReturnValue({
       data: [],
       isPending: false,
-    })
+    });
 
-    renderPage()
+    renderPage();
 
-    expect(screen.queryByTestId('week-skeleton')).not.toBeInTheDocument()
-    expect(screen.getByTestId('week-grid')).toBeInTheDocument()
-  })
-})
+    expect(screen.queryByTestId('week-skeleton')).not.toBeInTheDocument();
+    expect(screen.getByTestId('week-grid')).toBeInTheDocument();
+  });
+});

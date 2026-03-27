@@ -6,7 +6,9 @@ import type { SessionActionsContextValue } from '~/lib/context/SessionActionsCon
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeContext(overrides: Partial<SessionActionsContextValue> = {}): SessionActionsContextValue {
+function makeContext(
+  overrides: Partial<SessionActionsContextValue> = {},
+): SessionActionsContextValue {
   return {
     readonly: false,
     athleteMode: true,
@@ -18,15 +20,8 @@ function makeContext(overrides: Partial<SessionActionsContextValue> = {}): Sessi
   };
 }
 
-function renderWithContext(
-  ui: ReactNode,
-  context: SessionActionsContextValue = makeContext()
-) {
-  return render(
-    <SessionActionsProvider value={context}>
-      {ui}
-    </SessionActionsProvider>
-  );
+function renderWithContext(ui: ReactNode, context: SessionActionsContextValue = makeContext()) {
+  return render(<SessionActionsProvider value={context}>{ui}</SessionActionsProvider>);
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────────
@@ -35,7 +30,7 @@ describe('StravaConfirmButton', () => {
   it('renders null when userRole is coach', () => {
     const { container } = renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={false} />,
-      makeContext({ userRole: 'coach' })
+      makeContext({ userRole: 'coach' }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -43,7 +38,7 @@ describe('StravaConfirmButton', () => {
   it('renders null when isStravaConfirmed is true', () => {
     const { container } = renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={true} />,
-      makeContext({ userRole: 'athlete' })
+      makeContext({ userRole: 'athlete' }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -51,7 +46,7 @@ describe('StravaConfirmButton', () => {
   it('renders null when hasStravaActivity is false', () => {
     const { container } = renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={false} isStravaConfirmed={false} />,
-      makeContext({ userRole: 'athlete' })
+      makeContext({ userRole: 'athlete' }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -59,7 +54,7 @@ describe('StravaConfirmButton', () => {
   it('renders the confirm button for athletes with unconfirmed strava activity', () => {
     renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={false} />,
-      makeContext({ userRole: 'athlete' })
+      makeContext({ userRole: 'athlete' }),
     );
     expect(screen.getByRole('button')).toBeTruthy();
   });
@@ -68,7 +63,7 @@ describe('StravaConfirmButton', () => {
     const onConfirmStrava = vi.fn().mockResolvedValue(undefined);
     renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={false} />,
-      makeContext({ userRole: 'athlete', onConfirmStrava })
+      makeContext({ userRole: 'athlete', onConfirmStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -80,11 +75,16 @@ describe('StravaConfirmButton', () => {
 
   it('shows spinner while onConfirmStrava is pending', async () => {
     let resolve!: () => void;
-    const onConfirmStrava = vi.fn(() => new Promise<void>((r) => { resolve = r; }));
+    const onConfirmStrava = vi.fn(
+      () =>
+        new Promise<void>((r) => {
+          resolve = r;
+        }),
+    );
 
     renderWithContext(
       <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={false} />,
-      makeContext({ userRole: 'athlete', onConfirmStrava })
+      makeContext({ userRole: 'athlete', onConfirmStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -104,7 +104,7 @@ describe('StravaConfirmButton', () => {
       <div onClick={parentClick}>
         <StravaConfirmButton sessionId="s1" hasStravaActivity={true} isStravaConfirmed={false} />
       </div>,
-      makeContext({ userRole: 'athlete', onConfirmStrava })
+      makeContext({ userRole: 'athlete', onConfirmStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));

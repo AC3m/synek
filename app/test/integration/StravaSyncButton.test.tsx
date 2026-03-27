@@ -6,7 +6,9 @@ import type { SessionActionsContextValue } from '~/lib/context/SessionActionsCon
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function makeContext(overrides: Partial<SessionActionsContextValue> = {}): SessionActionsContextValue {
+function makeContext(
+  overrides: Partial<SessionActionsContextValue> = {},
+): SessionActionsContextValue {
   return {
     readonly: false,
     athleteMode: true,
@@ -17,15 +19,8 @@ function makeContext(overrides: Partial<SessionActionsContextValue> = {}): Sessi
   };
 }
 
-function renderWithContext(
-  ui: ReactNode,
-  context: SessionActionsContextValue = makeContext()
-) {
-  return render(
-    <SessionActionsProvider value={context}>
-      {ui}
-    </SessionActionsProvider>
-  );
+function renderWithContext(ui: ReactNode, context: SessionActionsContextValue = makeContext()) {
+  return render(<SessionActionsProvider value={context}>{ui}</SessionActionsProvider>);
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────────
@@ -34,7 +29,7 @@ describe('StravaSyncButton', () => {
   it('renders null when stravaConnected is false', () => {
     const { container } = renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={false} />,
-      makeContext({ stravaConnected: false })
+      makeContext({ stravaConnected: false }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -42,7 +37,7 @@ describe('StravaSyncButton', () => {
   it('renders null when isCompleted is false', () => {
     const { container } = renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={false} hasStravaActivity={false} />,
-      makeContext({ stravaConnected: true })
+      makeContext({ stravaConnected: true }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -50,7 +45,7 @@ describe('StravaSyncButton', () => {
   it('renders null when hasStravaActivity is true', () => {
     const { container } = renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={true} />,
-      makeContext({ stravaConnected: true })
+      makeContext({ stravaConnected: true }),
     );
     expect(container.firstChild).toBeNull();
   });
@@ -58,7 +53,7 @@ describe('StravaSyncButton', () => {
   it('renders the sync button when all conditions are met', () => {
     renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={false} />,
-      makeContext({ stravaConnected: true })
+      makeContext({ stravaConnected: true }),
     );
     expect(screen.getByRole('button')).toBeTruthy();
   });
@@ -67,7 +62,7 @@ describe('StravaSyncButton', () => {
     const onSyncStrava = vi.fn().mockResolvedValue(undefined);
     renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={false} />,
-      makeContext({ stravaConnected: true, onSyncStrava })
+      makeContext({ stravaConnected: true, onSyncStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -79,11 +74,16 @@ describe('StravaSyncButton', () => {
 
   it('shows Loader2 spinner while onSyncStrava is pending', async () => {
     let resolve!: () => void;
-    const onSyncStrava = vi.fn(() => new Promise<void>((r) => { resolve = r; }));
+    const onSyncStrava = vi.fn(
+      () =>
+        new Promise<void>((r) => {
+          resolve = r;
+        }),
+    );
 
     renderWithContext(
       <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={false} />,
-      makeContext({ stravaConnected: true, onSyncStrava })
+      makeContext({ stravaConnected: true, onSyncStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -103,7 +103,7 @@ describe('StravaSyncButton', () => {
       <div onClick={parentClick}>
         <StravaSyncButton sessionId="s1" isCompleted={true} hasStravaActivity={false} />
       </div>,
-      makeContext({ stravaConnected: true, onSyncStrava })
+      makeContext({ stravaConnected: true, onSyncStrava }),
     );
 
     fireEvent.click(screen.getByRole('button'));

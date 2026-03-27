@@ -93,9 +93,7 @@ const VARIANT_WITH_EXERCISES_SELECT =
 
 function exercisesFromRow(row: Record<string, unknown>): StrengthVariantExercise[] {
   const exRows = (row.strength_variant_exercises as Record<string, unknown>[] | null) ?? [];
-  return exRows
-    .map(toStrengthVariantExercise)
-    .sort((a, b) => a.sortOrder - b.sortOrder);
+  return exRows.map(toStrengthVariantExercise).sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
 export async function fetchStrengthVariants(userId: string): Promise<StrengthVariant[]> {
@@ -133,8 +131,7 @@ export async function createStrengthVariant(
   userId: string,
   input: CreateStrengthVariantInput,
 ): Promise<StrengthVariant> {
-  if (isMockMode)
-    return mockCreateStrengthVariant({ userId, ...input });
+  if (isMockMode) return mockCreateStrengthVariant({ userId, ...input });
 
   const { data: variantRow, error } = await supabase
     .from('strength_variants')
@@ -159,14 +156,20 @@ export async function createStrengthVariant(
   const { data: exRows, error: exError } = await supabase
     .from('strength_variant_exercises')
     .insert(exerciseInserts)
-    .select('id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at');
+    .select(
+      'id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at',
+    );
   if (exError) throw exError;
 
-  const exercises = (exRows ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>));
+  const exercises = (exRows ?? []).map((r) =>
+    toStrengthVariantExercise(r as Record<string, unknown>),
+  );
   return toStrengthVariant(variantRow as Record<string, unknown>, exercises);
 }
 
-export async function updateStrengthVariant(input: UpdateStrengthVariantInput): Promise<StrengthVariant> {
+export async function updateStrengthVariant(
+  input: UpdateStrengthVariantInput,
+): Promise<StrengthVariant> {
   if (isMockMode) return mockUpdateStrengthVariant(input);
 
   const { data, error } = await supabase
@@ -239,7 +242,8 @@ export async function upsertVariantExercises(
   }
 
   const results: StrengthVariantExercise[] = [];
-  const cols = 'id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at';
+  const cols =
+    'id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at';
 
   if (existing.length > 0) {
     const { data, error } = await supabase
@@ -247,7 +251,9 @@ export async function upsertVariantExercises(
       .upsert(existing.map((ex) => toRow(ex, true)))
       .select(cols);
     if (error) throw error;
-    results.push(...(data ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>)));
+    results.push(
+      ...(data ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>)),
+    );
   }
 
   if (created.length > 0) {
@@ -256,7 +262,9 @@ export async function upsertVariantExercises(
       .insert(created.map((ex) => toRow(ex, false)))
       .select(cols);
     if (error) throw error;
-    results.push(...(data ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>)));
+    results.push(
+      ...(data ?? []).map((r) => toStrengthVariantExercise(r as Record<string, unknown>)),
+    );
   }
 
   return results.sort((a, b) => a.sortOrder - b.sortOrder);

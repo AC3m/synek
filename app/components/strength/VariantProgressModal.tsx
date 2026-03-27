@@ -8,13 +8,7 @@ import {
   DialogTitle,
   DialogClose,
 } from '~/components/ui/dialog';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from '~/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '~/components/ui/sheet';
 import { AppLoader } from '~/components/ui/app-loader';
 import { Button } from '~/components/ui/button';
 import { useIsMobile } from '~/lib/hooks/useIsMobile';
@@ -45,16 +39,21 @@ export function VariantProgressModal({ variantId, userId, onClose }: VariantProg
 
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <Sheet
+        open={open}
+        onOpenChange={(v) => {
+          if (!v) onClose();
+        }}
+      >
         <SheetContent
           side="bottom"
           showCloseButton={false}
-          className="rounded-t-2xl max-h-[92vh] flex flex-col gap-0 p-0"
+          className="flex max-h-[92vh] flex-col gap-0 rounded-t-2xl p-0"
         >
-          <div className="flex justify-center pt-3 pb-1 shrink-0">
+          <div className="flex shrink-0 justify-center pt-3 pb-1">
             <div className="h-1 w-10 rounded-full bg-border" />
           </div>
-          <SheetHeader className="flex-row items-center justify-between px-5 pt-3 pb-3 border-b shrink-0">
+          <SheetHeader className="shrink-0 flex-row items-center justify-between border-b px-5 pt-3 pb-3">
             <SheetTitle>{title}</SheetTitle>
             <SheetClose asChild>
               <Button size="icon" variant="ghost" className="size-8 shrink-0">
@@ -62,18 +61,24 @@ export function VariantProgressModal({ variantId, userId, onClose }: VariantProg
               </Button>
             </SheetClose>
           </SheetHeader>
-          <div className="overflow-y-auto px-5 py-4">
-            {content}
-          </div>
+          <div className="overflow-y-auto px-5 py-4">{content}</div>
         </SheetContent>
       </Sheet>
     );
   }
 
   return (
-    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
-      <DialogContent showCloseButton={false} className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0">
-        <DialogHeader className="flex-row items-center justify-between px-6 pt-6 pb-4 border-b shrink-0">
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v) onClose();
+      }}
+    >
+      <DialogContent
+        showCloseButton={false}
+        className="flex max-h-[90vh] max-w-2xl flex-col gap-0 p-0"
+      >
+        <DialogHeader className="shrink-0 flex-row items-center justify-between border-b px-6 pt-6 pb-4">
           <DialogTitle>{title}</DialogTitle>
           <DialogClose asChild>
             <Button size="icon" variant="ghost" className="size-8 shrink-0">
@@ -81,9 +86,7 @@ export function VariantProgressModal({ variantId, userId, onClose }: VariantProg
             </Button>
           </DialogClose>
         </DialogHeader>
-        <div className="overflow-y-auto px-6 py-4">
-          {content}
-        </div>
+        <div className="overflow-y-auto px-6 py-4">{content}</div>
       </DialogContent>
     </Dialog>
   );

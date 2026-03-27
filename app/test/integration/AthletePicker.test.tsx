@@ -30,7 +30,7 @@ function renderPicker() {
   return render(
     <MemoryRouter>
       <AthletePicker />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
@@ -47,7 +47,9 @@ describe('AthletePicker', () => {
 
     expect(myselfCard).toBeInTheDocument();
     // DOCUMENT_POSITION_FOLLOWING means aliceText comes after myselfCard
-    expect(myselfCard.compareDocumentPosition(aliceText) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(
+      myselfCard.compareDocumentPosition(aliceText) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it('shows the "You" badge on the Myself card', () => {

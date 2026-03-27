@@ -21,14 +21,26 @@ import {
 } from '~/lib/hooks/useSessions';
 import { useQueryClient } from '@tanstack/react-query';
 import { useStravaConnectionStatus, useStravaSync } from '~/lib/hooks/useStravaConnection';
-import { useJunctionConnectionStatus, useJunctionWeekWorkouts } from '~/lib/hooks/useJunctionConnection';
+import {
+  useJunctionConnectionStatus,
+  useJunctionWeekWorkouts,
+} from '~/lib/hooks/useJunctionConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
-import { groupSessionsByDay, computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
+import {
+  groupSessionsByDay,
+  computeWeekStats,
+  augmentSessionsWithGarmin,
+} from '~/lib/utils/week-view';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
-import type { DayOfWeek, AthleteSessionUpdate, CreateSessionInput, UpdateSessionInput } from '~/types/training';
+import type {
+  DayOfWeek,
+  AthleteSessionUpdate,
+  CreateSessionInput,
+  UpdateSessionInput,
+} from '~/types/training';
 
 export default function AthleteWeekView() {
   const { weekId } = useParams();
@@ -38,14 +50,16 @@ export default function AthleteWeekView() {
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>(() => getTodayDayOfWeek());
 
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
-  const { year, weekNumber } = weekId
-    ? parseWeekId(weekId)
-    : { year: 0, weekNumber: 0 };
+  const { year, weekNumber } = weekId ? parseWeekId(weekId) : { year: 0, weekNumber: 0 };
 
   const { data: canSelfPlan = true } = useSelfPlanPermission(user?.id ?? '');
 
   // Queries
-  const { data: weekPlan, isLoading: weekLoading, isFetching: weekFetching } = useWeekPlan(weekStart);
+  const {
+    data: weekPlan,
+    isLoading: weekLoading,
+    isFetching: weekFetching,
+  } = useWeekPlan(weekStart);
   const sessionsQuery = useSessions(weekPlan?.id);
   const sessions = sessionsQuery.data ?? [];
   const updateAthlete = useUpdateAthleteSession();
@@ -70,17 +84,23 @@ export default function AthleteWeekView() {
     mutatingRef.current = true;
     getOrCreate.mutate(
       { weekStart, year, weekNumber },
-      { onSettled: () => { mutatingRef.current = false; } }
+      {
+        onSettled: () => {
+          mutatingRef.current = false;
+        },
+      },
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canSelfPlan, weekId, weekLoading, weekPlan, weekStart, year, weekNumber]);
 
   // Planning form state
   const {
-    formOpen, setFormOpen,
+    formOpen,
+    setFormOpen,
     formDay,
     editingSession,
-    deleteConfirmId, setDeleteConfirmId,
+    deleteConfirmId,
+    setDeleteConfirmId,
     handleAddSession,
     handleEditSession,
     handleDeleteSession,
@@ -99,8 +119,11 @@ export default function AthleteWeekView() {
   const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
   // PoC: Junction Garmin integration — remove after evaluation
   const augmentedSessions = useMemo(
-    () => junctionConnected ? augmentSessionsWithGarmin(sessions, garminWeekWorkouts, weekStart) : sessions,
-    [junctionConnected, sessions, garminWeekWorkouts, weekStart]
+    () =>
+      junctionConnected
+        ? augmentSessionsWithGarmin(sessions, garminWeekWorkouts, weekStart)
+        : sessions,
+    [junctionConnected, sessions, garminWeekWorkouts, weekStart],
   );
   const stats = useMemo(() => computeWeekStats(augmentedSessions), [augmentedSessions]);
 
@@ -108,35 +131,38 @@ export default function AthleteWeekView() {
     (sessionId: string, completed: boolean) => {
       updateAthlete.mutate({ id: sessionId, isCompleted: completed });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
   const handleUpdateNotes = useCallback(
     (sessionId: string, notes: string | null) => {
       updateAthlete.mutate({ id: sessionId, athleteNotes: notes });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
   const handleUpdatePerformance = useCallback(
     (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => {
       updateAthlete.mutate({ id: sessionId, ...update });
     },
-    [updateAthlete]
+    [updateAthlete],
   );
 
-  const handleSyncStrava = useCallback(async (sessionId: string) => {
-    if (!user) return;
-    try {
-      await stravaSyncSingle.mutateAsync({ weekStart, sessionId });
-    } catch {
-      // mutation errors are handled by useStravaSync's onError
-    } finally {
-      if (weekPlan?.id) {
-        void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
+  const handleSyncStrava = useCallback(
+    async (sessionId: string) => {
+      if (!user) return;
+      try {
+        await stravaSyncSingle.mutateAsync({ weekStart, sessionId });
+      } catch {
+        // mutation errors are handled by useStravaSync's onError
+      } finally {
+        if (weekPlan?.id) {
+          void qc.refetchQueries({ queryKey: queryKeys.sessions.byWeek(weekPlan.id) });
+        }
       }
-    }
-  }, [stravaSyncSingle, user, weekStart, qc, weekPlan?.id]);
+    },
+    [stravaSyncSingle, user, weekStart, qc, weekPlan?.id],
+  );
 
   const handleSyncAllStrava = useCallback(() => {
     stravaSyncBulk.mutate({ weekStart });
@@ -144,7 +170,7 @@ export default function AthleteWeekView() {
 
   const handleConfirmStrava = useCallback(
     (sessionId: string) => confirmStrava.mutateAsync(sessionId),
-    [confirmStrava]
+    [confirmStrava],
   );
 
   const handleBulkConfirmStrava = useCallback(async () => {
@@ -167,109 +193,134 @@ export default function AthleteWeekView() {
       }
       setFormOpen(false);
     },
-    [createSession, updateSession]
+    [createSession, updateSession],
   );
 
   if (!weekId) return null;
 
   const sessionsLoading = !!weekPlan && sessionsQuery.isLoading;
   const isInitialLoad = weekLoading && !weekPlan && !(canSelfPlan && getOrCreate.isPending);
-  const showSkeleton = isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan) || sessionsLoading;
+  const showSkeleton =
+    isInitialLoad || (canSelfPlan && getOrCreate.isPending && !weekPlan) || sessionsLoading;
 
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={weekId} className="space-y-6 animate-in fade-in duration-200">
-      {!showSkeleton && (!weekPlan ? (
-        <>
-          <StaggerIn>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-              <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekFetching} />
-            </div>
-          </StaggerIn>
-          <StaggerIn delay={60}>
-            <div className="text-center py-20 text-muted-foreground">
-              {t('noTrainingPlan')}
-            </div>
-          </StaggerIn>
-        </>
-      ) : (
-        <>
-          {/* Header with navigation */}
-          <StaggerIn>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base sm:text-xl font-bold whitespace-nowrap shrink-0">{t('title')}</h1>
-              <WeekNavigation weekId={weekId} basePath="athlete" selectedDay={selectedDay} isLoading={weekFetching} />
-            </div>
-          </StaggerIn>
+      <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
+        {!showSkeleton &&
+          (!weekPlan ? (
+            <>
+              <StaggerIn>
+                <div className="flex items-center gap-2">
+                  <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
+                    {t('title')}
+                  </h1>
+                  <WeekNavigation
+                    weekId={weekId}
+                    basePath="athlete"
+                    selectedDay={selectedDay}
+                    isLoading={weekFetching}
+                  />
+                </div>
+              </StaggerIn>
+              <StaggerIn delay={60}>
+                <div className="py-20 text-center text-muted-foreground">{t('noTrainingPlan')}</div>
+              </StaggerIn>
+            </>
+          ) : (
+            <>
+              {/* Header with navigation */}
+              <StaggerIn>
+                <div className="flex items-center gap-2">
+                  <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
+                    {t('title')}
+                  </h1>
+                  <WeekNavigation
+                    weekId={weekId}
+                    basePath="athlete"
+                    selectedDay={selectedDay}
+                    isLoading={weekFetching}
+                  />
+                </div>
+              </StaggerIn>
 
-          {/* Week Summary (readonly with progress bar) */}
-          <StaggerIn delay={60}>
-            <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
-          </StaggerIn>
+              {/* Week Summary (readonly with progress bar) */}
+              <StaggerIn delay={60}>
+                <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+              </StaggerIn>
 
-          {/* Week Grid */}
-          <StaggerIn delay={120}>
-          <WeekGrid
-            sessionsByDay={sessionsByDay}
-            weekStart={weekStart}
-            athleteMode
-            onToggleComplete={handleToggleComplete}
-            onUpdateNotes={handleUpdateNotes}
-            onUpdatePerformance={handleUpdatePerformance}
-            stravaConnected={stravaConnected}
-            junctionConnected={junctionConnected}
-            onSyncStrava={handleSyncStrava}
-            onConfirmStrava={handleConfirmStrava}
-            userRole={user?.role}
-            selectedDay={selectedDay}
-            onSelectDay={setSelectedDay}
-            {...(canSelfPlan && {
-              onAddSession: handleAddSession,
-              onEditSession: handleEditSession,
-              onDeleteSession: handleDeleteSession,
-            })}
-          />
-          </StaggerIn>
+              {/* Week Grid */}
+              <StaggerIn delay={120}>
+                <WeekGrid
+                  sessionsByDay={sessionsByDay}
+                  weekStart={weekStart}
+                  athleteMode
+                  onToggleComplete={handleToggleComplete}
+                  onUpdateNotes={handleUpdateNotes}
+                  onUpdatePerformance={handleUpdatePerformance}
+                  stravaConnected={stravaConnected}
+                  junctionConnected={junctionConnected}
+                  onSyncStrava={handleSyncStrava}
+                  onConfirmStrava={handleConfirmStrava}
+                  userRole={user?.role}
+                  selectedDay={selectedDay}
+                  onSelectDay={setSelectedDay}
+                  {...(canSelfPlan && {
+                    onAddSession: handleAddSession,
+                    onEditSession: handleEditSession,
+                    onDeleteSession: handleDeleteSession,
+                  })}
+                />
+              </StaggerIn>
 
-          {/* Session Form — only shown when self-planning is enabled */}
-          {canSelfPlan && (
-            <SessionForm
-              open={formOpen}
-              onClose={() => setFormOpen(false)}
-              weekPlanId={weekPlan.id}
-              day={formDay}
-              session={editingSession}
-              onSubmit={handleFormSubmit}
-              isCoach={false}
-            />
-          )}
+              {/* Session Form — only shown when self-planning is enabled */}
+              {canSelfPlan && (
+                <SessionForm
+                  open={formOpen}
+                  onClose={() => setFormOpen(false)}
+                  weekPlanId={weekPlan.id}
+                  day={formDay}
+                  session={editingSession}
+                  onSubmit={handleFormSubmit}
+                  isCoach={false}
+                />
+              )}
 
-          {/* Floating Action Bar — Strava bulk sync + bulk share */}
-          <StravaActionsBar
-            unsyncedCount={stravaConnected ? sessions.filter(s => s.isCompleted && !s.stravaActivityId).length : 0}
-            unsharedCount={sessions.filter(s => s.stravaActivityId != null && !s.isStravaConfirmed).length}
-            onSyncAll={handleSyncAllStrava}
-            onShareAll={handleBulkConfirmStrava}
-            isSyncPending={stravaSyncBulk.isPending}
-            isSharePending={bulkConfirmStrava.isPending}
-          />
-        </>
-      ))}
+              {/* Floating Action Bar — Strava bulk sync + bulk share */}
+              <StravaActionsBar
+                unsyncedCount={
+                  stravaConnected
+                    ? sessions.filter((s) => s.isCompleted && !s.stravaActivityId).length
+                    : 0
+                }
+                unsharedCount={
+                  sessions.filter((s) => s.stravaActivityId != null && !s.isStravaConfirmed).length
+                }
+                onSyncAll={handleSyncAllStrava}
+                onShareAll={handleBulkConfirmStrava}
+                isSyncPending={stravaSyncBulk.isPending}
+                isSharePending={bulkConfirmStrava.isPending}
+              />
+            </>
+          ))}
 
-      {/* Delete session confirmation */}
-      <DeleteConfirmationDialog
-        open={!!deleteConfirmId}
-        onOpenChange={(open) => { if (!open) setDeleteConfirmId(null); }}
-        title={t('common:session.delete' as never)}
-        description={t('common:session.deleteConfirm' as never)}
-        confirmLabel={t('common:session.delete' as never)}
-        cancelLabel={t('common:actions.cancel' as never)}
-        onConfirm={() => { deleteSessionMut.mutate(deleteConfirmId!); setDeleteConfirmId(null); }}
-        isPending={deleteSessionMut.isPending}
-      />
-    </div>
+        {/* Delete session confirmation */}
+        <DeleteConfirmationDialog
+          open={!!deleteConfirmId}
+          onOpenChange={(open) => {
+            if (!open) setDeleteConfirmId(null);
+          }}
+          title={t('common:session.delete' as never)}
+          description={t('common:session.deleteConfirm' as never)}
+          confirmLabel={t('common:session.delete' as never)}
+          cancelLabel={t('common:actions.cancel' as never)}
+          onConfirm={() => {
+            deleteSessionMut.mutate(deleteConfirmId!);
+            setDeleteConfirmId(null);
+          }}
+          isPending={deleteSessionMut.isPending}
+        />
+      </div>
     </>
   );
 }

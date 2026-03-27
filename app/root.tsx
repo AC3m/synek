@@ -34,7 +34,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');})();` }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var t=localStorage.getItem('theme')||'dark';if(t==='dark')document.documentElement.classList.add('dark');})();`,
+          }}
+        />
         <Meta />
         <Links />
       </head>
@@ -55,12 +59,12 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Outlet />
-          <Toaster position="bottom-right" richColors />
-        </TooltipProvider>
-      </AuthProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Outlet />
+            <Toaster position="bottom-right" richColors />
+          </TooltipProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
@@ -74,29 +78,24 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
 
   if (isRouteErrorResponse(error)) {
     message = error.status === 404 ? '404' : t('errors.error');
-    details =
-      error.status === 404
-        ? t('errors.404')
-        : error.statusText || details;
+    details = error.status === 404 ? t('errors.404') : error.statusText || details;
   } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message;
     stack = error.stack;
   }
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-[60vh] p-4 container mx-auto text-center">
-      <div className="text-6xl font-bold text-muted-foreground/40 mb-4">
-        {message}
-      </div>
-      <p className="text-lg text-muted-foreground mb-6">{details}</p>
+    <main className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center p-4 text-center">
+      <div className="mb-4 text-6xl font-bold text-muted-foreground/40">{message}</div>
+      <p className="mb-6 text-lg text-muted-foreground">{details}</p>
       <a
         href="/"
-        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+        className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
       >
         {t('errors.goHome')}
       </a>
       {stack && (
-        <pre className="mt-8 w-full max-w-2xl p-4 overflow-x-auto text-left text-xs bg-muted rounded-lg">
+        <pre className="mt-8 w-full max-w-2xl overflow-x-auto rounded-lg bg-muted p-4 text-left text-xs">
           <code>{stack}</code>
         </pre>
       )}

@@ -1,11 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-  type ReactNode,
-} from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { isMockMode, supabase } from '~/lib/supabase';
 import {
   type AuthUser,
@@ -48,9 +41,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [athletes, setAthletes] = useState<MockAthlete[]>([]);
-  const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(
-    null
-  );
+  const [selectedAthleteId, setSelectedAthleteId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Restore coach's selected athlete (FR-011)
@@ -72,9 +63,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .then(({ data }) => {
           if (data) {
             const list: MockAthlete[] = data.flatMap((row) => {
-              const p = (
-                Array.isArray(row.profiles) ? row.profiles[0] : row.profiles
-              ) as { id: string; name: string; email: string } | null;
+              const p = (Array.isArray(row.profiles) ? row.profiles[0] : row.profiles) as {
+                id: string;
+                name: string;
+                email: string;
+              } | null;
               if (!p) return [];
               return [{ id: p.id, name: p.name, email: p.email }];
             });
@@ -236,8 +229,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     persistSelectedAthleteId(null);
   }, []);
 
-  const effectiveAthleteId: string | null =
-    user?.role === 'athlete' ? user.id : selectedAthleteId;
+  const effectiveAthleteId: string | null = user?.role === 'athlete' ? user.id : selectedAthleteId;
 
   return (
     <AuthContext.Provider

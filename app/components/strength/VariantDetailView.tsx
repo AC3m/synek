@@ -78,23 +78,14 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-6">
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => navigate(baseRoute)}
-        className="-ml-2"
-      >
+      <Button variant="ghost" size="sm" onClick={() => navigate(baseRoute)} className="-ml-2">
         {t('strength.variant.backToLibrary')}
       </Button>
 
       <h1 className="text-2xl font-bold">{variant?.name ?? '…'}</h1>
 
       {variant && canEdit ? (
-        <VariantForm
-          initial={variant}
-          onSave={handleSave}
-          isSaving={isSaving}
-        />
+        <VariantForm initial={variant} onSave={handleSave} isSaving={isSaving} />
       ) : variant ? (
         <ul className="space-y-2">
           {variant.exercises.map((ex) => (

@@ -25,7 +25,7 @@ export function StrengthVariantField({
 
   return (
     <div className={cn('space-y-2', className)}>
-      <label className="text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+      <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
         {t('strength.variant.selectVariant')}
       </label>
       {variants.length === 0 ? (

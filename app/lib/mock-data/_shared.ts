@@ -125,7 +125,13 @@ function seedAlice() {
         hr_zone: 4,
         terrain: 'road',
         intervals: [
-          { repeat: 3, distance_m: 2000, pace: '5:00/km', rest_seconds: 120, description: 'Tempo repeat' },
+          {
+            repeat: 3,
+            distance_m: 2000,
+            pace: '5:00/km',
+            rest_seconds: 120,
+            description: 'Tempo repeat',
+          },
         ],
       },
       isCompleted: true,
@@ -239,7 +245,11 @@ function seedAlice() {
     },
   ];
   for (const s of w09Sessions) {
-    sessions.set(s.id, { ...s, createdAt: w09.createdAt, updatedAt: w09.updatedAt } as TrainingSession);
+    sessions.set(s.id, {
+      ...s,
+      createdAt: w09.createdAt,
+      updatedAt: w09.updatedAt,
+    } as TrainingSession);
   }
 
   // Week W10 (Mar 2 – 8, 2026) — current week, partially completed
@@ -333,7 +343,13 @@ function seedAlice() {
         hr_zone: 5,
         terrain: 'track',
         intervals: [
-          { repeat: 6, distance_m: 1000, pace: '4:30/km', rest_seconds: 180, description: 'VO2max intervals' },
+          {
+            repeat: 6,
+            distance_m: 1000,
+            pace: '4:30/km',
+            rest_seconds: 180,
+            description: 'VO2max intervals',
+          },
         ],
       },
       isCompleted: false,
@@ -455,7 +471,11 @@ function seedAlice() {
     },
   ];
   for (const s of w10Sessions) {
-    sessions.set(s.id, { ...s, createdAt: w10.createdAt, updatedAt: w10.updatedAt } as TrainingSession);
+    sessions.set(s.id, {
+      ...s,
+      createdAt: w10.createdAt,
+      updatedAt: w10.updatedAt,
+    } as TrainingSession);
   }
 
   // Week W11 (Mar 9 – 15, 2026) — next week, nothing done yet
@@ -510,7 +530,12 @@ function seedAlice() {
       coachComments: null,
       plannedDurationMinutes: 45,
       plannedDistanceKm: null,
-      typeSpecificData: { type: 'cycling', avg_speed_target_kmh: 22, hr_zone: 1, terrain: 'indoor' },
+      typeSpecificData: {
+        type: 'cycling',
+        avg_speed_target_kmh: 22,
+        hr_zone: 1,
+        terrain: 'indoor',
+      },
       isCompleted: false,
       completedAt: null,
       athleteNotes: null,
@@ -654,7 +679,11 @@ function seedAlice() {
     },
   ];
   for (const s of w11Sessions) {
-    sessions.set(s.id, { ...s, createdAt: w11.createdAt, updatedAt: w11.updatedAt } as TrainingSession);
+    sessions.set(s.id, {
+      ...s,
+      createdAt: w11.createdAt,
+      updatedAt: w11.updatedAt,
+    } as TrainingSession);
   }
 }
 
@@ -789,7 +818,11 @@ function seedBob() {
     },
   ];
   for (const s of w10Sessions) {
-    sessions.set(s.id, { ...s, createdAt: w10.createdAt, updatedAt: w10.updatedAt } as TrainingSession);
+    sessions.set(s.id, {
+      ...s,
+      createdAt: w10.createdAt,
+      updatedAt: w10.updatedAt,
+    } as TrainingSession);
   }
 }
 
