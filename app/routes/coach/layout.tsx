@@ -1,4 +1,5 @@
 import { Navigate, Outlet, useParams } from 'react-router';
+import { AppLoader } from '~/components/ui/app-loader';
 import { Users, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
@@ -20,7 +21,7 @@ export default function CoachLayout() {
   );
   const updateSelfPlan = useUpdateSelfPlanPermission();
 
-  if (isLoading) return null; // GlobalLoader in root.tsx covers this
+  if (isLoading) return <AppLoader />;
   if (!user) return <Navigate to="/login" replace />;
 
   if (user.role !== 'coach') return <Navigate to={`/${locale}/athlete`} replace />;

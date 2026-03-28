@@ -10,18 +10,13 @@ import { useTranslation } from 'react-i18next';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
-import { AuthProvider, useAuth } from '~/lib/context/AuthContext';
+import { AuthProvider } from '~/lib/context/AuthContext';
 import { ThemeProvider } from '~/lib/context/ThemeContext';
 import { AppLoader } from '~/components/ui/app-loader';
 
 import type { Route } from './+types/root';
 import './app.css';
 import '~/i18n/config';
-
-function GlobalLoader() {
-  const { isLoading } = useAuth();
-  return isLoading ? <AppLoader /> : null;
-}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,7 +61,6 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <TooltipProvider>
-            <GlobalLoader />
             <Outlet />
             <Toaster position="bottom-right" richColors />
           </TooltipProvider>
