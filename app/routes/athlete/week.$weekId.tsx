@@ -143,9 +143,9 @@ export default function AthleteWeekView() {
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={currentWeekId} className="animate-in space-y-6 duration-200 fade-in">
-        {!showSkeleton &&
-          (!weekPlan ? (
+      {!showSkeleton && (
+        <div key={currentWeekId} className="animate-in space-y-6 duration-200 fade-in">
+          {!weekPlan ? (
             <>
               <StaggerIn>
                 <div className="flex items-center gap-2">
@@ -247,26 +247,27 @@ export default function AthleteWeekView() {
                 isSharePending={bulkConfirmStrava.isPending}
               />
             </>
-          ))}
+          )}
+        </div>
+      )}
 
-        {/* Delete session confirmation */}
-        <DeleteConfirmationDialog
-          open={!!deleteConfirmId}
-          onOpenChange={(open) => {
-            if (!open) setDeleteConfirmId(null);
-          }}
-          title={t('common:session.delete' as never)}
-          description={t('common:session.deleteConfirm' as never)}
-          confirmLabel={t('common:session.delete' as never)}
-          cancelLabel={t('common:actions.cancel' as never)}
-          onConfirm={() => {
-            deleteSessionMut.mutate(deleteConfirmId!, {
-              onSettled: () => setDeleteConfirmId(null),
-            });
-          }}
-          isPending={deleteSessionMut.isPending}
-        />
-      </div>
+      {/* Delete session confirmation */}
+      <DeleteConfirmationDialog
+        open={!!deleteConfirmId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteConfirmId(null);
+        }}
+        title={t('common:session.delete' as never)}
+        description={t('common:session.deleteConfirm' as never)}
+        confirmLabel={t('common:session.delete' as never)}
+        cancelLabel={t('common:actions.cancel' as never)}
+        onConfirm={() => {
+          deleteSessionMut.mutate(deleteConfirmId!, {
+            onSettled: () => setDeleteConfirmId(null),
+          });
+        }}
+        isPending={deleteSessionMut.isPending}
+      />
     </>
   );
 }
