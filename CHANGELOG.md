@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.4.3](https://github.com/AC3m/synek/compare/v0.4.2...v0.4.3) (2026-03-28)
+
+### Bug Fixes
+
+* align coach and athlete week view loading behaviour ([f9f74c5](https://github.com/AC3m/synek/commit/f9f74c51979f8fea9eaa6b76081c5d261977035e))
+* gate strengh_session calls on modal open and clean-up calls upon session delete ([5c72c79](https://github.com/AC3m/synek/commit/5c72c79de6ff738055a5a866079ada11c5e35551))
+* pass missing handlers to MultiWeekView and fix isViewing self ([1c50327](https://github.com/AC3m/synek/commit/1c50327f924cd02cc6a3e0536f351180f96566f9))
+* reset selectedDay to today when pressing Today on current week (mobile) ([9ed30b0](https://github.com/AC3m/synek/commit/9ed30b0414c714ed63e068f73d91bc0e73b00890))
+* resolve hooks violation, delete dialog timing, and kcal i18n ([220b03d](https://github.com/AC3m/synek/commit/220b03d75b7e11c5cd3e66321727f94d712a54fb))
+* show skeleton on week navigation instead of flashing stale data ([89d7c06](https://github.com/AC3m/synek/commit/89d7c068355bf8eeb5d3aaa921c7811797cfe997))
+* smooth intervals section animation in session modal ([b37d76c](https://github.com/AC3m/synek/commit/b37d76cea0c72895830c6bd539441a68c0e26398))
+* smooth week navigation and eliminate first-load blink on athlete view ([253fd12](https://github.com/AC3m/synek/commit/253fd127462a77ccd0cb88449b0d74619bf1e262))
+* smooth week navigation transitions with opacity fade ([e8e8cc2](https://github.com/AC3m/synek/commit/e8e8cc2772c85227ad6bed94e3b38339dddcdfcb))
+* suppress stale week content for athlete on navigation ([f382d17](https://github.com/AC3m/synek/commit/f382d1754eae79c077f092e5a77388dc44b5ba34))
+
 ## [0.4.2](https://github.com/AC3m/synek/compare/v0.4.1...v0.4.2) (2026-03-27)
 
 ## [0.4.1](https://github.com/AC3m/synek/compare/v0.4.0...v0.4.1) (2026-03-27)
