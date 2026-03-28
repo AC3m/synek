@@ -7,7 +7,6 @@ export default function AthleteLayout() {
   const { locale = 'pl' } = useParams<{ locale?: string }>();
 
   if (isLoading) return <AppLoader />;
-
   if (!user) return <Navigate to="/login" replace />;
 
   if (user.role !== 'athlete') return <Navigate to={`/${locale}/coach`} replace />;

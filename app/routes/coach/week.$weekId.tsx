@@ -74,87 +74,85 @@ export default function CoachWeekView() {
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
-        {!showSkeleton && weekPlan && (
-          <>
-            {/* Header with navigation */}
-            <StaggerIn>
-              <div className="flex items-center gap-2">
-                <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
-                  {t('title')}
-                </h1>
-                <WeekNavigation
-                  weekId={weekId}
-                  basePath="coach"
-                  selectedDay={selectedDay}
-                  isLoading={weekFetching}
-                />
-              </div>
-            </StaggerIn>
+      {!showSkeleton && weekPlan && (
+        <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
+          {/* Header with navigation */}
+          <StaggerIn>
+            <div className="flex items-center gap-2">
+              <h1 className="shrink-0 text-base font-bold whitespace-nowrap sm:text-xl">
+                {t('title')}
+              </h1>
+              <WeekNavigation
+                weekId={weekId}
+                basePath="coach"
+                selectedDay={selectedDay}
+                isLoading={weekFetching}
+              />
+            </div>
+          </StaggerIn>
 
-            {/* Week Summary */}
-            <StaggerIn delay={60}>
-              <div
-                className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
-              >
-                <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
-              </div>
-            </StaggerIn>
+          {/* Week Summary */}
+          <StaggerIn delay={60}>
+            <div
+              className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+            >
+              <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
+            </div>
+          </StaggerIn>
 
-            {/* Multi-Week View (current week + 4 history rows) */}
-            <StaggerIn delay={120}>
-              <div
-                className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
-              >
-                <MultiWeekView
-                  currentWeekId={weekId}
-                  currentWeekPlan={showStaleContent ? null : weekPlan}
-                  currentSessions={showStaleContent ? [] : sessions}
-                  currentSessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
-                  onAddSession={handleAddSession}
-                  onEditSession={handleEditSession}
-                  onDeleteSession={handleDeleteSession}
-                  onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
-                  onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
-                  onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
-                  onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
-                  userRole={user?.role}
-                  showAthleteControls={isViewingSelf}
-                />
-              </div>
-            </StaggerIn>
+          {/* Multi-Week View (current week + 4 history rows) */}
+          <StaggerIn delay={120}>
+            <div
+              className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
+            >
+              <MultiWeekView
+                currentWeekId={weekId}
+                currentWeekPlan={showStaleContent ? null : weekPlan}
+                currentSessions={showStaleContent ? [] : sessions}
+                currentSessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}
+                onAddSession={handleAddSession}
+                onEditSession={handleEditSession}
+                onDeleteSession={handleDeleteSession}
+                onUpdateCoachPostFeedback={handleUpdateCoachPostFeedback}
+                onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
+                onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
+                onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
+                userRole={user?.role}
+                showAthleteControls={isViewingSelf}
+              />
+            </div>
+          </StaggerIn>
 
-            {/* Session Form Sheet */}
-            <SessionForm
-              open={formOpen}
-              onClose={() => setFormOpen(false)}
-              weekPlanId={weekPlan.id}
-              day={formDay}
-              session={editingSession}
-              onSubmit={handleFormSubmit}
-              isCoach={true}
-            />
-          </>
-        )}
+          {/* Session Form Sheet */}
+          <SessionForm
+            open={formOpen}
+            onClose={() => setFormOpen(false)}
+            weekPlanId={weekPlan.id}
+            day={formDay}
+            session={editingSession}
+            onSubmit={handleFormSubmit}
+            isCoach={true}
+          />
+        </div>
+      )}
 
-        {/* Delete session confirmation */}
-        <DeleteConfirmationDialog
-          open={!!deleteConfirmId}
-          onOpenChange={(open) => {
-            if (!open) setDeleteConfirmId(null);
-          }}
-          title={t('session.delete')}
-          description={t('session.deleteConfirm')}
-          confirmLabel={t('session.delete')}
-          cancelLabel={t('common:actions.cancel' as never)}
-          onConfirm={() => {
-            deleteSessionMut.mutate(deleteConfirmId!, {
-              onSettled: () => setDeleteConfirmId(null),
-            });
-          }}
-          isPending={deleteSessionMut.isPending}
-        />
-      </div>
+      {/* Delete session confirmation */}
+      <DeleteConfirmationDialog
+        open={!!deleteConfirmId}
+        onOpenChange={(open) => {
+          if (!open) setDeleteConfirmId(null);
+        }}
+        title={t('session.delete')}
+        description={t('session.deleteConfirm')}
+        confirmLabel={t('session.delete')}
+        cancelLabel={t('common:actions.cancel' as never)}
+        onConfirm={() => {
+          deleteSessionMut.mutate(deleteConfirmId!, {
+            onSettled: () => setDeleteConfirmId(null),
+          });
+        }}
+        isPending={deleteSessionMut.isPending}
+      />
     </>
   );
 }

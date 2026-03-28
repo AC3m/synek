@@ -31,9 +31,7 @@ export default function LandingPage() {
     }
   }, [user, isLoading, navigate, locale]);
 
-  if (isLoading || user) {
-    return <AppLoader />;
-  }
+  if (isLoading || user) return <AppLoader />;
 
   return (
     <div className="min-h-screen bg-background">

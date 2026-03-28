@@ -22,7 +22,6 @@ export default function CoachLayout() {
   const updateSelfPlan = useUpdateSelfPlanPermission();
 
   if (isLoading) return <AppLoader />;
-
   if (!user) return <Navigate to="/login" replace />;
 
   if (user.role !== 'coach') return <Navigate to={`/${locale}/athlete`} replace />;
