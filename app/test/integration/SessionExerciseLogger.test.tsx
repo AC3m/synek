@@ -25,6 +25,9 @@ const loggedExercise: StrengthSessionExercise = {
   actualReps: 10,
   loadKg: 80,
   progression: null,
+  notes: null,
+  sortOrder: 0,
+  createdAt: '2024-01-01T00:00:00Z',
   setsData: [
     { reps: 10, loadKg: 80 },
     { reps: 9, loadKg: 80 },
