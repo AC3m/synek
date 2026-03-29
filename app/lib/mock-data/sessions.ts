@@ -30,6 +30,14 @@ export function resetMockSessions() {
   }
 }
 
+export async function mockFetchSessionByGoalId(goalId: string): Promise<TrainingSession | null> {
+  await delay();
+  for (const s of sessions.values()) {
+    if (s.goalId === goalId) return s;
+  }
+  return null;
+}
+
 export async function mockFetchSessionsByWeekPlan(weekPlanId: string): Promise<TrainingSession[]> {
   await delay();
   const result: TrainingSession[] = [];

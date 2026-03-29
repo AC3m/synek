@@ -12,7 +12,12 @@ import { StravaSyncButton } from '~/components/training/StravaSyncButton';
 import { StravaConfirmButton } from '~/components/training/StravaConfirmButton';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useSessionActions } from '~/lib/context/SessionActionsContext';
-import { trainingTypeConfig, competitionConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
+import {
+  trainingTypeConfig,
+  competitionConfig,
+  iconMap,
+  isDistanceBased,
+} from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { cn } from '~/lib/utils';
 import { type TrainingSession, type RunData } from '~/types/training';

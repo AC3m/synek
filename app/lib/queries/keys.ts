@@ -1,3 +1,5 @@
+import type { AnalyticsParams } from '~/types/training';
+
 export const queryKeys = {
   weeks: {
     all: ['weeks'] as const,
@@ -50,7 +52,7 @@ export const queryKeys = {
   },
   analytics: {
     all: ['analytics'] as const,
-    byParams: (params: unknown) => ['analytics', params] as const,
+    byParams: (params: AnalyticsParams) => ['analytics', params] as const,
   },
   // PoC: Junction Garmin integration — remove after evaluation
   junctionPoc: {

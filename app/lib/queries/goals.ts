@@ -46,9 +46,7 @@ async function realFetchGoals(athleteId: string): Promise<Goal[]> {
   return (data ?? []).map((r) => toGoal(r as Record<string, unknown>));
 }
 
-async function realCreateGoal(
-  input: CreateGoalInput & { createdBy: string }
-): Promise<Goal> {
+async function realCreateGoal(input: CreateGoalInput & { createdBy: string }): Promise<Goal> {
   const { data, error } = await supabase
     .from('goals')
     .insert({
@@ -104,9 +102,7 @@ export async function fetchGoals(athleteId: string): Promise<Goal[]> {
   return realFetchGoals(athleteId);
 }
 
-export async function createGoal(
-  input: CreateGoalInput & { createdBy: string }
-): Promise<Goal> {
+export async function createGoal(input: CreateGoalInput & { createdBy: string }): Promise<Goal> {
   if (isMockMode) return mockCreateGoal(input);
   return realCreateGoal(input);
 }

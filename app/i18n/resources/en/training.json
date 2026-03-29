@@ -228,7 +228,14 @@
     "namePlaceholder": "e.g. Spring 10K",
     "notesPlaceholder": "Add context or motivation…",
     "noGoals": "No goals set yet.",
-    "prepWeeksShort": "{{weeks}}w prep"
+    "prepWeeksShort": "{{weeks}}w prep",
+    "validation": {
+      "required": "Required",
+      "prepWeeksRange": "0–52"
+    },
+    "placeholder": {
+      "distance": "e.g. 10"
+    }
   },
   "competition": {
     "label": "Competition",

@@ -37,6 +37,9 @@
     "close": "Close",
     "confirm": "Confirm"
   },
+  "loading": "Loading",
+  "expandDetails": "Expand details",
+  "collapseDetails": "Collapse details",
   "loadType": {
     "easy": "Easy",
     "medium": "Medium",

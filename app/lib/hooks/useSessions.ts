@@ -110,16 +110,18 @@ export function useUpdateSession() {
       // Keep linked goal in sync when a competition session's key fields change
       if (data.goalId) {
         const patch: Parameters<typeof updateGoal>[0] = { id: data.goalId };
-        if (variables.description != null && variables.description !== '') patch.name = variables.description;
+        if (variables.description != null && variables.description !== '')
+          patch.name = variables.description;
         if (variables.plannedDurationMinutes !== undefined)
-          patch.goalTimeSeconds = variables.plannedDurationMinutes != null
-            ? variables.plannedDurationMinutes * 60
-            : null;
+          patch.goalTimeSeconds =
+            variables.plannedDurationMinutes != null ? variables.plannedDurationMinutes * 60 : null;
         if (variables.plannedDistanceKm !== undefined)
           patch.goalDistanceKm = variables.plannedDistanceKm ?? null;
 
         if (Object.keys(patch).length > 1) {
-          await updateGoal(patch).catch(() => {});
+          await updateGoal(patch).catch((err) => {
+            console.warn('[useUpdateSession] Failed to sync goal:', err);
+          });
           qc.invalidateQueries({ queryKey: queryKeys.goals.all });
         }
       }

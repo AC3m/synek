@@ -34,10 +34,12 @@ export function PeriodSelector({
 
   return (
     <div className={cn('flex flex-wrap items-center gap-2', className)}>
-      <div className="flex rounded-lg border border-border/50 bg-muted/30 p-0.5">
+      <div role="tablist" className="flex rounded-lg border border-border/50 bg-muted/30 p-0.5">
         {PERIODS.map((p) => (
           <button
             key={p}
+            role="tab"
+            aria-selected={period === p}
             onClick={() => onPeriodChange(p)}
             className={cn(
               'h-7 rounded-md px-3 text-xs font-semibold transition-all',

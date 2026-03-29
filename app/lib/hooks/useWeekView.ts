@@ -137,7 +137,11 @@ export function useWeekView({
   const stats = useMemo(() => {
     const base = computeWeekStats(sessionsForStats ?? sessions);
     const breakdown = computeSportBreakdown(sessionsForStats ?? sessions);
-    return { ...base, byType: breakdown.byType, competitionSessions: breakdown.competitionSessions };
+    return {
+      ...base,
+      byType: breakdown.byType,
+      competitionSessions: breakdown.competitionSessions,
+    };
   }, [sessionsForStats, sessions]);
 
   const handleFormSubmit = useCallback(

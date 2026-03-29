@@ -1,19 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
+import { formatDurationCompact } from '~/lib/utils/format';
 import { trainingTypeConfig, competitionConfig, iconMap } from '~/lib/utils/training-types';
 import type { WeekStats, TrainingType } from '~/types/training';
 
 interface SportBreakdownProps {
   stats: WeekStats;
   className?: string;
-}
-
-function formatDuration(min: number): string | null {
-  if (min === 0) return null;
-  if (min < 60) return `${min}m`;
-  const h = Math.floor(min / 60);
-  const m = min % 60;
-  return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
 
 function ColHeader({ children }: { children: React.ReactNode }) {
@@ -27,8 +20,8 @@ function ColHeader({ children }: { children: React.ReactNode }) {
 function Stat({ value, sub }: { value: React.ReactNode; sub?: string }) {
   return (
     <div>
-      <p className="text-sm font-bold tabular-nums leading-tight">{value}</p>
-      {sub && <p className="mt-0.5 text-[10px] tabular-nums text-muted-foreground/60">{sub}</p>}
+      <p className="text-sm leading-tight font-bold tabular-nums">{value}</p>
+      {sub && <p className="mt-0.5 text-[10px] text-muted-foreground/60 tabular-nums">{sub}</p>}
     </div>
   );
 }
@@ -52,7 +45,7 @@ function SportRow({
   const config = trainingTypeConfig[type];
   const Icon = iconMap[config.icon];
   const hasDistance = plannedDistanceKm > 0 || actualDistanceKm > 0;
-  const duration = formatDuration(totalDurationMinutes);
+  const duration = formatDurationCompact(totalDurationMinutes);
 
   return (
     <div className="flex items-start gap-3 py-3">
@@ -68,7 +61,7 @@ function SportRow({
 
       {/* Sport name + session count */}
       <div className="min-w-0 flex-1">
-        <p className={cn('text-sm font-semibold leading-tight', config.color)}>
+        <p className={cn('text-sm leading-tight font-semibold', config.color)}>
           {t(`common:trainingTypes.${type}` as never)}
         </p>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
@@ -86,7 +79,13 @@ function SportRow({
       <div className="w-20 shrink-0 text-right">
         <ColHeader>{t('coach:weekSummary.colPerformance')}</ColHeader>
         <Stat
-          value={hasDistance ? (actualDistanceKm > 0 ? `${actualDistanceKm.toFixed(1)} km` : '—') : (duration ?? '—')}
+          value={
+            hasDistance
+              ? actualDistanceKm > 0
+                ? `${actualDistanceKm.toFixed(1)} km`
+                : '—'
+              : (duration ?? '—')
+          }
           sub={hasDistance && duration ? duration : undefined}
         />
         {!hasDistance && (
@@ -115,7 +114,7 @@ function RestDayRow({ count }: { count: number }) {
         {Icon && <Icon className={cn('h-4 w-4', config.color)} />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={cn('text-sm font-semibold leading-tight', config.color)}>
+        <p className={cn('text-sm leading-tight font-semibold', config.color)}>
           {t('common:trainingTypes.rest_day' as never)}
         </p>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
@@ -142,11 +141,12 @@ function CompetitionRow({
   const { t } = useTranslation(['coach', 'common']);
   const Icon = iconMap[competitionConfig.icon];
 
-  const perfValue = actualDistanceKm != null
-    ? `${actualDistanceKm.toFixed(1)} km`
-    : actualDurationMinutes != null
-      ? formatDuration(actualDurationMinutes)
-      : '—';
+  const perfValue =
+    actualDistanceKm != null
+      ? `${actualDistanceKm.toFixed(1)} km`
+      : actualDurationMinutes != null
+        ? formatDurationCompact(actualDurationMinutes)
+        : '—';
 
   return (
     <div className="flex items-start gap-3 py-3">
@@ -159,7 +159,7 @@ function CompetitionRow({
         {Icon && <Icon className={cn('h-4 w-4', competitionConfig.color)} />}
       </div>
       <div className="min-w-0 flex-1">
-        <p className={cn('text-sm font-semibold leading-tight', competitionConfig.color)}>
+        <p className={cn('text-sm leading-tight font-semibold', competitionConfig.color)}>
           {goalName}
         </p>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
@@ -205,7 +205,11 @@ export function SportBreakdown({ stats, className }: SportBreakdownProps) {
     <div className={cn('space-y-0', className)}>
       {/* Competitions first */}
       {stats.competitionSessions.length > 0 && (
-        <div className={cn(regularEntries.length > 0 || restDayEntry ? 'border-b border-border/40 pb-1' : '')}>
+        <div
+          className={cn(
+            regularEntries.length > 0 || restDayEntry ? 'border-b border-border/40 pb-1' : '',
+          )}
+        >
           <p
             className={cn(
               'pt-2 pb-1 text-[10px] font-bold tracking-wider uppercase',
@@ -257,7 +261,12 @@ export function SportBreakdown({ stats, className }: SportBreakdownProps) {
 
       {/* Rest day last — no plan/performance data */}
       {restDayEntry && (
-        <div className={cn((regularEntries.length > 0 || stats.competitionSessions.length > 0) && 'border-t border-border/40')}>
+        <div
+          className={cn(
+            (regularEntries.length > 0 || stats.competitionSessions.length > 0) &&
+              'border-t border-border/40',
+          )}
+        >
           <RestDayRow count={restDayEntry[1].sessionCount} />
         </div>
       )}

@@ -8,8 +8,7 @@ type SessionResult = Pick<TrainingSession, 'resultDistanceKm' | 'resultTimeSecon
  * Priority: distance check first, then time check. If no target set on the goal, returns pending.
  */
 export function computeGoalAchievement(goal: Goal, session: SessionResult): AchievementStatus {
-  const hasResult =
-    session.resultDistanceKm != null || session.resultTimeSeconds != null;
+  const hasResult = session.resultDistanceKm != null || session.resultTimeSeconds != null;
 
   if (!hasResult) return 'pending';
 

@@ -81,7 +81,8 @@ export default function CoachWeekView() {
     [goals, weekStart],
   );
   const competitionSession = useMemo(
-    () => (competitionGoal ? (sessions.find((s) => s.goalId === competitionGoal.id) ?? null) : null),
+    () =>
+      competitionGoal ? (sessions.find((s) => s.goalId === competitionGoal.id) ?? null) : null,
     [competitionGoal, sessions],
   );
 
