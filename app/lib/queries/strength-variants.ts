@@ -7,6 +7,7 @@ import type {
   ProgressionIntent,
   ProgressLog,
   LoadUnit,
+  PerSetRep,
   CreateStrengthVariantInput,
   UpdateStrengthVariantInput,
   UpsertVariantExercisesInput,
@@ -29,6 +30,14 @@ import {
 // Row mappers — snake_case DB → camelCase TS
 // ---------------------------------------------------------------------------
 
+function parsePerSetReps(raw: unknown): PerSetRep[] | null {
+  if (!Array.isArray(raw)) return null;
+  return raw.map((entry: Record<string, unknown>) => ({
+    repsMin: Number(entry.reps_min ?? entry.repsMin ?? 0),
+    repsMax: Number(entry.reps_max ?? entry.repsMax ?? 0),
+  }));
+}
+
 function toStrengthVariantExercise(row: Record<string, unknown>): StrengthVariantExercise {
   return {
     id: row.id as string,
@@ -38,6 +47,7 @@ function toStrengthVariantExercise(row: Record<string, unknown>): StrengthVarian
     sets: row.sets as number,
     repsMin: row.reps_min as number,
     repsMax: row.reps_max as number,
+    perSetReps: parsePerSetReps(row.per_set_reps),
     loadUnit: (row.load_unit as LoadUnit | null) ?? 'kg',
     sortOrder: row.sort_order as number,
     supersetGroup: row.superset_group as number | null,
@@ -89,7 +99,7 @@ function toStrengthSessionExercise(row: Record<string, unknown>): StrengthSessio
 // Nested select that fetches variant + exercises in one round-trip.
 const VARIANT_WITH_EXERCISES_SELECT =
   'id, user_id, name, description, created_at, updated_at, ' +
-  'strength_variant_exercises(id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at)';
+  'strength_variant_exercises(id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at)';
 
 function exercisesFromRow(row: Record<string, unknown>): StrengthVariantExercise[] {
   const exRows = (row.strength_variant_exercises as Record<string, unknown>[] | null) ?? [];
@@ -148,6 +158,9 @@ export async function createStrengthVariant(
     sets: ex.sets,
     reps_min: ex.repsMin,
     reps_max: ex.repsMax,
+    per_set_reps: ex.perSetReps
+      ? ex.perSetReps.map((r) => ({ reps_min: r.repsMin, reps_max: r.repsMax }))
+      : null,
     load_unit: ex.loadUnit ?? 'kg',
     sort_order: ex.sortOrder,
     superset_group: ex.supersetGroup ?? null,
@@ -157,7 +170,7 @@ export async function createStrengthVariant(
     .from('strength_variant_exercises')
     .insert(exerciseInserts)
     .select(
-      'id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at',
+      'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at',
     );
   if (exError) throw exError;
 
@@ -235,6 +248,9 @@ export async function upsertVariantExercises(
       sets: ex.sets,
       reps_min: ex.repsMin,
       reps_max: ex.repsMax,
+      per_set_reps: ex.perSetReps
+        ? ex.perSetReps.map((r) => ({ reps_min: r.repsMin, reps_max: r.repsMax }))
+        : null,
       load_unit: ex.loadUnit ?? 'kg',
       sort_order: ex.sortOrder,
       superset_group: ex.supersetGroup ?? null,
@@ -243,7 +259,7 @@ export async function upsertVariantExercises(
 
   const results: StrengthVariantExercise[] = [];
   const cols =
-    'id, variant_id, name, video_url, sets, reps_min, reps_max, sort_order, load_unit, superset_group, created_at';
+    'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at';
 
   if (existing.length > 0) {
     const { data, error } = await supabase

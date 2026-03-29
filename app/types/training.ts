@@ -83,6 +83,11 @@ export interface StrengthData {
 
 export type LoadUnit = 'kg' | 'sec';
 
+export interface PerSetRep {
+  repsMin: number;
+  repsMax: number;
+}
+
 export interface StrengthVariantExercise {
   id: string;
   variantId: string;
@@ -91,6 +96,7 @@ export interface StrengthVariantExercise {
   sets: number;
   repsMin: number;
   repsMax: number;
+  perSetReps: PerSetRep[] | null;
   loadUnit: LoadUnit;
   sortOrder: number;
   supersetGroup: number | null;
@@ -154,6 +160,7 @@ export interface CreateStrengthVariantInput {
     sets: number;
     repsMin: number;
     repsMax: number;
+    perSetReps?: PerSetRep[] | null;
     loadUnit?: LoadUnit;
     sortOrder: number;
     supersetGroup?: number | null;
@@ -175,6 +182,7 @@ export interface UpsertVariantExercisesInput {
     sets: number;
     repsMin: number;
     repsMax: number;
+    perSetReps?: PerSetRep[] | null;
     loadUnit?: LoadUnit;
     sortOrder: number;
     supersetGroup?: number | null;

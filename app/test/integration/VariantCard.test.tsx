@@ -21,6 +21,7 @@ const mockVariant: StrengthVariant = {
       loadUnit: 'kg',
       sortOrder: 0,
       supersetGroup: null,
+      perSetReps: null,
       createdAt: '2024-01-01T00:00:00Z',
     },
   ],

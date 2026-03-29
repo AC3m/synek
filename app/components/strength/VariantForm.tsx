@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
-import type { StrengthVariant, StrengthVariantExercise } from '~/types/training';
+import type { StrengthVariant, StrengthVariantExercise, PerSetRep } from '~/types/training';
 
 // Hoisted — doesn't change between renders
 const VIDEO_URL_REGEX = /^https?:\/\/.+/;
@@ -35,6 +35,7 @@ interface FormExercise {
   sets: number;
   repsMin: number;
   repsMax: number;
+  perSetReps: { repsMin: number; repsMax: number }[] | null;
   loadUnit: 'kg' | 'sec';
   supersetGroup?: number | null;
 }
@@ -47,13 +48,14 @@ function convertToFormExercises(exercises: StrengthVariantExercise[]): FormExerc
     sets: ex.sets,
     repsMin: ex.repsMin,
     repsMax: ex.repsMax,
+    perSetReps: ex.perSetReps ?? null,
     loadUnit: ex.loadUnit,
     supersetGroup: ex.supersetGroup,
   }));
 }
 
 function createEmptyExercise(): FormExercise {
-  return { name: '', videoUrl: '', sets: 3, repsMin: 8, repsMax: 12, loadUnit: 'kg' };
+  return { name: '', videoUrl: '', sets: 3, repsMin: 8, repsMax: 12, perSetReps: null, loadUnit: 'kg' };
 }
 
 // ---------------------------------------------------------------------------
@@ -130,11 +132,43 @@ const ExerciseRow = memo(function ExerciseRow({
   const { t } = useTranslation('training');
   const [showVideo, setShowVideo] = useState(!!exercise.videoUrl);
   const [showRange, setShowRange] = useState(exercise.repsMin !== exercise.repsMax);
+  const [perSetMode, setPerSetMode] = useState(!!exercise.perSetReps);
 
   const setsPreset = [1, 2, 3, 4, 5, 6];
   const isCustomSets = !setsPreset.includes(exercise.sets);
   const videoIsValid = !exercise.videoUrl || VIDEO_URL_REGEX.test(exercise.videoUrl);
   const color = supersetGroupId !== null ? getSupersetColor(supersetGroupId) : null;
+
+  function enablePerSet() {
+    const arr = Array.from({ length: exercise.sets }, () => ({
+      repsMin: exercise.repsMin,
+      repsMax: exercise.repsMax,
+    }));
+    onChange(index, { perSetReps: arr });
+    setPerSetMode(true);
+  }
+
+  function disablePerSet() {
+    const first = exercise.perSetReps?.[0];
+    onChange(index, {
+      repsMin: first?.repsMin ?? exercise.repsMin,
+      repsMax: first?.repsMax ?? exercise.repsMax,
+      perSetReps: null,
+    });
+    setPerSetMode(false);
+  }
+
+  function handlePerSetChange(setIdx: number, field: 'repsMin' | 'repsMax' | 'both', value: number) {
+    const updated = [...(exercise.perSetReps ?? [])];
+    if (field === 'both') {
+      updated[setIdx] = { repsMin: value, repsMax: value };
+    } else if (field === 'repsMin') {
+      updated[setIdx] = { ...updated[setIdx], repsMin: value, repsMax: Math.max(value, updated[setIdx].repsMax) };
+    } else {
+      updated[setIdx] = { ...updated[setIdx], repsMax: value };
+    }
+    onChange(index, { perSetReps: updated });
+  }
 
   return (
     <div
@@ -243,7 +277,65 @@ const ExerciseRow = memo(function ExerciseRow({
         {/* Reps */}
         <div>
           <Label className="text-xs">{t('strength.exercise.reps')}</Label>
-          {showRange ? (
+          {perSetMode ? (
+            <div className="mt-1 space-y-1">
+              {(exercise.perSetReps ?? []).map((rep, setIdx) => (
+                <div key={setIdx} className="flex items-center gap-1">
+                  <span className="w-7 text-xs text-muted-foreground">
+                    {t('strength.exercise.setLabel', { n: setIdx + 1 })}
+                  </span>
+                  {showRange ? (
+                    <>
+                      <Input
+                        type="number"
+                        min={1}
+                        max={100}
+                        value={rep.repsMin}
+                        onChange={(e) =>
+                          handlePerSetChange(setIdx, 'repsMin', parseInt(e.target.value) || 1)
+                        }
+                        className="h-7 w-14 text-xs"
+                      />
+                      <span className="text-xs text-muted-foreground">–</span>
+                      <Input
+                        type="number"
+                        min={rep.repsMin}
+                        max={100}
+                        value={rep.repsMax}
+                        onChange={(e) =>
+                          handlePerSetChange(
+                            setIdx,
+                            'repsMax',
+                            parseInt(e.target.value) || rep.repsMin,
+                          )
+                        }
+                        className="h-7 w-14 text-xs"
+                      />
+                    </>
+                  ) : (
+                    <Input
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={rep.repsMin}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 1;
+                        handlePerSetChange(setIdx, 'both', val);
+                      }}
+                      className="h-7 w-14 text-xs"
+                    />
+                  )}
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={disablePerSet}
+                className="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline"
+              >
+                {t('strength.exercise.perSetRemove')} ×
+              </button>
+            </div>
+          ) : showRange ? (
             <div>
               <div className="mt-1 flex items-center gap-1">
                 <Input
@@ -281,6 +373,13 @@ const ExerciseRow = memo(function ExerciseRow({
               >
                 {t('strength.exercise.removeRange')} ×
               </button>
+              <button
+                type="button"
+                onClick={enablePerSet}
+                className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
+              >
+                {t('strength.exercise.perSet')} →
+              </button>
             </div>
           ) : (
             <div>
@@ -302,6 +401,13 @@ const ExerciseRow = memo(function ExerciseRow({
                 className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
               >
                 {t('strength.exercise.addRange')} →
+              </button>
+              <button
+                type="button"
+                onClick={enablePerSet}
+                className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
+              >
+                {t('strength.exercise.perSet')} →
               </button>
             </div>
           )}
@@ -404,7 +510,25 @@ export function VariantForm({
   const exerciseNameRefs = useRef<Map<number, HTMLInputElement | null>>(new Map());
 
   const handleExerciseChange = useCallback((index: number, updated: Partial<FormExercise>) => {
-    setExercises((prev) => prev.map((ex, i) => (i === index ? { ...ex, ...updated } : ex)));
+    setExercises((prev) =>
+      prev.map((ex, i) => {
+        if (i !== index) return ex;
+        const merged = { ...ex, ...updated };
+        // Sync perSetReps array length when sets changes
+        if ('sets' in updated && merged.perSetReps) {
+          const target = merged.sets;
+          const arr = [...merged.perSetReps];
+          if (arr.length < target) {
+            const last = arr[arr.length - 1] ?? { repsMin: merged.repsMin, repsMax: merged.repsMax };
+            while (arr.length < target) arr.push({ ...last });
+          } else if (arr.length > target) {
+            arr.length = target;
+          }
+          merged.perSetReps = arr;
+        }
+        return merged;
+      }),
+    );
   }, []);
 
   const handleAddExercise = useCallback(() => {

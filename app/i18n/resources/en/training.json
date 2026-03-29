@@ -43,6 +43,9 @@
       "addVideo": "Add video link",
       "addRange": "Add range",
       "removeRange": "Remove range",
+      "perSet": "Per set",
+      "perSetRemove": "Uniform",
+      "setLabel": "S{{n}}",
       "loadUnit": "Load unit"
     },
     "variant": {
