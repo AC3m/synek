@@ -1,5 +1,5 @@
 import { Fragment, memo, useRef, useState, useCallback } from 'react';
-import { Plus, Trash2, ChevronUp, ChevronDown, ExternalLink, Link2, Minus, ArrowLeftRight, List } from 'lucide-react';
+import { Plus, Trash2, ChevronUp, ChevronDown, ExternalLink, Link2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
@@ -241,7 +241,7 @@ const ExerciseRow = memo(function ExerciseRow({
       </div>
 
       {/* Sets + Reps */}
-      <div className="mt-3 grid grid-cols-2 gap-3">
+      <div className="mt-3 space-y-3">
         {/* Sets */}
         <div>
           <Label className="text-xs">{t('strength.exercise.sets')}</Label>
@@ -297,26 +297,21 @@ const ExerciseRow = memo(function ExerciseRow({
         <div>
           <div className="flex items-center justify-between">
             <Label className="text-xs">{t('strength.exercise.reps')}</Label>
-            <div className="flex gap-0.5" role="group" aria-label={t('strength.exercise.reps')}>
-              {([
-                { mode: 'exact', Icon: Minus, label: t('strength.exercise.repsMode.exact') },
-                { mode: 'range', Icon: ArrowLeftRight, label: t('strength.exercise.repsMode.range') },
-                { mode: 'perSet', Icon: List, label: t('strength.exercise.repsMode.perSet') },
-              ] as const).map(({ mode, Icon, label }) => (
+            <div className="flex overflow-hidden rounded-md border text-xs">
+              {(['exact', 'range', 'perSet'] as const).map((mode) => (
                 <button
                   key={mode}
                   type="button"
                   onClick={() => handleRepsMode(mode)}
-                  aria-label={label}
                   aria-pressed={repsMode === mode}
                   className={cn(
-                    'flex h-6 w-6 items-center justify-center rounded transition-colors',
+                    'px-2.5 py-1 font-medium transition-colors',
                     repsMode === mode
-                      ? 'bg-orange-600 text-white'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                      ? 'bg-foreground text-background'
+                      : 'bg-background text-muted-foreground hover:bg-accent',
                   )}
                 >
-                  <Icon className="h-3 w-3" />
+                  {t(`strength.exercise.repsMode.${mode}` as never)}
                 </button>
               ))}
             </div>
