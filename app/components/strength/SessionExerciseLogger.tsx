@@ -156,7 +156,14 @@ const ExerciseCard = memo(function ExerciseCard({
           </div>
           <p className="mt-0.5 text-xs text-muted-foreground">
             {exercise.sets} {t('strength.logger.sets')} · {t('strength.logger.target')}:{' '}
-            {formatRepsTarget(exercise.repsMin, exercise.repsMax)} {t('strength.logger.reps')}
+            {exercise.perSetReps ? (
+              exercise.perSetReps.map((r) =>
+                r.repsMin === r.repsMax ? String(r.repsMin) : `${r.repsMin}–${r.repsMax}`
+              ).join('/')
+            ) : (
+              formatRepsTarget(exercise.repsMin, exercise.repsMax)
+            )}{' '}
+            {t('strength.logger.reps')}
           </p>
         </div>
         <div className="ml-2 flex shrink-0 items-center gap-2">
@@ -169,7 +176,10 @@ const ExerciseCard = memo(function ExerciseCard({
 
       {/* Set rows */}
       <div className="px-3 py-2">
-        <div className="mb-1.5 grid grid-cols-[2.5rem_1fr_1fr] gap-2 text-[10px] tracking-widest text-muted-foreground uppercase">
+        <div className={cn(
+          "mb-1.5 grid gap-2 text-[10px] tracking-widest text-muted-foreground uppercase",
+          exercise.perSetReps ? "grid-cols-[4rem_1fr_1fr]" : "grid-cols-[2.5rem_1fr_1fr]"
+        )}>
           <span>{t('strength.logger.set')}</span>
           <span>{t('strength.logger.reps')}</span>
           <span>{t('strength.logger.load')}</span>
@@ -179,9 +189,23 @@ const ExerciseCard = memo(function ExerciseCard({
           {sets.map((set, i) => {
             const prefillSet = prefill?.setsData?.[i];
             return (
-              <div key={i} className="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-2">
+              <div key={i} className={cn(
+                "grid items-center gap-2",
+                exercise.perSetReps ? "grid-cols-[4rem_1fr_1fr]" : "grid-cols-[2.5rem_1fr_1fr]"
+              )}>
                 <span className="text-xs font-medium text-muted-foreground tabular-nums">
-                  {i + 1}
+                  {exercise.perSetReps ? (
+                    <>
+                      {i + 1}{' '}
+                      <span className="font-normal text-muted-foreground/60">
+                        ({exercise.perSetReps[i]?.repsMin === exercise.perSetReps[i]?.repsMax
+                          ? exercise.perSetReps[i]?.repsMin
+                          : `${exercise.perSetReps[i]?.repsMin}–${exercise.perSetReps[i]?.repsMax}`})
+                      </span>
+                    </>
+                  ) : (
+                    i + 1
+                  )}
                 </span>
                 {readOnly ? (
                   <>

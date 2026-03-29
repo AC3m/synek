@@ -179,6 +179,7 @@ export function useUpsertVariantExercises(userId: string) {
           loadUnit: ex.loadUnit ?? 'kg',
           sortOrder: ex.sortOrder,
           supersetGroup: ex.supersetGroup ?? null,
+          perSetReps: ex.perSetReps ?? null,
           createdAt: prev.createdAt,
         }));
         qc.setQueryData<StrengthVariant>(keys.byId(input.variantId), {

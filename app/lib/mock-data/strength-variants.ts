@@ -29,6 +29,11 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     sets: 3,
     repsMin: 8,
     repsMax: 12,
+    perSetReps: [
+      { repsMin: 12, repsMax: 12 },
+      { repsMin: 10, repsMax: 10 },
+      { repsMin: 8, repsMax: 8 },
+    ],
     sortOrder: 0,
     loadUnit: 'kg',
     supersetGroup: null,
@@ -45,6 +50,7 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     loadUnit: 'kg',
     sortOrder: 1,
     supersetGroup: null,
+    perSetReps: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -58,6 +64,7 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     loadUnit: 'kg',
     sortOrder: 2,
     supersetGroup: null,
+    perSetReps: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
 ];
@@ -74,6 +81,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     loadUnit: 'kg',
     sortOrder: 0,
     supersetGroup: 1,
+    perSetReps: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -87,6 +95,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     loadUnit: 'kg',
     sortOrder: 1,
     supersetGroup: 1,
+    perSetReps: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -100,6 +109,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     loadUnit: 'kg',
     sortOrder: 2,
     supersetGroup: null,
+    perSetReps: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
 ];
@@ -297,6 +307,7 @@ export async function mockCreateStrengthVariant(input: {
     sets: number;
     repsMin: number;
     repsMax: number;
+    perSetReps?: { repsMin: number; repsMax: number }[] | null;
     sortOrder: number;
     loadUnit?: 'kg' | 'sec';
     supersetGroup?: number | null;
@@ -313,6 +324,7 @@ export async function mockCreateStrengthVariant(input: {
     sets: ex.sets,
     repsMin: ex.repsMin,
     repsMax: ex.repsMax,
+    perSetReps: ex.perSetReps ?? null,
     loadUnit: ex.loadUnit ?? 'kg',
     sortOrder: ex.sortOrder,
     supersetGroup: ex.supersetGroup ?? null,
@@ -363,6 +375,7 @@ export async function mockUpsertVariantExercises(input: {
     sets: number;
     repsMin: number;
     repsMax: number;
+    perSetReps?: { repsMin: number; repsMax: number }[] | null;
     sortOrder: number;
     loadUnit?: 'kg' | 'sec';
     supersetGroup?: number | null;
@@ -380,6 +393,7 @@ export async function mockUpsertVariantExercises(input: {
     sets: ex.sets,
     repsMin: ex.repsMin,
     repsMax: ex.repsMax,
+    perSetReps: ex.perSetReps ?? null,
     loadUnit: ex.loadUnit ?? 'kg',
     sortOrder: ex.sortOrder,
     supersetGroup: ex.supersetGroup ?? null,

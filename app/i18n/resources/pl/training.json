@@ -43,6 +43,14 @@
       "addVideo": "Dodaj link do wideo",
       "addRange": "Dodaj zakres",
       "removeRange": "Usuń zakres",
+      "perSet": "Na serię",
+      "perSetRemove": "Jednolite",
+      "repsMode": {
+        "exact": "Stałe",
+        "range": "Zakres",
+        "perSet": "Na serię"
+      },
+      "setLabel": "S{{n}}",
       "loadUnit": "Jednostka obciążenia"
     },
     "variant": {
