@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.1](https://github.com/AC3m/synek/compare/v0.6.0...v0.6.1) (2026-03-29)
+
+### Bug Fixes
+
+* add missing fields to StrengthSessionExercise test fixture ([f77d8c7](https://github.com/AC3m/synek/commit/f77d8c7f0da028d99fa1092cd070d441392e0025))
+* hydrate ExerciseCard state when logged data arrives after mount ([878ba71](https://github.com/AC3m/synek/commit/878ba71c0d194214adf70e768fbe9d0b88e95e35))
+* per-set reps clearing, save, range mode and sets limit in VariantForm ([8460b76](https://github.com/AC3m/synek/commit/8460b76f3a492f4cfd2fe444a9e3ec2593028f1d))
+
 ## [0.6.0](https://github.com/AC3m/synek/compare/v0.5.1...v0.6.0) (2026-03-29)
 
 ### Features
