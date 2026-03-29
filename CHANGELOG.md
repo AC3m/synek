@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/AC3m/synek/compare/v0.4.3...v0.5.0) (2026-03-29)
+
+### Features
+
+* goals, competition sessions, and analytics dashboard ([878b64f](https://github.com/AC3m/synek/commit/878b64fb42bf4c222f80e7064f24d6120a32bcbd))
+
+### Bug Fixes
+
+* add migration file for analytics rest_day exclusion (20260329145130) ([4427efe](https://github.com/AC3m/synek/commit/4427efe75c862d9e911ea4288bb2838bef0964e3))
+* code review improvements for goals-analytics branch ([14a6ef0](https://github.com/AC3m/synek/commit/14a6ef03a89630e0c031f373260f6e7d924ec32a))
+* exclude rest_day sessions from analytics SQL aggregations ([5b5cc78](https://github.com/AC3m/synek/commit/5b5cc78744b32f855ba47fcecf38be6598aeb6b6))
+
 ## [0.4.3](https://github.com/AC3m/synek/compare/v0.4.2...v0.4.3) (2026-03-28)
 
 ### Bug Fixes
