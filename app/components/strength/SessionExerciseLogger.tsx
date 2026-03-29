@@ -1,4 +1,4 @@
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -88,6 +88,18 @@ const ExerciseCard = memo(function ExerciseCard({
   );
   const [saved, setSaved] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // On first load the query may still be in-flight, so `logged` arrives after
+  // mount and the useState initializers above run with undefined. Hydrate once
+  // when real data lands, but never overwrite edits the user has already made.
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (logged && !hydratedRef.current) {
+      hydratedRef.current = true;
+      setSets(initSets(exercise.sets, logged));
+      setProgression(logged.progression ?? null);
+    }
+  }, [logged, exercise.sets]);
 
   function commit(currentSets = sets, currentProgression = progression) {
     const setsData: SetEntry[] = currentSets.map((s) => ({
