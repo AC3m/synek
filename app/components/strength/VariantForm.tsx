@@ -307,7 +307,7 @@ const ExerciseRow = memo(function ExerciseRow({
                   className={cn(
                     'px-2.5 py-1 font-medium transition-colors',
                     repsMode === mode
-                      ? 'bg-foreground text-background'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-background text-muted-foreground hover:bg-accent',
                   )}
                 >
@@ -318,7 +318,7 @@ const ExerciseRow = memo(function ExerciseRow({
           </div>
 
           {repsMode === 'perSet' ? (
-            <div className="mt-1 space-y-1">
+            <div className="mt-2 space-y-1">
               {(exercise.perSetReps ?? []).map((rep, setIdx) => (
                 <div key={setIdx} className="flex items-center gap-1">
                   <span className="w-7 text-xs text-muted-foreground">
@@ -369,7 +369,7 @@ const ExerciseRow = memo(function ExerciseRow({
               ))}
             </div>
           ) : repsMode === 'range' ? (
-            <div className="mt-1 flex items-center gap-1">
+            <div className="mt-2 flex items-center gap-1">
               <Input
                 type="number"
                 min={1}
@@ -405,7 +405,7 @@ const ExerciseRow = memo(function ExerciseRow({
                 const val = parseInt(e.target.value) || 1;
                 onChange(index, { repsMin: val, repsMax: val });
               }}
-              className="mt-1 h-9 w-16"
+              className="mt-2 h-9 w-16"
               aria-label={t('strength.exercise.reps')}
             />
           )}
@@ -413,8 +413,8 @@ const ExerciseRow = memo(function ExerciseRow({
       </div>
 
       {/* Load unit toggle */}
-      <div className="mt-2 flex items-center gap-2">
-        <span className="text-xs text-muted-foreground">{t('strength.exercise.loadUnit')}:</span>
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-xs text-muted-foreground">{t('strength.exercise.loadUnit')}</span>
         <div className="flex overflow-hidden rounded-md border text-xs">
           {(['kg', 'sec'] as const).map((unit) => (
             <button
@@ -424,7 +424,7 @@ const ExerciseRow = memo(function ExerciseRow({
               className={cn(
                 'px-2.5 py-1 font-medium transition-colors',
                 exercise.loadUnit === unit
-                  ? 'bg-foreground text-background'
+                  ? 'bg-orange-600 text-white'
                   : 'bg-background text-muted-foreground hover:bg-accent',
               )}
             >
