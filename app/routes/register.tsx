@@ -4,7 +4,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { useAuth } from '~/lib/context/AuthContext';
-import { supabase, isMockMode } from '~/lib/supabase';
+import { isMockMode } from '~/lib/supabase';
 import { mockRegisterUser, mockLogin } from '~/lib/auth';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -88,29 +88,40 @@ export default function RegisterPage() {
             email: result.data.email,
             password: result.data.password,
             role,
+            website: honeypot,
           }),
         });
         const payload = (await res.json()) as { success?: boolean; error?: string };
 
         if (!res.ok) {
           if (payload.error === 'email_taken') {
+            // User may already exist from a previous attempt where sign-in failed.
+            // Try to sign in — if it works, recover silently.
+            try {
+              await login(result.data.email, result.data.password);
+              navigate(`/${locale}/${role}`, { replace: true });
+              return;
+            } catch {
+              // sign-in failed — email is genuinely taken by someone else
+            }
             setFieldErrors({ email: t('beta.emailAlreadyRegistered') });
+            setIsPending(false);
+            return;
+          }
+          if (payload.error === 'coach_limit_reached') {
+            setError(t('beta.coachLimitReached'));
             setIsPending(false);
             return;
           }
           throw new Error(payload.error ?? 'internal_error');
         }
 
-        const { error: signInError } = await supabase.auth.signInWithPassword({
-          email: result.data.email,
-          password: result.data.password,
-        });
-        if (signInError) throw signInError;
+        await login(result.data.email, result.data.password);
       }
 
       navigate(`/${locale}/${role}`, { replace: true });
     } catch {
-      setError(t('beta.selectRole'));
+      setError(t('beta.registrationError'));
       setIsPending(false);
     }
   }

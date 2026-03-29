@@ -75,7 +75,9 @@ To test athlete registration in mock mode, select "Athlete" in the role picker. 
 ## Deploying the Edge Function
 
 ```bash
-supabase functions deploy register-user
+supabase functions deploy register-user --no-verify-jwt
 ```
 
-The `register-user` function accepts both `coach` and `athlete` roles. The existing `register-coach` function remains deployed and unchanged (still used by `login.tsx`).
+`--no-verify-jwt` is required: registration is a public endpoint (no session exists yet) and the Supabase publishable key (`sb_publishable_...`) is not a JWT, so default JWT verification would reject every request.
+
+`register-coach` has been removed — `register-user` covers both roles and supersedes it.
