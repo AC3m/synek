@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.5.1](https://github.com/AC3m/synek/compare/v0.5.0...v0.5.1) (2026-03-29)
+
+### Bug Fixes
+
+* code review improvements for goals-analytics branch ([1f75a38](https://github.com/AC3m/synek/commit/1f75a38a6c1d2aa73b67307a96a9510ba3d66d1e))
+
 ## [0.5.0](https://github.com/AC3m/synek/compare/v0.4.3...v0.5.0) (2026-03-29)
 
 ### Features
