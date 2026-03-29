@@ -1,4 +1,5 @@
 import { Fragment, memo, useRef, useState, useCallback } from 'react';
+import { useNumericDraft, usePerSetRepsDraft } from '~/lib/hooks/useNumericDraft';
 import { Plus, Trash2, ChevronUp, ChevronDown, ExternalLink, Link2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -139,6 +140,27 @@ const ExerciseRow = memo(function ExerciseRow({
     return 'exact';
   });
 
+  const perSetDraft = usePerSetRepsDraft(exercise.perSetReps);
+  const setsDraft = useNumericDraft(exercise.sets, (v) => onChange(index, { sets: v }), 7, { min: 7, max: 20 });
+  const repsExactDraft = useNumericDraft(
+    exercise.repsMin,
+    (v) => onChange(index, { repsMin: v, repsMax: v }),
+    1,
+    { min: 1, max: 100 },
+  );
+  const repsMinDraft = useNumericDraft(
+    exercise.repsMin,
+    (v) => onChange(index, { repsMin: v, repsMax: Math.max(v, exercise.repsMax) }),
+    1,
+    { min: 1, max: 100 },
+  );
+  const repsMaxDraft = useNumericDraft(
+    exercise.repsMax,
+    (v) => onChange(index, { repsMax: v }),
+    exercise.repsMin,
+    { min: exercise.repsMin, max: 100 },
+  );
+
   const setsPreset = [1, 2, 3, 4, 5, 6];
   const isCustomSets = !setsPreset.includes(exercise.sets);
   const videoIsValid = !exercise.videoUrl || VIDEO_URL_REGEX.test(exercise.videoUrl);
@@ -168,10 +190,11 @@ const ExerciseRow = memo(function ExerciseRow({
         });
       }
     } else {
-      const useRange = prev === 'range';
+      // Default to range: carry over the existing range, or add +2 if coming from exact.
+      const repsMax = exercise.repsMax > exercise.repsMin ? exercise.repsMax : exercise.repsMin + 2;
       const arr = Array.from({ length: exercise.sets }, () => ({
         repsMin: exercise.repsMin,
-        repsMax: useRange ? exercise.repsMax : exercise.repsMin,
+        repsMax,
       }));
       onChange(index, { perSetReps: arr });
     }
@@ -267,8 +290,9 @@ const ExerciseRow = memo(function ExerciseRow({
                   type="number"
                   min={7}
                   max={20}
-                  value={exercise.sets}
-                  onChange={(e) => onChange(index, { sets: parseInt(e.target.value) || 7 })}
+                  value={setsDraft.value}
+                  onChange={setsDraft.onChange}
+                  onBlur={setsDraft.onBlur}
                   className="h-9 w-16"
                   aria-label={t('strength.exercise.sets')}
                 />
@@ -318,67 +342,107 @@ const ExerciseRow = memo(function ExerciseRow({
           </div>
 
           {repsMode === 'perSet' ? (
-            <div className="mt-2 space-y-1">
-              {(exercise.perSetReps ?? []).map((rep, setIdx) => (
-                <div key={setIdx} className="flex items-center gap-1">
-                  <span className="w-7 text-xs text-muted-foreground">
-                    {t('strength.exercise.setLabel', { n: setIdx + 1 })}
-                  </span>
-                  {perSetHasRange ? (
-                    <>
+            <div className="mt-2 animate-in space-y-2 duration-150 fade-in slide-in-from-top-1">
+              {/* Exact vs range toggle within per-set mode */}
+              <div className="flex justify-end">
+                <div className="flex overflow-hidden rounded-md border text-xs">
+                  {(['exact', 'range'] as const).map((m) => {
+                    const active = m === 'range' ? perSetHasRange : !perSetHasRange;
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => {
+                          if (active) return;
+                          const wantRange = m === 'range';
+                          const updated = (exercise.perSetReps ?? []).map((r) => ({
+                            repsMin: r.repsMin,
+                            repsMax: wantRange ? r.repsMin + 2 : r.repsMin,
+                          }));
+                          onChange(index, { perSetReps: updated });
+                        }}
+                        className={cn(
+                          'px-2 py-0.5 font-medium transition-colors',
+                          active
+                            ? 'bg-orange-600 text-white'
+                            : 'bg-background text-muted-foreground hover:bg-accent',
+                        )}
+                      >
+                        {t(`strength.exercise.repsMode.${m}` as never)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="space-y-1">
+                {(exercise.perSetReps ?? []).map((rep, setIdx) => (
+                  <div
+                    key={setIdx}
+                    className="animate-in flex items-center gap-1 duration-150 fade-in slide-in-from-top-1"
+                  >
+                    <span className="w-7 text-xs text-muted-foreground">
+                      {t('strength.exercise.setLabel', { n: setIdx + 1 })}
+                    </span>
+                    {perSetHasRange ? (
+                      <>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={100}
+                          value={perSetDraft.getDisplay(setIdx).min}
+                          onChange={(e) => perSetDraft.updateMin(setIdx, e.target.value)}
+                          onBlur={() => {
+                            const val = parseInt(perSetDraft.getDisplay(setIdx).min) || 1;
+                            perSetDraft.commit();
+                            handlePerSetChange(setIdx, 'repsMin', val);
+                          }}
+                          className="h-7 w-14 text-xs"
+                        />
+                        <span className="animate-in text-xs text-muted-foreground duration-150 fade-in">
+                          –
+                        </span>
+                        <Input
+                          type="number"
+                          min={rep.repsMin}
+                          max={100}
+                          value={perSetDraft.getDisplay(setIdx).max}
+                          onChange={(e) => perSetDraft.updateMax(setIdx, e.target.value)}
+                          onBlur={() => {
+                            const val = parseInt(perSetDraft.getDisplay(setIdx).max) || rep.repsMin;
+                            perSetDraft.commit();
+                            handlePerSetChange(setIdx, 'repsMax', val);
+                          }}
+                          className="animate-in h-7 w-14 text-xs duration-150 fade-in"
+                        />
+                      </>
+                    ) : (
                       <Input
                         type="number"
                         min={1}
                         max={100}
-                        value={rep.repsMin}
-                        onChange={(e) =>
-                          handlePerSetChange(setIdx, 'repsMin', parseInt(e.target.value) || 1)
-                        }
+                        value={perSetDraft.getDisplay(setIdx).min}
+                        onChange={(e) => perSetDraft.updateBoth(setIdx, e.target.value)}
+                        onBlur={() => {
+                          const val = parseInt(perSetDraft.getDisplay(setIdx).min) || 1;
+                          perSetDraft.commit();
+                          handlePerSetChange(setIdx, 'both', val);
+                        }}
                         className="h-7 w-14 text-xs"
                       />
-                      <span className="text-xs text-muted-foreground">–</span>
-                      <Input
-                        type="number"
-                        min={rep.repsMin}
-                        max={100}
-                        value={rep.repsMax}
-                        onChange={(e) =>
-                          handlePerSetChange(
-                            setIdx,
-                            'repsMax',
-                            parseInt(e.target.value) || rep.repsMin,
-                          )
-                        }
-                        className="h-7 w-14 text-xs"
-                      />
-                    </>
-                  ) : (
-                    <Input
-                      type="number"
-                      min={1}
-                      max={100}
-                      value={rep.repsMin}
-                      onChange={(e) => {
-                        const val = parseInt(e.target.value) || 1;
-                        handlePerSetChange(setIdx, 'both', val);
-                      }}
-                      className="h-7 w-14 text-xs"
-                    />
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ) : repsMode === 'range' ? (
-            <div className="mt-2 flex items-center gap-1">
+            <div className="mt-2 animate-in flex items-center gap-1 duration-150 fade-in slide-in-from-top-1">
               <Input
                 type="number"
                 min={1}
                 max={100}
-                value={exercise.repsMin}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 1;
-                  onChange(index, { repsMin: val, repsMax: Math.max(val, exercise.repsMax) });
-                }}
+                value={repsMinDraft.value}
+                onChange={repsMinDraft.onChange}
+                onBlur={repsMinDraft.onBlur}
                 className="h-9 w-16"
                 aria-label={t('strength.exercise.repsMin')}
               />
@@ -387,10 +451,9 @@ const ExerciseRow = memo(function ExerciseRow({
                 type="number"
                 min={exercise.repsMin}
                 max={100}
-                value={exercise.repsMax}
-                onChange={(e) =>
-                  onChange(index, { repsMax: parseInt(e.target.value) || exercise.repsMin })
-                }
+                value={repsMaxDraft.value}
+                onChange={repsMaxDraft.onChange}
+                onBlur={repsMaxDraft.onBlur}
                 className="h-9 w-16"
                 aria-label={t('strength.exercise.repsMax')}
               />
@@ -400,12 +463,10 @@ const ExerciseRow = memo(function ExerciseRow({
               type="number"
               min={1}
               max={100}
-              value={exercise.repsMin}
-              onChange={(e) => {
-                const val = parseInt(e.target.value) || 1;
-                onChange(index, { repsMin: val, repsMax: val });
-              }}
-              className="mt-2 h-9 w-16"
+              value={repsExactDraft.value}
+              onChange={repsExactDraft.onChange}
+              onBlur={repsExactDraft.onBlur}
+              className="mt-2 h-9 w-16 animate-in duration-150 fade-in slide-in-from-top-1"
               aria-label={t('strength.exercise.reps')}
             />
           )}
