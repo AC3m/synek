@@ -61,19 +61,19 @@ function getCompetitionMonday(goal: Goal): string {
 
 /**
  * Returns true if the given weekStart (Monday date string) falls within the
- * preparation window for the goal, INCLUDING the competition week itself.
+ * preparation window for the goal, EXCLUDING the competition week itself.
+ * Use isCompetitionWeek to test the competition week separately.
  */
 export function isWeekInPrepWindow(weekStart: string, goal: Goal): boolean {
+  // No prep weeks means no prep window at all.
+  if (goal.preparationWeeks === 0) return false;
+
   const competitionMondayStr = getCompetitionMonday(goal);
-
-  // Goals with 0 prep weeks: only match the competition week
-  if (goal.preparationWeeks === 0) return weekStart === competitionMondayStr;
-
   const { start } = getPrepWeekRange(goal);
   const weekDate = parseISO(weekStart);
   const startDate = parseISO(start);
 
-  return weekDate >= startDate && weekStart <= competitionMondayStr;
+  return weekDate >= startDate && weekStart < competitionMondayStr;
 }
 
 /**

@@ -125,7 +125,6 @@ export function useUpdateGoal() {
 
           if (Object.keys(patch).length > 1) {
             await updateSession(patch).catch(() => {});
-            qc.invalidateQueries({ queryKey: queryKeys.sessions.all });
           }
         }
       }
@@ -170,6 +169,8 @@ export function useUpdateGoal() {
     },
     onSettled: (_data, _err, input) => {
       qc.invalidateQueries({ queryKey: queryKeys.goals.byAthlete(input.athleteId) });
+      qc.invalidateQueries({ queryKey: queryKeys.sessions.all });
+      qc.invalidateQueries({ queryKey: queryKeys.weeks.all });
     },
   });
 }
@@ -199,6 +200,8 @@ export function useDeleteGoal() {
     },
     onSettled: (_data, _err, { athleteId }) => {
       qc.invalidateQueries({ queryKey: queryKeys.goals.byAthlete(athleteId) });
+      qc.invalidateQueries({ queryKey: queryKeys.sessions.all });
+      qc.invalidateQueries({ queryKey: queryKeys.weeks.all });
     },
   });
 }

@@ -9,7 +9,7 @@
 CREATE TABLE goals (
   id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   athlete_id          UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  created_by          UUID        NOT NULL REFERENCES auth.users(id) ON DELETE SET NULL,
+  created_by          UUID        NOT NULL REFERENCES auth.users(id) ON DELETE RESTRICT,
   name                TEXT        NOT NULL,
   discipline          TEXT        NOT NULL,  -- matches training_type values
   competition_date    DATE        NOT NULL,

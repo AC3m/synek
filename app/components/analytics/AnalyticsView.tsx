@@ -62,7 +62,6 @@ export function AnalyticsView({ namespace, athleteId, goals, className }: Analyt
   const completionLabel = t('analytics.totals.completion' as never);
 
   const totals = data?.totals;
-  const duration = totals ? formatTotalDuration(totals.totalDurationMinutes) : null;
 
   return (
     <div className={cn('overflow-hidden rounded-xl border border-white/[0.07] bg-zinc-950', className)}>
@@ -120,11 +119,10 @@ export function AnalyticsView({ namespace, athleteId, goals, className }: Analyt
             />
           </div>
           <div className="bg-zinc-950 px-4 py-3">
-            <StatChip
-              label={timeLabel}
-              value={duration!.value}
-              sub={duration!.unit}
-            />
+            {(() => {
+              const d = formatTotalDuration(totals.totalDurationMinutes);
+              return <StatChip label={timeLabel} value={d.value} sub={d.unit} />;
+            })()}
           </div>
           <div className="bg-zinc-950 px-4 py-3">
             <StatChip

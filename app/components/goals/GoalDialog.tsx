@@ -58,6 +58,18 @@ function fromSeconds(seconds: number | null): { hh: string; mm: string; ss: stri
   };
 }
 
+const DEFAULT_FORM_STATE: FormState = {
+  name: '',
+  discipline: 'run',
+  competitionDate: '',
+  preparationWeeks: '8',
+  goalDistanceKm: '',
+  goalTimeHh: '',
+  goalTimeMm: '',
+  goalTimeSs: '',
+  notes: '',
+};
+
 export function GoalDialog({
   open,
   onClose,
@@ -70,19 +82,7 @@ export function GoalDialog({
 }: GoalDialogProps) {
   const { t } = useTranslation('training');
 
-  const defaultState: FormState = {
-    name: '',
-    discipline: 'run',
-    competitionDate: '',
-    preparationWeeks: '8',
-    goalDistanceKm: '',
-    goalTimeHh: '',
-    goalTimeMm: '',
-    goalTimeSs: '',
-    notes: '',
-  };
-
-  const [form, setForm] = useState<FormState>(defaultState);
+  const [form, setForm] = useState<FormState>(DEFAULT_FORM_STATE);
   const [errors, setErrors] = useState<Partial<Record<keyof FormState, string>>>({});
 
   useEffect(() => {
@@ -100,10 +100,9 @@ export function GoalDialog({
         notes: goal.notes ?? '',
       });
     } else {
-      setForm(defaultState);
+      setForm(DEFAULT_FORM_STATE);
     }
     setErrors({});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, goal?.id]);
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
