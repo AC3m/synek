@@ -1,7 +1,8 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-// Duplicated from app/lib/config.ts DAILY_COACH_REGISTRATION_LIMIT
+// Duplicated from app/lib/config.ts — keep in sync
 const DAILY_COACH_REGISTRATION_LIMIT = 5;
+const DAILY_ATHLETE_REGISTRATION_LIMIT = 10;
 
 const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_UPPERCASE = /[A-Z]/;
@@ -62,23 +63,23 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    if (role === 'coach') {
-      const utcMidnight = new Date();
-      utcMidnight.setUTCHours(0, 0, 0, 0);
+    const utcMidnight = new Date();
+    utcMidnight.setUTCHours(0, 0, 0, 0);
 
-      const { count, error: countError } = await supabase
-        .from('profiles')
-        .select('id', { count: 'exact', head: true })
-        .eq('role', 'coach')
-        .gte('created_at', utcMidnight.toISOString());
+    const limit = role === 'coach' ? DAILY_COACH_REGISTRATION_LIMIT : DAILY_ATHLETE_REGISTRATION_LIMIT;
 
-      if (countError) {
-        return json({ error: 'internal_error' }, 500);
-      }
+    const { count, error: countError } = await supabase
+      .from('profiles')
+      .select('id', { count: 'exact', head: true })
+      .eq('role', role)
+      .gte('created_at', utcMidnight.toISOString());
 
-      if ((count ?? 0) >= DAILY_COACH_REGISTRATION_LIMIT) {
-        return json({ error: 'coach_limit_reached' }, 429);
-      }
+    if (countError) {
+      return json({ error: 'internal_error' }, 500);
+    }
+
+    if ((count ?? 0) >= limit) {
+      return json({ error: role === 'coach' ? 'coach_limit_reached' : 'athlete_limit_reached' }, 429);
     }
 
     const { error: createError } = await supabase.auth.admin.createUser({

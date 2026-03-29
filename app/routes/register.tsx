@@ -108,8 +108,8 @@ export default function RegisterPage() {
             setIsPending(false);
             return;
           }
-          if (payload.error === 'coach_limit_reached') {
-            setError(t('beta.coachLimitReached'));
+          if (payload.error === 'coach_limit_reached' || payload.error === 'athlete_limit_reached') {
+            setError(t('beta.registrationLimitReached'));
             setIsPending(false);
             return;
           }

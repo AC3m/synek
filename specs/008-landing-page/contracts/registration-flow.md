@@ -82,14 +82,19 @@ If `login()` also fails, the user is shown `emailAlreadyRegistered` and directed
 
 ## Rate Limiting
 
-Only coach registrations are rate-limited at the function level (`DAILY_COACH_REGISTRATION_LIMIT = 5`, defined in `app/lib/config.ts` and duplicated in the edge function). Athlete registrations rely on Supabase's built-in auth rate limiting.
+Both roles are rate-limited at the function level. Limits are defined in `app/lib/config.ts` (authoritative) and duplicated in the edge function — keep them in sync.
 
-The limit is a calendar day in UTC (midnight to midnight).
+| Role | Daily limit |
+|---|---|
+| `coach` | 5 |
+| `athlete` | 10 |
+
+The limit window is a UTC calendar day (midnight to midnight). Both roles return `429` with a role-specific error code (`coach_limit_reached` / `athlete_limit_reached`), but the UI shows the same generic "try again tomorrow" message.
 
 ---
 
 ## Maintenance Notes
 
-- To change the coach daily limit: update `DAILY_COACH_REGISTRATION_LIMIT` in **both** `app/lib/config.ts` and `supabase/functions/register-user/index.ts`, then redeploy the function.
+- To change daily limits: update `DAILY_COACH_REGISTRATION_LIMIT` / `DAILY_ATHLETE_REGISTRATION_LIMIT` in **both** `app/lib/config.ts` and `supabase/functions/register-user/index.ts`, then redeploy the function.
 - Password policy is enforced in two places (Zod schema in `register.tsx` and regex checks in the edge function) — keep them in sync.
 - `register-coach` was removed in March 2026. `register-user` is the sole registration endpoint.
