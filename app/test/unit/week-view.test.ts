@@ -132,7 +132,7 @@ describe('computeWeekStats', () => {
     expect(computeWeekStats(sessions).totalPlannedKm).toBe(15);
   });
 
-  it('sums totalActualRunKm only for run type sessions', () => {
+  it('sums totalActualDistanceKm across all sports', () => {
     const sessions = [
       makeSession({ trainingType: 'run', actualDistanceKm: 9 }),
       makeSession({
@@ -141,7 +141,7 @@ describe('computeWeekStats', () => {
         actualDistanceKm: 30,
       }),
     ];
-    expect(computeWeekStats(sessions).totalActualRunKm).toBe(9);
+    expect(computeWeekStats(sessions).totalActualDistanceKm).toBe(39);
   });
 
   it('treats null plannedDistanceKm as 0 in totals', () => {

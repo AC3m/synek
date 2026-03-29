@@ -211,5 +211,36 @@
       "recovery": "Rec",
       "cooldown": "CD"
     }
+  },
+  "goal": {
+    "library": "Goals",
+    "create": "Add Goal",
+    "edit": "Edit Goal",
+    "delete": "Delete Goal",
+    "name": "Goal Name",
+    "discipline": "Sport",
+    "competitionDate": "Competition Date",
+    "preparationWeeks": "Preparation Weeks",
+    "goalDistance": "Target Distance (km)",
+    "goalTime": "Target Time",
+    "notes": "Notes",
+    "deleteConfirm": "Are you sure you want to delete this goal? The competition session will be unlinked.",
+    "namePlaceholder": "e.g. Spring 10K",
+    "notesPlaceholder": "Add context or motivation…",
+    "noGoals": "No goals set yet.",
+    "prepWeeksShort": "{{weeks}}w prep"
+  },
+  "competition": {
+    "label": "Competition",
+    "result": "Result",
+    "achieved": "Achieved",
+    "missed": "Missed",
+    "pending": "Pending"
+  },
+  "goalPrep": {
+    "banner": "Prep for {{goalName}}",
+    "competitionWeek": "Competition week — {{goalName}}",
+    "daysUntil": "{{days}} days to competition",
+    "thisWeek": "This week"
   }
 }

@@ -6,7 +6,9 @@
     "week": "Week",
     "team": "Team",
     "settings": "Settings",
-    "strength": "Strength"
+    "strength": "Strength",
+    "goals": "Goals",
+    "analytics": "Analytics"
   },
   "days": {
     "monday": "Monday",

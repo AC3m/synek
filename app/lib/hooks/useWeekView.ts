@@ -11,6 +11,7 @@ import {
 import { useSessionFormState } from '~/lib/hooks/useSessionFormState';
 import { weekIdToMonday, parseWeekId } from '~/lib/utils/date';
 import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import { computeSportBreakdown } from '~/lib/utils/analytics';
 import type {
   CreateSessionInput,
   UpdateSessionInput,
@@ -133,10 +134,11 @@ export function useWeekView({
   } = useSessionFormState();
 
   const sessionsByDay = useMemo(() => groupSessionsByDay(sessions), [sessions]);
-  const stats = useMemo(
-    () => computeWeekStats(sessionsForStats ?? sessions),
-    [sessionsForStats, sessions],
-  );
+  const stats = useMemo(() => {
+    const base = computeWeekStats(sessionsForStats ?? sessions);
+    const breakdown = computeSportBreakdown(sessionsForStats ?? sessions);
+    return { ...base, byType: breakdown.byType, competitionSessions: breakdown.competitionSessions };
+  }, [sessionsForStats, sessions]);
 
   const handleFormSubmit = useCallback(
     (data: CreateSessionInput | UpdateSessionInput) => {

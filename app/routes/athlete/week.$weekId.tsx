@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
+import { GoalPrepBanner } from '~/components/calendar/GoalPrepBanner';
 import { WeekGrid } from '~/components/calendar/WeekGrid';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
 import { AppLoader } from '~/components/ui/app-loader';
@@ -15,10 +16,13 @@ import {
   useJunctionWeekWorkouts,
 } from '~/lib/hooks/useJunctionConnection';
 import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
+import { useGoals } from '~/lib/hooks/useGoals';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
+import { isCompetitionWeek } from '~/lib/utils/goals';
 import { computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
+import { computeSportBreakdown } from '~/lib/utils/analytics';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
@@ -44,6 +48,7 @@ export default function AthleteWeekView() {
   const weekStart = weekId ? weekIdToMonday(weekId) : '';
 
   const { data: canSelfPlan = true } = useSelfPlanPermission(user?.id ?? '');
+  const { data: goals = [] } = useGoals(user?.id ?? '');
 
   // Athlete-only: Strava + Garmin
   const { data: stravaStatus } = useStravaConnectionStatus(user?.id ?? '');
@@ -67,6 +72,11 @@ export default function AthleteWeekView() {
   // The hook provides raw `sessions`; augmentation is athlete-only
   const weekView = useWeekView({ canAutoCreate: canSelfPlan });
 
+  const competitionGoal = useMemo(
+    () => (weekStart ? (goals.find((g) => isCompetitionWeek(weekStart, g)) ?? null) : null),
+    [goals, weekStart],
+  );
+
   const augmentedSessions = useMemo(
     () =>
       weekView && junctionConnected
@@ -75,7 +85,16 @@ export default function AthleteWeekView() {
     [junctionConnected, weekView?.sessions, garminWeekWorkouts, weekStart],
   );
 
-  const stats = useMemo(() => computeWeekStats(augmentedSessions), [augmentedSessions]);
+  const stats = useMemo(() => {
+    const base = computeWeekStats(augmentedSessions);
+    const breakdown = computeSportBreakdown(augmentedSessions);
+    const competitionSessions = breakdown.competitionSessions.map((cs) => {
+      const goal = goals.find((g) => g.id === cs.goalId);
+      if (!goal) return cs;
+      return { ...cs, goalName: goal.name, goalDistanceKm: goal.goalDistanceKm };
+    });
+    return { ...base, byType: breakdown.byType, competitionSessions };
+  }, [augmentedSessions, goals]);
 
   // Strava handlers — athlete only
   const handleSyncStrava = useCallback(
@@ -140,6 +159,10 @@ export default function AthleteWeekView() {
     deleteSessionMut,
   } = weekView;
 
+  const competitionSession = competitionGoal
+    ? (sessions.find((s) => s.goalId === competitionGoal.id) ?? null)
+    : null;
+
   return (
     <>
       {showSkeleton && <AppLoader />}
@@ -181,12 +204,23 @@ export default function AthleteWeekView() {
                 </div>
               </StaggerIn>
 
+              {/* Goal preparation banners */}
+              {goals.length > 0 && weekStart && (
+                <GoalPrepBanner goals={goals} weekStart={weekStart} />
+              )}
+
               {/* Week Summary (readonly with progress bar) */}
               <StaggerIn delay={60}>
                 <div
                   className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
                 >
-                  <WeekSummary weekPlan={weekPlan} stats={stats} readonly />
+                  <WeekSummary
+                    weekPlan={weekPlan}
+                    stats={stats}
+                    readonly
+                    competitionGoal={competitionGoal}
+                    competitionSession={competitionSession}
+                  />
                 </div>
               </StaggerIn>
 

@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronDown, ChevronUp, Pencil, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Pencil, Trophy, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 import { loadTypeConfig } from '~/lib/utils/training-types';
-import { LOAD_TYPES, type WeekPlan, type WeekStats } from '~/types/training';
+import { SportBreakdown } from '~/components/calendar/SportBreakdown';
+import { LOAD_TYPES, type WeekPlan, type WeekStats, type Goal, type TrainingSession } from '~/types/training';
+
+const VIEW_KEY = 'weekSummary.view';
+type SummaryView = 'cumulative' | 'by-sport';
 
 interface WeekSummaryProps {
   weekPlan: WeekPlan;
@@ -18,6 +22,8 @@ interface WeekSummaryProps {
       Pick<WeekPlan, 'loadType' | 'totalPlannedKm' | 'actualTotalKm' | 'coachComments'>
     >,
   ) => void;
+  competitionGoal?: Goal | null;
+  competitionSession?: TrainingSession | null;
 }
 
 function StatValue({ value, unit }: { value: string | number; unit?: string }) {
@@ -33,6 +39,14 @@ function StatValue({ value, unit }: { value: string | number; unit?: string }) {
   );
 }
 
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
 function formatDuration(minutes: number): { value: string; unit: string } {
   if (minutes === 0) return { value: '0', unit: 'min' };
   if (minutes < 60) return { value: minutes.toString(), unit: 'min' };
@@ -42,10 +56,27 @@ function formatDuration(minutes: number): { value: string; unit: string } {
   return { value: `${h}h ${m}`, unit: 'min' };
 }
 
-export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: WeekSummaryProps) {
+export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate, competitionGoal, competitionSession }: WeekSummaryProps) {
   const { t } = useTranslation(['coach', 'common']);
   const [isExpanded, setIsExpanded] = useState(true);
   const [isEditingKm, setIsEditingKm] = useState(false);
+  const [view, setView] = useState<SummaryView>(() => {
+    try {
+      const stored = sessionStorage.getItem(VIEW_KEY);
+      return stored === 'by-sport' ? 'by-sport' : 'cumulative';
+    } catch {
+      return 'cumulative';
+    }
+  });
+
+  const handleViewChange = (next: SummaryView) => {
+    setView(next);
+    try {
+      sessionStorage.setItem(VIEW_KEY, next);
+    } catch {
+      // ignore
+    }
+  };
 
   const [coachComments, setCoachComments] = useState(weekPlan.coachComments ?? '');
   const [plannedKm, setPlannedKm] = useState(weekPlan.totalPlannedKm?.toString() ?? '');
@@ -71,18 +102,50 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
   return (
     <Card className="gap-0 overflow-hidden border-border/50 py-0 shadow-sm">
       <CardHeader className={cn('px-6 py-4 transition-all', !isExpanded && 'py-4')}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <CardTitle className="text-sm font-semibold tracking-wider text-foreground/80 uppercase">
             {t('coach:weekSummary.title')}
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsExpanded((v) => !v)}
-            className="h-8 w-8 rounded-full text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
-          >
-            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </Button>
+          <div className="flex items-center gap-1">
+            <div className="flex rounded-md border border-border/50 bg-muted/30 p-0.5">
+              <Button
+                variant="ghost"
+                size="sm"
+                data-testid="view-cumulative"
+                onClick={() => handleViewChange('cumulative')}
+                className={cn(
+                  'h-6 rounded px-2.5 text-[10px] font-semibold tracking-wide uppercase transition-all',
+                  view === 'cumulative'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {t('coach:weekSummary.viewCumulative')}
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                data-testid="view-by-sport"
+                onClick={() => handleViewChange('by-sport')}
+                className={cn(
+                  'h-6 rounded px-2.5 text-[10px] font-semibold tracking-wide uppercase transition-all',
+                  view === 'by-sport'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground',
+                )}
+              >
+                {t('coach:weekSummary.viewBySport')}
+              </Button>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsExpanded((v) => !v)}
+              className="h-8 w-8 rounded-full text-muted-foreground transition-colors hover:bg-muted/50 hover:text-foreground"
+            >
+              {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </Button>
+          </div>
         </div>
       </CardHeader>
 
@@ -97,7 +160,32 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
           )}
         >
           <CardContent className="border-t border-border/40 p-0">
-            <div className="grid grid-cols-1 divide-y divide-border/40 bg-muted/5 md:grid-cols-2 md:divide-x md:divide-y-0">
+            {/* By-sport panel — animated height */}
+            <div
+              className="grid transition-[grid-template-rows] duration-300 ease-out"
+              style={{ gridTemplateRows: view === 'by-sport' ? '1fr' : '0fr' }}
+            >
+              <div className="overflow-hidden">
+                <div
+                  className={cn(
+                    'px-6 py-4 transition-opacity duration-300',
+                    view === 'by-sport' ? 'opacity-100' : 'opacity-0',
+                  )}
+                  data-testid="sport-breakdown-view"
+                >
+                  <SportBreakdown stats={stats} />
+                </div>
+              </div>
+            </div>
+
+            {/* Cumulative panel — animated height */}
+            <div
+              className="grid transition-[grid-template-rows] duration-300 ease-out"
+              style={{ gridTemplateRows: view === 'cumulative' ? '1fr' : '0fr' }}
+              data-testid="cumulative-view"
+            >
+              <div className="overflow-hidden">
+            <div className={cn('grid grid-cols-1 divide-y divide-border/40 bg-muted/5 md:grid-cols-2 md:divide-x md:divide-y-0')}>
               {/* ── LEFT: Plan ── */}
               <div className="space-y-5 px-6 py-5">
                 <p className="flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-muted-foreground/60 uppercase">
@@ -105,54 +193,47 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                   {t('coach:weekSummary.plan')}
                 </p>
 
-                {/* Week Load */}
-                <div className="space-y-2">
-                  <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
-                    {t('coach:weekSummary.loadType')}
-                  </p>
-                  {readonly ? (
-                    weekPlan.loadType ? (
-                      <span
-                        className={cn(
-                          'inline-flex h-7 items-center rounded-md px-2.5 text-[10px] font-bold tracking-wider uppercase',
-                          loadTypeConfig[weekPlan.loadType].bgColor,
-                          loadTypeConfig[weekPlan.loadType].color,
-                        )}
-                      >
-                        {t(`common:loadType.${weekPlan.loadType}`)}
-                      </span>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">—</p>
-                    )
-                  ) : (
-                    <div className="flex flex-wrap gap-1.5">
-                      {LOAD_TYPES.map((lt) => {
-                        const config = loadTypeConfig[lt];
-                        const isSelected = weekPlan.loadType === lt;
-                        return (
-                          <Button
-                            key={lt}
-                            variant={isSelected ? 'default' : 'outline'}
-                            size="sm"
-                            className={cn(
-                              'h-7 rounded-md px-2.5 text-[10px] font-bold tracking-wider uppercase transition-all',
-                              isSelected
-                                ? `${config.bgColor} ${config.color} border-0 shadow-sm hover:opacity-90`
-                                : 'text-muted-foreground/70 hover:text-foreground',
-                            )}
-                            onClick={() => onUpdate?.({ loadType: isSelected ? null : lt })}
-                          >
-                            {t(`common:loadType.${lt}`)}
-                          </Button>
-                        );
-                      })}
+                {/* Competition block — only on competition weeks */}
+                {competitionGoal && (
+                  <>
+                    <div className="rounded-lg border border-amber-200/60 bg-amber-50/50 px-4 py-3 dark:border-amber-800/40 dark:bg-amber-950/20">
+                      <div className="mb-2.5 flex items-center gap-1.5">
+                        <Trophy className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                        <span className="text-[10px] font-bold tracking-widest text-amber-700 uppercase dark:text-amber-300">
+                          {competitionGoal.name}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                            {t('training:goal.goalDistance' as never)}
+                          </p>
+                          {competitionGoal.goalDistanceKm != null ? (
+                            <StatValue value={competitionGoal.goalDistanceKm} unit="km" />
+                          ) : (
+                            <StatValue value="—" />
+                          )}
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                            {t('training:goal.goalTime' as never)}
+                          </p>
+                          {competitionGoal.goalTimeSeconds != null ? (
+                            <StatValue value={formatTime(competitionGoal.goalTimeSeconds)} />
+                          ) : (
+                            <StatValue value="—" />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  )}
-                </div>
+                    <div className="h-px bg-border/40" />
+                  </>
+                )}
 
-                {/* Planned KM + Planned Sessions */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                {/* 2×2 metric grid — mirrors Performance layout */}
+                <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+                  {/* Distance */}
+                  <div className="space-y-1">
                     <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
                       {t('coach:weekSummary.plannedKm')}
                     </p>
@@ -160,9 +241,7 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                       weekPlan.totalPlannedKm != null ? (
                         <StatValue value={weekPlan.totalPlannedKm} unit="km" />
                       ) : stats.totalPlannedKm > 0 ? (
-                        <div className="flex items-baseline gap-1">
-                          <StatValue value={`~${stats.totalPlannedKm.toFixed(1)}`} unit="km" />
-                        </div>
+                        <StatValue value={`~${stats.totalPlannedKm.toFixed(1)}`} unit="km" />
                       ) : (
                         <StatValue value="—" />
                       )
@@ -245,12 +324,62 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                       </div>
                     )}
                   </div>
-                  <div className="space-y-2">
+
+                  {/* Sessions */}
+                  <div className="space-y-1">
                     <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
                       {t('coach:weekSummary.plannedSessions')}
                     </p>
                     <StatValue value={stats.totalSessions} />
                   </div>
+
+                  {/* Week Load */}
+                  <div className="space-y-1">
+                    <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
+                      {t('coach:weekSummary.loadType')}
+                    </p>
+                    {readonly ? (
+                      weekPlan.loadType ? (
+                        <span
+                          className={cn(
+                            'inline-flex h-7 items-center rounded-md px-2.5 text-[10px] font-bold tracking-wider uppercase',
+                            loadTypeConfig[weekPlan.loadType].bgColor,
+                            loadTypeConfig[weekPlan.loadType].color,
+                          )}
+                        >
+                          {t(`common:loadType.${weekPlan.loadType}`)}
+                        </span>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">—</p>
+                      )
+                    ) : (
+                      <div className="flex flex-wrap gap-1.5">
+                        {LOAD_TYPES.map((lt) => {
+                          const config = loadTypeConfig[lt];
+                          const isSelected = weekPlan.loadType === lt;
+                          return (
+                            <Button
+                              key={lt}
+                              variant={isSelected ? 'default' : 'outline'}
+                              size="sm"
+                              className={cn(
+                                'h-7 rounded-md px-2.5 text-[10px] font-bold tracking-wider uppercase transition-all',
+                                isSelected
+                                  ? `${config.bgColor} ${config.color} border-0 shadow-sm hover:opacity-90`
+                                  : 'text-muted-foreground/70 hover:text-foreground',
+                              )}
+                              onClick={() => onUpdate?.({ loadType: isSelected ? null : lt })}
+                            >
+                              {t(`common:loadType.${lt}`)}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Empty slot — aligns with Completion on the right */}
+                  <div />
                 </div>
 
                 {/* Coach Notes */}
@@ -286,19 +415,70 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                   {t('coach:weekSummary.performance')}
                 </p>
 
+                {/* Competition result block — only on competition weeks */}
+                {competitionGoal && (
+                  <>
+                    <div className="rounded-lg border border-amber-200/60 bg-amber-50/50 px-4 py-3 dark:border-amber-800/40 dark:bg-amber-950/20">
+                      <div className="mb-2.5 flex items-center gap-1.5">
+                        <Trophy className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+                        <span className="text-[10px] font-bold tracking-widest text-amber-700 uppercase dark:text-amber-300">
+                          {t('training:competition.result' as never)}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                            {t('coach:weekSummary.totalDistance')}
+                          </p>
+                          {competitionSession?.actualDistanceKm != null ? (
+                            <StatValue value={competitionSession.actualDistanceKm.toFixed(1)} unit="km" />
+                          ) : (
+                            <StatValue value="—" />
+                          )}
+                        </div>
+                        <div className="space-y-0.5">
+                          <p className="text-[10px] font-semibold tracking-wide text-muted-foreground/70 uppercase">
+                            {t('coach:weekSummary.totalTime')}
+                          </p>
+                          {competitionSession?.actualDurationMinutes != null ? (
+                            (() => {
+                              const d = formatDuration(competitionSession.actualDurationMinutes);
+                              return <StatValue value={d.value} unit={d.unit} />;
+                            })()
+                          ) : (
+                            <StatValue value="—" />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="h-px bg-border/40" />
+                  </>
+                )}
+
                 {/* Stat grid */}
                 <div className="grid grid-cols-2 gap-x-6 gap-y-5">
                   <div className="space-y-1">
                     <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
-                      {t('coach:weekSummary.ranKm')}
+                      {t('coach:weekSummary.totalDistance')}
                     </p>
-                    <StatValue value={stats.totalActualRunKm.toFixed(1)} unit="km" />
+                    {stats.totalActualDistanceKm > 0 ? (
+                      <StatValue value={stats.totalActualDistanceKm.toFixed(1)} unit="km" />
+                    ) : (
+                      <StatValue value="—" />
+                    )}
                   </div>
                   <div className="space-y-1">
                     <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
                       {t('coach:weekSummary.completedSessions')}
                     </p>
-                    <StatValue value={stats.completedSessions} />
+                    <div className="flex items-baseline gap-0.5">
+                      <span className="text-xl font-bold tracking-tight">{stats.completedSessions}</span>
+                      {stats.totalSessions > 0 && (
+                        <span className="text-sm font-medium text-muted-foreground/60">
+                          {' '}/ {stats.totalSessions}
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <div className="space-y-1">
                     <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
@@ -320,15 +500,6 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                 {/* Progress bar */}
                 {stats.totalSessions > 0 && (
                   <div className="pt-2">
-                    <div className="mb-2 flex items-end justify-between">
-                      <span className="text-[10px] font-bold tracking-widest text-muted-foreground/60 uppercase">
-                        {stats.completedSessions} / {stats.totalSessions}{' '}
-                        {t('coach:weekSummary.completedSessions')}
-                      </span>
-                      <span className="text-xs font-black tracking-tight text-foreground/80">
-                        {Math.round(stats.completionPercentage)}%
-                      </span>
-                    </div>
                     <div className="h-1.5 overflow-hidden rounded-full border border-border/10 bg-muted shadow-inner">
                       <div
                         className={cn(
@@ -340,6 +511,8 @@ export function WeekSummary({ weekPlan, stats, readonly = false, onUpdate }: Wee
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
               </div>
             </div>
           </CardContent>

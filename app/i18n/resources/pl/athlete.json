@@ -26,5 +26,34 @@
       "pace": "Tempo",
       "duration": "Czas"
     }
+  },
+  "analytics": {
+    "title": "Moje Wyniki",
+    "period": {
+      "year": "Rok",
+      "quarter": "Kwartał",
+      "month": "Miesiąc",
+      "goal": "Okres Celu",
+      "selectGoal": "Wybierz cel…"
+    },
+    "filter": {
+      "allSports": "Wszystkie Sporty"
+    },
+    "chart": {
+      "distance": "Dystans (km)",
+      "sessions": "Treningi"
+    },
+    "empty": "Brak danych treningowych w tym okresie.",
+    "totals": {
+      "distance": "Dystans",
+      "sessions": "Treningi",
+      "time": "Czas",
+      "completion": "Ukończenie"
+    },
+    "milestone": {
+      "achieved": "Osiągnięto",
+      "missed": "Nie Osiągnięto",
+      "pending": "Oczekuje"
+    }
   }
 }

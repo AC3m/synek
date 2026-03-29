@@ -26,5 +26,34 @@
       "pace": "Pace",
       "duration": "Duration"
     }
+  },
+  "analytics": {
+    "title": "My Performance",
+    "period": {
+      "year": "Year",
+      "quarter": "Quarter",
+      "month": "Month",
+      "goal": "Goal Period",
+      "selectGoal": "Select a goal…"
+    },
+    "filter": {
+      "allSports": "All Sports"
+    },
+    "chart": {
+      "distance": "Distance (km)",
+      "sessions": "Sessions"
+    },
+    "empty": "No training data for this period.",
+    "totals": {
+      "distance": "Distance",
+      "sessions": "Sessions",
+      "time": "Time",
+      "completion": "Completion"
+    },
+    "milestone": {
+      "achieved": "Achieved",
+      "missed": "Missed",
+      "pending": "Pending"
+    }
   }
 }

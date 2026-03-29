@@ -5,17 +5,60 @@
     "plan": "Plan",
     "performance": "Realizacja",
     "loadType": "Obciążenie Tygodnia",
-    "plannedKm": "Planowane KM",
-    "plannedSessions": "Planowane Treningi",
-    "actualRunKm": "Zrealizowane KM",
-    "ranKm": "Przebiegnięte KM",
-    "completedSessions": "Ukończone Treningi",
-    "totalTime": "Łączny Czas",
-    "progress": "Postęp",
+    "plannedKm": "Dystans",
+    "plannedSessions": "Treningi",
+    "totalDistance": "Dystans",
+    "completedSessions": "Treningi",
+    "totalTime": "Czas",
+    "progress": "Ukończenie",
     "coachComments": "Notatki Trenera",
     "coachCommentsPlaceholder": "Dodaj notatki dla zawodnika...",
     "fromSessions": "z treningów",
-    "manuallySet": "ustawiono ręcznie"
+    "manuallySet": "ustawiono ręcznie",
+    "viewCumulative": "Łącznie",
+    "viewBySport": "Wg Sportu",
+    "training": "Treningi",
+    "competitions": "Zawody",
+    "noBreakdown": "Brak treningów w tym tygodniu.",
+    "colPlanned": "Plan",
+    "colPerformance": "Realizacja",
+    "sessionCount_one": "{{count}} trening",
+    "sessionCount_few": "{{count}} treningi",
+    "sessionCount_many": "{{count}} treningów",
+    "sessionCount_other": "{{count}} treningów",
+    "dayCount_one": "{{count}} dzień",
+    "dayCount_few": "{{count}} dni",
+    "dayCount_many": "{{count}} dni",
+    "dayCount_other": "{{count}} dni"
+  },
+  "analytics": {
+    "title": "Analityka Wydajności",
+    "period": {
+      "year": "Rok",
+      "quarter": "Kwartał",
+      "month": "Miesiąc",
+      "goal": "Okres Celu",
+      "selectGoal": "Wybierz cel…"
+    },
+    "filter": {
+      "allSports": "Wszystkie Sporty"
+    },
+    "chart": {
+      "distance": "Dystans (km)",
+      "sessions": "Treningi"
+    },
+    "empty": "Brak danych treningowych w tym okresie.",
+    "totals": {
+      "distance": "Dystans",
+      "sessions": "Treningi",
+      "time": "Czas",
+      "completion": "Ukończenie"
+    },
+    "milestone": {
+      "achieved": "Osiągnięto",
+      "missed": "Nie Osiągnięto",
+      "pending": "Oczekuje"
+    }
   },
   "session": {
     "add": "Dodaj Trening",

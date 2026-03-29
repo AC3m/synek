@@ -1,15 +1,18 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WeekNavigation } from '~/components/calendar/WeekNavigation';
 import { MultiWeekView } from '~/components/calendar/MultiWeekView';
 import { WeekSummary } from '~/components/calendar/WeekSummary';
+import { GoalPrepBanner } from '~/components/calendar/GoalPrepBanner';
 import { AppLoader } from '~/components/ui/app-loader';
 import { StaggerIn } from '~/components/ui/stagger-in';
 import { SessionForm } from '~/components/training/SessionForm';
 import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmationDialog';
 import { useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
+import { useGoals } from '~/lib/hooks/useGoals';
 import { useAuth } from '~/lib/context/AuthContext';
 import { getTodayDayOfWeek } from '~/lib/utils/date';
+import { isCompetitionWeek } from '~/lib/utils/goals';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
 import type { WeekPlan, SessionsByDay } from '~/types/training';
@@ -20,6 +23,8 @@ export default function CoachWeekView() {
   const updateWeek = useUpdateWeekPlan();
 
   const weekView = useWeekView({ canAutoCreate: true });
+  const athleteId = effectiveAthleteId ?? user?.id ?? '';
+  const { data: goals = [] } = useGoals(athleteId);
 
   const handleWeekUpdate = useCallback(
     (
@@ -71,6 +76,27 @@ export default function CoachWeekView() {
   const selectedDay = getTodayDayOfWeek();
   const isViewingSelf = !effectiveAthleteId || effectiveAthleteId === user?.id;
 
+  const competitionGoal = useMemo(
+    () => (weekStart ? (goals.find((g) => isCompetitionWeek(weekStart, g)) ?? null) : null),
+    [goals, weekStart],
+  );
+  const competitionSession = useMemo(
+    () => (competitionGoal ? (sessions.find((s) => s.goalId === competitionGoal.id) ?? null) : null),
+    [competitionGoal, sessions],
+  );
+
+  const enrichedStats = useMemo(() => {
+    if (!stats.competitionSessions.length || !goals.length) return stats;
+    return {
+      ...stats,
+      competitionSessions: stats.competitionSessions.map((cs) => {
+        const goal = goals.find((g) => g.id === cs.goalId);
+        if (!goal) return cs;
+        return { ...cs, goalName: goal.name, goalDistanceKm: goal.goalDistanceKm };
+      }),
+    };
+  }, [stats, goals]);
+
   return (
     <>
       {showSkeleton && <AppLoader />}
@@ -92,12 +118,23 @@ export default function CoachWeekView() {
               </div>
             </StaggerIn>
 
+            {/* Goal preparation banners */}
+            {goals.length > 0 && weekStart && (
+              <GoalPrepBanner goals={goals} weekStart={weekStart} />
+            )}
+
             {/* Week Summary */}
             <StaggerIn delay={60}>
               <div
                 className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
               >
-                <WeekSummary weekPlan={weekPlan} stats={stats} onUpdate={handleWeekUpdate} />
+                <WeekSummary
+                  weekPlan={weekPlan}
+                  stats={enrichedStats}
+                  onUpdate={handleWeekUpdate}
+                  competitionGoal={competitionGoal}
+                  competitionSession={competitionSession}
+                />
               </div>
             </StaggerIn>
 

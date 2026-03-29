@@ -298,3 +298,10 @@ getWeekDateRange(monday) // → "Mar 2 – Mar 8, 2026"
 - Week IDs are ISO 8601 format: `YYYY-WWW`
 - `weekStart` fields are always Monday's date in `YYYY-MM-DD`
 - Use `date-fns` functions for all other date operations
+
+## Active Technologies
+- TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), i18next, date-fns 4, Zod 4 (014-goals-analytics)
+- Supabase (PostgreSQL) with RLS; existing `week_plans` + `training_sessions` tables (014-goals-analytics)
+
+## Recent Changes
+- 014-goals-analytics: Added TypeScript 5 (strict) + React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), i18next, date-fns 4, Zod 4

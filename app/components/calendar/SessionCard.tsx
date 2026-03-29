@@ -12,7 +12,7 @@ import { StravaSyncButton } from '~/components/training/StravaSyncButton';
 import { StravaConfirmButton } from '~/components/training/StravaConfirmButton';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useSessionActions } from '~/lib/context/SessionActionsContext';
-import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
+import { trainingTypeConfig, competitionConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { cn } from '~/lib/utils';
 import { type TrainingSession, type RunData } from '~/types/training';
@@ -66,8 +66,11 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
     setDetailOpen(true);
   };
 
+  const isCompetition = !!session.goalId;
   const config = trainingTypeConfig[session.trainingType];
-  const Icon = iconMap[config.icon] ?? iconMap['Footprints'];
+  const Icon = isCompetition
+    ? (iconMap[competitionConfig.icon] ?? iconMap['Trophy'])
+    : (iconMap[config.icon] ?? iconMap['Footprints']);
   const isRestDay = session.trainingType === 'rest_day';
   const distanceBased = isDistanceBased(session.trainingType);
 
@@ -109,6 +112,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
       className={cn(
         'group cursor-pointer rounded-xl p-3 ring-1 ring-[color:var(--border)] transition-all',
         session.isCompleted ? 'bg-surface-2 opacity-70' : 'bg-surface-1',
+        isCompetition && cn('border-2', competitionConfig.borderColor),
       )}
       onClick={handleCardClick}
     >
@@ -125,16 +129,18 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
               <GripVertical className="h-3.5 w-3.5" />
             </button>
           )}
-          {/* Sport badge pill — sport color only here */}
+          {/* Sport badge pill — competition uses amber, others use sport color */}
           <span
             className={cn(
               'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium',
-              config.bgColor,
-              config.color,
+              isCompetition ? competitionConfig.bgColor : config.bgColor,
+              isCompetition ? competitionConfig.color : config.color,
             )}
           >
             <Icon className="h-2.5 w-2.5" />
-            {t(`common:trainingTypes.${session.trainingType}` as never)}
+            {isCompetition
+              ? t('training:competition.label')
+              : t(`common:trainingTypes.${session.trainingType}` as never)}
           </span>
         </div>
         <div className="flex items-center gap-0.5">

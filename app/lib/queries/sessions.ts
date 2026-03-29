@@ -46,6 +46,10 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
+    goalId: (row.goal_id as string | null) ?? null,
+    resultDistanceKm: row.result_distance_km != null ? Number(row.result_distance_km) : null,
+    resultTimeSeconds: row.result_time_seconds != null ? (row.result_time_seconds as number) : null,
+    resultPace: (row.result_pace as string | null) ?? null,
     isStravaConfirmed: Boolean(row.is_strava_confirmed ?? false),
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
@@ -70,6 +74,18 @@ export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<voi
   });
 
   if (error) throw error;
+}
+
+export async function fetchSessionByGoalId(goalId: string): Promise<TrainingSession | null> {
+  if (isMockMode) return null;
+  const { data, error } = await supabase
+    .from('training_sessions')
+    .select('id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, created_at, updated_at')
+    .eq('goal_id', goalId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data ? toSession(data as Record<string, unknown>) : null;
 }
 
 export async function fetchSessionsByWeekPlan(weekPlanId: string): Promise<TrainingSession[]> {
@@ -108,6 +124,7 @@ export async function createSession(input: CreateSessionInput): Promise<Training
       is_completed: input.isCompleted ?? false,
       completed_at: input.completedAt ?? null,
       trainee_notes: input.athleteNotes ?? null,
+      goal_id: input.goalId ?? null,
     })
     .select()
     .single();

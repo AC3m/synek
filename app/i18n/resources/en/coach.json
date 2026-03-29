@@ -5,17 +5,56 @@
     "plan": "Plan",
     "performance": "Performance",
     "loadType": "Week Load",
-    "plannedKm": "Planned KM",
-    "plannedSessions": "Planned Sessions",
-    "actualRunKm": "Run KM",
-    "ranKm": "Ran KM",
-    "completedSessions": "Completed Sessions",
-    "totalTime": "Total Time",
-    "progress": "Progress",
+    "plannedKm": "Distance",
+    "plannedSessions": "Sessions",
+    "totalDistance": "Distance",
+    "completedSessions": "Sessions",
+    "totalTime": "Time",
+    "progress": "Completion",
     "coachComments": "Coach Notes",
     "coachCommentsPlaceholder": "Add notes for the athlete...",
     "fromSessions": "from sessions",
-    "manuallySet": "manually set"
+    "manuallySet": "manually set",
+    "viewCumulative": "Cumulative",
+    "viewBySport": "By Sport",
+    "training": "Training",
+    "competitions": "Competitions",
+    "noBreakdown": "No sessions this week.",
+    "colPlanned": "Planned",
+    "colPerformance": "Performance",
+    "sessionCount_one": "{{count}} session",
+    "sessionCount_other": "{{count}} sessions",
+    "dayCount_one": "{{count}} day",
+    "dayCount_other": "{{count}} days"
+  },
+  "analytics": {
+    "title": "Performance Analytics",
+    "period": {
+      "year": "Year",
+      "quarter": "Quarter",
+      "month": "Month",
+      "goal": "Goal Period",
+      "selectGoal": "Select a goal…"
+    },
+    "filter": {
+      "allSports": "All Sports"
+    },
+    "chart": {
+      "distance": "Distance (km)",
+      "sessions": "Sessions"
+    },
+    "empty": "No training data for this period.",
+    "totals": {
+      "distance": "Distance",
+      "sessions": "Sessions",
+      "time": "Time",
+      "completion": "Completion"
+    },
+    "milestone": {
+      "achieved": "Achieved",
+      "missed": "Missed",
+      "pending": "Pending"
+    }
   },
   "session": {
     "add": "Add Session",

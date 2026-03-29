@@ -13,6 +13,7 @@ import {
   copyWeekSessions,
   copyDaySessions,
 } from '~/lib/queries/sessions';
+import { updateGoal } from '~/lib/queries/goals';
 import { buildCopySessionInput } from '~/lib/utils/session-copy';
 import type {
   CreateSessionInput,
@@ -103,8 +104,25 @@ export function useUpdateSession() {
       });
       return { ...result, weekPlanId };
     },
-    onSuccess: () => {
+    onSuccess: async (data, variables) => {
       toast.success(t('toast.sessionUpdated'));
+
+      // Keep linked goal in sync when a competition session's key fields change
+      if (data.goalId) {
+        const patch: Parameters<typeof updateGoal>[0] = { id: data.goalId };
+        if (variables.description != null && variables.description !== '') patch.name = variables.description;
+        if (variables.plannedDurationMinutes !== undefined)
+          patch.goalTimeSeconds = variables.plannedDurationMinutes != null
+            ? variables.plannedDurationMinutes * 60
+            : null;
+        if (variables.plannedDistanceKm !== undefined)
+          patch.goalDistanceKm = variables.plannedDistanceKm ?? null;
+
+        if (Object.keys(patch).length > 1) {
+          await updateGoal(patch).catch(() => {});
+          qc.invalidateQueries({ queryKey: queryKeys.goals.all });
+        }
+      }
     },
     onError: (_err, _input, context) => {
       context?.rollbacks?.forEach(({ key, data }) => {

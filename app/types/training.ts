@@ -284,6 +284,10 @@ export interface TrainingSession {
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
   isStravaConfirmed?: boolean;
+  goalId?: string | null;
+  resultDistanceKm?: number | null;
+  resultTimeSeconds?: number | null;
+  resultPace?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -301,7 +305,9 @@ export interface WeekStats {
   totalCompletedKm: number;
   completionPercentage: number;
   totalActualDurationMinutes: number;
-  totalActualRunKm: number;
+  totalActualDistanceKm: number;
+  byType: Partial<Record<TrainingType, SportBreakdownEntry>>;
+  competitionSessions: CompetitionSummary[];
 }
 
 export interface WeekViewData {
@@ -354,6 +360,7 @@ export interface CreateSessionInput {
   isCompleted?: boolean;
   completedAt?: string;
   athleteNotes?: string;
+  goalId?: string;
 }
 
 export interface UpdateSessionInput {
@@ -413,4 +420,120 @@ export interface HistoryWeek {
   weekId: string;
   weekPlan: WeekPlan | null;
   sessions: TrainingSession[];
+}
+
+// ============================================================
+// Goals & competition types
+// ============================================================
+
+export interface Goal {
+  id: string;
+  athleteId: string;
+  createdBy: string;
+  name: string;
+  discipline: TrainingType;
+  competitionDate: string; // ISO date YYYY-MM-DD
+  preparationWeeks: number;
+  goalDistanceKm: number | null;
+  goalTimeSeconds: number | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateGoalInput {
+  athleteId: string;
+  name: string;
+  discipline: TrainingType;
+  competitionDate: string;
+  preparationWeeks: number;
+  goalDistanceKm?: number;
+  goalTimeSeconds?: number;
+  notes?: string;
+}
+
+export interface UpdateGoalInput {
+  id: string;
+  name?: string;
+  discipline?: TrainingType;
+  competitionDate?: string;
+  preparationWeeks?: number;
+  goalDistanceKm?: number | null;
+  goalTimeSeconds?: number | null;
+  notes?: string | null;
+}
+
+// ============================================================
+// Analytics types
+// ============================================================
+
+export type AnalyticsPeriod = 'year' | 'quarter' | 'month' | 'goal';
+
+export interface AnalyticsParams {
+  athleteId: string;
+  period: AnalyticsPeriod;
+  goalId?: string;
+  trainingType?: TrainingType;
+}
+
+export interface AnalyticsBucket {
+  label: string;
+  startDate: string;
+  endDate: string;
+  totalSessions: number;
+  completedSessions: number;
+  totalDistanceKm: number;
+  totalDurationMinutes: number;
+  completionRate: number;
+}
+
+export type AchievementStatus = 'achieved' | 'missed' | 'pending';
+
+export interface CompetitionMilestone {
+  goalId: string;
+  goalName: string;
+  discipline: TrainingType;
+  competitionDate: string;
+  goalDistanceKm: number | null;
+  goalTimeSeconds: number | null;
+  resultDistanceKm: number | null;
+  resultTimeSeconds: number | null;
+  achievementStatus: AchievementStatus;
+}
+
+export interface AnalyticsResponse {
+  buckets: AnalyticsBucket[];
+  competitions: CompetitionMilestone[];
+  totals: {
+    totalSessions: number;
+    completedSessions: number;
+    totalDistanceKm: number;
+    totalDurationMinutes: number;
+    overallCompletionRate: number;
+  };
+}
+
+// ============================================================
+// Week sport breakdown types
+// ============================================================
+
+export interface SportBreakdownEntry {
+  sessionCount: number;
+  completedSessionCount: number;
+  plannedDistanceKm: number;
+  actualDistanceKm: number;
+  totalDurationMinutes: number;
+}
+
+export interface CompetitionSummary {
+  sessionId: string;
+  goalId: string;
+  goalName: string;
+  discipline: TrainingType;
+  goalDistanceKm: number | null;
+  resultDistanceKm: number | null;
+  resultTimeSeconds: number | null;
+  actualDistanceKm: number | null;
+  actualDurationMinutes: number | null;
+  achievementStatus: AchievementStatus;
 }
