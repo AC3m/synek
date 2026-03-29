@@ -218,6 +218,7 @@ BEGIN
     WHERE wp.athlete_id = p_athlete_id
       AND wp.week_start BETWEEN v_start_date AND v_end_date
       AND ts.goal_id IS NULL  -- exclude competition sessions
+      AND ts.training_type != 'rest_day'  -- exclude rest days from training stats
       AND (p_training_type IS NULL OR ts.training_type = p_training_type)
   )
   SELECT jsonb_agg(
@@ -284,6 +285,7 @@ BEGIN
   WHERE wp.athlete_id = p_athlete_id
     AND wp.week_start BETWEEN v_start_date AND v_end_date
     AND ts.goal_id IS NULL
+    AND ts.training_type != 'rest_day'  -- exclude rest days from training stats
     AND (p_training_type IS NULL OR ts.training_type = p_training_type);
 
   RETURN jsonb_build_object(
