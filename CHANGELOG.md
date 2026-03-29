@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.0](https://github.com/AC3m/synek/compare/v0.5.1...v0.6.0) (2026-03-29)
+
+### Features
+
+* add per-set reps for strength variant exercises ([d034a59](https://github.com/AC3m/synek/commit/d034a59f9b9f5d5b3c05fa730ac05f194726f06a))
+
 ## [0.5.1](https://github.com/AC3m/synek/compare/v0.5.0...v0.5.1) (2026-03-29)
 
 ### Bug Fixes
