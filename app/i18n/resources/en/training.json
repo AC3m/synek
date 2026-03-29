@@ -45,6 +45,11 @@
       "removeRange": "Remove range",
       "perSet": "Per set",
       "perSetRemove": "Uniform",
+      "repsMode": {
+        "exact": "Exact",
+        "range": "Range",
+        "perSet": "Per set"
+      },
       "setLabel": "S{{n}}",
       "loadUnit": "Load unit"
     },

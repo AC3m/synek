@@ -1,5 +1,5 @@
 import { Fragment, memo, useRef, useState, useCallback } from 'react';
-import { Plus, Trash2, ChevronUp, ChevronDown, ExternalLink, Link2 } from 'lucide-react';
+import { Plus, Trash2, ChevronUp, ChevronDown, ExternalLink, Link2, Minus, ArrowLeftRight, List } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
@@ -131,31 +131,50 @@ const ExerciseRow = memo(function ExerciseRow({
 }: ExerciseRowProps) {
   const { t } = useTranslation('training');
   const [showVideo, setShowVideo] = useState(!!exercise.videoUrl);
-  const [showRange, setShowRange] = useState(exercise.repsMin !== exercise.repsMax);
-  const [perSetMode, setPerSetMode] = useState(!!exercise.perSetReps);
+
+  type RepsMode = 'exact' | 'range' | 'perSet';
+  const [repsMode, setRepsMode] = useState<RepsMode>(() => {
+    if (exercise.perSetReps) return 'perSet';
+    if (exercise.repsMin !== exercise.repsMax) return 'range';
+    return 'exact';
+  });
 
   const setsPreset = [1, 2, 3, 4, 5, 6];
   const isCustomSets = !setsPreset.includes(exercise.sets);
   const videoIsValid = !exercise.videoUrl || VIDEO_URL_REGEX.test(exercise.videoUrl);
   const color = supersetGroupId !== null ? getSupersetColor(supersetGroupId) : null;
+  const perSetHasRange = exercise.perSetReps?.some((r) => r.repsMin !== r.repsMax) ?? false;
 
-  function enablePerSet() {
-    const arr = Array.from({ length: exercise.sets }, () => ({
-      repsMin: exercise.repsMin,
-      repsMax: exercise.repsMax,
-    }));
-    onChange(index, { perSetReps: arr });
-    setPerSetMode(true);
-  }
+  function handleRepsMode(mode: RepsMode) {
+    if (mode === repsMode) return;
+    const prev = repsMode;
+    setRepsMode(mode);
 
-  function disablePerSet() {
-    const first = exercise.perSetReps?.[0];
-    onChange(index, {
-      repsMin: first?.repsMin ?? exercise.repsMin,
-      repsMax: first?.repsMax ?? exercise.repsMax,
-      perSetReps: null,
-    });
-    setPerSetMode(false);
+    if (mode === 'exact') {
+      if (prev === 'perSet') {
+        const first = exercise.perSetReps?.[0];
+        const val = first?.repsMin ?? exercise.repsMin;
+        onChange(index, { repsMin: val, repsMax: val, perSetReps: null });
+      } else {
+        onChange(index, { repsMax: exercise.repsMin });
+      }
+    } else if (mode === 'range') {
+      if (prev === 'perSet') {
+        const first = exercise.perSetReps?.[0];
+        onChange(index, {
+          repsMin: first?.repsMin ?? exercise.repsMin,
+          repsMax: first?.repsMax ?? exercise.repsMax,
+          perSetReps: null,
+        });
+      }
+    } else {
+      const useRange = prev === 'range';
+      const arr = Array.from({ length: exercise.sets }, () => ({
+        repsMin: exercise.repsMin,
+        repsMax: useRange ? exercise.repsMax : exercise.repsMin,
+      }));
+      onChange(index, { perSetReps: arr });
+    }
   }
 
   function handlePerSetChange(setIdx: number, field: 'repsMin' | 'repsMax' | 'both', value: number) {
@@ -276,15 +295,41 @@ const ExerciseRow = memo(function ExerciseRow({
 
         {/* Reps */}
         <div>
-          <Label className="text-xs">{t('strength.exercise.reps')}</Label>
-          {perSetMode ? (
+          <div className="flex items-center justify-between">
+            <Label className="text-xs">{t('strength.exercise.reps')}</Label>
+            <div className="flex gap-0.5" role="group" aria-label={t('strength.exercise.reps')}>
+              {([
+                { mode: 'exact', Icon: Minus, label: t('strength.exercise.repsMode.exact') },
+                { mode: 'range', Icon: ArrowLeftRight, label: t('strength.exercise.repsMode.range') },
+                { mode: 'perSet', Icon: List, label: t('strength.exercise.repsMode.perSet') },
+              ] as const).map(({ mode, Icon, label }) => (
+                <button
+                  key={mode}
+                  type="button"
+                  onClick={() => handleRepsMode(mode)}
+                  aria-label={label}
+                  aria-pressed={repsMode === mode}
+                  className={cn(
+                    'flex h-6 w-6 items-center justify-center rounded transition-colors',
+                    repsMode === mode
+                      ? 'bg-orange-600 text-white'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                  )}
+                >
+                  <Icon className="h-3 w-3" />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {repsMode === 'perSet' ? (
             <div className="mt-1 space-y-1">
               {(exercise.perSetReps ?? []).map((rep, setIdx) => (
                 <div key={setIdx} className="flex items-center gap-1">
                   <span className="w-7 text-xs text-muted-foreground">
                     {t('strength.exercise.setLabel', { n: setIdx + 1 })}
                   </span>
-                  {showRange ? (
+                  {perSetHasRange ? (
                     <>
                       <Input
                         type="number"
@@ -327,62 +372,9 @@ const ExerciseRow = memo(function ExerciseRow({
                   )}
                 </div>
               ))}
-              <button
-                type="button"
-                onClick={disablePerSet}
-                className="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline"
-              >
-                {t('strength.exercise.perSetRemove')} ×
-              </button>
             </div>
-          ) : showRange ? (
-            <div>
-              <div className="mt-1 flex items-center gap-1">
-                <Input
-                  type="number"
-                  min={1}
-                  max={100}
-                  value={exercise.repsMin}
-                  onChange={(e) => {
-                    const val = parseInt(e.target.value) || 1;
-                    onChange(index, { repsMin: val, repsMax: Math.max(val, exercise.repsMax) });
-                  }}
-                  className="h-9 w-16"
-                  aria-label={t('strength.exercise.repsMin')}
-                />
-                <span className="text-muted-foreground">–</span>
-                <Input
-                  type="number"
-                  min={exercise.repsMin}
-                  max={100}
-                  value={exercise.repsMax}
-                  onChange={(e) =>
-                    onChange(index, { repsMax: parseInt(e.target.value) || exercise.repsMin })
-                  }
-                  className="h-9 w-16"
-                  aria-label={t('strength.exercise.repsMax')}
-                />
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  onChange(index, { repsMax: exercise.repsMin });
-                  setShowRange(false);
-                }}
-                className="mt-1 text-xs text-muted-foreground underline-offset-2 hover:underline"
-              >
-                {t('strength.exercise.removeRange')} ×
-              </button>
-              <button
-                type="button"
-                onClick={enablePerSet}
-                className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
-              >
-                {t('strength.exercise.perSet')} →
-              </button>
-            </div>
-          ) : (
-            <div>
+          ) : repsMode === 'range' ? (
+            <div className="mt-1 flex items-center gap-1">
               <Input
                 type="number"
                 min={1}
@@ -390,26 +382,37 @@ const ExerciseRow = memo(function ExerciseRow({
                 value={exercise.repsMin}
                 onChange={(e) => {
                   const val = parseInt(e.target.value) || 1;
-                  onChange(index, { repsMin: val, repsMax: val });
+                  onChange(index, { repsMin: val, repsMax: Math.max(val, exercise.repsMax) });
                 }}
-                className="mt-1 h-9 w-16"
-                aria-label={t('strength.exercise.reps')}
+                className="h-9 w-16"
+                aria-label={t('strength.exercise.repsMin')}
               />
-              <button
-                type="button"
-                onClick={() => setShowRange(true)}
-                className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
-              >
-                {t('strength.exercise.addRange')} →
-              </button>
-              <button
-                type="button"
-                onClick={enablePerSet}
-                className="mt-1 block text-xs text-muted-foreground underline-offset-2 hover:underline"
-              >
-                {t('strength.exercise.perSet')} →
-              </button>
+              <span className="text-muted-foreground">–</span>
+              <Input
+                type="number"
+                min={exercise.repsMin}
+                max={100}
+                value={exercise.repsMax}
+                onChange={(e) =>
+                  onChange(index, { repsMax: parseInt(e.target.value) || exercise.repsMin })
+                }
+                className="h-9 w-16"
+                aria-label={t('strength.exercise.repsMax')}
+              />
             </div>
+          ) : (
+            <Input
+              type="number"
+              min={1}
+              max={100}
+              value={exercise.repsMin}
+              onChange={(e) => {
+                const val = parseInt(e.target.value) || 1;
+                onChange(index, { repsMin: val, repsMax: val });
+              }}
+              className="mt-1 h-9 w-16"
+              aria-label={t('strength.exercise.reps')}
+            />
           )}
         </div>
       </div>
