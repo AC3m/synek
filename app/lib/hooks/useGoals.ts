@@ -48,8 +48,9 @@ export function useCreateGoal() {
             : undefined,
           goalId: goal.id,
         });
-      } catch {
+      } catch (err) {
         // Session creation is best-effort; the goal itself is saved.
+        console.warn('[useCreateGoal] Failed to auto-create competition session:', err);
       }
     },
     onMutate: async (input) => {
@@ -75,9 +76,8 @@ export function useCreateGoal() {
 
       qc.setQueryData<Goal[]>(key, (prev = []) =>
         [...prev, optimistic].sort(
-          (a, b) =>
-            new Date(a.competitionDate).getTime() - new Date(b.competitionDate).getTime()
-        )
+          (a, b) => new Date(a.competitionDate).getTime() - new Date(b.competitionDate).getTime(),
+        ),
       );
 
       return { snapshot, athleteId: input.athleteId };
@@ -117,9 +117,8 @@ export function useUpdateGoal() {
           const patch: Parameters<typeof updateSession>[0] = { id: linked.id };
           if (variables.name !== undefined) patch.description = variables.name;
           if (variables.goalTimeSeconds !== undefined)
-            patch.plannedDurationMinutes = variables.goalTimeSeconds != null
-              ? Math.round(variables.goalTimeSeconds / 60)
-              : null;
+            patch.plannedDurationMinutes =
+              variables.goalTimeSeconds != null ? Math.round(variables.goalTimeSeconds / 60) : null;
           if (variables.goalDistanceKm !== undefined)
             patch.plannedDistanceKm = variables.goalDistanceKm ?? null;
 
@@ -156,8 +155,8 @@ export function useUpdateGoal() {
                 ...(input.notes !== undefined && { notes: input.notes }),
                 updatedAt: new Date().toISOString(),
               }
-            : g
-        )
+            : g,
+        ),
       );
 
       return { snapshot, athleteId: input.athleteId };

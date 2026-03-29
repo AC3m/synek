@@ -19,7 +19,7 @@ import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useGoals } from '~/lib/hooks/useGoals';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
-import { weekIdToMonday, parseWeekId, getTodayDayOfWeek } from '~/lib/utils/date';
+import { weekIdToMonday, getTodayDayOfWeek } from '~/lib/utils/date';
 import { isCompetitionWeek } from '~/lib/utils/goals';
 import { computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
 import { computeSportBreakdown } from '~/lib/utils/analytics';

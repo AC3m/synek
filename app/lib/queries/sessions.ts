@@ -1,5 +1,6 @@
 import { supabase, isMockMode } from '~/lib/supabase';
 import {
+  mockFetchSessionByGoalId,
   mockFetchSessionsByWeekPlan,
   mockCreateSession,
   mockUpdateSession,
@@ -77,10 +78,12 @@ export async function bulkConfirmStravaSessions(weekPlanId: string): Promise<voi
 }
 
 export async function fetchSessionByGoalId(goalId: string): Promise<TrainingSession | null> {
-  if (isMockMode) return null;
+  if (isMockMode) return mockFetchSessionByGoalId(goalId);
   const { data, error } = await supabase
     .from('training_sessions')
-    .select('id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, created_at, updated_at')
+    .select(
+      'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, is_strava_confirmed, created_at, updated_at',
+    )
     .eq('goal_id', goalId)
     .maybeSingle();
 

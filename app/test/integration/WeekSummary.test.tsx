@@ -28,8 +28,20 @@ const STATS_WITH_BREAKDOWN: WeekStats = {
   totalActualDistanceKm: 10,
   totalActualDurationMinutes: 90,
   byType: {
-    run: { sessionCount: 2, completedSessionCount: 1, plannedDistanceKm: 15, actualDistanceKm: 10, totalDurationMinutes: 60 },
-    cycling: { sessionCount: 1, completedSessionCount: 0, plannedDistanceKm: 5, actualDistanceKm: 0, totalDurationMinutes: 30 },
+    run: {
+      sessionCount: 2,
+      completedSessionCount: 1,
+      plannedDistanceKm: 15,
+      actualDistanceKm: 10,
+      totalDurationMinutes: 60,
+    },
+    cycling: {
+      sessionCount: 1,
+      completedSessionCount: 0,
+      plannedDistanceKm: 5,
+      actualDistanceKm: 0,
+      totalDurationMinutes: 30,
+    },
   },
   competitionSessions: [],
 };

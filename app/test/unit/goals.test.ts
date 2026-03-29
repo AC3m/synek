@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { computeGoalAchievement, getPrepWeekRange, isWeekInPrepWindow } from '~/lib/utils/goals';
+import {
+  computeGoalAchievement,
+  getPrepWeekRange,
+  isWeekInPrepWindow,
+  isCompetitionWeek,
+} from '~/lib/utils/goals';
 import type { Goal } from '~/types/training';
 
 // ---------------------------------------------------------------------------
@@ -28,37 +33,37 @@ const baseGoal: Goal = {
 describe('computeGoalAchievement', () => {
   it('(a) returns pending when session has no result', () => {
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: null })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: null }),
     ).toBe('pending');
   });
 
   it('(b) returns achieved when resultDistanceKm >= goalDistanceKm', () => {
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: 10, resultTimeSeconds: null })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: 10, resultTimeSeconds: null }),
     ).toBe('achieved');
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: 10.5, resultTimeSeconds: null })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: 10.5, resultTimeSeconds: null }),
     ).toBe('achieved');
   });
 
   it('(c) returns missed when resultDistanceKm < goalDistanceKm', () => {
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: 9.5, resultTimeSeconds: null })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: 9.5, resultTimeSeconds: null }),
     ).toBe('missed');
   });
 
   it('(d) returns achieved when resultTimeSeconds <= goalTimeSeconds', () => {
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 2880 })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 2880 }),
     ).toBe('achieved');
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 3000 })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 3000 }),
     ).toBe('achieved');
   });
 
   it('(e) returns missed when resultTimeSeconds > goalTimeSeconds', () => {
     expect(
-      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 3120 })
+      computeGoalAchievement(baseGoal, { resultDistanceKm: null, resultTimeSeconds: 3120 }),
     ).toBe('missed');
   });
 
@@ -69,7 +74,7 @@ describe('computeGoalAchievement', () => {
       goalTimeSeconds: null,
     };
     expect(
-      computeGoalAchievement(noTargetGoal, { resultDistanceKm: 10, resultTimeSeconds: 2880 })
+      computeGoalAchievement(noTargetGoal, { resultDistanceKm: 10, resultTimeSeconds: 2880 }),
     ).toBe('pending');
   });
 });
@@ -124,5 +129,27 @@ describe('getPrepWeekRange', () => {
     const range = getPrepWeekRange(noPrep);
     expect(range.start).toBe('2026-05-23');
     expect(range.end).toBe('2026-05-23');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// isCompetitionWeek
+// ---------------------------------------------------------------------------
+
+describe('isCompetitionWeek', () => {
+  // competitionDate: 2026-05-23 (Saturday) → competition week Monday: 2026-05-18
+
+  it('(m) returns true when weekStart matches the competition date Monday', () => {
+    expect(isCompetitionWeek('2026-05-18', baseGoal)).toBe(true);
+  });
+
+  it('(n) returns false for prep weeks before the competition week', () => {
+    expect(isCompetitionWeek('2026-05-11', baseGoal)).toBe(false);
+    expect(isCompetitionWeek('2026-04-27', baseGoal)).toBe(false);
+  });
+
+  it('(o) returns false for weeks after the competition', () => {
+    expect(isCompetitionWeek('2026-05-25', baseGoal)).toBe(false);
+    expect(isCompetitionWeek('2026-06-01', baseGoal)).toBe(false);
   });
 });

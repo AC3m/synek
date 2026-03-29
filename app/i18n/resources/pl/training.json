@@ -228,7 +228,14 @@
     "namePlaceholder": "np. Wiosenny 10K",
     "notesPlaceholder": "Dodaj kontekst lub motywację…",
     "noGoals": "Nie ustawiono jeszcze żadnych celów.",
-    "prepWeeksShort": "{{weeks}} tyg. przyg."
+    "prepWeeksShort": "{{weeks}} tyg. przyg.",
+    "validation": {
+      "required": "Wymagane",
+      "prepWeeksRange": "0–52"
+    },
+    "placeholder": {
+      "distance": "np. 10"
+    }
   },
   "competition": {
     "label": "Zawody",

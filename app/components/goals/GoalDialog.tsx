@@ -103,7 +103,7 @@ export function GoalDialog({
       setForm(DEFAULT_FORM_STATE);
     }
     setErrors({});
-  }, [open, goal?.id]);
+  }, [open, goal]);
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -112,10 +112,11 @@ export function GoalDialog({
 
   function validate(): boolean {
     const next: typeof errors = {};
-    if (!form.name.trim()) next.name = 'Required';
-    if (!form.competitionDate) next.competitionDate = 'Required';
+    if (!form.name.trim()) next.name = t('goal.validation.required');
+    if (!form.competitionDate) next.competitionDate = t('goal.validation.required');
     const weeks = parseInt(form.preparationWeeks, 10);
-    if (isNaN(weeks) || weeks < 0 || weeks > 52) next.preparationWeeks = '0–52';
+    if (isNaN(weeks) || weeks < 0 || weeks > 52)
+      next.preparationWeeks = t('goal.validation.prepWeeksRange');
     setErrors(next);
     return Object.keys(next).length === 0;
   }
@@ -181,7 +182,10 @@ export function GoalDialog({
         {/* Discipline */}
         <div className="flex flex-col gap-1.5">
           <Label>{t('goal.discipline')}</Label>
-          <Select value={form.discipline} onValueChange={(v) => set('discipline', v as TrainingType)}>
+          <Select
+            value={form.discipline}
+            onValueChange={(v) => set('discipline', v as TrainingType)}
+          >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
@@ -237,7 +241,7 @@ export function GoalDialog({
             step={0.1}
             value={form.goalDistanceKm}
             onChange={(e) => set('goalDistanceKm', e.target.value)}
-            placeholder="e.g. 10"
+            placeholder={t('goal.placeholder.distance')}
           />
         </div>
 

@@ -34,12 +34,11 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
   const totalPlannedKm = training.reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
   const totalCompletedKm = training
     .filter((s) => s.isCompleted)
-    .reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
+    .reduce((sum, s) => sum + (s.actualDistanceKm ?? s.plannedDistanceKm ?? 0), 0);
   const totalActualDurationMinutes = training
     .filter((s) => s.trainingType !== 'rest_day' && s.isCompleted)
     .reduce((sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0), 0);
-  const totalActualDistanceKm = training
-    .reduce((sum, s) => sum + (s.actualDistanceKm ?? 0), 0);
+  const totalActualDistanceKm = training.reduce((sum, s) => sum + (s.actualDistanceKm ?? 0), 0);
 
   return {
     totalSessions,

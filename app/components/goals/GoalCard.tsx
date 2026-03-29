@@ -6,7 +6,8 @@ import { Badge } from '~/components/ui/badge';
 import { trainingTypeConfig, competitionConfig } from '~/lib/utils/training-types';
 import type { Goal, AchievementStatus } from '~/types/training';
 import { cn } from '~/lib/utils';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, isPast as isDatePast } from 'date-fns';
+import { formatTime } from '~/lib/utils/format';
 
 interface GoalCardProps {
   goal: Goal;
@@ -17,15 +18,14 @@ interface GoalCardProps {
   className?: string;
 }
 
-function formatTime(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  return `${m}:${String(s).padStart(2, '0')}`;
-}
-
-export function GoalCard({ goal, canEdit, achievementStatus, onEdit, onDelete, className }: GoalCardProps) {
+export function GoalCard({
+  goal,
+  canEdit,
+  achievementStatus,
+  onEdit,
+  onDelete,
+  className,
+}: GoalCardProps) {
   const { t } = useTranslation('training');
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -37,28 +37,30 @@ export function GoalCard({ goal, canEdit, achievementStatus, onEdit, onDelete, c
       ? cn(competitionConfig.color, competitionConfig.bgColor)
       : 'text-muted-foreground bg-muted';
 
-  const isPast = new Date(goal.competitionDate) < new Date();
+  const isPast = isDatePast(parseISO(goal.competitionDate));
 
   return (
     <div
-      className={cn(
-        'rounded-lg border p-4 flex flex-col gap-3',
-        isPast && 'opacity-80',
-        className
-      )}
+      className={cn('flex flex-col gap-3 rounded-lg border p-4', isPast && 'opacity-80', className)}
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex min-w-0 items-center gap-2">
           <Trophy className={cn('size-4 shrink-0', competitionConfig.color)} />
-          <span className="font-semibold truncate">{goal.name}</span>
-          <Badge className={cn('text-xs shrink-0', typeConfig.color, typeConfig.bgColor)}>
+          <span className="truncate font-semibold">{goal.name}</span>
+          <Badge className={cn('shrink-0 text-xs', typeConfig.color, typeConfig.bgColor)}>
             {t(`common:trainingTypes.${goal.discipline}` as never)}
           </Badge>
         </div>
         {canEdit && (
-          <div className="flex gap-1 shrink-0">
-            <Button variant="ghost" size="icon" className="size-7" onClick={() => onEdit(goal)}>
+          <div className="flex shrink-0 gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-7"
+              onClick={() => onEdit(goal)}
+              aria-label={t('goal.edit')}
+            >
               <Pencil className="size-3.5" />
             </Button>
             <Button
@@ -66,6 +68,7 @@ export function GoalCard({ goal, canEdit, achievementStatus, onEdit, onDelete, c
               size="icon"
               className="size-7 text-destructive hover:text-destructive"
               onClick={() => setConfirmDelete(true)}
+              aria-label={t('goal.delete')}
             >
               <Trash2 className="size-3.5" />
             </Button>
@@ -110,15 +113,13 @@ export function GoalCard({ goal, canEdit, achievementStatus, onEdit, onDelete, c
       )}
 
       {/* Notes */}
-      {goal.notes && (
-        <p className="text-xs text-muted-foreground line-clamp-2">{goal.notes}</p>
-      )}
+      {goal.notes && <p className="line-clamp-2 text-xs text-muted-foreground">{goal.notes}</p>}
 
       {/* Delete confirmation */}
       {confirmDelete && (
-        <div className="rounded-md bg-destructive/10 border border-destructive/20 p-3 flex flex-col gap-2">
+        <div className="flex flex-col gap-2 rounded-md border border-destructive/20 bg-destructive/10 p-3">
           <p className="text-sm text-destructive">{t('goal.deleteConfirm')}</p>
-          <div className="flex gap-2 justify-end">
+          <div className="flex justify-end gap-2">
             <Button variant="outline" size="sm" onClick={() => setConfirmDelete(false)}>
               {t('common:actions.cancel' as never)}
             </Button>

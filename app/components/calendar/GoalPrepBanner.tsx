@@ -29,9 +29,9 @@ export function GoalPrepBanner({ goals, weekStart, className }: GoalPrepBannerPr
           <div
             key={goal.id}
             className={cn(
-              'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm border',
+              'flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm',
               competitionConfig.bgColor,
-              competitionConfig.borderColor
+              competitionConfig.borderColor,
             )}
           >
             <Trophy className={cn('size-3.5 shrink-0', competitionConfig.color)} />

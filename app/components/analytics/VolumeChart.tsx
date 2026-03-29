@@ -1,19 +1,12 @@
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { cn } from '~/lib/utils';
 import type { AnalyticsBucket } from '~/types/training';
 
 // Explicit hex colors — CSS vars are unreliable in SVG fill attributes
-const COLOR_DISTANCE = '#6366f1';     // indigo-500, pops on dark and light
-const COLOR_COMPLETED = '#10b981';    // emerald-500
+const COLOR_DISTANCE = '#6366f1'; // indigo-500, pops on dark and light
+const COLOR_COMPLETED = '#10b981'; // emerald-500
 const COLOR_PENDING = 'rgba(255,255,255,0.10)';
 const COLOR_GRID = 'rgba(255,255,255,0.06)';
 const COLOR_TICK = 'rgba(255,255,255,0.35)';
@@ -54,7 +47,13 @@ function DistanceTooltip({ active, payload, label }: TooltipProps) {
   );
 }
 
-function SessionsTooltip({ active, payload, label, completedLabel, totalLabel }: TooltipProps & { completedLabel: string; totalLabel: string }) {
+function SessionsTooltip({
+  active,
+  payload,
+  label,
+  completedLabel,
+  totalLabel,
+}: TooltipProps & { completedLabel: string; totalLabel: string }) {
   if (!active || !payload?.length) return null;
   const data = payload[0]?.payload;
   if (!data) return null;
@@ -67,7 +66,9 @@ function SessionsTooltip({ active, payload, label, completedLabel, totalLabel }:
       <div className="flex items-center gap-2">
         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: COLOR_COMPLETED }} />
         <span className="text-white/50">{completedLabel}:</span>
-        <span className="font-medium text-white">{completed}/{total}</span>
+        <span className="font-medium text-white">
+          {completed}/{total}
+        </span>
       </div>
     </div>
   );
@@ -81,19 +82,26 @@ export function VolumeChart({ namespace, buckets, className }: VolumeChartProps)
   const completedLabel = t('analytics.totals.completion' as never);
 
   // Pre-compute pending sessions so stacking shows total = completed + pending
-  const sessionData = buckets.map((b) => ({
-    ...b,
-    pendingSessions: Math.max(0, b.totalSessions - b.completedSessions),
-  }));
+  const sessionData = useMemo(
+    () =>
+      buckets.map((b) => ({
+        ...b,
+        pendingSessions: Math.max(0, b.totalSessions - b.completedSessions),
+      })),
+    [buckets],
+  );
 
   // Determine bar size based on bucket count — fewer buckets = wider bars
   const barSize = buckets.length <= 12 ? 16 : buckets.length <= 31 ? 8 : 5;
 
-  const axisProps = {
-    tick: { fontSize: 10, fill: COLOR_TICK },
-    axisLine: false as const,
-    tickLine: false as const,
-  };
+  const axisProps = useMemo(
+    () => ({
+      tick: { fontSize: 10, fill: COLOR_TICK },
+      axisLine: false as const,
+      tickLine: false as const,
+    }),
+    [],
+  );
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -103,14 +111,15 @@ export function VolumeChart({ namespace, buckets, className }: VolumeChartProps)
           {distanceLabel}
         </p>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={buckets} barSize={barSize} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <BarChart
+            data={buckets}
+            barSize={barSize}
+            margin={{ top: 4, right: 4, left: -20, bottom: 0 }}
+          >
             <CartesianGrid vertical={false} stroke={COLOR_GRID} />
             <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" />
             <YAxis {...axisProps} />
-            <Tooltip
-              content={<DistanceTooltip />}
-              cursor={{ fill: COLOR_CURSOR }}
-            />
+            <Tooltip content={<DistanceTooltip />} cursor={{ fill: COLOR_CURSOR }} />
             <Bar
               dataKey="totalDistanceKm"
               name={distanceLabel}
@@ -127,12 +136,18 @@ export function VolumeChart({ namespace, buckets, className }: VolumeChartProps)
           {sessionsLabel}
         </p>
         <ResponsiveContainer width="100%" height={130}>
-          <BarChart data={sessionData} barSize={barSize} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+          <BarChart
+            data={sessionData}
+            barSize={barSize}
+            margin={{ top: 4, right: 4, left: -20, bottom: 0 }}
+          >
             <CartesianGrid vertical={false} stroke={COLOR_GRID} />
             <XAxis dataKey="label" {...axisProps} interval="preserveStartEnd" />
             <YAxis {...axisProps} allowDecimals={false} />
             <Tooltip
-              content={<SessionsTooltip completedLabel={completedLabel} totalLabel={sessionsLabel} />}
+              content={
+                <SessionsTooltip completedLabel={completedLabel} totalLabel={sessionsLabel} />
+              }
               cursor={{ fill: COLOR_CURSOR }}
             />
             <Bar

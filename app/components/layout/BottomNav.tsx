@@ -1,4 +1,4 @@
-import { CalendarDays, Dumbbell, Trophy, Settings, Users } from 'lucide-react';
+import { BarChart3, CalendarDays, Dumbbell, Trophy, Settings, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router';
 import { cn } from '~/lib/utils';
@@ -52,6 +52,7 @@ export function BottomNav() {
     pathname.includes('/week') && (user.role === 'athlete' || !!selectedAthleteId);
   const isStrengthActive = pathname.includes('/strength');
   const isGoalsActive = pathname.includes('/goals');
+  const isAnalyticsActive = pathname.includes('/analytics');
   const isSettingsActive = pathname.includes('/settings');
 
   return (
@@ -83,6 +84,12 @@ export function BottomNav() {
           icon={Trophy}
           label={t('nav.goals')}
           isActive={isGoalsActive}
+        />
+        <NavItem
+          to={localePath(`/${user.role}/analytics`)}
+          icon={BarChart3}
+          label={t('nav.analytics')}
+          isActive={isAnalyticsActive}
         />
         <NavItem
           to={localePath('/settings')}

@@ -40,9 +40,26 @@ function makeSession(overrides: Partial<TrainingSession>): TrainingSession {
   };
 }
 
-const RUN_SESSION = makeSession({ id: 's-run-1', trainingType: 'run', plannedDistanceKm: 10, plannedDurationMinutes: 60 });
-const RUN_SESSION_2 = makeSession({ id: 's-run-2', trainingType: 'run', plannedDistanceKm: 5, plannedDurationMinutes: 30, actualDistanceKm: 5.2, actualDurationMinutes: 28 });
-const CYCLING_SESSION = makeSession({ id: 's-cyc-1', trainingType: 'cycling', plannedDistanceKm: 40, plannedDurationMinutes: 90 });
+const RUN_SESSION = makeSession({
+  id: 's-run-1',
+  trainingType: 'run',
+  plannedDistanceKm: 10,
+  plannedDurationMinutes: 60,
+});
+const RUN_SESSION_2 = makeSession({
+  id: 's-run-2',
+  trainingType: 'run',
+  plannedDistanceKm: 5,
+  plannedDurationMinutes: 30,
+  actualDistanceKm: 5.2,
+  actualDurationMinutes: 28,
+});
+const CYCLING_SESSION = makeSession({
+  id: 's-cyc-1',
+  trainingType: 'cycling',
+  plannedDistanceKm: 40,
+  plannedDurationMinutes: 90,
+});
 const COMPETITION_SESSION = makeSession({
   id: 's-comp-1',
   trainingType: 'run',
@@ -106,5 +123,30 @@ describe('computeSportBreakdown', () => {
     // RUN_SESSION_2: has actual values → uses actual (5.2km, 28min)
     expect(result.byType.run!.actualDistanceKm).toBeCloseTo(5.2);
     expect(result.byType.run!.totalDurationMinutes).toBe(88); // 60 + 28
+  });
+
+  it('(f) rest_day sessions are aggregated into byType like any other sport', () => {
+    const restSession = makeSession({
+      id: 's-rest-1',
+      trainingType: 'rest_day',
+      plannedDistanceKm: 0,
+      plannedDurationMinutes: 0,
+    });
+    const restSession2 = makeSession({
+      id: 's-rest-2',
+      trainingType: 'rest_day',
+      plannedDistanceKm: 0,
+      plannedDurationMinutes: 0,
+      isCompleted: true,
+    });
+
+    const result = computeSportBreakdown([RUN_SESSION, restSession, restSession2]);
+
+    // rest_day sessions appear in byType
+    expect(result.byType.rest_day).toBeDefined();
+    expect(result.byType.rest_day!.sessionCount).toBe(2);
+    expect(result.byType.rest_day!.completedSessionCount).toBe(1);
+    // run sessions still aggregated separately
+    expect(result.byType.run!.sessionCount).toBe(1);
   });
 });

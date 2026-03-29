@@ -17,9 +17,8 @@ import { queryKeys } from '~/lib/queries/keys';
 // ---------------------------------------------------------------------------
 
 vi.mock('~/lib/queries/goals', async () => {
-  const { mockFetchGoals, mockCreateGoal, mockUpdateGoal, mockDeleteGoal } = await import(
-    '~/lib/mock-data/goals'
-  );
+  const { mockFetchGoals, mockCreateGoal, mockUpdateGoal, mockDeleteGoal } =
+    await import('~/lib/mock-data/goals');
   return {
     fetchGoals: mockFetchGoals,
     createGoal: mockCreateGoal,
@@ -58,7 +57,7 @@ describe('useGoals', () => {
     expect(result.current.data!.length).toBe(2);
     // Sorted by competition date ascending
     expect(result.current.data![0].competitionDate < result.current.data![1].competitionDate).toBe(
-      true
+      true,
     );
   });
 
@@ -99,7 +98,7 @@ describe('useCreateGoal', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const cached = queryClient.getQueryData<Awaited<ReturnType<typeof mockFetchGoals>>>(
-      queryKeys.goals.byAthlete(ATHLETE_ID)
+      queryKeys.goals.byAthlete(ATHLETE_ID),
     );
     expect(cached?.some((g) => g.name === 'City Half Marathon')).toBe(true);
   });
@@ -117,10 +116,7 @@ describe('useDeleteGoal', () => {
     queryClient.setQueryData(queryKeys.goals.byAthlete(ATHLETE_ID), initialGoals);
     const targetId = initialGoals[0].id;
 
-    const { result } = renderHook(
-      () => useDeleteGoal(),
-      { wrapper: Wrapper }
-    );
+    const { result } = renderHook(() => useDeleteGoal(), { wrapper: Wrapper });
 
     await act(async () => {
       result.current.mutate({ id: targetId, athleteId: ATHLETE_ID });
@@ -128,7 +124,7 @@ describe('useDeleteGoal', () => {
 
     // Optimistic: should be gone immediately from cache
     const cached = queryClient.getQueryData<typeof initialGoals>(
-      queryKeys.goals.byAthlete(ATHLETE_ID)
+      queryKeys.goals.byAthlete(ATHLETE_ID),
     );
     expect(cached?.find((g) => g.id === targetId)).toBeUndefined();
 
@@ -143,10 +139,6 @@ describe('useDeleteGoal', () => {
     const targetId = initialGoals[0].id;
 
     // Make delete fail
-    const { deleteGoal } = await import('~/lib/queries/goals');
-    vi.spyOn({ deleteGoal }, 'deleteGoal').mockRejectedValueOnce(new Error('Network error'));
-
-    // We mock the actual query module function
     const goalsMod = await import('~/lib/queries/goals');
     const spy = vi.spyOn(goalsMod, 'deleteGoal').mockRejectedValueOnce(new Error('fail'));
 
@@ -159,7 +151,7 @@ describe('useDeleteGoal', () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
 
     const cached = queryClient.getQueryData<typeof initialGoals>(
-      queryKeys.goals.byAthlete(ATHLETE_ID)
+      queryKeys.goals.byAthlete(ATHLETE_ID),
     );
     // Goal should be restored after rollback
     expect(cached?.find((g) => g.id === targetId)).toBeDefined();
@@ -193,7 +185,7 @@ describe('useUpdateGoal', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const cached = queryClient.getQueryData<typeof initialGoals>(
-      queryKeys.goals.byAthlete(ATHLETE_ID)
+      queryKeys.goals.byAthlete(ATHLETE_ID),
     );
     expect(cached?.find((g) => g.id === target.id)?.name).toBe('Updated Goal Name');
   });

@@ -69,11 +69,13 @@ export async function mockFetchGoals(athleteId: string): Promise<Goal[]> {
     if (g.athleteId === athleteId) result.push(g);
   }
   return result.sort(
-    (a, b) => new Date(a.competitionDate).getTime() - new Date(b.competitionDate).getTime()
+    (a, b) => new Date(a.competitionDate).getTime() - new Date(b.competitionDate).getTime(),
   );
 }
 
-export async function mockCreateGoal(input: CreateGoalInput & { createdBy: string }): Promise<Goal> {
+export async function mockCreateGoal(
+  input: CreateGoalInput & { createdBy: string },
+): Promise<Goal> {
   await delay();
   const now = new Date().toISOString();
   const goal: Goal = {

@@ -12,7 +12,7 @@ function makeBucket(
   totalSessions: number,
   completedSessions: number,
   totalDistanceKm: number,
-  totalDurationMinutes: number
+  totalDurationMinutes: number,
 ): AnalyticsBucket {
   return {
     label,
@@ -22,7 +22,8 @@ function makeBucket(
     completedSessions,
     totalDistanceKm,
     totalDurationMinutes,
-    completionRate: totalSessions === 0 ? 0 : Math.round((completedSessions / totalSessions) * 1000) / 10,
+    completionRate:
+      totalSessions === 0 ? 0 : Math.round((completedSessions / totalSessions) * 1000) / 10,
   };
 }
 
@@ -128,7 +129,7 @@ const MONTH_RESPONSE: AnalyticsResponse = {
       hasSessions ? 1 : 0,
       hasSessions && d <= 6 ? 1 : 0,
       hasSessions ? 8 + d : 0,
-      hasSessions ? 50 + d * 3 : 0
+      hasSessions ? 50 + d * 3 : 0,
     );
   }),
   competitions: [],

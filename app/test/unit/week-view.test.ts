@@ -29,6 +29,10 @@ function makeSession(overrides: Partial<TrainingSession> = {}): TrainingSession 
     athleteNotes: null,
     stravaActivityId: null,
     stravaSyncedAt: null,
+    goalId: undefined,
+    resultDistanceKm: undefined,
+    resultTimeSeconds: undefined,
+    resultPace: undefined,
     createdAt: '2026-03-02T00:00:00Z',
     updatedAt: '2026-03-02T00:00:00Z',
     ...overrides,
@@ -150,5 +154,25 @@ describe('computeWeekStats', () => {
       makeSession({ id: 's2', plannedDistanceKm: 10 }),
     ];
     expect(computeWeekStats(sessions).totalPlannedKm).toBe(10);
+  });
+
+  it('excludes sessions with goalId from totals and counts', () => {
+    const sessions = [
+      makeSession({ id: 's1', trainingType: 'run', plannedDistanceKm: 10, isCompleted: true }),
+      makeSession({ id: 's2', trainingType: 'run', plannedDistanceKm: 5, goalId: 'goal-1' }),
+      makeSession({
+        id: 's3',
+        trainingType: 'cycling',
+        plannedDistanceKm: 20,
+        goalId: 'goal-2',
+        isCompleted: true,
+      }),
+    ];
+    const stats = computeWeekStats(sessions);
+    // Only s1 counts — s2 and s3 have goalId and are excluded
+    expect(stats.totalSessions).toBe(1);
+    expect(stats.completedSessions).toBe(1);
+    expect(stats.totalPlannedKm).toBe(10);
+    expect(stats.completionPercentage).toBe(100);
   });
 });

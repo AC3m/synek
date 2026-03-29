@@ -42,8 +42,7 @@ export function computeSportBreakdown(sessions: TrainingSession[]): SportBreakdo
     const existing = byType[type];
 
     const actualDistance = session.actualDistanceKm ?? null;
-    const durationMinutes =
-      session.actualDurationMinutes ?? session.plannedDurationMinutes ?? 0;
+    const durationMinutes = session.actualDurationMinutes ?? session.plannedDurationMinutes ?? 0;
 
     const completed = session.isCompleted ? 1 : 0;
 

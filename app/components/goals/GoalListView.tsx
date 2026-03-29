@@ -1,13 +1,12 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { AppLoader } from '~/components/ui/app-loader';
 import { GoalCard } from './GoalCard';
 import { GoalDialog } from './GoalDialog';
-import { useGoals, useCreateGoal, useUpdateGoal, useDeleteGoal } from '~/lib/hooks/useGoals';
+import { useGoals } from '~/lib/hooks/useGoals';
+import { useGoalDialogState } from '~/lib/hooks/useGoalDialogState';
 import { computeGoalAchievement } from '~/lib/utils/goals';
-import type { Goal, CreateGoalInput, UpdateGoalInput } from '~/types/training';
 import { cn } from '~/lib/utils';
 
 interface GoalListViewProps {
@@ -20,48 +19,18 @@ interface GoalListViewProps {
 export function GoalListView({ athleteId, createdBy, canManage, className }: GoalListViewProps) {
   const { t } = useTranslation('training');
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingGoal, setEditingGoal] = useState<Goal | undefined>();
-
   const { data: goals = [], isLoading } = useGoals(athleteId);
-  const createGoalMutation = useCreateGoal();
-  const updateGoalMutation = useUpdateGoal();
-  const deleteGoalMutation = useDeleteGoal();
-
-  function handleCreate(input: CreateGoalInput) {
-    createGoalMutation.mutate(
-      { ...input, createdBy },
-      { onSuccess: () => setDialogOpen(false) },
-    );
-  }
-
-  function handleUpdate(input: UpdateGoalInput) {
-    updateGoalMutation.mutate(
-      { ...input, athleteId },
-      {
-        onSuccess: () => {
-          setDialogOpen(false);
-          setEditingGoal(undefined);
-        },
-      },
-    );
-  }
-
-  function handleDelete(goal: Goal) {
-    deleteGoalMutation.mutate({ id: goal.id, athleteId });
-  }
-
-  function handleEditClick(goal: Goal) {
-    setEditingGoal(goal);
-    setDialogOpen(true);
-  }
-
-  function handleClose() {
-    setDialogOpen(false);
-    setEditingGoal(undefined);
-  }
-
-  const isSaving = createGoalMutation.isPending || updateGoalMutation.isPending;
+  const {
+    dialogOpen,
+    editingGoal,
+    isSaving,
+    handleCreate,
+    handleUpdate,
+    handleDelete,
+    handleEditClick,
+    handleClose,
+    handleOpenNew,
+  } = useGoalDialogState({ athleteId, createdBy });
 
   if (isLoading) return <AppLoader />;
 
@@ -70,12 +39,7 @@ export function GoalListView({ athleteId, createdBy, canManage, className }: Goa
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">{t('goal.library')}</h1>
         {canManage && (
-          <Button
-            onClick={() => {
-              setEditingGoal(undefined);
-              setDialogOpen(true);
-            }}
-          >
+          <Button onClick={handleOpenNew}>
             <Plus className="mr-1.5 size-4" />
             {t('goal.create')}
           </Button>
