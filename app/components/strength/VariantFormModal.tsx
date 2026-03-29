@@ -5,7 +5,7 @@ import { FormModal } from '~/components/ui/form-modal';
 import { VariantForm } from '~/components/strength/VariantForm';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useCreateStrengthVariant } from '~/lib/hooks/useStrengthVariants';
-import type { StrengthVariant } from '~/types/training';
+import type { StrengthVariant, PerSetRep } from '~/types/training';
 
 interface VariantFormModalProps {
   open: boolean;
@@ -30,6 +30,7 @@ export function VariantFormModal({ open, onClose, onCreated, className }: Varian
       sets: number;
       repsMin: number;
       repsMax: number;
+      perSetReps?: PerSetRep[] | null;
       loadUnit?: 'kg' | 'sec';
       supersetGroup?: number | null;
     }>;
@@ -44,6 +45,7 @@ export function VariantFormModal({ open, onClose, onCreated, className }: Varian
           sets: ex.sets,
           repsMin: ex.repsMin,
           repsMax: ex.repsMax,
+          perSetReps: ex.perSetReps ?? null,
           loadUnit: ex.loadUnit ?? 'kg',
           sortOrder: i,
           supersetGroup: ex.supersetGroup ?? null,

@@ -10,6 +10,7 @@ import {
   useUpdateStrengthVariant,
   useUpsertVariantExercises,
 } from '~/lib/hooks/useStrengthVariants';
+import type { PerSetRep } from '~/types/training';
 
 interface VariantDetailViewProps {
   variantId: string;
@@ -38,6 +39,7 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
       sets: number;
       repsMin: number;
       repsMax: number;
+      perSetReps?: PerSetRep[] | null;
       loadUnit?: 'kg' | 'sec';
       supersetGroup?: number | null;
     }>;
@@ -60,6 +62,7 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
             sets: ex.sets,
             repsMin: ex.repsMin,
             repsMax: ex.repsMax,
+            perSetReps: ex.perSetReps ?? null,
             loadUnit: ex.loadUnit ?? 'kg',
             sortOrder: i,
             supersetGroup: ex.supersetGroup ?? null,
