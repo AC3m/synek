@@ -43,6 +43,15 @@ export const queryKeys = {
     progressLogs: (variantId: string, athleteId: string) =>
       ['strengthVariants', 'progressLogs', variantId, athleteId] as const,
   },
+  goals: {
+    all: ['goals'] as const,
+    byAthlete: (athleteId: string) => ['goals', 'athlete', athleteId] as const,
+    byId: (goalId: string) => ['goals', goalId] as const,
+  },
+  analytics: {
+    all: ['analytics'] as const,
+    byParams: (params: unknown) => ['analytics', params] as const,
+  },
   // PoC: Junction Garmin integration — remove after evaluation
   junctionPoc: {
     all: ['junction-poc'] as const,

@@ -1,4 +1,4 @@
-import { Dumbbell } from 'lucide-react';
+import { Dumbbell, Trophy, BarChart3 } from 'lucide-react';
 import { Link, NavLink, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from './LanguageToggle';
@@ -39,6 +39,34 @@ export function Header() {
               >
                 <Dumbbell className="h-3.5 w-3.5" />
                 {t('nav.strength')}
+              </NavLink>
+              <NavLink
+                to={localePath(`/${user.role}/goals`)}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                  )
+                }
+              >
+                <Trophy className="h-3.5 w-3.5" />
+                {t('nav.goals')}
+              </NavLink>
+              <NavLink
+                to={localePath(`/${user.role}/analytics`)}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                    isActive
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
+                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                  )
+                }
+              >
+                <BarChart3 className="h-3.5 w-3.5" />
+                {t('nav.analytics')}
               </NavLink>
             </nav>
           )}

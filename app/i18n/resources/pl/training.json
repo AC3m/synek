@@ -211,5 +211,36 @@
       "recovery": "Odpoczynek",
       "cooldown": "Wyciszenie"
     }
+  },
+  "goal": {
+    "library": "Cele",
+    "create": "Dodaj Cel",
+    "edit": "Edytuj Cel",
+    "delete": "Usuń Cel",
+    "name": "Nazwa Celu",
+    "discipline": "Dyscyplina",
+    "competitionDate": "Data Zawodów",
+    "preparationWeeks": "Tygodnie Przygotowań",
+    "goalDistance": "Cel Dystansu (km)",
+    "goalTime": "Cel Czasu",
+    "notes": "Uwagi",
+    "deleteConfirm": "Czy na pewno chcesz usunąć ten cel? Sesja zawodnicza zostanie odłączona.",
+    "namePlaceholder": "np. Wiosenny 10K",
+    "notesPlaceholder": "Dodaj kontekst lub motywację…",
+    "noGoals": "Nie ustawiono jeszcze żadnych celów.",
+    "prepWeeksShort": "{{weeks}} tyg. przyg."
+  },
+  "competition": {
+    "label": "Zawody",
+    "result": "Wynik",
+    "achieved": "Osiągnięto",
+    "missed": "Nie Osiągnięto",
+    "pending": "Oczekuje"
+  },
+  "goalPrep": {
+    "banner": "Przygotowania do {{goalName}}",
+    "competitionWeek": "Tydzień zawodów — {{goalName}}",
+    "daysUntil": "{{days}} dni do zawodów",
+    "thisWeek": "W tym tygodniu"
   }
 }

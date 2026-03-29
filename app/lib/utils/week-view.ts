@@ -26,19 +26,19 @@ export function groupSessionsByDay(sessions: TrainingSession[]): SessionsByDay {
 }
 
 export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
-  const totalSessions = sessions.filter((s) => s.trainingType !== 'rest_day').length;
-  const completedSessions = sessions.filter(
+  const training = sessions.filter((s) => !s.goalId);
+  const totalSessions = training.filter((s) => s.trainingType !== 'rest_day').length;
+  const completedSessions = training.filter(
     (s) => s.isCompleted && s.trainingType !== 'rest_day',
   ).length;
-  const totalPlannedKm = sessions.reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
-  const totalCompletedKm = sessions
+  const totalPlannedKm = training.reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
+  const totalCompletedKm = training
     .filter((s) => s.isCompleted)
     .reduce((sum, s) => sum + (s.plannedDistanceKm ?? 0), 0);
-  const totalActualDurationMinutes = sessions
+  const totalActualDurationMinutes = training
     .filter((s) => s.trainingType !== 'rest_day' && s.isCompleted)
     .reduce((sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0), 0);
-  const totalActualRunKm = sessions
-    .filter((s) => s.trainingType === 'run')
+  const totalActualDistanceKm = training
     .reduce((sum, s) => sum + (s.actualDistanceKm ?? 0), 0);
 
   return {
@@ -48,7 +48,9 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
     totalCompletedKm,
     completionPercentage: totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
     totalActualDurationMinutes,
-    totalActualRunKm,
+    totalActualDistanceKm,
+    byType: {},
+    competitionSessions: [],
   };
 }
 

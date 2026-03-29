@@ -24,6 +24,8 @@ export default [
           route('week/:weekId', 'routes/coach/week.$weekId.tsx'),
           route('strength', 'routes/coach/strength.tsx'),
           route('strength/:variantId', 'routes/coach/strength.$variantId.tsx'),
+          route('goals', 'routes/coach/goals.tsx'),
+          route('analytics', 'routes/coach/analytics.tsx'),
         ]),
       ]),
 
@@ -33,6 +35,8 @@ export default [
           route('week/:weekId', 'routes/athlete/week.$weekId.tsx'),
           route('strength', 'routes/athlete/strength.tsx'),
           route('strength/:variantId', 'routes/athlete/strength.$variantId.tsx'),
+          route('goals', 'routes/athlete/goals.tsx'),
+          route('analytics', 'routes/athlete/analytics.tsx'),
         ]),
       ]),
 

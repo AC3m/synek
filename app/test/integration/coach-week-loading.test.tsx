@@ -31,6 +31,13 @@ vi.mock('~/lib/hooks/useSessions', () => ({
   useCopySession: () => ({ mutate: vi.fn(), isPending: false }),
 }));
 
+vi.mock('~/lib/hooks/useGoals', () => ({
+  useGoals: () => ({ data: [], isLoading: false }),
+  useCreateGoal: () => ({ mutate: vi.fn(), isPending: false }),
+  useUpdateGoal: () => ({ mutate: vi.fn(), isPending: false }),
+  useDeleteGoal: () => ({ mutate: vi.fn(), isPending: false }),
+}));
+
 vi.mock('~/components/calendar/WeekNavigation', () => ({
   WeekNavigation: () => <div data-testid="week-navigation" />,
 }));

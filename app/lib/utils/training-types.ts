@@ -9,6 +9,7 @@ import {
   Activity,
   PersonStanding,
   Mountain,
+  Trophy,
 } from 'lucide-react';
 import type { ElementType } from 'react';
 import type { TrainingType, LoadType } from '~/types/training';
@@ -24,7 +25,15 @@ export const iconMap: Record<string, ElementType> = {
   Activity,
   PersonStanding,
   Mountain,
+  Trophy,
 };
+
+export const competitionConfig = {
+  color: 'text-amber-700 dark:text-amber-300',
+  bgColor: 'bg-amber-100 dark:bg-amber-900',
+  borderColor: 'border-amber-400 dark:border-amber-500',
+  icon: 'Trophy',
+} as const;
 
 export const trainingTypeConfig: Record<
   TrainingType,
