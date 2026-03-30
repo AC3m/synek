@@ -199,8 +199,13 @@ All work MUST follow the feature-branch workflow:
    `lib/queries/`.
 7. **Constitution check passed**: The `plan.md` for the feature documents how each relevant
    principle is satisfied, or explicitly justifies any violation.
+8. **Docs updated**: Any new reusable code pattern → `docs/how-to/`; any significant
+   architectural decision → `docs/architecture/decisions/`; any new naming, typing, or
+   styling convention → `docs/reference/conventions.md`; any new forbidden pattern →
+   `docs/reference/anti-patterns.md`. Features that introduce none of the above MUST
+   include an explicit note in the PR stating why no doc update is needed.
 
-Code review MUST verify all seven gates. A PR that fails any gate MUST NOT be merged
+Code review MUST verify all eight gates. A PR that fails any gate MUST NOT be merged
 regardless of feature completeness.
 
 ### Commit Conventions
