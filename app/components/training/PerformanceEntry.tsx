@@ -20,7 +20,9 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
     session.actualPace != null ||
     session.avgHeartRate != null ||
     session.maxHeartRate != null ||
-    session.rpe != null;
+    session.rpe != null ||
+    session.calories != null;
+  const showCalories = session.trainingType !== 'rest_day';
 
   const [expanded, setExpanded] = useState(false);
   const [duration, setDuration] = useState(session.actualDurationMinutes?.toString() ?? '');
@@ -29,6 +31,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
   const [avgHr, setAvgHr] = useState(session.avgHeartRate?.toString() ?? '');
   const [maxHr, setMaxHr] = useState(session.maxHeartRate?.toString() ?? '');
   const [rpe, setRpe] = useState(session.rpe?.toString() ?? '');
+  const [calories, setCalories] = useState(session.calories?.toString() ?? '');
 
   useEffect(() => {
     setDuration(session.actualDurationMinutes?.toString() ?? '');
@@ -37,6 +40,7 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
     setAvgHr(session.avgHeartRate?.toString() ?? '');
     setMaxHr(session.maxHeartRate?.toString() ?? '');
     setRpe(session.rpe?.toString() ?? '');
+    setCalories(session.calories?.toString() ?? '');
   }, [
     session.id,
     session.actualDurationMinutes,
@@ -45,12 +49,18 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
     session.avgHeartRate,
     session.maxHeartRate,
     session.rpe,
+    session.calories,
   ]);
 
   const saveNumber = (
     field: keyof Pick<
       AthleteSessionUpdate,
-      'actualDurationMinutes' | 'actualDistanceKm' | 'avgHeartRate' | 'maxHeartRate' | 'rpe'
+      | 'actualDurationMinutes'
+      | 'actualDistanceKm'
+      | 'avgHeartRate'
+      | 'maxHeartRate'
+      | 'rpe'
+      | 'calories'
     >,
     raw: string,
     current: number | null | undefined,
@@ -182,6 +192,24 @@ export function PerformanceEntry({ session, onChange }: PerformanceEntryProps) {
               className="h-6 px-1.5 text-[10px]"
             />
           </div>
+
+          {showCalories && (
+            <div>
+              <label className="mb-0.5 block text-[9px] text-muted-foreground">
+                {t('actualPerformance.calories')}
+              </label>
+              <Input
+                type="number"
+                step="1"
+                min="0"
+                placeholder="—"
+                value={calories}
+                onChange={(e) => setCalories(e.target.value)}
+                onBlur={() => saveNumber('calories', calories, session.calories ?? null)}
+                className="h-6 px-1.5 text-[10px]"
+              />
+            </div>
+          )}
         </div>
       )}
     </div>

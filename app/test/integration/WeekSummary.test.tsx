@@ -27,6 +27,7 @@ const STATS_WITH_BREAKDOWN: WeekStats = {
   totalCompletedKm: 10,
   totalActualDistanceKm: 10,
   totalActualDurationMinutes: 90,
+  totalCalories: 0,
   byType: {
     run: {
       sessionCount: 2,
@@ -34,6 +35,7 @@ const STATS_WITH_BREAKDOWN: WeekStats = {
       plannedDistanceKm: 15,
       actualDistanceKm: 10,
       totalDurationMinutes: 60,
+      totalCalories: 0,
     },
     cycling: {
       sessionCount: 1,
@@ -41,6 +43,7 @@ const STATS_WITH_BREAKDOWN: WeekStats = {
       plannedDistanceKm: 5,
       actualDistanceKm: 0,
       totalDurationMinutes: 30,
+      totalCalories: 0,
     },
   },
   competitionSessions: [],
@@ -72,6 +75,7 @@ const STATS_EMPTY: WeekStats = {
   totalCompletedKm: 0,
   totalActualDistanceKm: 0,
   totalActualDurationMinutes: 0,
+  totalCalories: 0,
   byType: {},
   competitionSessions: [],
 };

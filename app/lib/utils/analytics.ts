@@ -45,6 +45,7 @@ export function computeSportBreakdown(sessions: TrainingSession[]): SportBreakdo
     const durationMinutes = session.actualDurationMinutes ?? session.plannedDurationMinutes ?? 0;
 
     const completed = session.isCompleted ? 1 : 0;
+    const sessionCalories = session.isCompleted ? (session.calories ?? 0) : 0;
 
     if (!existing) {
       byType[type] = {
@@ -53,6 +54,7 @@ export function computeSportBreakdown(sessions: TrainingSession[]): SportBreakdo
         plannedDistanceKm: session.plannedDistanceKm ?? 0,
         actualDistanceKm: actualDistance ?? 0,
         totalDurationMinutes: durationMinutes,
+        totalCalories: sessionCalories,
       };
     } else {
       byType[type] = {
@@ -61,6 +63,7 @@ export function computeSportBreakdown(sessions: TrainingSession[]): SportBreakdo
         plannedDistanceKm: existing.plannedDistanceKm + (session.plannedDistanceKm ?? 0),
         actualDistanceKm: existing.actualDistanceKm + (actualDistance ?? 0),
         totalDurationMinutes: existing.totalDurationMinutes + durationMinutes,
+        totalCalories: existing.totalCalories + sessionCalories,
       };
     }
   }

@@ -97,13 +97,18 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
               <p className="text-sm text-muted-foreground">
                 {ex.perSetReps ? (
                   <>
-                    {ex.sets} sets × {ex.perSetReps.map((r) =>
-                      r.repsMin === r.repsMax ? String(r.repsMin) : `${r.repsMin}–${r.repsMax}`
-                    ).join(' / ')} reps
+                    {ex.sets} sets ×{' '}
+                    {ex.perSetReps
+                      .map((r) =>
+                        r.repsMin === r.repsMax ? String(r.repsMin) : `${r.repsMin}–${r.repsMax}`,
+                      )
+                      .join(' / ')}{' '}
+                    reps
                   </>
                 ) : (
                   <>
-                    {ex.sets} sets × {ex.repsMin === ex.repsMax ? ex.repsMin : `${ex.repsMin}–${ex.repsMax}`} reps
+                    {ex.sets} sets ×{' '}
+                    {ex.repsMin === ex.repsMax ? ex.repsMin : `${ex.repsMin}–${ex.repsMax}`} reps
                   </>
                 )}
               </p>

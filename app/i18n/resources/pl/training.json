@@ -166,6 +166,20 @@
     },
     "elevationGain": "Przewyższenie (m)"
   },
+  "pilates": {
+    "style": "Styl",
+    "styleOptions": {
+      "mat": "Mata",
+      "reformer": "Reformer",
+      "clinical": "Kliniczny"
+    },
+    "focusArea": "Obszar Skupienia"
+  },
+  "elliptical": {
+    "hrZone": "Strefa Tętna",
+    "resistanceLevel": "Poziom Oporu",
+    "inclineLevel": "Poziom Nachylenia"
+  },
   "restDay": {
     "activitySuggestion": "Sugerowana Aktywność"
   },
@@ -178,7 +192,8 @@
     "avgHr": "Śr. Tętno",
     "maxHr": "Maks. Tętno",
     "rpe": "RPE",
-    "rpeHint": "1–10"
+    "rpeHint": "1–10",
+    "calories": "Kalorie (kcal)"
   },
   "coachPostFeedback": {
     "label": "Komentarz Trenera po Treningu",

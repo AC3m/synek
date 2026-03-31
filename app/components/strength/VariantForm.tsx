@@ -56,7 +56,15 @@ function convertToFormExercises(exercises: StrengthVariantExercise[]): FormExerc
 }
 
 function createEmptyExercise(): FormExercise {
-  return { name: '', videoUrl: '', sets: 3, repsMin: 8, repsMax: 12, perSetReps: null, loadUnit: 'kg' };
+  return {
+    name: '',
+    videoUrl: '',
+    sets: 3,
+    repsMin: 8,
+    repsMax: 12,
+    perSetReps: null,
+    loadUnit: 'kg',
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -141,7 +149,10 @@ const ExerciseRow = memo(function ExerciseRow({
   });
 
   const perSetDraft = usePerSetRepsDraft(exercise.perSetReps);
-  const setsDraft = useNumericDraft(exercise.sets, (v) => onChange(index, { sets: v }), 7, { min: 7, max: 20 });
+  const setsDraft = useNumericDraft(exercise.sets, (v) => onChange(index, { sets: v }), 7, {
+    min: 7,
+    max: 20,
+  });
   const repsExactDraft = useNumericDraft(
     exercise.repsMin,
     (v) => onChange(index, { repsMin: v, repsMax: v }),
@@ -200,12 +211,20 @@ const ExerciseRow = memo(function ExerciseRow({
     }
   }
 
-  function handlePerSetChange(setIdx: number, field: 'repsMin' | 'repsMax' | 'both', value: number) {
+  function handlePerSetChange(
+    setIdx: number,
+    field: 'repsMin' | 'repsMax' | 'both',
+    value: number,
+  ) {
     const updated = [...(exercise.perSetReps ?? [])];
     if (field === 'both') {
       updated[setIdx] = { repsMin: value, repsMax: value };
     } else if (field === 'repsMin') {
-      updated[setIdx] = { ...updated[setIdx], repsMin: value, repsMax: Math.max(value, updated[setIdx].repsMax) };
+      updated[setIdx] = {
+        ...updated[setIdx],
+        repsMin: value,
+        repsMax: Math.max(value, updated[setIdx].repsMax),
+      };
     } else {
       updated[setIdx] = { ...updated[setIdx], repsMax: value };
     }
@@ -378,7 +397,7 @@ const ExerciseRow = memo(function ExerciseRow({
                 {(exercise.perSetReps ?? []).map((rep, setIdx) => (
                   <div
                     key={setIdx}
-                    className="animate-in flex items-center gap-1 duration-150 fade-in slide-in-from-top-1"
+                    className="flex animate-in items-center gap-1 duration-150 fade-in slide-in-from-top-1"
                   >
                     <span className="w-7 text-xs text-muted-foreground">
                       {t('strength.exercise.setLabel', { n: setIdx + 1 })}
@@ -412,7 +431,7 @@ const ExerciseRow = memo(function ExerciseRow({
                             perSetDraft.commit();
                             handlePerSetChange(setIdx, 'repsMax', val);
                           }}
-                          className="animate-in h-7 w-14 text-xs duration-150 fade-in"
+                          className="h-7 w-14 animate-in text-xs duration-150 fade-in"
                         />
                       </>
                     ) : (
@@ -435,7 +454,7 @@ const ExerciseRow = memo(function ExerciseRow({
               </div>
             </div>
           ) : repsMode === 'range' ? (
-            <div className="mt-2 animate-in flex items-center gap-1 duration-150 fade-in slide-in-from-top-1">
+            <div className="mt-2 flex animate-in items-center gap-1 duration-150 fade-in slide-in-from-top-1">
               <Input
                 type="number"
                 min={1}
@@ -578,7 +597,10 @@ export function VariantForm({
           const target = merged.sets;
           const arr = [...merged.perSetReps];
           if (arr.length < target) {
-            const last = arr[arr.length - 1] ?? { repsMin: merged.repsMin, repsMax: merged.repsMax };
+            const last = arr[arr.length - 1] ?? {
+              repsMin: merged.repsMin,
+              repsMax: merged.repsMax,
+            };
             while (arr.length < target) arr.push({ ...last });
           } else if (arr.length > target) {
             arr.length = target;

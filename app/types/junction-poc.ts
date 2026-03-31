@@ -34,6 +34,8 @@ export const JUNCTION_SPORT_MAP: Record<string, string> = {
   open_water_swimming: 'swimming',
   mobility: 'mobility',
   stretching: 'mobility',
+  pilates: 'pilates',
+  elliptical: 'elliptical',
 };
 
 export interface JunctionPocWorkout {

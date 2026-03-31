@@ -49,8 +49,12 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
   it('shows empty inputs when loggedExercises is empty (query in-flight)', () => {
     renderLogger([]);
 
-    expect(screen.getByRole('spinbutton', { name: /set 1 reps for bench press/i })).toHaveValue(null);
-    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(null);
+    expect(screen.getByRole('spinbutton', { name: /set 1 reps for bench press/i })).toHaveValue(
+      null,
+    );
+    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
+      null,
+    );
   });
 
   it('populates inputs when loggedExercises arrives after initial render', () => {

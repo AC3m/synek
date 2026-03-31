@@ -63,6 +63,7 @@ const mockSession: TrainingSession = {
   avgHeartRate: null,
   maxHeartRate: null,
   rpe: null,
+  calories: null,
   coachPostFeedback: null,
   athleteNotes: null,
   stravaActivityId: null,

@@ -68,6 +68,7 @@ export async function mockCreateSession(input: CreateSessionInput): Promise<Trai
     avgHeartRate: input.avgHeartRate ?? null,
     maxHeartRate: input.maxHeartRate ?? null,
     rpe: input.rpe ?? null,
+    calories: input.calories ?? null,
     coachPostFeedback: input.coachPostFeedback ?? null,
     athleteNotes: input.athleteNotes ?? null,
     stravaActivityId: null,
@@ -104,6 +105,7 @@ export async function mockUpdateSession(input: UpdateSessionInput): Promise<Trai
     ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
     ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
     ...(input.rpe !== undefined && { rpe: input.rpe }),
+    ...(input.calories !== undefined && { calories: input.calories }),
     ...(input.coachPostFeedback !== undefined && { coachPostFeedback: input.coachPostFeedback }),
     updatedAt: new Date().toISOString(),
   };
@@ -138,6 +140,7 @@ export async function mockUpdateAthleteSession(
     ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
     ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
     ...(input.rpe !== undefined && { rpe: input.rpe }),
+    ...(input.calories !== undefined && { calories: input.calories }),
     updatedAt: new Date().toISOString(),
   };
   sessions.set(updated.id, updated);
@@ -201,6 +204,7 @@ function copyPlannedFields(
     avgHeartRate: null,
     maxHeartRate: null,
     rpe: null,
+    calories: null,
     coachPostFeedback: null,
     athleteNotes: null,
     stravaActivityId: null,

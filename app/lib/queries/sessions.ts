@@ -43,6 +43,7 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     avgHeartRate: row.avg_heart_rate as number | null,
     maxHeartRate: row.max_heart_rate as number | null,
     rpe: row.rpe as number | null,
+    calories: row.calories != null ? (row.calories as number) : null,
     coachPostFeedback: row.coach_post_feedback as string | null,
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
@@ -82,7 +83,7 @@ export async function fetchSessionByGoalId(goalId: string): Promise<TrainingSess
   const { data, error } = await supabase
     .from('training_sessions')
     .select(
-      'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, is_strava_confirmed, created_at, updated_at',
+      'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, calories, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, is_strava_confirmed, created_at, updated_at',
     )
     .eq('goal_id', goalId)
     .maybeSingle();
@@ -123,6 +124,7 @@ export async function createSession(input: CreateSessionInput): Promise<Training
       avg_heart_rate: input.avgHeartRate ?? null,
       max_heart_rate: input.maxHeartRate ?? null,
       rpe: input.rpe ?? null,
+      calories: input.calories ?? null,
       coach_post_feedback: input.coachPostFeedback ?? null,
       is_completed: input.isCompleted ?? false,
       completed_at: input.completedAt ?? null,
@@ -155,6 +157,7 @@ export async function updateSession(input: UpdateSessionInput): Promise<Training
   if (input.avgHeartRate !== undefined) updates.avg_heart_rate = input.avgHeartRate;
   if (input.maxHeartRate !== undefined) updates.max_heart_rate = input.maxHeartRate;
   if (input.rpe !== undefined) updates.rpe = input.rpe;
+  if (input.calories !== undefined) updates.calories = input.calories;
   if (input.coachPostFeedback !== undefined) updates.coach_post_feedback = input.coachPostFeedback;
 
   const { data, error } = await supabase
@@ -212,6 +215,7 @@ export async function updateAthleteSession(input: AthleteSessionUpdate): Promise
   if (input.avgHeartRate !== undefined) updates.avg_heart_rate = input.avgHeartRate;
   if (input.maxHeartRate !== undefined) updates.max_heart_rate = input.maxHeartRate;
   if (input.rpe !== undefined) updates.rpe = input.rpe;
+  if (input.calories !== undefined) updates.calories = input.calories;
 
   const { data, error } = await supabase
     .from('training_sessions')

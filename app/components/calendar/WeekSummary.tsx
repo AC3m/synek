@@ -503,6 +503,16 @@ export function WeekSummary({
                       </div>
                       <div className="space-y-1">
                         <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
+                          {t('coach:weekSummary.totalCalories')}
+                        </p>
+                        {stats.totalCalories > 0 ? (
+                          <StatValue value={stats.totalCalories.toLocaleString()} unit="kcal" />
+                        ) : (
+                          <StatValue value="—" />
+                        )}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[11px] font-semibold tracking-wide text-muted-foreground/80 uppercase">
                           {t('coach:weekSummary.progress')}
                         </p>
                         <StatValue

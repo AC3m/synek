@@ -20,9 +20,7 @@ function parsePerSetReps(raw: unknown): PerSetRep[] | null {
 function serializePerSetReps(
   perSetReps: PerSetRep[] | null,
 ): { reps_min: number; reps_max: number }[] | null {
-  return perSetReps
-    ? perSetReps.map((r) => ({ reps_min: r.repsMin, reps_max: r.repsMax }))
-    : null;
+  return perSetReps ? perSetReps.map((r) => ({ reps_min: r.repsMin, reps_max: r.repsMax })) : null;
 }
 
 // ---------------------------------------------------------------------------
