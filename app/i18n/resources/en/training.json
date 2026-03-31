@@ -166,6 +166,20 @@
     },
     "elevationGain": "Elevation Gain (m)"
   },
+  "pilates": {
+    "style": "Style",
+    "styleOptions": {
+      "mat": "Mat",
+      "reformer": "Reformer",
+      "clinical": "Clinical"
+    },
+    "focusArea": "Focus Area"
+  },
+  "elliptical": {
+    "hrZone": "HR Zone",
+    "resistanceLevel": "Resistance Level",
+    "inclineLevel": "Incline Level"
+  },
   "restDay": {
     "activitySuggestion": "Activity Suggestion"
   },
@@ -178,7 +192,8 @@
     "avgHr": "Avg HR",
     "maxHr": "Max HR",
     "rpe": "RPE",
-    "rpeHint": "1–10"
+    "rpeHint": "1–10",
+    "calories": "Calories (kcal)"
   },
   "coachPostFeedback": {
     "label": "Post-Training Coach Notes",

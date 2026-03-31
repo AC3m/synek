@@ -79,6 +79,16 @@ export const trainingTypeConfig: Record<
     bgColor: 'bg-lime-100 dark:bg-lime-900',
     icon: 'Mountain',
   },
+  pilates: {
+    color: 'text-pink-700 dark:text-pink-300',
+    bgColor: 'bg-pink-100 dark:bg-pink-900',
+    icon: 'PersonStanding',
+  },
+  elliptical: {
+    color: 'text-indigo-700 dark:text-indigo-300',
+    bgColor: 'bg-indigo-100 dark:bg-indigo-900',
+    icon: 'Activity',
+  },
   rest_day: {
     color: 'text-gray-500 dark:text-gray-400',
     bgColor: 'bg-gray-100 dark:bg-gray-800',
@@ -91,7 +101,14 @@ export const trainingTypeConfig: Record<
   },
 };
 
-export const DISTANCE_BASED_TYPES = ['run', 'cycling', 'swimming', 'walk', 'hike'] as const;
+export const DISTANCE_BASED_TYPES = [
+  'run',
+  'cycling',
+  'swimming',
+  'walk',
+  'hike',
+  'elliptical',
+] as const;
 
 export function isDistanceBased(trainingType: TrainingType): boolean {
   return (DISTANCE_BASED_TYPES as readonly string[]).includes(trainingType);

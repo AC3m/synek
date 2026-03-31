@@ -58,6 +58,7 @@ function makeSession(overrides: Partial<TrainingSession> = {}): TrainingSession 
     avgHeartRate: null,
     maxHeartRate: null,
     rpe: null,
+    calories: null,
     stravaActivityId: null,
     stravaSyncedAt: null,
     coachPostFeedback: null,

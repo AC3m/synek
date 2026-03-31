@@ -33,6 +33,7 @@ function SportRow({
   plannedDistanceKm,
   actualDistanceKm,
   totalDurationMinutes,
+  totalCalories,
 }: {
   type: TrainingType;
   sessionCount: number;
@@ -40,6 +41,7 @@ function SportRow({
   plannedDistanceKm: number;
   actualDistanceKm: number;
   totalDurationMinutes: number;
+  totalCalories: number;
 }) {
   const { t } = useTranslation(['coach', 'common']);
   const config = trainingTypeConfig[type];
@@ -88,6 +90,11 @@ function SportRow({
           }
           sub={hasDistance && duration ? duration : undefined}
         />
+        {totalCalories > 0 && (
+          <p className="mt-0.5 text-[10px] text-muted-foreground/50 tabular-nums">
+            {totalCalories.toLocaleString()} kcal
+          </p>
+        )}
         {!hasDistance && (
           <p className="mt-0.5 text-[10px] text-muted-foreground/50">
             {completedSessionCount}/{sessionCount}
@@ -252,6 +259,7 @@ export function SportBreakdown({ stats, className }: SportBreakdownProps) {
                   plannedDistanceKm={entry.plannedDistanceKm}
                   actualDistanceKm={entry.actualDistanceKm}
                   totalDurationMinutes={entry.totalDurationMinutes}
+                  totalCalories={entry.totalCalories}
                 />
               </div>
             ))}

@@ -32,6 +32,8 @@ const TYPE_MAP: Record<string, string[]> = {
   HighIntensityIntervalTraining: ['strength', 'other'],
   Workout: ['strength', 'mobility', 'other'], // Apple Watch Flexibility/Core syncs as Workout
   Yoga: ['yoga'],
+  Pilates: ['pilates'],
+  Elliptical: ['elliptical'],
   Walk: ['walk'],
   Hike: ['hike'],
 };
@@ -280,6 +282,7 @@ Deno.serve(async (req) => {
         .update({
           strava_activity_id: activity.id,
           strava_synced_at: new Date().toISOString(),
+          calories: activity.calories ?? null,
         })
         .eq('id', match.id);
 

@@ -61,9 +61,7 @@ export function useNumericDraft(
  * Drafts also auto-reset via useEffect when `perSetReps` changes from outside
  * (e.g., sets count change, reps mode switch).
  */
-export function usePerSetRepsDraft(
-  perSetReps: Array<{ repsMin: number; repsMax: number }> | null,
-) {
+export function usePerSetRepsDraft(perSetReps: Array<{ repsMin: number; repsMax: number }> | null) {
   const [drafts, setDrafts] = useState<Array<{ min: string; max: string }> | null>(null);
 
   useEffect(() => {
@@ -81,15 +79,21 @@ export function usePerSetRepsDraft(
   }
 
   function updateMin(setIdx: number, value: string) {
-    setDrafts((prev) => (prev ?? fromProps()).map((d, j) => (j === setIdx ? { ...d, min: value } : d)));
+    setDrafts((prev) =>
+      (prev ?? fromProps()).map((d, j) => (j === setIdx ? { ...d, min: value } : d)),
+    );
   }
 
   function updateMax(setIdx: number, value: string) {
-    setDrafts((prev) => (prev ?? fromProps()).map((d, j) => (j === setIdx ? { ...d, max: value } : d)));
+    setDrafts((prev) =>
+      (prev ?? fromProps()).map((d, j) => (j === setIdx ? { ...d, max: value } : d)),
+    );
   }
 
   function updateBoth(setIdx: number, value: string) {
-    setDrafts((prev) => (prev ?? fromProps()).map((d, j) => (j === setIdx ? { min: value, max: value } : d)));
+    setDrafts((prev) =>
+      (prev ?? fromProps()).map((d, j) => (j === setIdx ? { min: value, max: value } : d)),
+    );
   }
 
   function commit() {

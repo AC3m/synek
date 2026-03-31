@@ -35,10 +35,13 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
   const totalCompletedKm = training
     .filter((s) => s.isCompleted)
     .reduce((sum, s) => sum + (s.actualDistanceKm ?? s.plannedDistanceKm ?? 0), 0);
-  const totalActualDurationMinutes = training
-    .filter((s) => s.trainingType !== 'rest_day' && s.isCompleted)
-    .reduce((sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0), 0);
+  const completedTraining = training.filter((s) => s.trainingType !== 'rest_day' && s.isCompleted);
+  const totalActualDurationMinutes = completedTraining.reduce(
+    (sum, s) => sum + (s.actualDurationMinutes ?? s.plannedDurationMinutes ?? 0),
+    0,
+  );
   const totalActualDistanceKm = training.reduce((sum, s) => sum + (s.actualDistanceKm ?? 0), 0);
+  const totalCalories = completedTraining.reduce((sum, s) => sum + (s.calories ?? 0), 0);
 
   return {
     totalSessions,
@@ -48,6 +51,7 @@ export function computeWeekStats(sessions: TrainingSession[]): WeekStats {
     completionPercentage: totalSessions > 0 ? (completedSessions / totalSessions) * 100 : 0,
     totalActualDurationMinutes,
     totalActualDistanceKm,
+    totalCalories,
     byType: {},
     competitionSessions: [],
   };
@@ -115,6 +119,7 @@ export function augmentSessionsWithGarmin(
         match.distanceMeters != null && match.distanceMeters > 0
           ? Math.round(match.distanceMeters / 10) / 100
           : null,
+      calories: session.calories ?? match.calories,
       // isCompleted intentionally NOT touched
     };
   });

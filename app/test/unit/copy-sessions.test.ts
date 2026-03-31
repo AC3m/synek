@@ -32,6 +32,7 @@ describe('buildCopySessionInput', () => {
     avgHeartRate: 138,
     maxHeartRate: 155,
     rpe: 6,
+    calories: null,
     coachPostFeedback: 'Great effort!',
     athleteNotes: 'Felt good',
     stravaActivityId: 12345,

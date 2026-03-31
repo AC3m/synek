@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
 import { Badge } from '~/components/ui/badge';
-import { trainingTypeConfig } from '~/lib/utils/training-types';
+import { trainingTypeConfig, isDistanceBased } from '~/lib/utils/training-types';
 import { cn } from '~/lib/utils';
 import { RunFields } from './type-fields/RunFields';
 import { CyclingFields } from './type-fields/CyclingFields';
@@ -12,6 +12,8 @@ import { YogaMobilityFields } from './type-fields/YogaMobilityFields';
 import { SwimmingFields } from './type-fields/SwimmingFields';
 import { RestDayFields } from './type-fields/RestDayFields';
 import { WalkHikeFields } from './type-fields/WalkHikeFields';
+import { PilatesFields } from './type-fields/PilatesFields';
+import { EllipticalFields } from './type-fields/EllipticalFields';
 import {
   TRAINING_TYPES,
   type TrainingType,
@@ -23,6 +25,8 @@ import {
   type SwimmingData,
   type WalkData,
   type RestDayData,
+  type PilatesData,
+  type EllipticalData,
   type StrengthVariant,
   type StrengthSessionExercise,
 } from '~/types/training';
@@ -74,7 +78,7 @@ export function SessionFormFields({
   strengthPrefillDate,
 }: SessionFormFieldsProps) {
   const { t } = useTranslation(['coach', 'common', 'training']);
-  const isDistanceBased = ['run', 'cycling', 'swimming', 'walk', 'hike'].includes(trainingType);
+  const distanceBased = isDistanceBased(trainingType);
 
   const renderTypeFields = () => {
     switch (trainingType) {
@@ -108,6 +112,17 @@ export function SessionFormFields({
       case 'walk':
       case 'hike':
         return <WalkHikeFields data={typeData as Partial<WalkData>} onChange={onTypeDataChange} />;
+      case 'pilates':
+        return (
+          <PilatesFields data={typeData as Partial<PilatesData>} onChange={onTypeDataChange} />
+        );
+      case 'elliptical':
+        return (
+          <EllipticalFields
+            data={typeData as Partial<EllipticalData>}
+            onChange={onTypeDataChange}
+          />
+        );
       case 'rest_day':
         return (
           <RestDayFields data={typeData as Partial<RestDayData>} onChange={onTypeDataChange} />
@@ -188,10 +203,7 @@ export function SessionFormFields({
           </div>
 
           <div
-            className={cn(
-              'grid gap-4',
-              isDistanceBased ? 'grid-cols-2' : 'max-w-[50%] grid-cols-1',
-            )}
+            className={cn('grid gap-4', distanceBased ? 'grid-cols-2' : 'max-w-[50%] grid-cols-1')}
           >
             <div className="space-y-2">
               <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
@@ -204,7 +216,7 @@ export function SessionFormFields({
                 onChange={(e) => onDurationChange(e.target.value)}
               />
             </div>
-            {isDistanceBased && (
+            {distanceBased && (
               <div className="space-y-2">
                 <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
                   {t('coach:session.distance')}

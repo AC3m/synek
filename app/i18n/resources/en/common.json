@@ -60,6 +60,8 @@
     "swimming": "Swimming",
     "walk": "Walk",
     "hike": "Hike",
+    "pilates": "Pilates",
+    "elliptical": "Elliptical",
     "rest_day": "Rest Day",
     "other": "Other"
   },

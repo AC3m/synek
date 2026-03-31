@@ -18,6 +18,7 @@ const CHIPS = [
   { key: 'avgHr', delay: 'delay-[125ms]' },
   { key: 'maxHr', delay: 'delay-[150ms]' },
   { key: 'rpe', delay: 'delay-[175ms]' },
+  { key: 'calories', delay: 'delay-[200ms]' },
 ] as const;
 
 export function PerformanceChipGroup({
@@ -69,6 +70,14 @@ export function PerformanceChipGroup({
       show: shouldShowMaskedPlaceholders || session.rpe != null,
       label: t('training:actualPerformance.rpe'),
       value: `${session.rpe}/10`,
+    },
+    {
+      key: 'calories',
+      show:
+        session.trainingType !== 'rest_day' &&
+        (shouldShowMaskedPlaceholders || session.calories != null),
+      label: t('training:actualPerformance.calories'),
+      value: `${session.calories} ${t('training:units.kcal')}`,
     },
   ];
 

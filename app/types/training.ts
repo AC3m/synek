@@ -11,6 +11,8 @@ export const TRAINING_TYPES = [
   'swimming',
   'walk',
   'hike',
+  'pilates',
+  'elliptical',
   'rest_day',
   'other',
 ] as const;
@@ -234,6 +236,19 @@ export interface HikeData {
   elevation_gain_m?: number;
 }
 
+export interface PilatesData {
+  type: 'pilates';
+  style?: 'mat' | 'reformer' | 'clinical';
+  focus_area?: string;
+}
+
+export interface EllipticalData {
+  type: 'elliptical';
+  hr_zone?: 1 | 2 | 3 | 4 | 5;
+  resistance_level?: number;
+  incline_level?: number;
+}
+
 export interface OtherData {
   type: 'other';
 }
@@ -246,6 +261,8 @@ export type TypeSpecificData =
   | SwimmingData
   | WalkData
   | HikeData
+  | PilatesData
+  | EllipticalData
   | RestDayData
   | OtherData;
 
@@ -289,6 +306,7 @@ export interface TrainingSession {
   rpe: number | null;
   coachPostFeedback: string | null;
   athleteNotes: string | null;
+  calories: number | null;
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
   isStravaConfirmed?: boolean;
@@ -314,6 +332,7 @@ export interface WeekStats {
   completionPercentage: number;
   totalActualDurationMinutes: number;
   totalActualDistanceKm: number;
+  totalCalories: number;
   byType: Partial<Record<TrainingType, SportBreakdownEntry>>;
   competitionSessions: CompetitionSummary[];
 }
@@ -364,6 +383,7 @@ export interface CreateSessionInput {
   avgHeartRate?: number;
   maxHeartRate?: number;
   rpe?: number;
+  calories?: number;
   coachPostFeedback?: string;
   isCompleted?: boolean;
   completedAt?: string;
@@ -387,6 +407,7 @@ export interface UpdateSessionInput {
   avgHeartRate?: number | null;
   maxHeartRate?: number | null;
   rpe?: number | null;
+  calories?: number | null;
   coachPostFeedback?: string | null;
 }
 
@@ -400,6 +421,7 @@ export interface AthleteSessionUpdate {
   avgHeartRate?: number | null;
   maxHeartRate?: number | null;
   rpe?: number | null;
+  calories?: number | null;
 }
 
 // ============================================================
@@ -531,6 +553,7 @@ export interface SportBreakdownEntry {
   plannedDistanceKm: number;
   actualDistanceKm: number;
   totalDurationMinutes: number;
+  totalCalories: number;
 }
 
 export interface CompetitionSummary {

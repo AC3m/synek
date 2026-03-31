@@ -31,32 +31,25 @@ async function patchAllSessionQueries(
   queryClient: QueryClient,
   patcher: (sessions: TrainingSession[]) => TrainingSession[] | null,
 ): Promise<{ rollbacks: SessionQueryRollback[] }> {
+  // Cancel before reading — prevents in-flight refetches from completing after
+  // we snapshot the cache and overwriting the optimistic update.
+  await queryClient.cancelQueries({ queryKey: queryKeys.sessions.all });
+
   const allQueries = queryClient.getQueriesData<TrainingSession[]>({
     queryKey: queryKeys.sessions.all,
   });
 
-  const updates: Array<{
-    key: readonly unknown[];
-    original: TrainingSession[];
-    updated: TrainingSession[];
-  }> = [];
+  const rollbacks: SessionQueryRollback[] = [];
 
   for (const [key, sessions] of allQueries) {
     if (!sessions) continue;
     const updated = patcher(sessions);
     if (!updated) continue;
-    updates.push({ key: key as readonly unknown[], original: sessions, updated });
-  }
-
-  await Promise.all(updates.map(({ key }) => queryClient.cancelQueries({ queryKey: key })));
-
-  for (const { key, updated } of updates) {
+    rollbacks.push({ key: key as readonly unknown[], data: sessions });
     queryClient.setQueryData(key, updated);
   }
 
-  return {
-    rollbacks: updates.map(({ key, original }) => ({ key, data: original })),
-  };
+  return { rollbacks };
 }
 
 export function useSessions(weekPlanId: string | undefined) {
@@ -196,6 +189,7 @@ export function useUpdateAthleteSession() {
           ...(input.avgHeartRate !== undefined && { avgHeartRate: input.avgHeartRate }),
           ...(input.maxHeartRate !== undefined && { maxHeartRate: input.maxHeartRate }),
           ...(input.rpe !== undefined && { rpe: input.rpe }),
+          ...(input.calories !== undefined && { calories: input.calories }),
         };
         return updated;
       }),
