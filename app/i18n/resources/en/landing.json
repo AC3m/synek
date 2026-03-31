@@ -89,6 +89,8 @@
     "submit": "Create free account",
     "selectRole": "Pick Coach or Athlete to continue",
     "emailAlreadyRegistered": "That email is already registered. Try logging in instead.",
+    "registrationLimitReached": "Registrations are temporarily paused. Please try again tomorrow.",
+    "registrationError": "Something went wrong. Please try again.",
     "alreadyHaveAccount": "Already have an account?",
     "alreadyHaveAccountCta": "Log in →",
     "cta": "Join the beta"

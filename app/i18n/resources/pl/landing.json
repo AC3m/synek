@@ -89,6 +89,8 @@
     "submit": "Utwórz darmowe konto",
     "selectRole": "Wybierz Trener lub Zawodnik, żeby kontynuować",
     "emailAlreadyRegistered": "Ten e-mail jest już zarejestrowany. Spróbuj się zalogować.",
+    "registrationLimitReached": "Rejestracje są tymczasowo wstrzymane. Spróbuj ponownie jutro.",
+    "registrationError": "Coś poszło nie tak. Spróbuj ponownie.",
     "alreadyHaveAccount": "Masz już konto?",
     "alreadyHaveAccountCta": "Zaloguj się →",
     "cta": "Dołącz do bety"
