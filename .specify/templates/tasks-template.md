@@ -150,7 +150,12 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] TXXX [P] Documentation updates in docs/
+- [ ] TXXX [P] Documentation update — check each item and update if applicable:
+  - New reusable code pattern introduced → add to `docs/how-to/`
+  - Significant architectural decision made → add `docs/architecture/decisions/NNN-*.md`
+  - New naming, typing, or styling convention → update `docs/reference/conventions.md`
+  - New forbidden pattern identified → update `docs/reference/anti-patterns.md`
+  - No docs update needed → state explicitly why in the PR description
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
