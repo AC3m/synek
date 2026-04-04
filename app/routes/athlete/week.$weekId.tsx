@@ -146,7 +146,6 @@ export default function AthleteWeekView() {
     weekPlan,
     weekFetching,
     sessions,
-    sessionsByDay,
     showStaleContent,
     showSkeleton,
     formOpen,
