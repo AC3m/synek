@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { Copy } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -10,7 +9,7 @@ interface CopySetButtonProps {
   setIndex: number;
 }
 
-export const CopySetButton = memo(function CopySetButton({ onCopy, disabled, exerciseName, setIndex }: CopySetButtonProps) {
+export function CopySetButton({ onCopy, disabled, exerciseName, setIndex }: CopySetButtonProps) {
   const { t } = useTranslation('training');
 
   return (
@@ -27,4 +26,4 @@ export const CopySetButton = memo(function CopySetButton({ onCopy, disabled, exe
       <Copy className="size-4" />
     </button>
   );
-});
+}

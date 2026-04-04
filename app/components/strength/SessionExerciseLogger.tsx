@@ -79,7 +79,11 @@ interface PrevSummaryProps {
   exercise: StrengthVariantExercise;
 }
 
-const PrevSummary = memo(function PrevSummary({ prefill, prefillDate, exercise }: PrevSummaryProps) {
+const PrevSummary = memo(function PrevSummary({
+  prefill,
+  prefillDate,
+  exercise,
+}: PrevSummaryProps) {
   const { t } = useTranslation('training');
   const [expanded, setExpanded] = useState(false);
   const unit = exercise.loadUnit === 'sec' ? 's' : 'kg';
@@ -248,10 +252,7 @@ const ExerciseCard = memo(function ExerciseCard({
     commit(confirmedSets, intent);
   }
 
-  const currentTopLoad = useMemo(() => {
-    const { loadKg } = deriveTopSet(sets);
-    return loadKg;
-  }, [sets]);
+  const { loadKg: currentTopLoad } = deriveTopSet(sets);
 
   const filledSetCount = sets.filter((s) => s.reps !== '' && s.load !== '').length;
   const allSetsComplete = filledSetCount === exercise.sets;
@@ -351,7 +352,10 @@ const ExerciseCard = memo(function ExerciseCard({
                     <span className="font-normal text-muted-foreground/60">
                       (
                       {exercise.perSetReps[i]
-                        ? formatRepsTarget(exercise.perSetReps[i].repsMin, exercise.perSetReps[i].repsMax)
+                        ? formatRepsTarget(
+                            exercise.perSetReps[i].repsMin,
+                            exercise.perSetReps[i].repsMax,
+                          )
                         : ''}
                       )
                     </span>
@@ -375,7 +379,10 @@ const ExerciseCard = memo(function ExerciseCard({
                     value={set.reps}
                     onChange={(e) => updateSet(i, 'reps', e.target.value)}
                     onBlur={() => commit()}
-                    className={cn('h-8 text-sm', set.isPreFilled && 'bg-muted/60 text-muted-foreground italic')}
+                    className={cn(
+                      'h-8 text-sm',
+                      set.isPreFilled && 'bg-muted/60 text-muted-foreground italic',
+                    )}
                     aria-label={`Set ${i + 1} reps for ${exercise.name}`}
                   />
                   <div className="flex items-center gap-1">
@@ -387,7 +394,10 @@ const ExerciseCard = memo(function ExerciseCard({
                         value={set.load}
                         onChange={(e) => updateSet(i, 'load', e.target.value)}
                         onBlur={() => commit()}
-                        className={cn('h-8 w-full pr-7 text-sm', set.isPreFilled && 'bg-muted/60 text-muted-foreground italic')}
+                        className={cn(
+                          'h-8 w-full pr-7 text-sm',
+                          set.isPreFilled && 'bg-muted/60 text-muted-foreground italic',
+                        )}
                         aria-label={`Set ${i + 1} load for ${exercise.name}`}
                       />
                       <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xs text-muted-foreground">
@@ -395,7 +405,7 @@ const ExerciseCard = memo(function ExerciseCard({
                       </span>
                     </div>
                     {i > 0 &&
-                      (set.reps === '' && set.load === '' || set.isPreFilled) &&
+                      ((set.reps === '' && set.load === '') || set.isPreFilled) &&
                       (sets[i - 1].reps !== '' || sets[i - 1].load !== '') && (
                         <CopySetButton
                           onCopy={() => handleCopyFromAbove(i)}

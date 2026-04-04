@@ -54,7 +54,7 @@ describe('IncrementField', () => {
 
     await user.click(screen.getByRole('button', { name: /advanced/i }));
     await user.clear(screen.getByRole('spinbutton'));
-    screen.getByRole('spinbutton').blur();
+    await user.tab();
 
     expect(onChange).toHaveBeenCalledWith(null);
   });
@@ -66,7 +66,7 @@ describe('IncrementField', () => {
 
     await user.click(screen.getByRole('button', { name: /advanced/i }));
     await user.type(screen.getByRole('spinbutton'), '0');
-    screen.getByRole('spinbutton').blur();
+    await user.tab();
 
     expect(onChange).toHaveBeenCalledWith(null);
   });
@@ -78,6 +78,7 @@ describe('IncrementField', () => {
     await user.click(screen.getByRole('button', { name: /advanced/i }));
 
     expect(screen.getByText('kg')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton')).toHaveAttribute('min', '0.01');
   });
 
   it('shows unit suffix "s" for sec loadUnit', async () => {
@@ -87,6 +88,7 @@ describe('IncrementField', () => {
     await user.click(screen.getByRole('button', { name: /advanced/i }));
 
     expect(screen.getByText('s')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton')).toHaveAttribute('min', '1');
   });
 
   it('shows increment chip above trigger when value is non-null', () => {

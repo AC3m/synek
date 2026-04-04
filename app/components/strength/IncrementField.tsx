@@ -2,11 +2,7 @@ import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '~/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '~/components/ui/collapsible';
 import { Input } from '~/components/ui/input';
 import type { LoadUnit } from '~/types/training';
 
@@ -17,7 +13,12 @@ interface IncrementFieldProps {
   disabled?: boolean;
 }
 
-export function IncrementField({ value, loadUnit, onChange, disabled = false }: IncrementFieldProps) {
+export function IncrementField({
+  value,
+  loadUnit,
+  onChange,
+  disabled = false,
+}: IncrementFieldProps) {
   const { t } = useTranslation('training');
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState(value?.toString() ?? '');
@@ -54,9 +55,7 @@ export function IncrementField({ value, loadUnit, onChange, disabled = false }: 
         aria-label={t('strength.exercise.advancedToggle')}
       >
         <span>{t('strength.exercise.advancedToggle')}</span>
-        <ChevronDown
-          className={cn('size-3.5 transition-transform', open && 'rotate-180')}
-        />
+        <ChevronDown className={cn('size-3.5 transition-transform', open && 'rotate-180')} />
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="mt-2 space-y-1">
@@ -64,7 +63,7 @@ export function IncrementField({ value, loadUnit, onChange, disabled = false }: 
           <div className="relative">
             <Input
               type="number"
-              min={0}
+              min={loadUnit === 'sec' ? 1 : 0.01}
               step={loadUnit === 'sec' ? 1 : 0.5}
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}

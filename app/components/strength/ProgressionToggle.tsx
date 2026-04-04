@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { ArrowUp, Minus, ArrowDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -23,7 +22,7 @@ const BADGE_STYLES: Record<ProgressionIntent, string> = {
   down: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',
 };
 
-export const ProgressionToggle = memo(function ProgressionToggle({
+export function ProgressionToggle({
   value,
   onChange,
   readOnly = false,
@@ -32,9 +31,24 @@ export const ProgressionToggle = memo(function ProgressionToggle({
   const { t } = useTranslation('training');
 
   const options = [
-    { intent: 'up' as ProgressionIntent, Icon: ArrowUp, label: t('strength.progression.up'), shortLabel: t('strength.progression.upShort') },
-    { intent: 'maintain' as ProgressionIntent, Icon: Minus, label: t('strength.progression.maintain'), shortLabel: t('strength.progression.maintainShort') },
-    { intent: 'down' as ProgressionIntent, Icon: ArrowDown, label: t('strength.progression.down'), shortLabel: t('strength.progression.downShort') },
+    {
+      intent: 'up' as ProgressionIntent,
+      Icon: ArrowUp,
+      label: t('strength.progression.up'),
+      shortLabel: t('strength.progression.upShort'),
+    },
+    {
+      intent: 'maintain' as ProgressionIntent,
+      Icon: Minus,
+      label: t('strength.progression.maintain'),
+      shortLabel: t('strength.progression.maintainShort'),
+    },
+    {
+      intent: 'down' as ProgressionIntent,
+      Icon: ArrowDown,
+      label: t('strength.progression.down'),
+      shortLabel: t('strength.progression.downShort'),
+    },
   ];
 
   if (readOnly) {
@@ -57,7 +71,7 @@ export const ProgressionToggle = memo(function ProgressionToggle({
   return (
     <div
       className={cn(
-        'inline-flex overflow-hidden rounded border border-input divide-x divide-border',
+        'inline-flex divide-x divide-border overflow-hidden rounded border border-input',
         className,
       )}
       role="group"
@@ -86,4 +100,4 @@ export const ProgressionToggle = memo(function ProgressionToggle({
       })}
     </div>
   );
-});
+}

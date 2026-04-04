@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -13,7 +12,7 @@ interface PrefillBadgeProps {
   'data-testid'?: string;
 }
 
-export const PrefillBadge = memo(function PrefillBadge({
+export function PrefillBadge({
   direction,
   incrementApplied,
   fromDate,
@@ -32,10 +31,16 @@ export const PrefillBadge = memo(function PrefillBadge({
   let colorClass: string;
 
   if (direction === 'up' && incrementApplied != null && incrementApplied !== 0) {
-    text = t('strength.logger.prefillUp', { increment: `${incrementApplied} ${unit}`, date: formattedDate });
+    text = t('strength.logger.prefillUp', {
+      increment: `${incrementApplied} ${unit}`,
+      date: formattedDate,
+    });
     colorClass = 'text-green-600';
   } else if (direction === 'down' && incrementApplied != null && incrementApplied !== 0) {
-    text = t('strength.logger.prefillDown', { increment: `${Math.abs(incrementApplied)} ${unit}`, date: formattedDate });
+    text = t('strength.logger.prefillDown', {
+      increment: `${Math.abs(incrementApplied)} ${unit}`,
+      date: formattedDate,
+    });
     colorClass = 'text-amber-600';
   } else if (direction === 'maintain' || direction === 'up' || direction === 'down') {
     text = t('strength.logger.prefillMaintain', { date: formattedDate });
@@ -50,4 +55,4 @@ export const PrefillBadge = memo(function PrefillBadge({
       {text}
     </p>
   );
-});
+}
