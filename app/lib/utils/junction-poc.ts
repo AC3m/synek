@@ -4,6 +4,7 @@ import { JUNCTION_SPORT_MAP } from '~/types/junction-poc';
 import type { JunctionPocWorkout } from '~/types/junction-poc';
 import type { TrainingSession } from '~/types/training';
 import { getSessionCalendarDate } from '~/lib/utils/date';
+import { formatPaceSpeed } from '~/lib/utils/lap-classification';
 
 /**
  * Augments sessions with Garmin activity data from Junction.
@@ -80,6 +81,9 @@ export function augmentSessionsWithGarmin(
       calories: session.calories ?? bestMatch.calories,
       avgHeartRate: session.avgHeartRate ?? bestMatch.averageHr,
       maxHeartRate: session.maxHeartRate ?? bestMatch.maxHr,
+      actualPace:
+        session.actualPace ??
+        (bestMatch.averageSpeed != null ? formatPaceSpeed(bestMatch.averageSpeed) : null),
       // isCompleted intentionally NOT touched
       garminAugmented: true,
     };
