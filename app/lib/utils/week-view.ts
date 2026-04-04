@@ -83,3 +83,23 @@ export function computeDragResult(
   return { sessionId: activeId, dayOfWeek: targetDay, sortOrder };
 }
 
+/**
+ * Returns true when the session has manually-logged performance data worth displaying.
+ * Garmin-augmented sessions have duration/distance/HR/calories back-filled onto the
+ * session for stats purposes; those fields are already shown by GarminSection, so they
+ * are excluded here to prevent duplicate display.
+ */
+export function sessionHasActualPerformance(session: TrainingSession): boolean {
+  if (session.garminAugmented) {
+    return session.actualPace != null || session.rpe != null;
+  }
+  return (
+    session.actualDurationMinutes != null ||
+    session.actualDistanceKm != null ||
+    session.actualPace != null ||
+    session.avgHeartRate != null ||
+    session.maxHeartRate != null ||
+    session.rpe != null
+  );
+}
+

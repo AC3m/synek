@@ -21,6 +21,7 @@ import { useSessionActions } from '~/lib/context/SessionActionsContext';
 import { GarminSection } from './GarminSection';
 import { PerformanceChipGroup } from './PerformanceChipGroup';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
+import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
 import { SessionExerciseLogger } from '~/components/strength/SessionExerciseLogger';
 import type { LogRowChange } from '~/components/strength/SessionExerciseLogger';
@@ -170,26 +171,7 @@ export function SessionDetailModal({
     [strengthVariantId, session.id, mutateExercises],
   );
 
-  const hasActualPerformance = useMemo(
-    () =>
-      session.garminAugmented
-        ? session.actualPace != null || session.rpe != null
-        : session.actualDurationMinutes != null ||
-          session.actualDistanceKm != null ||
-          session.actualPace != null ||
-          session.avgHeartRate != null ||
-          session.maxHeartRate != null ||
-          session.rpe != null,
-    [
-      session.garminAugmented,
-      session.actualDurationMinutes,
-      session.actualDistanceKm,
-      session.actualPace,
-      session.avgHeartRate,
-      session.maxHeartRate,
-      session.rpe,
-    ],
-  );
+  const hasActualPerformance = sessionHasActualPerformance(session);
 
   const shouldShowActualSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);

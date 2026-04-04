@@ -19,6 +19,7 @@ import {
   isDistanceBased,
 } from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
+import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
 import { type TrainingSession, type RunData } from '~/types/training';
 
@@ -82,17 +83,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
   const isMasked =
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
-  // Garmin-augmented sessions back-fill duration/distance/HR/calories onto the session so that
-  // stats can use them. Those fields are already shown by GarminSection, so exclude them from
-  // the PerformanceChipGroup check to avoid showing duplicate data.
-  const hasActualPerformance = session.garminAugmented
-    ? session.actualPace != null || session.rpe != null
-    : session.actualDurationMinutes != null ||
-      session.actualDistanceKm != null ||
-      session.actualPace != null ||
-      session.avgHeartRate != null ||
-      session.maxHeartRate != null ||
-      session.rpe != null;
+  const hasActualPerformance = sessionHasActualPerformance(session);
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
   const shouldShowPerformanceSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
