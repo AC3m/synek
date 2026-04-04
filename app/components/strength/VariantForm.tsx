@@ -578,6 +578,32 @@ interface VariantFormProps {
   className?: string;
 }
 
+function normalizeVariantFormState(
+  name: string,
+  description: string,
+  exercises: FormExercise[],
+  links: boolean[],
+) {
+  const supersetGroups = computeSupersetGroups(links, exercises.length);
+
+  return {
+    name: name.trim(),
+    description: description.trim(),
+    exercises: exercises.map((ex, i) => ({
+      id: ex.id,
+      name: ex.name,
+      videoUrl: ex.videoUrl,
+      sets: ex.sets,
+      repsMin: ex.repsMin,
+      repsMax: ex.repsMax,
+      perSetReps: ex.perSetReps ?? null,
+      loadUnit: ex.loadUnit,
+      supersetGroup: supersetGroups[i],
+      progressionIncrement: ex.progressionIncrement ?? null,
+    })),
+  };
+}
+
 export function VariantForm({
   initial,
   onSave,
@@ -687,16 +713,44 @@ export function VariantForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-    const supersetGroups = computeSupersetGroups(links, exercises.length);
-    const exercisesWithGroups = exercises.map((ex, i) => ({
+
+    const normalizedCurrent = normalizeVariantFormState(name, description, exercises, links);
+    if (initial) {
+      const normalizedInitial = normalizeVariantFormState(
+        initial.name,
+        initial.description ?? '',
+        convertToFormExercises(initial.exercises),
+        initLinks(initial.exercises),
+      );
+
+      if (JSON.stringify(normalizedCurrent) === JSON.stringify(normalizedInitial)) {
+        return;
+      }
+    }
+
+    const exercisesWithGroups = normalizedCurrent.exercises.map((ex) => ({
       ...ex,
-      supersetGroup: supersetGroups[i],
     }));
-    onSave({ name: name.trim(), description: description.trim(), exercises: exercisesWithGroups });
+    onSave({
+      name: normalizedCurrent.name,
+      description: normalizedCurrent.description,
+      exercises: exercisesWithGroups,
+    });
   };
 
   // Compute live superset group IDs for coloring during editing
   const displayGroups = computeSupersetGroups(links, exercises.length);
+  const isDirty = initial
+    ? JSON.stringify(normalizeVariantFormState(name, description, exercises, links)) !==
+      JSON.stringify(
+        normalizeVariantFormState(
+          initial.name,
+          initial.description ?? '',
+          convertToFormExercises(initial.exercises),
+          initLinks(initial.exercises),
+        ),
+      )
+    : true;
 
   return (
     <form onSubmit={handleSubmit} className={cn('space-y-6', className)}>
@@ -782,7 +836,7 @@ export function VariantForm({
       {/* Actions */}
       {!hideActions && (
         <div className="flex gap-2">
-          <Button type="submit" disabled={isSaving || !name.trim()}>
+          <Button type="submit" disabled={isSaving || !name.trim() || !isDirty}>
             {isSaving ? 'Saving…' : 'Save'}
           </Button>
           {onCancel && (

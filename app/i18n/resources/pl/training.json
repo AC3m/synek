@@ -52,11 +52,11 @@
       },
       "setLabel": "S{{n}}",
       "loadUnit": "Jednostka obciążenia",
-      "incrementLabel": "Przyrost obciążenia na sesję",
-      "durationIncrement": "Przyrost czasu na sesję",
+      "incrementLabel": "Progres obciążenia na sesję",
+      "durationIncrement": "Progres czasu na sesję",
       "incrementChip": "+{{value}} {{unit}}",
       "advancedToggle": "Zaawansowane",
-      "incrementInvalidTitle": "Nieprawidłowy przyrost",
+      "incrementInvalidTitle": "Nieprawidłowy progres",
       "incrementInvalidDescription": "Wpisz liczbę dodatnią. Możesz użyć . lub , jako separatora dziesiętnego."
     },
     "variant": {
@@ -131,8 +131,8 @@
       "prefillDown": "▼ −{{increment}} z {{date}}",
       "prefillMaintain": "= z {{date}}",
       "firstSession": "Pierwsza sesja — ustal punkt odniesienia",
-      "setIncrementHint": "Ustaw przyrost w konfiguracji wariantu, aby auto-postępować",
-      "floorReached": "Osiągnięto minimum — dostosuj przyrost"
+      "setIncrementHint": "Ustaw progres w konfiguracji wariantu, aby auto-postępować",
+      "floorReached": "Osiągnięto minimum — dostosuj progres"
     },
     "progression": {
       "up": "Zwiększ obciążenie",
