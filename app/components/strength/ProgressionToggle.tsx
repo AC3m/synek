@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { ArrowUp, Minus, ArrowDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -31,14 +31,11 @@ export const ProgressionToggle = memo(function ProgressionToggle({
 }: ProgressionToggleProps) {
   const { t } = useTranslation('training');
 
-  const options = useMemo(
-    () => [
-      { intent: 'up' as ProgressionIntent, Icon: ArrowUp, label: t('strength.progression.up'), shortLabel: t('strength.progression.upShort') },
-      { intent: 'maintain' as ProgressionIntent, Icon: Minus, label: t('strength.progression.maintain'), shortLabel: t('strength.progression.maintainShort') },
-      { intent: 'down' as ProgressionIntent, Icon: ArrowDown, label: t('strength.progression.down'), shortLabel: t('strength.progression.downShort') },
-    ],
-    [t],
-  );
+  const options = [
+    { intent: 'up' as ProgressionIntent, Icon: ArrowUp, label: t('strength.progression.up'), shortLabel: t('strength.progression.upShort') },
+    { intent: 'maintain' as ProgressionIntent, Icon: Minus, label: t('strength.progression.maintain'), shortLabel: t('strength.progression.maintainShort') },
+    { intent: 'down' as ProgressionIntent, Icon: ArrowDown, label: t('strength.progression.down'), shortLabel: t('strength.progression.downShort') },
+  ];
 
   if (readOnly) {
     const active = options.find((o) => o.intent === value);
