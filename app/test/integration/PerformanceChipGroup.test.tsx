@@ -99,9 +99,9 @@ describe('PerformanceChipGroup', () => {
         shouldShowMaskedPlaceholders={true}
       />,
     );
-    // All 6 chips should be rendered
+    // All chips should be rendered (7 including calories)
     const chipDivs = container.querySelectorAll('.flex.flex-col');
-    expect(chipDivs.length).toBe(6);
+    expect(chipDivs.length).toBe(7);
   });
 
   it('size="compact" applies text-[10px] to value spans', () => {

@@ -1,3 +1,52 @@
+import type { StrengthSessionExercise, StrengthVariantExercise } from '~/types/training';
+
+// ---------------------------------------------------------------------------
+// Shared set state — used by SessionExerciseLogger and computePrefillSets
+// ---------------------------------------------------------------------------
+
+export interface SetState {
+  reps: string;
+  load: string;
+  isPreFilled: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Pre-fill computation — pure utility, called once at session open
+// ---------------------------------------------------------------------------
+
+/**
+ * Computes the suggested set values for the next session.
+ * Only called when the exercise has no existing logged data.
+ *
+ * @param prefill  Last completed session exercise data
+ * @param exercise Variant exercise with optional progressionIncrement
+ * @returns        Array of SetState (isPreFilled = true for all entries)
+ */
+export function computePrefillSets(
+  prefill: StrengthSessionExercise,
+  exercise: StrengthVariantExercise,
+): SetState[] {
+  const increment = exercise.progressionIncrement ?? 0;
+  const loadDelta =
+    prefill.progression === 'up'
+      ? increment
+      : prefill.progression === 'down'
+        ? -increment
+        : 0;
+
+  return Array.from({ length: exercise.sets }, (_, i) => {
+    const prevLoad = prefill.setsData?.[i]?.loadKg ?? prefill.loadKg;
+    const prevReps = prefill.setsData?.[i]?.reps ?? prefill.actualReps;
+    const newLoad = prevLoad != null ? Math.max(0, prevLoad + loadDelta) : null;
+
+    return {
+      reps: prevReps?.toString() ?? '',
+      load: newLoad?.toString() ?? '',
+      isPreFilled: true,
+    };
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Superset color palette — keyed by group ID, cycling if > 5 groups
 // Used in SessionExerciseLogger and VariantExerciseList

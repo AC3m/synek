@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { Label } from '~/components/ui/label';
+import { IncrementField } from '~/components/strength/IncrementField';
 import type { StrengthVariant, StrengthVariantExercise, PerSetRep } from '~/types/training';
 
 // Hoisted — doesn't change between renders
@@ -39,6 +40,7 @@ interface FormExercise {
   perSetReps: { repsMin: number; repsMax: number }[] | null;
   loadUnit: 'kg' | 'sec';
   supersetGroup?: number | null;
+  progressionIncrement: number | null;
 }
 
 function convertToFormExercises(exercises: StrengthVariantExercise[]): FormExercise[] {
@@ -52,6 +54,7 @@ function convertToFormExercises(exercises: StrengthVariantExercise[]): FormExerc
     perSetReps: ex.perSetReps ?? null,
     loadUnit: ex.loadUnit,
     supersetGroup: ex.supersetGroup,
+    progressionIncrement: ex.progressionIncrement,
   }));
 }
 
@@ -64,6 +67,7 @@ function createEmptyExercise(): FormExercise {
     repsMax: 12,
     perSetReps: null,
     loadUnit: 'kg',
+    progressionIncrement: null,
   };
 }
 
@@ -512,6 +516,15 @@ const ExerciseRow = memo(function ExerciseRow({
             </button>
           ))}
         </div>
+      </div>
+
+      {/* Progression increment */}
+      <div className="mt-2">
+        <IncrementField
+          value={exercise.progressionIncrement}
+          loadUnit={exercise.loadUnit}
+          onChange={(val) => onChange(index, { progressionIncrement: val })}
+        />
       </div>
 
       {/* Video URL */}

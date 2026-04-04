@@ -102,6 +102,7 @@ export interface StrengthVariantExercise {
   loadUnit: LoadUnit;
   sortOrder: number;
   supersetGroup: number | null;
+  progressionIncrement: number | null;
   createdAt: string;
 }
 
@@ -166,6 +167,7 @@ export interface CreateStrengthVariantInput {
     loadUnit?: LoadUnit;
     sortOrder: number;
     supersetGroup?: number | null;
+    progressionIncrement?: number | null;
   }>;
 }
 
@@ -188,6 +190,7 @@ export interface UpsertVariantExercisesInput {
     loadUnit?: LoadUnit;
     sortOrder: number;
     supersetGroup?: number | null;
+    progressionIncrement?: number | null;
   }>;
 }
 

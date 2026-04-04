@@ -1,15 +1,20 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+import { Skeleton } from '~/components/ui/skeleton';
+import { ChevronDown, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import {
-  SUPERSET_COLORS,
   getSupersetColor,
   formatRepsTarget,
   groupExercises,
+  computePrefillSets,
+  type SetState,
 } from '~/lib/utils/strength';
 import { DeltaIndicator } from '~/components/strength/DeltaIndicator';
 import { ProgressionToggle } from '~/components/strength/ProgressionToggle';
+import { CopySetButton } from '~/components/strength/CopySetButton';
+import { PrefillBadge } from '~/components/strength/PrefillBadge';
 import { Input } from '~/components/ui/input';
 import type {
   SetEntry,
@@ -30,19 +35,24 @@ export interface LogRowChange {
   progression: ProgressionIntent | null;
 }
 
-interface SetState {
-  reps: string;
-  load: string;
-}
-
-function initSets(count: number, logged: StrengthSessionExercise | undefined): SetState[] {
+function initSets(
+  count: number,
+  logged: StrengthSessionExercise | undefined,
+  prefill: StrengthSessionExercise | undefined,
+  exercise: StrengthVariantExercise,
+): SetState[] {
   if (logged?.setsData && logged.setsData.length > 0) {
     return Array.from({ length: count }, (_, i) => ({
       reps: logged.setsData[i]?.reps?.toString() ?? '',
       load: logged.setsData[i]?.loadKg?.toString() ?? '',
+      isPreFilled: false,
     }));
   }
-  return Array.from({ length: count }, () => ({ reps: '', load: '' }));
+  // No logged data but prefill exists — compute pre-filled values
+  if (!logged && prefill) {
+    return computePrefillSets(prefill, exercise);
+  }
+  return Array.from({ length: count }, () => ({ reps: '', load: '', isPreFilled: false }));
 }
 
 function deriveTopSet(sets: SetState[]): { actualReps: number | null; loadKg: number | null } {
@@ -60,6 +70,75 @@ function deriveTopSet(sets: SetState[]): { actualReps: number | null; loadKg: nu
 }
 
 // ---------------------------------------------------------------------------
+// PrevSummary — collapsible previous session banner above the set grid
+// ---------------------------------------------------------------------------
+
+interface PrevSummaryProps {
+  prefill: StrengthSessionExercise;
+  prefillDate: string;
+  exercise: StrengthVariantExercise;
+}
+
+const PrevSummary = memo(function PrevSummary({ prefill, prefillDate, exercise }: PrevSummaryProps) {
+  const { t } = useTranslation('training');
+  const [expanded, setExpanded] = useState(false);
+  const unit = exercise.loadUnit === 'sec' ? 's' : 'kg';
+
+  const formattedDate = format(parseISO(prefillDate), 'MMM d');
+
+  const setLines = Array.from({ length: exercise.sets }, (_, i) => {
+    const setData = prefill.setsData?.[i];
+    const reps = setData?.reps ?? prefill.actualReps ?? null;
+    const load = setData?.loadKg ?? prefill.loadKg ?? null;
+    return { reps, load };
+  });
+
+  return (
+    <div
+      className="mb-2 rounded border border-dashed bg-muted/20 px-2.5 py-1.5"
+      data-testid="prev-summary"
+    >
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-label={expanded ? t('strength.logger.prevCollapse') : t('strength.logger.prevExpand')}
+        className="flex w-full items-center justify-between gap-2 text-xs text-muted-foreground"
+        data-testid="prev-summary-toggle"
+      >
+        <span>
+          {t('strength.logger.prevSession')} · {formattedDate}
+        </span>
+        <span className="flex items-center gap-1.5">
+          {prefill.progression && (
+            <ProgressionToggle value={prefill.progression} onChange={() => {}} readOnly />
+          )}
+          <ChevronDown
+            className={cn('size-3.5 transition-transform duration-150', expanded && 'rotate-180')}
+          />
+        </span>
+      </button>
+      {expanded && (
+        <div className="mt-1.5 space-y-0.5 border-t pt-1.5" data-testid="prev-summary-expanded">
+          {setLines.map(({ reps, load }, i) => (
+            <div
+              key={i}
+              data-testid={`prev-row-${i}`}
+              className="flex gap-3 text-xs text-muted-foreground tabular-nums"
+            >
+              <span className="w-4">{i + 1}</span>
+              <span>
+                {reps ?? '—'} {t('strength.logger.reps')}
+              </span>
+              <span>{load != null ? `${load} ${unit}` : '—'}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+});
+
+// ---------------------------------------------------------------------------
 // ExerciseCard — memoised so only changed card re-renders
 // ---------------------------------------------------------------------------
 
@@ -67,6 +146,7 @@ interface ExerciseCardProps {
   exercise: StrengthVariantExercise;
   logged: StrengthSessionExercise | undefined;
   prefill: StrengthSessionExercise | undefined;
+  prefillDate?: string | null;
   readOnly: boolean;
   isInSuperset?: boolean;
   onChange: (change: LogRowChange) => void;
@@ -76,13 +156,16 @@ const ExerciseCard = memo(function ExerciseCard({
   exercise,
   logged,
   prefill,
+  prefillDate,
   readOnly,
   isInSuperset = false,
   onChange,
 }: ExerciseCardProps) {
   const { t } = useTranslation('training');
 
-  const [sets, setSets] = useState<SetState[]>(() => initSets(exercise.sets, logged));
+  const [sets, setSets] = useState<SetState[]>(() =>
+    initSets(exercise.sets, logged, prefill, exercise),
+  );
   const [progression, setProgression] = useState<ProgressionIntent | null>(
     logged?.progression ?? null,
   );
@@ -92,14 +175,36 @@ const ExerciseCard = memo(function ExerciseCard({
   // On first load the query may still be in-flight, so `logged` arrives after
   // mount and the useState initializers above run with undefined. Hydrate once
   // when real data lands, but never overwrite edits the user has already made.
-  const hydratedRef = useRef(false);
+  // Also skip re-hydration when pre-fill was already applied (sets[0].isPreFilled).
+  // Separate refs so each hydration path gates independently.
+  // loggedHydratedRef: logged data has been applied (fires once, always wins).
+  // prefillHydratedRef: pre-fill has been applied (only when no logged data).
+  const loggedHydratedRef = useRef(false);
+  const prefillHydratedRef = useRef(false);
+
   useEffect(() => {
-    if (logged && !hydratedRef.current) {
-      hydratedRef.current = true;
-      setSets(initSets(exercise.sets, logged));
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
+  // Logged data always takes priority — apply once on first arrival.
+  useEffect(() => {
+    if (logged && !loggedHydratedRef.current) {
+      loggedHydratedRef.current = true;
+      setSets(initSets(exercise.sets, logged, prefill, exercise));
       setProgression(logged.progression ?? null);
     }
-  }, [logged, exercise.sets]);
+  }, [logged, exercise.sets]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Pre-fill only when no logged data exists. Re-evaluates if logged arrives
+  // after pre-fill (ensures logged data can still overwrite a pre-filled state).
+  useEffect(() => {
+    if (!logged && prefill && !prefillHydratedRef.current) {
+      prefillHydratedRef.current = true;
+      setSets(computePrefillSets(prefill, exercise));
+    }
+  }, [prefill, logged]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function commit(currentSets = sets, currentProgression = progression) {
     const setsData: SetEntry[] = currentSets.map((s) => ({
@@ -122,14 +227,25 @@ const ExerciseCard = memo(function ExerciseCard({
   function updateSet(index: number, field: 'reps' | 'load', value: string) {
     setSets((prev) => {
       const next = [...prev];
-      next[index] = { ...next[index], [field]: value };
+      next[index] = { ...next[index], [field]: value, isPreFilled: false };
       return next;
     });
   }
 
+  function handleCopyFromAbove(index: number) {
+    const above = sets[index - 1];
+    const updated = sets.map((s, i) =>
+      i === index ? { reps: above.reps, load: above.load, isPreFilled: false } : s,
+    );
+    setSets(updated);
+    commit(updated, progression);
+  }
+
   function handleProgressionChange(intent: ProgressionIntent | null) {
     setProgression(intent);
-    commit(sets, intent);
+    const confirmedSets = sets.map((s) => ({ ...s, isPreFilled: false }));
+    setSets(confirmedSets);
+    commit(confirmedSets, intent);
   }
 
   const currentTopLoad = useMemo(() => {
@@ -139,6 +255,16 @@ const ExerciseCard = memo(function ExerciseCard({
 
   const filledSetCount = sets.filter((s) => s.reps !== '' && s.load !== '').length;
   const allSetsComplete = filledSetCount === exercise.sets;
+
+  // Compute the increment applied for PrefillBadge display
+  const computedLoadDelta =
+    prefill && exercise.progressionIncrement != null
+      ? prefill.progression === 'up'
+        ? exercise.progressionIncrement
+        : prefill.progression === 'down'
+          ? -exercise.progressionIncrement
+          : null
+      : null;
 
   return (
     <div
@@ -169,14 +295,19 @@ const ExerciseCard = memo(function ExerciseCard({
           <p className="mt-0.5 text-xs text-muted-foreground">
             {exercise.sets} {t('strength.logger.sets')} · {t('strength.logger.target')}:{' '}
             {exercise.perSetReps
-              ? exercise.perSetReps
-                  .map((r) =>
-                    r.repsMin === r.repsMax ? String(r.repsMin) : `${r.repsMin}–${r.repsMax}`,
-                  )
-                  .join('/')
+              ? exercise.perSetReps.map((r) => formatRepsTarget(r.repsMin, r.repsMax)).join('/')
               : formatRepsTarget(exercise.repsMin, exercise.repsMax)}{' '}
             {t('strength.logger.reps')}
           </p>
+          {prefillDate && prefill && (
+            <PrefillBadge
+              data-testid="prefill-badge"
+              direction={prefill.progression}
+              incrementApplied={computedLoadDelta}
+              fromDate={prefillDate}
+              loadUnit={exercise.loadUnit}
+            />
+          )}
         </div>
         <div className="ml-2 flex shrink-0 items-center gap-2">
           {currentTopLoad != null && prefill?.loadKg != null && (
@@ -188,6 +319,11 @@ const ExerciseCard = memo(function ExerciseCard({
 
       {/* Set rows */}
       <div className="px-3 py-2">
+        {/* Previous session collapsible summary */}
+        {prefill && prefillDate && (
+          <PrevSummary prefill={prefill} prefillDate={prefillDate} exercise={exercise} />
+        )}
+
         <div
           className={cn(
             'mb-1.5 grid gap-2 text-[10px] tracking-widest text-muted-foreground uppercase',
@@ -200,52 +336,50 @@ const ExerciseCard = memo(function ExerciseCard({
         </div>
 
         <div className="space-y-1.5">
-          {sets.map((set, i) => {
-            const prefillSet = prefill?.setsData?.[i];
-            return (
-              <div
-                key={i}
-                className={cn(
-                  'grid items-center gap-2',
-                  exercise.perSetReps ? 'grid-cols-[4rem_1fr_1fr]' : 'grid-cols-[2.5rem_1fr_1fr]',
-                )}
-              >
-                <span className="text-xs font-medium text-muted-foreground tabular-nums">
-                  {exercise.perSetReps ? (
-                    <>
-                      {i + 1}{' '}
-                      <span className="font-normal text-muted-foreground/60">
-                        (
-                        {exercise.perSetReps[i]?.repsMin === exercise.perSetReps[i]?.repsMax
-                          ? exercise.perSetReps[i]?.repsMin
-                          : `${exercise.perSetReps[i]?.repsMin}–${exercise.perSetReps[i]?.repsMax}`}
-                        )
-                      </span>
-                    </>
-                  ) : (
-                    i + 1
-                  )}
-                </span>
-                {readOnly ? (
+          {sets.map((set, i) => (
+            <div
+              key={i}
+              className={cn(
+                'grid items-center gap-2',
+                exercise.perSetReps ? 'grid-cols-[4rem_1fr_1fr]' : 'grid-cols-[2.5rem_1fr_1fr]',
+              )}
+            >
+              <span className="text-xs font-medium text-muted-foreground tabular-nums">
+                {exercise.perSetReps ? (
                   <>
-                    <span className="text-sm">{set.reps || '—'}</span>
-                    <span className="text-sm">
-                      {set.load ? `${set.load} ${exercise.loadUnit === 'sec' ? 's' : 'kg'}` : '—'}
+                    {i + 1}{' '}
+                    <span className="font-normal text-muted-foreground/60">
+                      (
+                      {exercise.perSetReps[i]
+                        ? formatRepsTarget(exercise.perSetReps[i].repsMin, exercise.perSetReps[i].repsMax)
+                        : ''}
+                      )
                     </span>
                   </>
                 ) : (
-                  <>
-                    <Input
-                      type="number"
-                      min={0}
-                      value={set.reps}
-                      onChange={(e) => updateSet(i, 'reps', e.target.value)}
-                      onBlur={() => commit()}
-                      placeholder={prefillSet?.reps?.toString() ?? '—'}
-                      className="h-8 text-sm"
-                      aria-label={`Set ${i + 1} reps for ${exercise.name}`}
-                    />
-                    <div className="relative">
+                  i + 1
+                )}
+              </span>
+              {readOnly ? (
+                <>
+                  <span className="text-sm">{set.reps || '—'}</span>
+                  <span className="text-sm">
+                    {set.load ? `${set.load} ${exercise.loadUnit === 'sec' ? 's' : 'kg'}` : '—'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={set.reps}
+                    onChange={(e) => updateSet(i, 'reps', e.target.value)}
+                    onBlur={() => commit()}
+                    className={cn('h-8 text-sm', set.isPreFilled && 'bg-muted/60 text-muted-foreground italic')}
+                    aria-label={`Set ${i + 1} reps for ${exercise.name}`}
+                  />
+                  <div className="flex items-center gap-1">
+                    <div className="relative flex-1">
                       <Input
                         type="number"
                         min={0}
@@ -253,36 +387,104 @@ const ExerciseCard = memo(function ExerciseCard({
                         value={set.load}
                         onChange={(e) => updateSet(i, 'load', e.target.value)}
                         onBlur={() => commit()}
-                        placeholder={prefillSet?.loadKg?.toString() ?? '—'}
-                        className="h-8 pr-7 text-sm"
+                        className={cn('h-8 w-full pr-7 text-sm', set.isPreFilled && 'bg-muted/60 text-muted-foreground italic')}
                         aria-label={`Set ${i + 1} load for ${exercise.name}`}
                       />
                       <span className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 text-xs text-muted-foreground">
                         {exercise.loadUnit === 'sec' ? 's' : 'kg'}
                       </span>
                     </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
+                    {i > 0 &&
+                      (set.reps === '' && set.load === '' || set.isPreFilled) &&
+                      (sets[i - 1].reps !== '' || sets[i - 1].load !== '') && (
+                        <CopySetButton
+                          onCopy={() => handleCopyFromAbove(i)}
+                          disabled={false}
+                          exerciseName={exercise.name}
+                          setIndex={i}
+                        />
+                      )}
+                  </div>
+                </>
+              )}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Next session intent */}
-      <div className="border-t px-3 py-2.5">
-        <p className="mb-1.5 text-[10px] tracking-widest text-muted-foreground uppercase">
-          {t('strength.logger.nextSession')}
-        </p>
-        <ProgressionToggle
-          value={progression}
-          onChange={handleProgressionChange}
-          readOnly={readOnly}
-        />
-      </div>
+      {(!readOnly || progression) && (
+        <div
+          className={cn(
+            'flex items-center gap-2 border-t px-3 py-2',
+            !readOnly && 'justify-between',
+          )}
+        >
+          <span className="text-[10px] tracking-widest text-muted-foreground uppercase">
+            {t('strength.logger.nextSession')}
+          </span>
+          <ProgressionToggle
+            value={progression}
+            onChange={readOnly ? () => {} : handleProgressionChange}
+            readOnly={readOnly}
+          />
+        </div>
+      )}
     </div>
   );
 });
+
+// ---------------------------------------------------------------------------
+// StrengthLoggerSkeleton — shown while the variant is loading
+// ---------------------------------------------------------------------------
+
+function ExerciseCardSkeleton() {
+  return (
+    <div className="rounded-lg border bg-card">
+      {/* Header */}
+      <div className="flex items-start justify-between border-b bg-muted/30 px-3 py-2.5">
+        <div className="space-y-1.5">
+          <Skeleton className="h-4 w-32" />
+          <Skeleton className="h-3 w-20" />
+        </div>
+      </div>
+      {/* Set rows */}
+      <div className="space-y-2 px-3 py-2">
+        <div className="mb-1.5 grid grid-cols-[2.5rem_1fr_1fr] gap-2">
+          <Skeleton className="h-3 w-5" />
+          <Skeleton className="h-3 w-8" />
+          <Skeleton className="h-3 w-10" />
+        </div>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="grid grid-cols-[2.5rem_1fr_1fr] items-center gap-2">
+            <Skeleton className="h-3 w-3" />
+            <Skeleton className="h-8 w-full rounded-md" />
+            <Skeleton className="h-8 w-full rounded-md" />
+          </div>
+        ))}
+      </div>
+      {/* Footer */}
+      <div className="flex items-center justify-between border-t px-3 py-2">
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="h-7 w-36 rounded" />
+      </div>
+    </div>
+  );
+}
+
+export function StrengthLoggerSkeleton({ className }: { className?: string }) {
+  return (
+    <div className={cn('space-y-1', className)}>
+      <div className="pb-1">
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="mt-1.5 h-4 w-40" />
+      </div>
+      <div className="space-y-3">
+        <ExerciseCardSkeleton />
+        <ExerciseCardSkeleton />
+      </div>
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // SessionExerciseLogger
@@ -292,6 +494,7 @@ interface SessionExerciseLoggerProps {
   exercises: StrengthVariantExercise[];
   loggedExercises: StrengthSessionExercise[];
   prefillData?: Record<string, StrengthSessionExercise>;
+  prefillDate?: string | null;
   readOnly?: boolean;
   variantName?: string;
   onChange: (changes: LogRowChange[]) => void;
@@ -302,6 +505,7 @@ export function SessionExerciseLogger({
   exercises,
   loggedExercises,
   prefillData,
+  prefillDate,
   readOnly = false,
   variantName,
   onChange,
@@ -334,7 +538,7 @@ export function SessionExerciseLogger({
     let vol = 0;
     let hasAny = false;
     for (const ex of exercises) {
-      if (ex.loadUnit === 'sec') continue; // seconds-based exercises don't contribute to kg volume
+      if (ex.loadUnit === 'sec') continue;
       const row = pending[ex.id] ?? logMap[ex.id];
       if (!row) continue;
       if (row.setsData && row.setsData.length > 0) {
@@ -352,7 +556,7 @@ export function SessionExerciseLogger({
     return hasAny ? Math.round(vol) : null;
   }, [exercises, logMap, pending]);
 
-  const groups = groupExercises(exercises);
+  const groups = useMemo(() => groupExercises(exercises), [exercises]);
 
   return (
     <div className={cn('space-y-1', className)}>
@@ -375,6 +579,7 @@ export function SessionExerciseLogger({
                 exercise={ex}
                 logged={logMap[ex.id]}
                 prefill={prefillData?.[ex.id]}
+                prefillDate={prefillDate}
                 readOnly={readOnly}
                 onChange={handleRowChange}
               />
@@ -402,6 +607,7 @@ export function SessionExerciseLogger({
                     exercise={ex}
                     logged={logMap[ex.id]}
                     prefill={prefillData?.[ex.id]}
+                    prefillDate={prefillDate}
                     readOnly={readOnly}
                     isInSuperset
                     onChange={handleRowChange}
