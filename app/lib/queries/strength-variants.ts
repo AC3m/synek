@@ -51,6 +51,7 @@ function toStrengthVariantExercise(row: Record<string, unknown>): StrengthVarian
     loadUnit: (row.load_unit as LoadUnit | null) ?? 'kg',
     sortOrder: row.sort_order as number,
     supersetGroup: row.superset_group as number | null,
+    progressionIncrement: row.progression_increment != null ? Number(row.progression_increment) : null,
     createdAt: row.created_at as string,
   };
 }
@@ -99,7 +100,7 @@ function toStrengthSessionExercise(row: Record<string, unknown>): StrengthSessio
 // Nested select that fetches variant + exercises in one round-trip.
 const VARIANT_WITH_EXERCISES_SELECT =
   'id, user_id, name, description, created_at, updated_at, ' +
-  'strength_variant_exercises(id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at)';
+  'strength_variant_exercises(id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, progression_increment, created_at)';
 
 function exercisesFromRow(row: Record<string, unknown>): StrengthVariantExercise[] {
   const exRows = (row.strength_variant_exercises as Record<string, unknown>[] | null) ?? [];
@@ -164,13 +165,14 @@ export async function createStrengthVariant(
     load_unit: ex.loadUnit ?? 'kg',
     sort_order: ex.sortOrder,
     superset_group: ex.supersetGroup ?? null,
+    progression_increment: ex.progressionIncrement ?? null,
   }));
 
   const { data: exRows, error: exError } = await supabase
     .from('strength_variant_exercises')
     .insert(exerciseInserts)
     .select(
-      'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at',
+      'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, progression_increment, created_at',
     );
   if (exError) throw exError;
 
@@ -254,12 +256,13 @@ export async function upsertVariantExercises(
       load_unit: ex.loadUnit ?? 'kg',
       sort_order: ex.sortOrder,
       superset_group: ex.supersetGroup ?? null,
+      progression_increment: ex.progressionIncrement ?? null,
     };
   }
 
   const results: StrengthVariantExercise[] = [];
   const cols =
-    'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, created_at';
+    'id, variant_id, name, video_url, sets, reps_min, reps_max, per_set_reps, sort_order, load_unit, superset_group, progression_increment, created_at';
 
   if (existing.length > 0) {
     const { data, error } = await supabase
@@ -366,6 +369,7 @@ export async function fetchLastSessionExercises(
       variant_exercise_id: exerciseId,
       actual_reps: r.actual_reps,
       load_kg: r.load_kg,
+      sets_data: r.sets_data,
       progression: r.progression,
       notes: null,
       sort_order: 0,

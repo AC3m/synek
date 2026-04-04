@@ -22,6 +22,7 @@ const mockVariant: StrengthVariant = {
       sortOrder: 0,
       supersetGroup: null,
       perSetReps: null,
+      progressionIncrement: null,
       createdAt: '2024-01-01T00:00:00Z',
     },
   ],
