@@ -55,7 +55,9 @@
       "incrementLabel": "Przyrost obciążenia na sesję",
       "durationIncrement": "Przyrost czasu na sesję",
       "incrementChip": "+{{value}} {{unit}}",
-      "advancedToggle": "Zaawansowane"
+      "advancedToggle": "Zaawansowane",
+      "incrementInvalidTitle": "Nieprawidłowy przyrost",
+      "incrementInvalidDescription": "Wpisz liczbę dodatnią. Możesz użyć . lub , jako separatora dziesiętnego."
     },
     "variant": {
       "library": "Trening siłowy",

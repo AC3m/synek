@@ -55,7 +55,9 @@
       "incrementLabel": "Load increment per session",
       "durationIncrement": "Duration increment per session",
       "incrementChip": "+{{value}} {{unit}}",
-      "advancedToggle": "Advanced"
+      "advancedToggle": "Advanced",
+      "incrementInvalidTitle": "Invalid increment",
+      "incrementInvalidDescription": "Enter a positive number. You can use . or , as the decimal separator."
     },
     "variant": {
       "library": "Strength Training",

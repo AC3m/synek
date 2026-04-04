@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { cn } from '~/lib/utils';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '~/components/ui/collapsible';
 import { Input } from '~/components/ui/input';
@@ -29,13 +30,29 @@ export function IncrementField({
       ? t('strength.exercise.durationIncrement')
       : t('strength.exercise.incrementLabel');
 
+  useEffect(() => {
+    setInputValue(value?.toString() ?? '');
+  }, [value]);
+
   function handleBlur() {
-    const parsed = parseFloat(inputValue);
+    const normalized = inputValue.trim().replace(',', '.');
+
+    if (!normalized) {
+      onChange(null);
+      setInputValue('');
+      return;
+    }
+
+    const parsed = parseFloat(normalized);
     if (isNaN(parsed) || parsed <= 0) {
+      toast.error(t('strength.exercise.incrementInvalidTitle'), {
+        description: t('strength.exercise.incrementInvalidDescription'),
+      });
       onChange(null);
       setInputValue('');
     } else {
       onChange(parsed);
+      setInputValue(parsed.toString());
     }
   }
 
@@ -62,9 +79,8 @@ export function IncrementField({
           <label className="text-xs text-muted-foreground">{label}</label>
           <div className="relative">
             <Input
-              type="number"
-              min={loadUnit === 'sec' ? 1 : 0.01}
-              step={loadUnit === 'sec' ? 1 : 0.5}
+              type="text"
+              inputMode="decimal"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onBlur={handleBlur}
