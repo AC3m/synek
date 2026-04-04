@@ -1,4 +1,5 @@
-import { groupSessionsByDay, computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
+import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import { augmentSessionsWithGarmin } from '~/lib/utils/junction-poc';
 import { DAYS_OF_WEEK, type TrainingSession } from '~/types/training';
 import type { JunctionPocWorkout } from '~/types/junction-poc';
 
