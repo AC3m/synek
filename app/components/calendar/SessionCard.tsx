@@ -82,13 +82,17 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
   const isMasked =
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
-  const hasActualPerformance =
-    session.actualDurationMinutes != null ||
-    session.actualDistanceKm != null ||
-    session.actualPace != null ||
-    session.avgHeartRate != null ||
-    session.maxHeartRate != null ||
-    session.rpe != null;
+  // Garmin-augmented sessions back-fill duration/distance/HR/calories onto the session so that
+  // stats can use them. Those fields are already shown by GarminSection, so exclude them from
+  // the PerformanceChipGroup check to avoid showing duplicate data.
+  const hasActualPerformance = session.garminAugmented
+    ? session.actualPace != null || session.rpe != null
+    : session.actualDurationMinutes != null ||
+      session.actualDistanceKm != null ||
+      session.actualPace != null ||
+      session.avgHeartRate != null ||
+      session.maxHeartRate != null ||
+      session.rpe != null;
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
   const shouldShowPerformanceSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);

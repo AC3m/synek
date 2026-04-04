@@ -81,6 +81,7 @@ export function augmentSessionsWithGarmin(
       avgHeartRate: session.avgHeartRate ?? bestMatch.averageHr,
       maxHeartRate: session.maxHeartRate ?? bestMatch.maxHr,
       // isCompleted intentionally NOT touched
+      garminAugmented: true,
     };
   });
 }
