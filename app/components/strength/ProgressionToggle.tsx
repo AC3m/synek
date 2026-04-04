@@ -1,4 +1,3 @@
-import { memo } from 'react';
 import { ArrowUp, Minus, ArrowDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
@@ -11,10 +10,10 @@ interface ProgressionToggleProps {
   className?: string;
 }
 
-const OPTION_STYLES: Record<ProgressionIntent, string> = {
-  up: 'border-green-500 bg-green-500 text-white',
-  maintain: 'border-blue-500 bg-blue-500 text-white',
-  down: 'border-amber-500 bg-amber-500 text-white',
+const ACTIVE_STYLES: Record<ProgressionIntent, string> = {
+  up: 'bg-green-500 text-white',
+  maintain: 'bg-blue-500 text-white',
+  down: 'bg-amber-500 text-white',
 };
 
 const BADGE_STYLES: Record<ProgressionIntent, string> = {
@@ -23,7 +22,7 @@ const BADGE_STYLES: Record<ProgressionIntent, string> = {
   down: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400',
 };
 
-export const ProgressionToggle = memo(function ProgressionToggle({
+export function ProgressionToggle({
   value,
   onChange,
   readOnly = false,
@@ -31,10 +30,25 @@ export const ProgressionToggle = memo(function ProgressionToggle({
 }: ProgressionToggleProps) {
   const { t } = useTranslation('training');
 
-  const options: Array<{ intent: ProgressionIntent; Icon: typeof ArrowUp; label: string }> = [
-    { intent: 'up', Icon: ArrowUp, label: t('strength.progression.up') },
-    { intent: 'maintain', Icon: Minus, label: t('strength.progression.maintain') },
-    { intent: 'down', Icon: ArrowDown, label: t('strength.progression.down') },
+  const options = [
+    {
+      intent: 'up' as ProgressionIntent,
+      Icon: ArrowUp,
+      label: t('strength.progression.up'),
+      shortLabel: t('strength.progression.upShort'),
+    },
+    {
+      intent: 'maintain' as ProgressionIntent,
+      Icon: Minus,
+      label: t('strength.progression.maintain'),
+      shortLabel: t('strength.progression.maintainShort'),
+    },
+    {
+      intent: 'down' as ProgressionIntent,
+      Icon: ArrowDown,
+      label: t('strength.progression.down'),
+      shortLabel: t('strength.progression.downShort'),
+    },
   ];
 
   if (readOnly) {
@@ -55,8 +69,15 @@ export const ProgressionToggle = memo(function ProgressionToggle({
   }
 
   return (
-    <div className={cn('flex gap-1.5', className)} role="group">
-      {options.map(({ intent, Icon, label }) => {
+    <div
+      className={cn(
+        'inline-flex divide-x divide-border overflow-hidden rounded border border-input',
+        className,
+      )}
+      role="group"
+      aria-label={t('strength.progression.hint')}
+    >
+      {options.map(({ intent, Icon, label, shortLabel }) => {
         const isActive = value === intent;
         return (
           <button
@@ -66,17 +87,17 @@ export const ProgressionToggle = memo(function ProgressionToggle({
             aria-pressed={isActive}
             onClick={() => onChange(isActive ? null : intent)}
             className={cn(
-              'inline-flex items-center gap-1 rounded border px-2.5 py-1 text-xs font-medium transition-colors',
+              'inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium transition-colors',
               isActive
-                ? OPTION_STYLES[intent]
-                : 'border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                ? ACTIVE_STYLES[intent]
+                : 'bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground',
             )}
           >
-            <Icon className="size-3" />
-            {label}
+            <Icon className="size-3 shrink-0" />
+            {shortLabel}
           </button>
         );
       })}
     </div>
   );
-});
+}

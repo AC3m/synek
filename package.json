@@ -7,6 +7,7 @@
     "build": "react-router build",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
+    "prepare": "husky",
     "typecheck": "react-router typegen && tsc",
     "seed": "tsx supabase/seed.ts",
     "format": "prettier --write \"app/**/*.{ts,tsx,css}\"",
@@ -56,7 +57,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "@vitest/coverage-v8": "^4.0.18",
+    "husky": "^9.1.7",
     "jsdom": "^28.1.0",
+    "lint-staged": "^16.4.0",
     "papaparse": "^5.5.3",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.7.2",
@@ -75,5 +78,8 @@
       "esbuild",
       "@tailwindcss/oxide"
     ]
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,cjs,mjs,css,json,md,yml,yaml,html}": "prettier --write"
   }
 }

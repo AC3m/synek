@@ -22,6 +22,9 @@ supabase/seed.sql
 .claude/
 .gemini/
 
+# Husky generated runtime files
+.husky/_/
+
 #DB Backups
 supabase/backup_before_strava_refactor
 

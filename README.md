@@ -4,17 +4,17 @@ Athlete training planning platform with coach and athlete roles. Coaches create 
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| UI | React 19 + React Router 7 (SPA, no SSR) |
-| Language | TypeScript 5 (strict) |
-| Styling | Tailwind CSS 4 + shadcn/ui (New York) |
-| Server state | TanStack Query 5 |
-| Backend | Supabase (postgres + auth) |
-| i18n | i18next — EN / PL |
-| Validation | Zod 4 |
-| Dates | date-fns 4 |
-| Package manager | pnpm |
+| Layer           | Technology                              |
+| --------------- | --------------------------------------- |
+| UI              | React 19 + React Router 7 (SPA, no SSR) |
+| Language        | TypeScript 5 (strict)                   |
+| Styling         | Tailwind CSS 4 + shadcn/ui (New York)   |
+| Server state    | TanStack Query 5                        |
+| Backend         | Supabase (postgres + auth)              |
+| i18n            | i18next — EN / PL                       |
+| Validation      | Zod 4                                   |
+| Dates           | date-fns 4                              |
+| Package manager | pnpm                                    |
 
 ## Getting Started
 
@@ -30,6 +30,8 @@ Athlete training planning platform with coach and athlete roles. Coaches create 
 pnpm install
 pnpm supabase:install
 ```
+
+`pnpm install` also runs the `prepare` script, which enables the Husky pre-commit hook for this clone. The hook runs `lint-staged` and formats staged files with Prettier before each commit.
 
 ### Environment
 
@@ -106,9 +108,9 @@ supabase/
 
 ## Roles
 
-| Role | Access |
-|---|---|
-| Coach | Create and edit ISO-week training plans; manage sessions per day; build strength variants |
+| Role    | Access                                                                                                       |
+| ------- | ------------------------------------------------------------------------------------------------------------ |
+| Coach   | Create and edit ISO-week training plans; manage sessions per day; build strength variants                    |
 | Athlete | View assigned weekly plans; mark sessions complete; log performance; self-plan if `can_self_plan` is enabled |
 
 Use the role switcher in the header to toggle between roles during development.

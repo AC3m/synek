@@ -53,10 +53,14 @@ export function useStrengthSessionExercises(sessionId: string) {
   });
 }
 
-export function useLastSessionExercises(athleteId: string, exerciseIds: string[]) {
+export function useLastSessionExercises(
+  athleteId: string,
+  exerciseIds: string[],
+  beforeDate?: string | null,
+) {
   return useQuery({
-    queryKey: keys.lastSession(athleteId, exerciseIds),
-    queryFn: () => fetchLastSessionExercises(athleteId, exerciseIds),
+    queryKey: keys.lastSession(athleteId, exerciseIds, beforeDate),
+    queryFn: () => fetchLastSessionExercises(athleteId, exerciseIds, beforeDate),
     enabled: athleteId.length > 0 && exerciseIds.length > 0,
   });
 }
@@ -180,6 +184,7 @@ export function useUpsertVariantExercises(userId: string) {
           sortOrder: ex.sortOrder,
           supersetGroup: ex.supersetGroup ?? null,
           perSetReps: ex.perSetReps ?? null,
+          progressionIncrement: ex.progressionIncrement ?? null,
           createdAt: prev.createdAt,
         }));
         qc.setQueryData<StrengthVariant>(keys.byId(input.variantId), {

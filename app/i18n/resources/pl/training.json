@@ -51,7 +51,13 @@
         "perSet": "Na serię"
       },
       "setLabel": "S{{n}}",
-      "loadUnit": "Jednostka obciążenia"
+      "loadUnit": "Jednostka obciążenia",
+      "incrementLabel": "Progres obciążenia na sesję",
+      "durationIncrement": "Progres czasu na sesję",
+      "incrementChip": "Progres na sesję: +{{value}} {{unit}}",
+      "advancedToggle": "Zaawansowane",
+      "incrementInvalidTitle": "Nieprawidłowy progres",
+      "incrementInvalidDescription": "Wpisz liczbę dodatnią. Możesz użyć . lub , jako separatora dziesiętnego."
     },
     "variant": {
       "library": "Trening siłowy",
@@ -112,12 +118,30 @@
       "deltaUnchanged": "bez zmian",
       "progressionUp": "Zwiększ",
       "progressionMaintain": "Utrzymaj",
-      "progressionDown": "Zmniejsz"
+      "progressionDown": "Zmniejsz",
+      "prevSession": "Poprzednia sesja",
+      "prevExpand": "Pokaż poprzednią sesję",
+      "prevCollapse": "Ukryj poprzednią sesję",
+      "prev": "poprz.:",
+      "prevTopSet": "(top seria)",
+      "prevNone": "—",
+      "copyFromAbove": "Kopiuj z serii wyżej",
+      "fillFromPrevious": "Wypełnij z poprzedniej sesji",
+      "prefillFrom": "Z {{date}}",
+      "prefillUp": "▲ +{{increment}} vs {{date}}",
+      "prefillDown": "▼ −{{increment}} vs {{date}}",
+      "prefillMaintain": "= tak samo jak {{date}}",
+      "firstSession": "Pierwsza sesja — ustal punkt odniesienia",
+      "setIncrementHint": "Ustaw progres w konfiguracji wariantu, aby auto-postępować",
+      "floorReached": "Osiągnięto minimum — dostosuj progres"
     },
     "progression": {
       "up": "Zwiększ obciążenie",
       "maintain": "Utrzymaj obciążenie",
       "down": "Zmniejsz obciążenie",
+      "upShort": "Więcej",
+      "maintainShort": "Bez zmian",
+      "downShort": "Mniej",
       "hint": "Ustaw intencję na następną sesję"
     },
     "analysis": {
