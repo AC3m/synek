@@ -38,7 +38,7 @@ export function augmentSessionsWithGarmin(
   const matchedWorkoutIds = new Set<string>();
 
   return sessions.map((session) => {
-    // Only back-fill when both actual fields are null — never override manual entries
+    // Skip sessions that already have manually logged duration or distance
     if (session.actualDurationMinutes !== null || session.actualDistanceKm !== null) {
       return session;
     }

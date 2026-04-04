@@ -309,4 +309,11 @@ describe('augmentSessionsWithGarmin', () => {
     const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
     expect(result[0].calories).toBe(554);
   });
+
+  it('sets garminAugmented: true on matched sessions', () => {
+    const session = makeSession({ trainingType: 'cycling' });
+    const workout = makeWorkout();
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].garminAugmented).toBe(true);
+  });
 });

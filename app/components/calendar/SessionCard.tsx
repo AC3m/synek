@@ -245,7 +245,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
         variant="card"
-        session={session}
+        session={session.garminAugmented ? session : undefined}
       />
 
       {/* Athlete-specific features */}
