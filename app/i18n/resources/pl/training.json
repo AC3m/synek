@@ -127,9 +127,9 @@
       "prevNone": "—",
       "copyFromAbove": "Kopiuj z serii wyżej",
       "prefillFrom": "Z {{date}}",
-      "prefillUp": "▲ +{{increment}} z {{date}}",
-      "prefillDown": "▼ −{{increment}} z {{date}}",
-      "prefillMaintain": "= z {{date}}",
+      "prefillUp": "▲ +{{increment}} plan vs {{date}}",
+      "prefillDown": "▼ −{{increment}} plan vs {{date}}",
+      "prefillMaintain": "= tak samo jak {{date}}",
       "firstSession": "Pierwsza sesja — ustal punkt odniesienia",
       "setIncrementHint": "Ustaw progres w konfiguracji wariantu, aby auto-postępować",
       "floorReached": "Osiągnięto minimum — dostosuj progres"
@@ -139,7 +139,7 @@
       "maintain": "Utrzymaj obciążenie",
       "down": "Zmniejsz obciążenie",
       "upShort": "Więcej",
-      "maintainShort": "Tyle",
+      "maintainShort": "Bez zmian",
       "downShort": "Mniej",
       "hint": "Ustaw intencję na następną sesję"
     },

@@ -55,6 +55,16 @@ function initSets(
   return Array.from({ length: count }, () => ({ reps: '', load: '', isPreFilled: false }));
 }
 
+function serializeCommit(sets: SetState[], progression: ProgressionIntent | null): string {
+  return JSON.stringify({
+    sets: sets.map((s) => ({
+      reps: s.reps !== '' ? parseInt(s.reps) : null,
+      loadKg: s.load !== '' ? parseFloat(s.load) : null,
+    })),
+    progression,
+  });
+}
+
 function deriveTopSet(sets: SetState[]): { actualReps: number | null; loadKg: number | null } {
   let topIdx = 0;
   for (let i = 1; i < sets.length; i++) {
@@ -175,6 +185,7 @@ const ExerciseCard = memo(function ExerciseCard({
   );
   const [saved, setSaved] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastCommittedRef = useRef<string | null>(null);
 
   // On first load the query may still be in-flight, so `logged` arrives after
   // mount and the useState initializers above run with undefined. Hydrate once
@@ -196,8 +207,11 @@ const ExerciseCard = memo(function ExerciseCard({
   useEffect(() => {
     if (logged && !loggedHydratedRef.current) {
       loggedHydratedRef.current = true;
-      setSets(initSets(exercise.sets, logged, prefill, exercise));
-      setProgression(logged.progression ?? null);
+      const newSets = initSets(exercise.sets, logged, prefill, exercise);
+      const newProgression = logged.progression ?? null;
+      setSets(newSets);
+      setProgression(newProgression);
+      lastCommittedRef.current = serializeCommit(newSets, newProgression);
     }
   }, [logged, exercise.sets]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -211,6 +225,10 @@ const ExerciseCard = memo(function ExerciseCard({
   }, [prefill, logged]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function commit(currentSets = sets, currentProgression = progression) {
+    const serialized = serializeCommit(currentSets, currentProgression);
+    if (lastCommittedRef.current === serialized) return;
+    lastCommittedRef.current = serialized;
+
     const setsData: SetEntry[] = currentSets.map((s) => ({
       reps: s.reps !== '' ? parseInt(s.reps) : null,
       loadKg: s.load !== '' ? parseFloat(s.load) : null,
@@ -405,7 +423,7 @@ const ExerciseCard = memo(function ExerciseCard({
                       </span>
                     </div>
                     {i > 0 &&
-                      ((set.reps === '' && set.load === '') || set.isPreFilled) &&
+                      (set.reps === '' || set.load === '' || set.isPreFilled) &&
                       (sets[i - 1].reps !== '' || sets[i - 1].load !== '') && (
                         <CopySetButton
                           onCopy={() => handleCopyFromAbove(i)}

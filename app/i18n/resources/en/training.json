@@ -127,9 +127,9 @@
       "prevNone": "—",
       "copyFromAbove": "Copy from set above",
       "prefillFrom": "From {{date}}",
-      "prefillUp": "▲ +{{increment}} from {{date}}",
-      "prefillDown": "▼ −{{increment}} from {{date}}",
-      "prefillMaintain": "= from {{date}}",
+      "prefillUp": "▲ +{{increment}} planned vs {{date}}",
+      "prefillDown": "▼ −{{increment}} planned vs {{date}}",
+      "prefillMaintain": "= same as {{date}}",
       "firstSession": "First session — establish your baseline",
       "setIncrementHint": "Set an increment in variant config to auto-progress",
       "floorReached": "Floor reached — adjust increment"
