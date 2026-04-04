@@ -91,7 +91,7 @@ export function computeDragResult(
  */
 export function sessionHasActualPerformance(session: TrainingSession): boolean {
   if (session.garminAugmented) {
-    return session.actualPace != null || session.rpe != null;
+    return session.rpe != null;
   }
   return (
     session.actualDurationMinutes != null ||
