@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Button } from '~/components/ui/button';
 import { format, parseISO } from 'date-fns';
 import { Skeleton } from '~/components/ui/skeleton';
 import { ChevronDown, ExternalLink } from 'lucide-react';
@@ -47,10 +48,6 @@ function initSets(
       load: logged.setsData[i]?.loadKg?.toString() ?? '',
       isPreFilled: false,
     }));
-  }
-  // No logged data but prefill exists — compute pre-filled values
-  if (!logged && prefill) {
-    return computePrefillSets(prefill, exercise);
   }
   return Array.from({ length: count }, () => ({ reps: '', load: '', isPreFilled: false }));
 }
@@ -195,7 +192,6 @@ const ExerciseCard = memo(function ExerciseCard({
   // loggedHydratedRef: logged data has been applied (fires once, always wins).
   // prefillHydratedRef: pre-fill has been applied (only when no logged data).
   const loggedHydratedRef = useRef(false);
-  const prefillHydratedRef = useRef(false);
 
   useEffect(() => {
     return () => {
@@ -214,15 +210,6 @@ const ExerciseCard = memo(function ExerciseCard({
       lastCommittedRef.current = serializeCommit(newSets, newProgression);
     }
   }, [logged, exercise.sets]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Pre-fill only when no logged data exists. Re-evaluates if logged arrives
-  // after pre-fill (ensures logged data can still overwrite a pre-filled state).
-  useEffect(() => {
-    if (!logged && prefill && !prefillHydratedRef.current) {
-      prefillHydratedRef.current = true;
-      setSets(computePrefillSets(prefill, exercise));
-    }
-  }, [prefill, logged]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function commit(currentSets = sets, currentProgression = progression) {
     const serialized = serializeCommit(currentSets, currentProgression);
@@ -270,10 +257,18 @@ const ExerciseCard = memo(function ExerciseCard({
     commit(confirmedSets, intent);
   }
 
+  function handleFillFromPrevious() {
+    if (!prefill) return;
+    const filled = computePrefillSets(prefill, exercise);
+    setSets(filled);
+    commit(filled, progression);
+  }
+
   const { loadKg: currentTopLoad } = deriveTopSet(sets);
 
   const filledSetCount = sets.filter((s) => s.reps !== '' && s.load !== '').length;
   const allSetsComplete = filledSetCount === exercise.sets;
+  const allSetsEmpty = sets.every((s) => s.reps === '' && s.load === '');
 
   // Compute the increment applied for PrefillBadge display
   const computedLoadDelta =
@@ -341,6 +336,19 @@ const ExerciseCard = memo(function ExerciseCard({
         {/* Previous session collapsible summary */}
         {prefill && prefillDate && (
           <PrevSummary prefill={prefill} prefillDate={prefillDate} exercise={exercise} />
+        )}
+
+        {/* Fill from previous session button — shown only when all sets are empty */}
+        {!readOnly && prefill && allSetsEmpty && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="mb-2 w-full text-xs"
+            onClick={handleFillFromPrevious}
+          >
+            {t('strength.logger.fillFromPrevious')}
+          </Button>
         )}
 
         <div
