@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '~/components/ui/button';
 import { format, parseISO } from 'date-fns';
 import { Skeleton } from '~/components/ui/skeleton';
-import { ChevronDown, ExternalLink } from 'lucide-react';
+import { Check, ChevronDown, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import {
@@ -43,7 +43,8 @@ function initSets(
   exercise: StrengthVariantExercise,
 ): SetState[] {
   if (logged?.setsData && logged.setsData.length > 0) {
-    return Array.from({ length: count }, (_, i) => ({
+    const rowCount = Math.max(count, logged.setsData.length);
+    return Array.from({ length: rowCount }, (_, i) => ({
       reps: logged.setsData[i]?.reps?.toString() ?? '',
       load: logged.setsData[i]?.loadKg?.toString() ?? '',
       isPreFilled: false,
@@ -264,6 +265,14 @@ const ExerciseCard = memo(function ExerciseCard({
     commit(filled, progression);
   }
 
+  function confirmSet(index: number) {
+    setSets((prev) => {
+      const next = [...prev];
+      next[index] = { ...next[index], isPreFilled: false };
+      return next;
+    });
+  }
+
   const { loadKg: currentTopLoad } = deriveTopSet(sets);
 
   const filledSetCount = sets.filter((s) => s.reps !== '' && s.load !== '').length;
@@ -430,8 +439,18 @@ const ExerciseCard = memo(function ExerciseCard({
                         {exercise.loadUnit === 'sec' ? 's' : 'kg'}
                       </span>
                     </div>
-                    {i > 0 &&
-                      (set.reps === '' || set.load === '' || set.isPreFilled) &&
+                    {set.isPreFilled ? (
+                      <button
+                        type="button"
+                        onClick={() => confirmSet(i)}
+                        aria-label={`Confirm set ${i + 1}`}
+                        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        <Check className="size-4" />
+                      </button>
+                    ) : (
+                      i > 0 &&
+                      (set.reps === '' || set.load === '') &&
                       (sets[i - 1].reps !== '' || sets[i - 1].load !== '') && (
                         <CopySetButton
                           onCopy={() => handleCopyFromAbove(i)}
@@ -439,7 +458,8 @@ const ExerciseCard = memo(function ExerciseCard({
                           exerciseName={exercise.name}
                           setIndex={i}
                         />
-                      )}
+                      )
+                    )}
                   </div>
                 </>
               )}
