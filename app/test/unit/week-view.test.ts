@@ -1,5 +1,6 @@
-import { groupSessionsByDay, computeWeekStats } from '~/lib/utils/week-view';
+import { groupSessionsByDay, computeWeekStats, augmentSessionsWithGarmin } from '~/lib/utils/week-view';
 import { DAYS_OF_WEEK, type TrainingSession } from '~/types/training';
+import type { JunctionPocWorkout } from '~/types/junction-poc';
 
 // ---------------------------------------------------------------------------
 // Minimal session factory
@@ -175,5 +176,136 @@ describe('computeWeekStats', () => {
     expect(stats.completedSessions).toBe(1);
     expect(stats.totalPlannedKm).toBe(10);
     expect(stats.completionPercentage).toBe(100);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// augmentSessionsWithGarmin
+// ---------------------------------------------------------------------------
+
+// weekStart for a Monday 2026-04-07 week
+const WEEK_START = '2026-04-07';
+
+function makeWorkout(overrides: Partial<JunctionPocWorkout> = {}): JunctionPocWorkout {
+  return {
+    id: 'workout-1',
+    appUserId: 'user-1',
+    junctionWorkoutId: 'jw-1',
+    title: null,
+    sportSlug: 'cycling',
+    calendarDate: '2026-04-07', // monday
+    movingTimeSeconds: 2880, // 48 min
+    distanceMeters: 19330,
+    calories: 554,
+    averageHr: 121,
+    maxHr: 152,
+    averageSpeed: null,
+    ...overrides,
+  };
+}
+
+describe('augmentSessionsWithGarmin', () => {
+  it('returns sessions unchanged when no garmin workouts provided', () => {
+    const session = makeSession({ trainingType: 'cycling' });
+    const result = augmentSessionsWithGarmin([session], [], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBeNull();
+  });
+
+  it('back-fills a single session from a matching workout', () => {
+    const session = makeSession({ trainingType: 'cycling', plannedDurationMinutes: 45 });
+    const workout = makeWorkout({ movingTimeSeconds: 2880, distanceMeters: 19330 });
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBe(48);
+    expect(result[0].actualDistanceKm).toBe(19.33);
+  });
+
+  it('does not override sessions that already have actual data', () => {
+    const session = makeSession({
+      trainingType: 'cycling',
+      actualDurationMinutes: 60,
+      actualDistanceKm: 25,
+    });
+    const workout = makeWorkout();
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBe(60);
+    expect(result[0].actualDistanceKm).toBe(25);
+  });
+
+  it('assigns distinct workouts to two sessions of the same type on the same day (bug #65)', () => {
+    const sessionA = makeSession({
+      id: 'session-a',
+      trainingType: 'cycling',
+      plannedDurationMinutes: 65,
+    });
+    const sessionB = makeSession({
+      id: 'session-b',
+      trainingType: 'cycling',
+      plannedDurationMinutes: 45,
+    });
+    // Two distinct rides: 64 min (closer to A) and 47 min (closer to B)
+    const workoutLong = makeWorkout({ id: 'w-long', movingTimeSeconds: 3840, distanceMeters: 28070 }); // 64 min
+    const workoutShort = makeWorkout({ id: 'w-short', movingTimeSeconds: 2820, distanceMeters: 19330 }); // 47 min
+
+    const result = augmentSessionsWithGarmin(
+      [sessionA, sessionB],
+      [workoutLong, workoutShort],
+      WEEK_START,
+    );
+
+    const resultA = result.find((s) => s.id === 'session-a')!;
+    const resultB = result.find((s) => s.id === 'session-b')!;
+
+    // Each session gets a distinct workout
+    expect(resultA.actualDurationMinutes).toBe(64);
+    expect(resultB.actualDurationMinutes).toBe(47);
+  });
+
+  it('leaves a session unmatched when workouts are exhausted', () => {
+    const sessionA = makeSession({ id: 'session-a', trainingType: 'cycling', plannedDurationMinutes: 60 });
+    const sessionB = makeSession({ id: 'session-b', trainingType: 'cycling', plannedDurationMinutes: 45 });
+    // Only one workout available — second session stays unmatched
+    const workout = makeWorkout({ id: 'w-only', movingTimeSeconds: 3600 });
+
+    const result = augmentSessionsWithGarmin([sessionA, sessionB], [workout], WEEK_START);
+
+    const matched = result.filter((s) => s.actualDurationMinutes !== null);
+    const unmatched = result.filter((s) => s.actualDurationMinutes === null);
+    expect(matched).toHaveLength(1);
+    expect(unmatched).toHaveLength(1);
+  });
+
+  it('does not match a workout from a different day', () => {
+    const session = makeSession({ trainingType: 'cycling', dayOfWeek: 'monday' });
+    const workout = makeWorkout({ calendarDate: '2026-04-08' }); // tuesday
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBeNull();
+  });
+
+  it('does not match a workout from a different sport type', () => {
+    const session = makeSession({ trainingType: 'run' });
+    const workout = makeWorkout({ sportSlug: 'cycling' });
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBeNull();
+  });
+
+  it('skips workouts with null sportSlug', () => {
+    const session = makeSession({ trainingType: 'cycling' });
+    const workout = makeWorkout({ sportSlug: null });
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].actualDurationMinutes).toBeNull();
+  });
+
+  it('preserves existing calories and does not overwrite with garmin data', () => {
+    const session = makeSession({ trainingType: 'cycling', calories: 400 });
+    const workout = makeWorkout({ calories: 600 });
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].calories).toBe(400);
+  });
+
+  it('back-fills calories from garmin when session has none', () => {
+    const session = makeSession({ trainingType: 'cycling', calories: null });
+    const workout = makeWorkout({ calories: 554 });
+    const result = augmentSessionsWithGarmin([session], [workout], WEEK_START);
+    expect(result[0].calories).toBe(554);
   });
 });
