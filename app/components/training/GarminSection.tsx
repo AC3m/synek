@@ -4,6 +4,7 @@ import { useJunctionWorkout } from '~/lib/hooks/useJunctionConnection';
 import { GarminBadge } from './GarminBadge';
 import { cn } from '~/lib/utils';
 import type { JunctionPocWorkout } from '~/types/junction-poc';
+import type { TrainingSession } from '~/types/training';
 
 interface GarminSectionProps {
   appUserId: string;
@@ -12,6 +13,8 @@ interface GarminSectionProps {
   junctionConnected: boolean;
   variant: 'card' | 'modal';
   className?: string;
+  /** Card variant only: pass the augmented session to skip the per-session query */
+  session?: TrainingSession;
 }
 
 interface ChipData {
@@ -68,13 +71,44 @@ export function GarminSection({
   junctionConnected,
   variant,
   className,
+  session,
 }: GarminSectionProps) {
   const { t } = useTranslation('training');
-  const { data: workout } = useJunctionWorkout(
+
+  // Card variant: use pre-matched session data from augmentSessionsWithGarmin.
+  // This avoids a per-session query that fails when multiple workouts exist for
+  // the same (date, sport) — the route has already done the 1:1 matching.
+  const sessionWorkout: JunctionPocWorkout | null =
+    session != null &&
+    (session.actualDurationMinutes !== null ||
+      session.avgHeartRate !== null ||
+      session.calories !== null)
+      ? {
+          id: '',
+          appUserId,
+          junctionWorkoutId: '',
+          title: null,
+          sportSlug: null,
+          calendarDate: calendarDate ?? '',
+          movingTimeSeconds:
+            session.actualDurationMinutes !== null ? session.actualDurationMinutes * 60 : null,
+          distanceMeters:
+            session.actualDistanceKm !== null ? session.actualDistanceKm * 1000 : null,
+          calories: session.calories,
+          averageHr: session.avgHeartRate,
+          maxHr: session.maxHeartRate,
+          averageSpeed: null,
+        }
+      : null;
+
+  // Modal variant: query individually (session prop not provided)
+  const { data: queriedWorkout } = useJunctionWorkout(
     appUserId,
-    junctionConnected ? calendarDate : null,
+    !session && junctionConnected ? calendarDate : null,
     trainingType,
   );
+
+  const workout = session != null ? sessionWorkout : queriedWorkout ?? null;
 
   if (!workout) return null;
 

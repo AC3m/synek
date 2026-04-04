@@ -78,6 +78,8 @@ export function augmentSessionsWithGarmin(
           ? Math.round(bestMatch.distanceMeters / 10) / 100
           : null,
       calories: session.calories ?? bestMatch.calories,
+      avgHeartRate: session.avgHeartRate ?? bestMatch.averageHr,
+      maxHeartRate: session.maxHeartRate ?? bestMatch.maxHr,
       // isCompleted intentionally NOT touched
     };
   });

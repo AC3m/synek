@@ -241,6 +241,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
         variant="card"
+        session={session}
       />
 
       {/* Athlete-specific features */}
