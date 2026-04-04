@@ -21,7 +21,7 @@ import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
 import { weekIdToMonday, getTodayDayOfWeek } from '~/lib/utils/date';
 import { isCompetitionWeek } from '~/lib/utils/goals';
-import { computeWeekStats } from '~/lib/utils/week-view';
+import { computeWeekStats, groupSessionsByDay } from '~/lib/utils/week-view';
 import { augmentSessionsWithGarmin } from '~/lib/utils/junction-poc';
 import { computeSportBreakdown } from '~/lib/utils/analytics';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
@@ -84,6 +84,11 @@ export default function AthleteWeekView() {
         ? augmentSessionsWithGarmin(weekView.sessions, garminWeekWorkouts, weekStart)
         : (weekView?.sessions ?? []),
     [junctionConnected, weekView?.sessions, garminWeekWorkouts, weekStart],
+  );
+
+  const augmentedSessionsByDay = useMemo(
+    () => groupSessionsByDay(augmentedSessions),
+    [augmentedSessions],
   );
 
   const stats = useMemo(() => {
@@ -231,7 +236,7 @@ export default function AthleteWeekView() {
                   className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
                 >
                   <WeekGrid
-                    sessionsByDay={sessionsByDay}
+                    sessionsByDay={augmentedSessionsByDay}
                     weekStart={weekStart}
                     athleteMode
                     onToggleComplete={handleToggleComplete}
