@@ -42,6 +42,7 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
       perSetReps?: PerSetRep[] | null;
       loadUnit?: 'kg' | 'sec';
       supersetGroup?: number | null;
+      progressionIncrement?: number | null;
     }>;
   }) {
     if (!canEdit) return;
@@ -66,6 +67,7 @@ export function VariantDetailView({ variantId, canEdit, baseRoute }: VariantDeta
             loadUnit: ex.loadUnit ?? 'kg',
             sortOrder: i,
             supersetGroup: ex.supersetGroup ?? null,
+            progressionIncrement: ex.progressionIncrement ?? null,
           })),
         }),
       ]);

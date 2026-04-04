@@ -33,6 +33,7 @@ export function VariantFormModal({ open, onClose, onCreated, className }: Varian
       perSetReps?: PerSetRep[] | null;
       loadUnit?: 'kg' | 'sec';
       supersetGroup?: number | null;
+      progressionIncrement?: number | null;
     }>;
   }) {
     try {
@@ -49,6 +50,7 @@ export function VariantFormModal({ open, onClose, onCreated, className }: Varian
           loadUnit: ex.loadUnit ?? 'kg',
           sortOrder: i,
           supersetGroup: ex.supersetGroup ?? null,
+          progressionIncrement: ex.progressionIncrement ?? null,
         })),
       });
       toast('Variant created');
