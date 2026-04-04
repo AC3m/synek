@@ -37,6 +37,7 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 0,
     loadUnit: 'kg',
     supersetGroup: null,
+    progressionIncrement: 2.5,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -51,6 +52,7 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 1,
     supersetGroup: null,
     perSetReps: null,
+    progressionIncrement: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -65,6 +67,7 @@ const PUSH_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 2,
     supersetGroup: null,
     perSetReps: null,
+    progressionIncrement: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
 ];
@@ -82,6 +85,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 0,
     supersetGroup: 1,
     perSetReps: null,
+    progressionIncrement: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -96,6 +100,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 1,
     supersetGroup: 1,
     perSetReps: null,
+    progressionIncrement: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
   {
@@ -110,6 +115,7 @@ const PULL_EXERCISES: StrengthVariantExercise[] = [
     sortOrder: 2,
     supersetGroup: null,
     perSetReps: null,
+    progressionIncrement: null,
     createdAt: '2026-03-01T10:00:00Z',
   },
 ];
@@ -143,7 +149,7 @@ const SEED_SESSION_EXERCISES: StrengthSessionExercise[] = [
     variantExerciseId: 'sve-bench-press',
     actualReps: 10,
     loadKg: 80,
-    progression: 'maintain' as ProgressionIntent,
+    progression: 'up' as ProgressionIntent,
     notes: null,
     sortOrder: 0,
     createdAt: '2026-02-24T17:00:00Z',
@@ -311,6 +317,7 @@ export async function mockCreateStrengthVariant(input: {
     sortOrder: number;
     loadUnit?: 'kg' | 'sec';
     supersetGroup?: number | null;
+    progressionIncrement?: number | null;
   }>;
 }): Promise<StrengthVariant> {
   await delay();
@@ -328,6 +335,7 @@ export async function mockCreateStrengthVariant(input: {
     loadUnit: ex.loadUnit ?? 'kg',
     sortOrder: ex.sortOrder,
     supersetGroup: ex.supersetGroup ?? null,
+    progressionIncrement: ex.progressionIncrement ?? null,
     createdAt: now,
   }));
   const variant: StrengthVariant = {
@@ -379,6 +387,7 @@ export async function mockUpsertVariantExercises(input: {
     sortOrder: number;
     loadUnit?: 'kg' | 'sec';
     supersetGroup?: number | null;
+    progressionIncrement?: number | null;
   }>;
 }): Promise<StrengthVariantExercise[]> {
   await delay();
@@ -397,6 +406,7 @@ export async function mockUpsertVariantExercises(input: {
     loadUnit: ex.loadUnit ?? 'kg',
     sortOrder: ex.sortOrder,
     supersetGroup: ex.supersetGroup ?? null,
+    progressionIncrement: ex.progressionIncrement ?? null,
     createdAt: now,
   }));
   const updated = { ...variant, exercises, updatedAt: now };

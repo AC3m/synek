@@ -23,7 +23,7 @@ import { PerformanceChipGroup } from './PerformanceChipGroup';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
-import { SessionExerciseLogger } from '~/components/strength/SessionExerciseLogger';
+import { SessionExerciseLogger, StrengthLoggerSkeleton } from '~/components/strength/SessionExerciseLogger';
 import type { LogRowChange } from '~/components/strength/SessionExerciseLogger';
 import {
   useStrengthVariant,
@@ -462,17 +462,22 @@ export function SessionDetailModal({
       </div>
 
       {/* STRENGTH LOGGER — shown when session is linked to a variant */}
-      {strengthVariantId && strengthVariant && (
+      {strengthVariantId && (
         <div>
           <Separator className="mb-5" />
-          <SessionExerciseLogger
-            exercises={strengthVariant.exercises}
-            loggedExercises={sessionExercises}
-            prefillData={prefillResult?.data}
-            readOnly={userRole === 'coach' && !showAthleteControls}
-            variantName={strengthVariant.name}
-            onChange={handleStrengthLogChange}
-          />
+          {strengthVariant ? (
+            <SessionExerciseLogger
+              exercises={strengthVariant.exercises}
+              loggedExercises={sessionExercises}
+              prefillData={prefillResult?.date !== calendarDate ? prefillResult?.data : undefined}
+              prefillDate={prefillResult?.date !== calendarDate ? prefillResult?.date : null}
+              readOnly={userRole === 'coach' && !showAthleteControls}
+              variantName={strengthVariant.name}
+              onChange={handleStrengthLogChange}
+            />
+          ) : (
+            <StrengthLoggerSkeleton />
+          )}
         </div>
       )}
 

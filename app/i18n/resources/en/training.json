@@ -51,7 +51,11 @@
         "perSet": "Per set"
       },
       "setLabel": "S{{n}}",
-      "loadUnit": "Load unit"
+      "loadUnit": "Load unit",
+      "incrementLabel": "Load increment per session",
+      "durationIncrement": "Duration increment per session",
+      "incrementChip": "+{{value}} {{unit}}",
+      "advancedToggle": "Advanced"
     },
     "variant": {
       "library": "Strength Training",
@@ -112,12 +116,29 @@
       "deltaUnchanged": "unchanged",
       "progressionUp": "Increase",
       "progressionMaintain": "Maintain",
-      "progressionDown": "Decrease"
+      "progressionDown": "Decrease",
+      "prevSession": "Previous session",
+      "prevExpand": "Show previous session",
+      "prevCollapse": "Hide previous session",
+      "prev": "prev:",
+      "prevTopSet": "(top set)",
+      "prevNone": "—",
+      "copyFromAbove": "Copy from set above",
+      "prefillFrom": "From {{date}}",
+      "prefillUp": "▲ +{{increment}} from {{date}}",
+      "prefillDown": "▼ −{{increment}} from {{date}}",
+      "prefillMaintain": "= from {{date}}",
+      "firstSession": "First session — establish your baseline",
+      "setIncrementHint": "Set an increment in variant config to auto-progress",
+      "floorReached": "Floor reached — adjust increment"
     },
     "progression": {
       "up": "Increase load",
       "maintain": "Maintain load",
       "down": "Decrease load",
+      "upShort": "Up",
+      "maintainShort": "Hold",
+      "downShort": "Down",
       "hint": "Set intention for next session"
     },
     "analysis": {

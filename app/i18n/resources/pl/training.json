@@ -51,7 +51,11 @@
         "perSet": "Na serię"
       },
       "setLabel": "S{{n}}",
-      "loadUnit": "Jednostka obciążenia"
+      "loadUnit": "Jednostka obciążenia",
+      "incrementLabel": "Przyrost obciążenia na sesję",
+      "durationIncrement": "Przyrost czasu na sesję",
+      "incrementChip": "+{{value}} {{unit}}",
+      "advancedToggle": "Zaawansowane"
     },
     "variant": {
       "library": "Trening siłowy",
@@ -112,12 +116,29 @@
       "deltaUnchanged": "bez zmian",
       "progressionUp": "Zwiększ",
       "progressionMaintain": "Utrzymaj",
-      "progressionDown": "Zmniejsz"
+      "progressionDown": "Zmniejsz",
+      "prevSession": "Poprzednia sesja",
+      "prevExpand": "Pokaż poprzednią sesję",
+      "prevCollapse": "Ukryj poprzednią sesję",
+      "prev": "poprz.:",
+      "prevTopSet": "(top seria)",
+      "prevNone": "—",
+      "copyFromAbove": "Kopiuj z serii wyżej",
+      "prefillFrom": "Z {{date}}",
+      "prefillUp": "▲ +{{increment}} z {{date}}",
+      "prefillDown": "▼ −{{increment}} z {{date}}",
+      "prefillMaintain": "= z {{date}}",
+      "firstSession": "Pierwsza sesja — ustal punkt odniesienia",
+      "setIncrementHint": "Ustaw przyrost w konfiguracji wariantu, aby auto-postępować",
+      "floorReached": "Osiągnięto minimum — dostosuj przyrost"
     },
     "progression": {
       "up": "Zwiększ obciążenie",
       "maintain": "Utrzymaj obciążenie",
       "down": "Zmniejsz obciążenie",
+      "upShort": "Więcej",
+      "maintainShort": "Tyle",
+      "downShort": "Mniej",
       "hint": "Ustaw intencję na następną sesję"
     },
     "analysis": {
