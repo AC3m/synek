@@ -58,6 +58,24 @@ These are the rules most likely to cause bugs or failed type checks if missed:
 - Every mutation needs `onMutate` / `onError` / `onSettled`
 - Always add i18n keys to both `en/` and `pl/` simultaneously
 
+## Working with AI Agents
+
+For parallel or isolated agent work, use directory copies rather than git worktrees. Each copy is treated like a team member's laptop — remote is the source of truth.
+
+```bash
+# From the parent directory
+cp -r synek-2/ synek-<task-name>/
+cd synek-<task-name>
+pnpm install                              # sync deps in case main moved forward
+git checkout main && git pull
+git checkout -b <branch-name>
+```
+
+- Name copies clearly (`synek-feat-auth/`, `synek-fix-123/`) so you don't lose track
+- Scope each agent's task to files that don't overlap with other active agents to avoid merge conflicts
+- Agent pushes branch to remote when done; open a PR as normal
+- Delete the copy after the branch is merged
+
 ## Active Technologies
 
 TypeScript 5 (strict), React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), Supabase JS 2, i18next, date-fns 4, Zod 4
