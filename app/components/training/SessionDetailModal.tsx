@@ -172,13 +172,16 @@ export function SessionDetailModal({
 
   const hasActualPerformance = useMemo(
     () =>
-      session.actualDurationMinutes != null ||
-      session.actualDistanceKm != null ||
-      session.actualPace != null ||
-      session.avgHeartRate != null ||
-      session.maxHeartRate != null ||
-      session.rpe != null,
+      session.garminAugmented
+        ? session.actualPace != null || session.rpe != null
+        : session.actualDurationMinutes != null ||
+          session.actualDistanceKm != null ||
+          session.actualPace != null ||
+          session.avgHeartRate != null ||
+          session.maxHeartRate != null ||
+          session.rpe != null,
     [
+      session.garminAugmented,
       session.actualDurationMinutes,
       session.actualDistanceKm,
       session.actualPace,
@@ -535,6 +538,7 @@ export function SessionDetailModal({
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
         variant="modal"
+        session={session.garminAugmented ? session : undefined}
       />
 
       {/* ACTIONS */}
