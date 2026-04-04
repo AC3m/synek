@@ -311,6 +311,8 @@ export interface TrainingSession {
   stravaSyncedAt: string | null;
   isStravaConfirmed?: boolean;
   goalId?: string | null;
+  /** True when actual fields were back-filled from Garmin via augmentSessionsWithGarmin (PoC) */
+  garminAugmented?: boolean;
   resultDistanceKm?: number | null;
   resultTimeSeconds?: number | null;
   resultPace?: string | null;

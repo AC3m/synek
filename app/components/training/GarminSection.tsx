@@ -1,9 +1,10 @@
 // PoC: Junction Garmin integration — remove after evaluation
 import { useTranslation } from 'react-i18next';
 import { useJunctionWorkout } from '~/lib/hooks/useJunctionConnection';
+import { formatPaceSpeed } from '~/lib/utils/lap-classification';
 import { GarminBadge } from './GarminBadge';
 import { cn } from '~/lib/utils';
-import type { JunctionPocWorkout } from '~/types/junction-poc';
+import type { TrainingSession } from '~/types/training';
 
 interface GarminSectionProps {
   appUserId: string;
@@ -12,6 +13,8 @@ interface GarminSectionProps {
   junctionConnected: boolean;
   variant: 'card' | 'modal';
   className?: string;
+  /** When provided, reads Garmin data from the pre-matched session instead of querying */
+  session?: TrainingSession;
 }
 
 interface ChipData {
@@ -42,22 +45,27 @@ function GarminChipList({ chips, valueClass, animate }: GarminChipListProps) {
 }
 
 function buildChips(
-  workout: JunctionPocWorkout,
   durationMin: number | null,
   distanceKm: string | null,
-  labels: { duration: string; distance: string; avgHr: string; maxHr: string; kcal: string },
-  units: { min: string; km: string; bpm: string },
+  pace: string | null,
+  avgHr: number | null,
+  maxHr: number | null,
+  calories: number | null,
+  labels: { duration: string; distance: string; pace: string; avgHr: string; maxHr: string; kcal: string },
+  units: { min: string; km: string; perKm: string; bpm: string },
 ): ChipData[] {
   const chips: ChipData[] = [];
   if (durationMin != null)
     chips.push({ label: labels.duration, value: `${durationMin} ${units.min}` });
   if (distanceKm != null)
     chips.push({ label: labels.distance, value: `${distanceKm} ${units.km}` });
-  if (workout.averageHr != null)
-    chips.push({ label: labels.avgHr, value: `${Math.round(workout.averageHr)} ${units.bpm}` });
-  if (workout.maxHr != null)
-    chips.push({ label: labels.maxHr, value: `${Math.round(workout.maxHr)} ${units.bpm}` });
-  if (workout.calories != null) chips.push({ label: labels.kcal, value: `${workout.calories}` });
+  if (pace != null)
+    chips.push({ label: labels.pace, value: `${pace}${units.perKm}` });
+  if (avgHr != null)
+    chips.push({ label: labels.avgHr, value: `${Math.round(avgHr)} ${units.bpm}` });
+  if (maxHr != null)
+    chips.push({ label: labels.maxHr, value: `${Math.round(maxHr)} ${units.bpm}` });
+  if (calories != null) chips.push({ label: labels.kcal, value: `${calories}` });
   return chips;
 }
 
@@ -68,29 +76,55 @@ export function GarminSection({
   junctionConnected,
   variant,
   className,
+  session,
 }: GarminSectionProps) {
   const { t } = useTranslation('training');
-  const { data: workout } = useJunctionWorkout(
+
+  // When session is provided, use pre-matched data from augmentSessionsWithGarmin.
+  // This avoids a per-session query that fails when multiple workouts exist for
+  // the same (date, sport) — the route has already done the 1:1 matching.
+  const { data: queriedWorkout } = useJunctionWorkout(
     appUserId,
-    junctionConnected ? calendarDate : null,
+    !session && junctionConnected ? calendarDate : null,
     trainingType,
   );
 
-  if (!workout) return null;
+  // Derive display values from pre-matched session (card) or queried workout (modal)
+  let durationMin: number | null = null;
+  let distanceKm: string | null = null;
+  let pace: string | null = null;
+  let avgHr: number | null = null;
+  let maxHr: number | null = null;
+  let calories: number | null = null;
 
-  const durationMin =
-    workout.movingTimeSeconds != null ? Math.round(workout.movingTimeSeconds / 60) : null;
-  const distanceKm =
-    workout.distanceMeters != null && workout.distanceMeters > 0
-      ? (workout.distanceMeters / 1000).toFixed(2)
-      : null;
+  if (session != null) {
+    durationMin = session.actualDurationMinutes;
+    distanceKm =
+      session.actualDistanceKm != null && session.actualDistanceKm > 0
+        ? session.actualDistanceKm.toFixed(2)
+        : null;
+    pace = session.actualPace;
+    avgHr = session.avgHeartRate;
+    maxHr = session.maxHeartRate;
+    calories = session.calories;
+  } else if (queriedWorkout != null) {
+    durationMin =
+      queriedWorkout.movingTimeSeconds != null
+        ? Math.round(queriedWorkout.movingTimeSeconds / 60)
+        : null;
+    distanceKm =
+      queriedWorkout.distanceMeters != null && queriedWorkout.distanceMeters > 0
+        ? (queriedWorkout.distanceMeters / 1000).toFixed(2)
+        : null;
+    pace =
+      queriedWorkout.averageSpeed != null ? formatPaceSpeed(queriedWorkout.averageSpeed) : null;
+    avgHr = queriedWorkout.averageHr;
+    maxHr = queriedWorkout.maxHr;
+    calories = queriedWorkout.calories;
+  }
 
   const hasAnyData =
-    durationMin != null ||
-    distanceKm != null ||
-    workout.averageHr != null ||
-    workout.maxHr != null ||
-    workout.calories != null;
+    durationMin != null || distanceKm != null || pace != null || avgHr != null || maxHr != null || calories != null;
 
   if (!hasAnyData) return null;
 
@@ -98,17 +132,21 @@ export function GarminSection({
   const valueClass = isCard ? 'text-[10px] font-semibold' : 'text-sm font-semibold';
 
   const chips = buildChips(
-    workout,
     durationMin,
     distanceKm,
+    pace,
+    avgHr,
+    maxHr,
+    calories,
     {
       duration: t('actualPerformance.duration'),
       distance: t('actualPerformance.distance'),
+      pace: t('actualPerformance.pace'),
       avgHr: t('actualPerformance.avgHr'),
       maxHr: t('actualPerformance.maxHr'),
       kcal: t('units.kcal'),
     },
-    { min: t('units.min'), km: t('units.km'), bpm: t('units.bpm') },
+    { min: t('units.min'), km: t('units.km'), perKm: t('units.perKm'), bpm: t('units.bpm') },
   );
 
   if (isCard) {

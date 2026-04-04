@@ -19,6 +19,7 @@ import {
   isDistanceBased,
 } from '~/lib/utils/training-types';
 import { getSessionCalendarDate } from '~/lib/utils/date';
+import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
 import { type TrainingSession, type RunData } from '~/types/training';
 
@@ -82,13 +83,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
   const isMasked =
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
 
-  const hasActualPerformance =
-    session.actualDurationMinutes != null ||
-    session.actualDistanceKm != null ||
-    session.actualPace != null ||
-    session.avgHeartRate != null ||
-    session.maxHeartRate != null ||
-    session.rpe != null;
+  const hasActualPerformance = sessionHasActualPerformance(session);
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
   const shouldShowPerformanceSection =
     session.isCompleted && (hasActualPerformance || shouldShowMaskedPlaceholders);
@@ -241,6 +236,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
         trainingType={session.trainingType}
         junctionConnected={junctionConnected}
         variant="card"
+        session={session.garminAugmented ? session : undefined}
       />
 
       {/* Athlete-specific features */}
