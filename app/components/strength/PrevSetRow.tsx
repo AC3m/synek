@@ -28,12 +28,15 @@ export function PrevSetRow({
   return (
     <div
       data-testid={testId}
-      className={cn('col-span-full text-xs text-muted-foreground pb-0.5 pl-[calc(2.5rem+0.5rem)]', className)}
+      className={cn(
+        'col-span-full pb-0.5 pl-[calc(2.5rem+0.5rem)] text-xs text-muted-foreground',
+        className,
+      )}
     >
       {hasData ? (
         <>
-          {t('strength.logger.prev')}{' '}
-          {reps != null ? reps : t('strength.logger.prevNone')} {t('strength.logger.reps')}
+          {t('strength.logger.prev')} {reps != null ? reps : t('strength.logger.prevNone')}{' '}
+          {t('strength.logger.reps')}
           {' · '}
           {load != null ? `${load} ${unit}` : t('strength.logger.prevNone')}
           {isTopSetOnly && (

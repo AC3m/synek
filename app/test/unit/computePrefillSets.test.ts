@@ -44,12 +44,18 @@ function makePrefill(overrides: Partial<StrengthSessionExercise> = {}): Strength
 describe('computePrefillSets', () => {
   describe('progression: up', () => {
     it('applies positive load delta when intent is up', () => {
-      const result = computePrefillSets(makePrefill({ progression: 'up' }), makeExercise({ progressionIncrement: 2.5 }));
+      const result = computePrefillSets(
+        makePrefill({ progression: 'up' }),
+        makeExercise({ progressionIncrement: 2.5 }),
+      );
       expect(result[0].load).toBe('82.5');
     });
 
     it('applies delta per-set when setsData is present', () => {
-      const result = computePrefillSets(makePrefill({ progression: 'up' }), makeExercise({ progressionIncrement: 2.5 }));
+      const result = computePrefillSets(
+        makePrefill({ progression: 'up' }),
+        makeExercise({ progressionIncrement: 2.5 }),
+      );
       expect(result[0].load).toBe('82.5'); // 80 + 2.5
       expect(result[1].load).toBe('77.5'); // 75 + 2.5
       expect(result[2].load).toBe('77.5'); // 75 + 2.5
@@ -87,7 +93,14 @@ describe('computePrefillSets', () => {
 
     it('floors load at 0 when delta would go negative', () => {
       const result = computePrefillSets(
-        makePrefill({ progression: 'down', setsData: [{ reps: 10, loadKg: 2 }, { reps: 9, loadKg: 2 }, { reps: 8, loadKg: 2 }] }),
+        makePrefill({
+          progression: 'down',
+          setsData: [
+            { reps: 10, loadKg: 2 },
+            { reps: 9, loadKg: 2 },
+            { reps: 8, loadKg: 2 },
+          ],
+        }),
         makeExercise({ progressionIncrement: 5 }),
       );
       // 2 - 5 = -3, floored to 0

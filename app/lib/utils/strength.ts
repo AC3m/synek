@@ -28,11 +28,7 @@ export function computePrefillSets(
 ): SetState[] {
   const increment = exercise.progressionIncrement ?? 0;
   const loadDelta =
-    prefill.progression === 'up'
-      ? increment
-      : prefill.progression === 'down'
-        ? -increment
-        : 0;
+    prefill.progression === 'up' ? increment : prefill.progression === 'down' ? -increment : 0;
 
   return Array.from({ length: exercise.sets }, (_, i) => {
     const prevLoad = prefill.setsData?.[i]?.loadKg ?? prefill.loadKg;

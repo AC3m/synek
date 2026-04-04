@@ -120,7 +120,9 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
     const { rerender } = renderLogger([]);
 
     // Initially empty
-    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(null);
+    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
+      null,
+    );
 
     // prefillData arrives — prefill has progression=up, increment=2.5, load=80 → expect 82.5
     rerender(
@@ -133,7 +135,9 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
       />,
     );
 
-    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(82.5);
+    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
+      82.5,
+    );
     expect(screen.getByRole('spinbutton', { name: /set 1 reps for bench press/i })).toHaveValue(10);
   });
 
@@ -231,7 +235,9 @@ describe('SessionExerciseLogger — pre-fill applied to inputs', () => {
       prefillDate: '2024-03-24',
     });
 
-    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(82.5);
+    expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
+      82.5,
+    );
   });
 
   it('applies correct reps from prior session per set', () => {

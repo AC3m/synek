@@ -51,7 +51,8 @@ function toStrengthVariantExercise(row: Record<string, unknown>): StrengthVarian
     loadUnit: (row.load_unit as LoadUnit | null) ?? 'kg',
     sortOrder: row.sort_order as number,
     supersetGroup: row.superset_group as number | null,
-    progressionIncrement: row.progression_increment != null ? Number(row.progression_increment) : null,
+    progressionIncrement:
+      row.progression_increment != null ? Number(row.progression_increment) : null,
     createdAt: row.created_at as string,
   };
 }
