@@ -54,7 +54,7 @@
       "loadUnit": "Jednostka obciążenia",
       "incrementLabel": "Progres obciążenia na sesję",
       "durationIncrement": "Progres czasu na sesję",
-      "incrementChip": "+{{value}} {{unit}}",
+      "incrementChip": "Progres na sesję: +{{value}} {{unit}}",
       "advancedToggle": "Zaawansowane",
       "incrementInvalidTitle": "Nieprawidłowy progres",
       "incrementInvalidDescription": "Wpisz liczbę dodatnią. Możesz użyć . lub , jako separatora dziesiętnego."

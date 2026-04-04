@@ -53,10 +53,14 @@ export function useStrengthSessionExercises(sessionId: string) {
   });
 }
 
-export function useLastSessionExercises(athleteId: string, exerciseIds: string[]) {
+export function useLastSessionExercises(
+  athleteId: string,
+  exerciseIds: string[],
+  beforeDate?: string | null,
+) {
   return useQuery({
-    queryKey: keys.lastSession(athleteId, exerciseIds),
-    queryFn: () => fetchLastSessionExercises(athleteId, exerciseIds),
+    queryKey: keys.lastSession(athleteId, exerciseIds, beforeDate),
+    queryFn: () => fetchLastSessionExercises(athleteId, exerciseIds, beforeDate),
     enabled: athleteId.length > 0 && exerciseIds.length > 0,
   });
 }

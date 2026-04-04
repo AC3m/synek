@@ -40,8 +40,8 @@ export const queryKeys = {
     byId: (id: string) => ['strengthVariants', id] as const,
     exercises: (variantId: string) => ['strengthVariants', variantId, 'exercises'] as const,
     sessionExercises: (sessionId: string) => ['strengthVariants', 'session', sessionId] as const,
-    lastSession: (athleteId: string, exerciseIds: string[]) =>
-      ['strengthVariants', 'lastSession', athleteId, ...exerciseIds] as const,
+    lastSession: (athleteId: string, exerciseIds: string[], beforeDate?: string | null) =>
+      ['strengthVariants', 'lastSession', athleteId, beforeDate ?? null, ...exerciseIds] as const,
     progressLogs: (variantId: string, athleteId: string) =>
       ['strengthVariants', 'progressLogs', variantId, athleteId] as const,
   },

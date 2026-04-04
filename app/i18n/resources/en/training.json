@@ -54,7 +54,7 @@
       "loadUnit": "Load unit",
       "incrementLabel": "Load increment per session",
       "durationIncrement": "Duration increment per session",
-      "incrementChip": "+{{value}} {{unit}}",
+      "incrementChip": "Progress per Session: +{{value}} {{unit}}",
       "advancedToggle": "Advanced",
       "incrementInvalidTitle": "Invalid increment",
       "incrementInvalidDescription": "Enter a positive number. You can use . or , as the decimal separator."

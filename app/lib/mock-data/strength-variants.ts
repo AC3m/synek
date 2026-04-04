@@ -463,6 +463,7 @@ export async function mockUpsertSessionExercises(input: {
 export async function mockFetchLastSessionExercises(
   athleteId: string,
   exerciseIds: string[],
+  beforeDate?: string | null,
 ): Promise<{ data: Record<string, StrengthSessionExercise>; date: string | null }> {
   await delay();
   if (!athleteId || exerciseIds.length === 0) return { data: {}, date: null };
@@ -478,6 +479,7 @@ export async function mockFetchLastSessionExercises(
     if (!se.variantExerciseId) continue;
     if (!exerciseIds.includes(se.variantExerciseId)) continue;
     if (!completedSessionIds.has(se.sessionId)) continue;
+    if (beforeDate && se.createdAt.split('T')[0] >= beforeDate) continue;
 
     const existing = latestByExercise.get(se.variantExerciseId);
     const seDate = se.createdAt; // use createdAt as proxy for completedAt in mock

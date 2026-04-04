@@ -153,6 +153,7 @@ export function SessionDetailModal({
   const { data: prefillResult } = useLastSessionExercises(
     open && strengthVariantId ? athleteId : '',
     open && strengthVariantId ? exerciseIds : [],
+    open && strengthVariantId ? calendarDate : null,
   );
   const { mutate: mutateExercises } = useUpsertSessionExercises();
 

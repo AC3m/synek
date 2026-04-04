@@ -349,12 +349,14 @@ export async function upsertSessionExercises(
 export async function fetchLastSessionExercises(
   athleteId: string,
   exerciseIds: string[],
+  beforeDate?: string | null,
 ): Promise<{ data: Record<string, StrengthSessionExercise>; date: string | null }> {
-  if (isMockMode) return mockFetchLastSessionExercises(athleteId, exerciseIds);
+  if (isMockMode) return mockFetchLastSessionExercises(athleteId, exerciseIds, beforeDate);
 
   const { data, error } = await supabase.rpc('get_last_session_exercises', {
     p_athlete_id: athleteId,
     p_exercise_ids: exerciseIds,
+    p_before_date: beforeDate ?? null,
   });
   if (error) throw error;
 
