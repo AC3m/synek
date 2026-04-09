@@ -93,7 +93,17 @@
     "registrationError": "Something went wrong. Please try again.",
     "alreadyHaveAccount": "Already have an account?",
     "alreadyHaveAccountCta": "Log in →",
-    "cta": "Join the beta"
+    "cta": "Join the beta",
+    "consent": {
+      "prefix": "By registering you agree to our",
+      "terms": "Terms & Conditions",
+      "and": "and",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "footer": {
+    "privacyPolicy": "Privacy Policy",
+    "terms": "Terms & Conditions"
   },
   "contact": {
     "title": "Write to us",

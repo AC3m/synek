@@ -93,7 +93,17 @@
     "registrationError": "Coś poszło nie tak. Spróbuj ponownie.",
     "alreadyHaveAccount": "Masz już konto?",
     "alreadyHaveAccountCta": "Zaloguj się →",
-    "cta": "Dołącz do bety"
+    "cta": "Dołącz do bety",
+    "consent": {
+      "prefix": "Rejestrując się, akceptujesz nasz",
+      "terms": "Regulamin",
+      "and": "i",
+      "privacy": "Politykę prywatności"
+    }
+  },
+  "footer": {
+    "privacyPolicy": "Polityka prywatności",
+    "terms": "Regulamin"
   },
   "contact": {
     "title": "Napisz do nas",

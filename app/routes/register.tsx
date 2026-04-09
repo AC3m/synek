@@ -108,7 +108,10 @@ export default function RegisterPage() {
             setIsPending(false);
             return;
           }
-          if (payload.error === 'coach_limit_reached' || payload.error === 'athlete_limit_reached') {
+          if (
+            payload.error === 'coach_limit_reached' ||
+            payload.error === 'athlete_limit_reached'
+          ) {
             setError(t('beta.registrationLimitReached'));
             setIsPending(false);
             return;
@@ -246,6 +249,26 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full" disabled={isPending || !role}>
               {isPending ? '…' : t('beta.submit')}
             </Button>
+
+            <p className="text-center text-xs text-muted-foreground">
+              {t('beta.consent.prefix')}{' '}
+              <Link
+                to={`/${locale}/terms`}
+                className="underline hover:text-foreground"
+                target="_blank"
+              >
+                {t('beta.consent.terms')}
+              </Link>{' '}
+              {t('beta.consent.and')}{' '}
+              <Link
+                to={`/${locale}/privacy-policy`}
+                className="underline hover:text-foreground"
+                target="_blank"
+              >
+                {t('beta.consent.privacy')}
+              </Link>
+              .
+            </p>
 
             <p className="text-center text-sm text-muted-foreground">
               {t('beta.alreadyHaveAccount')}{' '}
