@@ -17,6 +17,7 @@ import { ProgressionToggle } from '~/components/strength/ProgressionToggle';
 import { CopySetButton } from '~/components/strength/CopySetButton';
 import { PrefillBadge } from '~/components/strength/PrefillBadge';
 import { Input } from '~/components/ui/input';
+import { Textarea } from '~/components/ui/textarea';
 import type {
   SetEntry,
   StrengthVariantExercise,
@@ -34,6 +35,7 @@ export interface LogRowChange {
   loadKg: number | null;
   setsData: SetEntry[];
   progression: ProgressionIntent | null;
+  notes?: string | null;
 }
 
 function initSets(
@@ -53,13 +55,18 @@ function initSets(
   return Array.from({ length: count }, () => ({ reps: '', load: '', isPreFilled: false }));
 }
 
-function serializeCommit(sets: SetState[], progression: ProgressionIntent | null): string {
+function serializeCommit(
+  sets: SetState[],
+  progression: ProgressionIntent | null,
+  notes: string,
+): string {
   return JSON.stringify({
     sets: sets.map((s) => ({
       reps: s.reps !== '' ? parseInt(s.reps) : null,
       loadKg: s.load !== '' ? parseFloat(s.load) : null,
     })),
     progression,
+    notes,
   });
 }
 
@@ -85,12 +92,14 @@ interface PrevSummaryProps {
   prefill: StrengthSessionExercise;
   prefillDate: string;
   exercise: StrengthVariantExercise;
+  notes?: string | null;
 }
 
 const PrevSummary = memo(function PrevSummary({
   prefill,
   prefillDate,
   exercise,
+  notes,
 }: PrevSummaryProps) {
   const { t } = useTranslation('training');
   const [expanded, setExpanded] = useState(false);
@@ -144,11 +153,87 @@ const PrevSummary = memo(function PrevSummary({
               <span>{load != null ? `${load} ${unit}` : '—'}</span>
             </div>
           ))}
+          {notes && (
+            <div className="mt-1 border-t pt-1" data-testid="prev-notes">
+              <span className="text-xs font-medium text-muted-foreground">
+                {t('strength.logger.prevNotes')}:{' '}
+              </span>
+              <span className="text-xs text-muted-foreground">{notes}</span>
+            </div>
+          )}
         </div>
       )}
     </div>
   );
 });
+
+// ---------------------------------------------------------------------------
+// NotesSection — collapsible notes area inside ExerciseCard
+// ---------------------------------------------------------------------------
+
+interface NotesSectionProps {
+  notes: string;
+  open: boolean;
+  readOnly: boolean;
+  onOpen: () => void;
+  onChange: (val: string) => void;
+  onBlur: () => void;
+  placeholder: string;
+  label: string;
+  addLabel: string;
+}
+
+function NotesSection({
+  notes,
+  open,
+  readOnly,
+  onOpen,
+  onChange,
+  onBlur,
+  placeholder,
+  label,
+  addLabel,
+}: NotesSectionProps) {
+  if (readOnly) {
+    return (
+      <div className="border-t px-3 py-2">
+        <p className="text-xs text-muted-foreground">{notes}</p>
+      </div>
+    );
+  }
+
+  if (!open) {
+    return (
+      <div className="border-t px-3 py-1.5">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="h-auto px-0 py-0 text-xs text-muted-foreground"
+          onClick={onOpen}
+        >
+          + {addLabel}
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border-t px-3 py-2">
+      <Textarea
+        value={notes}
+        onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
+        maxLength={1000}
+        placeholder={placeholder}
+        aria-label={label}
+        className="resize-none text-xs"
+        rows={2}
+        autoFocus={!notes}
+      />
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // ExerciseCard — memoised so only changed card re-renders
@@ -181,6 +266,8 @@ const ExerciseCard = memo(function ExerciseCard({
   const [progression, setProgression] = useState<ProgressionIntent | null>(
     logged?.progression ?? null,
   );
+  const [notes, setNotes] = useState<string>(logged?.notes ?? '');
+  const [notesOpen, setNotesOpen] = useState(!!logged?.notes);
   const [saved, setSaved] = useState(false);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastCommittedRef = useRef<string | null>(null);
@@ -206,14 +293,17 @@ const ExerciseCard = memo(function ExerciseCard({
       loggedHydratedRef.current = true;
       const newSets = initSets(exercise.sets, logged, prefill, exercise);
       const newProgression = logged.progression ?? null;
+      const newNotes = logged.notes ?? '';
       setSets(newSets);
       setProgression(newProgression);
-      lastCommittedRef.current = serializeCommit(newSets, newProgression);
+      setNotes(newNotes);
+      if (newNotes) setNotesOpen(true);
+      lastCommittedRef.current = serializeCommit(newSets, newProgression, newNotes);
     }
   }, [logged, exercise.sets]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  function commit(currentSets = sets, currentProgression = progression) {
-    const serialized = serializeCommit(currentSets, currentProgression);
+  function commit(currentSets = sets, currentProgression = progression, currentNotes = notes) {
+    const serialized = serializeCommit(currentSets, currentProgression, currentNotes);
     if (lastCommittedRef.current === serialized) return;
     lastCommittedRef.current = serialized;
 
@@ -228,6 +318,7 @@ const ExerciseCard = memo(function ExerciseCard({
       loadKg,
       setsData,
       progression: currentProgression,
+      notes: currentNotes.trim() || null,
     });
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
     setSaved(true);
@@ -344,7 +435,12 @@ const ExerciseCard = memo(function ExerciseCard({
       <div className="px-3 py-2">
         {/* Previous session collapsible summary */}
         {prefill && prefillDate && (
-          <PrevSummary prefill={prefill} prefillDate={prefillDate} exercise={exercise} />
+          <PrevSummary
+            prefill={prefill}
+            prefillDate={prefillDate}
+            exercise={exercise}
+            notes={prefill.notes}
+          />
         )}
 
         {/* Fill from previous session button — shown only when all sets are empty */}
@@ -467,6 +563,20 @@ const ExerciseCard = memo(function ExerciseCard({
           ))}
         </div>
       </div>
+
+      {(!readOnly || notes) && (
+        <NotesSection
+          notes={notes}
+          open={notesOpen}
+          readOnly={readOnly}
+          onOpen={() => setNotesOpen(true)}
+          onChange={setNotes}
+          onBlur={() => commit()}
+          placeholder={t('strength.logger.notesPlaceholder')}
+          label={t('strength.logger.notesLabel')}
+          addLabel={t('strength.logger.notesAdd')}
+        />
+      )}
 
       {(!readOnly || progression) && (
         <div

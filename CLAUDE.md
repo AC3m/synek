@@ -1,6 +1,7 @@
 # Synek — Claude Code Instructions
 
 ## What This App Is
+
 An athlete training planning platform. Coaches create ISO-week training plans; athletes view and complete sessions. Built SPA (no SSR).
 
 **Start with `docs/00-start-here.md`** for the full documentation map.
@@ -23,6 +24,7 @@ routes/ → hooks/ → queries/ → Supabase (or mock)
 ```
 
 Key directories:
+
 - `app/routes/` — page components only; no DB access
 - `app/lib/hooks/` — React Query hooks; the only place components touch server state
 - `app/lib/queries/` — Supabase CRUD + `keys.ts`; real and mock implementations side-by-side
@@ -36,15 +38,15 @@ Key directories:
 
 ## Documentation Map
 
-| I want to… | Read |
-|---|---|
-| Understand principles & quality gates | `docs/constitution.md` |
-| Understand the system architecture | `docs/architecture/overview.md` |
-| Add a component / route / query / training type / translation | `docs/how-to/` |
-| Check naming, type, or styling rules | `docs/reference/conventions.md` |
-| Know what is forbidden | `docs/reference/anti-patterns.md` |
-| Understand why something is built a certain way | `docs/architecture/decisions/` |
-| Work with Strava | `docs/architecture/strava-submission-form.md`, `docs/architecture/strava-function-security.md` |
+| I want to…                                                    | Read                                                                                           |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Understand principles & quality gates                         | `docs/constitution.md`                                                                         |
+| Understand the system architecture                            | `docs/architecture/overview.md`                                                                |
+| Add a component / route / query / training type / translation | `docs/how-to/`                                                                                 |
+| Check naming, type, or styling rules                          | `docs/reference/conventions.md`                                                                |
+| Know what is forbidden                                        | `docs/reference/anti-patterns.md`                                                              |
+| Understand why something is built a certain way               | `docs/architecture/decisions/`                                                                 |
+| Work with Strava                                              | `docs/architecture/strava-submission-form.md`, `docs/architecture/strava-function-security.md` |
 
 ## Critical Rules (Always Apply)
 
@@ -60,4 +62,11 @@ These are the rules most likely to cause bugs or failed type checks if missed:
 
 ## Active Technologies
 
+- TypeScript 5 (strict) + React 19, TanStack Query 5, shadcn/ui (New York), i18next, Supabase JS 2 (016-exercise-notes)
+- PostgreSQL via Supabase — `strength_session_exercises.notes text` column already migrated (016-exercise-notes)
+
 TypeScript 5 (strict), React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), Supabase JS 2, i18next, date-fns 4, Zod 4
+
+## Recent Changes
+
+- 016-exercise-notes: Added TypeScript 5 (strict) + React 19, TanStack Query 5, shadcn/ui (New York), i18next, Supabase JS 2

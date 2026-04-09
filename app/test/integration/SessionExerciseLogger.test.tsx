@@ -369,3 +369,121 @@ describe('SessionExerciseLogger — copy from set above', () => {
     expect(screen.queryByRole('button', { name: /copy.*set/i })).not.toBeInTheDocument();
   });
 });
+
+describe('SessionExerciseLogger — notes input', () => {
+  it('shows add-note button and reveals textarea on click', async () => {
+    const user = userEvent.setup();
+    renderLogger([]);
+
+    expect(screen.queryByRole('textbox', { name: /notes/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /add note/i }));
+    expect(screen.getByRole('textbox', { name: /notes/i })).toBeInTheDocument();
+  });
+
+  it('calls onChange with notes value on blur after opening', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    renderWithProviders(
+      <SessionExerciseLogger exercises={[exercise]} loggedExercises={[]} onChange={onChange} />,
+    );
+
+    await user.click(screen.getByRole('button', { name: /add note/i }));
+    const textarea = screen.getByRole('textbox', { name: /notes/i });
+    await user.type(textarea, 'Keep elbows tucked');
+    await user.tab();
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ notes: 'Keep elbows tucked' })]),
+    );
+  });
+
+  it('does not render notes textarea in readOnly mode when no note exists', () => {
+    renderWithProviders(
+      <SessionExerciseLogger
+        exercises={[exercise]}
+        loggedExercises={[]}
+        readOnly
+        onChange={() => {}}
+      />,
+    );
+
+    expect(screen.queryByRole('textbox', { name: /notes/i })).not.toBeInTheDocument();
+  });
+
+  it('renders note as static text in readOnly mode when note exists', () => {
+    const withNote: StrengthSessionExercise = { ...loggedExercise, notes: 'Drive through heels' };
+    renderWithProviders(
+      <SessionExerciseLogger
+        exercises={[exercise]}
+        loggedExercises={[withNote]}
+        readOnly
+        onChange={() => {}}
+      />,
+    );
+
+    expect(screen.queryByRole('textbox', { name: /notes/i })).not.toBeInTheDocument();
+    expect(screen.getByText('Drive through heels')).toBeInTheDocument();
+  });
+
+  it('pre-populates notes textarea from logged exercise', () => {
+    const withNote: StrengthSessionExercise = { ...loggedExercise, notes: 'Focus on form' };
+    renderWithProviders(
+      <SessionExerciseLogger
+        exercises={[exercise]}
+        loggedExercises={[withNote]}
+        onChange={() => {}}
+      />,
+    );
+
+    expect(screen.getByRole('textbox', { name: /notes/i })).toHaveValue('Focus on form');
+  });
+});
+
+describe('SessionExerciseLogger — PrevSummary notes display', () => {
+  it('shows previous note in expanded PrevSummary when prefill has a note', async () => {
+    const user = userEvent.setup();
+    const prefillWithNote: StrengthSessionExercise = {
+      ...prefillExercise,
+      notes: 'Keep elbows tucked',
+    };
+    renderLogger([], {
+      prefillData: { ex1: prefillWithNote },
+      prefillDate: '2024-03-24',
+    });
+
+    await user.click(screen.getByTestId('prev-summary-toggle'));
+
+    expect(screen.getByTestId('prev-notes')).toHaveTextContent('Keep elbows tucked');
+  });
+
+  it('does not render notes section in PrevSummary when prefill note is null', async () => {
+    const user = userEvent.setup();
+    renderLogger([], {
+      prefillData: { ex1: prefillExercise }, // prefillExercise has notes: null
+      prefillDate: '2024-03-24',
+    });
+
+    await user.click(screen.getByTestId('prev-summary-toggle'));
+
+    expect(screen.queryByTestId('prev-notes')).not.toBeInTheDocument();
+  });
+
+  it('renders long note text without breaking layout', async () => {
+    const user = userEvent.setup();
+    const longNote = 'A'.repeat(200);
+    const prefillWithLongNote: StrengthSessionExercise = {
+      ...prefillExercise,
+      notes: longNote,
+    };
+    renderLogger([], {
+      prefillData: { ex1: prefillWithLongNote },
+      prefillDate: '2024-03-24',
+    });
+
+    await user.click(screen.getByTestId('prev-summary-toggle'));
+
+    const notesEl = screen.getByTestId('prev-notes');
+    expect(notesEl).toBeInTheDocument();
+    expect(notesEl).toHaveTextContent(longNote);
+  });
+});

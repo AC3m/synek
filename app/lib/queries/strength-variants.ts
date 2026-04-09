@@ -374,7 +374,7 @@ export async function fetchLastSessionExercises(
       load_kg: r.load_kg,
       sets_data: r.sets_data,
       progression: r.progression,
-      notes: null,
+      notes: r.notes,
       sort_order: 0,
       created_at: r.completed_at,
     });
