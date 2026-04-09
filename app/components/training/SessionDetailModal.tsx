@@ -167,6 +167,7 @@ export function SessionDetailModal({
           actualReps: c.actualReps,
           loadKg: c.loadKg,
           progression: c.progression,
+          notes: c.notes,
           setsData: c.setsData,
           sortOrder: i,
         })),

@@ -1,6 +1,7 @@
 # Synek — Claude Code Instructions
 
 ## What This App Is
+
 An athlete training planning platform. Coaches create ISO-week training plans; athletes view and complete sessions. Built SPA (no SSR).
 
 **Start with `docs/00-start-here.md`** for the full documentation map.
@@ -23,6 +24,7 @@ routes/ → hooks/ → queries/ → Supabase (or mock)
 ```
 
 Key directories:
+
 - `app/routes/` — page components only; no DB access
 - `app/lib/hooks/` — React Query hooks; the only place components touch server state
 - `app/lib/queries/` — Supabase CRUD + `keys.ts`; real and mock implementations side-by-side
@@ -36,15 +38,15 @@ Key directories:
 
 ## Documentation Map
 
-| I want to… | Read |
-|---|---|
-| Understand principles & quality gates | `docs/constitution.md` |
-| Understand the system architecture | `docs/architecture/overview.md` |
-| Add a component / route / query / training type / translation | `docs/how-to/` |
-| Check naming, type, or styling rules | `docs/reference/conventions.md` |
-| Know what is forbidden | `docs/reference/anti-patterns.md` |
-| Understand why something is built a certain way | `docs/architecture/decisions/` |
-| Work with Strava | `docs/architecture/strava-submission-form.md`, `docs/architecture/strava-function-security.md` |
+| I want to…                                                    | Read                                                                                           |
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Understand principles & quality gates                         | `docs/constitution.md`                                                                         |
+| Understand the system architecture                            | `docs/architecture/overview.md`                                                                |
+| Add a component / route / query / training type / translation | `docs/how-to/`                                                                                 |
+| Check naming, type, or styling rules                          | `docs/reference/conventions.md`                                                                |
+| Know what is forbidden                                        | `docs/reference/anti-patterns.md`                                                              |
+| Understand why something is built a certain way               | `docs/architecture/decisions/`                                                                 |
+| Work with Strava                                              | `docs/architecture/strava-submission-form.md`, `docs/architecture/strava-function-security.md` |
 
 ## Critical Rules (Always Apply)
 
