@@ -437,6 +437,27 @@ describe('SessionExerciseLogger — notes input', () => {
 
     expect(screen.getByRole('textbox', { name: /notes/i })).toHaveValue('Focus on form');
   });
+
+  it('calls onChange with notes: null when note is cleared and blurred', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+    const withNote: StrengthSessionExercise = { ...loggedExercise, notes: 'Focus on form' };
+    renderWithProviders(
+      <SessionExerciseLogger
+        exercises={[exercise]}
+        loggedExercises={[withNote]}
+        onChange={onChange}
+      />,
+    );
+
+    const textarea = screen.getByRole('textbox', { name: /notes/i });
+    await user.clear(textarea);
+    await user.tab();
+
+    expect(onChange).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ notes: null })]),
+    );
+  });
 });
 
 describe('SessionExerciseLogger — PrevSummary notes display', () => {

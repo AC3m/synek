@@ -195,6 +195,7 @@ function NotesSection({
   addLabel,
 }: NotesSectionProps) {
   if (readOnly) {
+    if (!notes) return null;
     return (
       <div className="border-t px-3 py-2">
         <p className="text-xs text-muted-foreground">{notes}</p>

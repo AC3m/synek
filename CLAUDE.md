@@ -62,11 +62,4 @@ These are the rules most likely to cause bugs or failed type checks if missed:
 
 ## Active Technologies
 
-- TypeScript 5 (strict) + React 19, TanStack Query 5, shadcn/ui (New York), i18next, Supabase JS 2 (016-exercise-notes)
-- PostgreSQL via Supabase — `strength_session_exercises.notes text` column already migrated (016-exercise-notes)
-
 TypeScript 5 (strict), React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), Supabase JS 2, i18next, date-fns 4, Zod 4
-
-## Recent Changes
-
-- 016-exercise-notes: Added TypeScript 5 (strict) + React 19, TanStack Query 5, shadcn/ui (New York), i18next, Supabase JS 2
