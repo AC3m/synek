@@ -7,6 +7,7 @@ import { WhySynekSection } from '~/components/landing/WhySynekSection';
 import { FeaturesSection } from '~/components/landing/FeaturesSection';
 import { JoinBetaSection } from '~/components/landing/JoinBetaSection';
 import { ContactSection } from '~/components/landing/ContactSection';
+import { LandingFooter } from '~/components/landing/LandingFooter';
 import { AppLoader } from '~/components/ui/app-loader';
 
 export function meta() {
@@ -45,6 +46,7 @@ export default function LandingPage() {
         <JoinBetaSection />
         <ContactSection />
       </main>
+      <LandingFooter />
     </div>
   );
 }

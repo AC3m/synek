@@ -13,6 +13,8 @@ export default [
     index('routes/landing.tsx'),
     route('login', 'routes/login.tsx'),
     route('register', 'routes/register.tsx'),
+    route('privacy-policy', 'routes/privacy-policy.tsx'),
+    route('terms', 'routes/terms.tsx'),
 
     // App pages — wrapped with Header + BottomNav
     layout('routes/locale-layout.tsx', [

@@ -120,11 +120,13 @@ export function LandingNav({ className }: LandingNavProps) {
         {/* Logo */}
         <Logo size="sm" />
 
-        {/* Desktop: marketing links centred, auth links + controls on far right */}
+        {/* Desktop: marketing links centred (landing only), auth links + controls on far right */}
         <div className="hidden flex-1 items-center md:flex">
-          <nav className="ml-8 flex items-center gap-6">
-            {MARKETING_LINKS.map((link) => renderMarketingLink(link))}
-          </nav>
+          {isLanding && (
+            <nav className="ml-8 flex items-center gap-6">
+              {MARKETING_LINKS.map((link) => renderMarketingLink(link))}
+            </nav>
+          )}
 
           {/* Pushes auth group to the far right */}
           <div className="ml-auto flex items-center gap-2">
@@ -157,7 +159,7 @@ export function LandingNav({ className }: LandingNavProps) {
       {menuOpen && (
         <div className="border-t border-[color:var(--separator)] bg-surface-1 px-4 pb-4 md:hidden">
           <nav className="flex flex-col divide-y divide-[color:var(--separator)]">
-            {MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
+            {isLanding && MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
             {/* Auth links in their own group with a heavier divider */}
             <div className="flex flex-col gap-0 pt-2">
               {AUTH_LINKS.map((link) => renderAuthLink(link as RouteLink, true))}

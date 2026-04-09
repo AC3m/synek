@@ -4,6 +4,7 @@ import type coach from './resources/en/coach.json';
 import type athlete from './resources/en/athlete.json';
 import type training from './resources/en/training.json';
 import type landing from './resources/en/landing.json';
+import type legal from './resources/en/legal.json';
 
 declare module 'i18next' {
   interface CustomTypeOptions {
@@ -14,6 +15,7 @@ declare module 'i18next' {
       athlete: typeof athlete;
       training: typeof training;
       landing: typeof landing;
+      legal: typeof legal;
     };
   }
 }
