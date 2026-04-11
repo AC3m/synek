@@ -93,6 +93,7 @@ export default function RegisterPage() {
           email: result.data.email,
           password: result.data.password,
           role,
+          locale,
           website: honeypot,
           cfToken,
         }),
@@ -250,6 +251,8 @@ export default function RegisterPage() {
             <Turnstile
               siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY ?? ''}
               onSuccess={setCfToken}
+              onError={() => setError(t('errors.turnstileFailed', { ns: 'common' }))}
+              onExpire={() => setCfToken('')}
             />
 
             {error && (
@@ -261,6 +264,11 @@ export default function RegisterPage() {
             <Button type="submit" className="w-full" disabled={isPending || !role || !cfToken}>
               {isPending ? '…' : t('beta.submit')}
             </Button>
+            {!cfToken && !error && (
+              <p className="text-center text-xs text-muted-foreground">
+                {t('errors.turnstileVerifying', { ns: 'common' })}
+              </p>
+            )}
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

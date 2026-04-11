@@ -76,6 +76,7 @@
     "404": "The requested page could not be found.",
     "error": "Error",
     "turnstileFailed": "Bot check failed. Please refresh and try again.",
+    "turnstileVerifying": "Completing security check…",
     "rateLimited": "Too many attempts. Please wait a few minutes and try again."
   },
   "auth": {

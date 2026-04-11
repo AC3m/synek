@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Mail } from 'lucide-react';
 import { LandingNav } from '~/components/landing/LandingNav';
 import { Button } from '~/components/ui/button';
 import { resendConfirmationEmail } from '~/lib/queries/auth-callbacks';
+
+export function meta() {
+  return [{ title: 'Check your inbox — Synek' }];
+}
 
 export default function ConfirmEmailPage() {
   const { t } = useTranslation('landing');
@@ -38,18 +43,18 @@ export default function ConfirmEmailPage() {
       <LandingNav />
       <main className="flex min-h-screen items-center justify-center px-4 pt-14">
         <div className="w-full max-w-md space-y-6 rounded-xl border bg-background p-6 shadow-sm sm:p-8">
-          <div className="space-y-2">
+          <div className="flex flex-col items-center space-y-3 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Mail className="h-6 w-6 text-primary" />
+            </div>
             <h1 className="text-xl font-bold">{t('beta.confirmEmailTitle')}</h1>
-            <p className="text-sm text-muted-foreground">{t('beta.confirmEmailBody')}</p>
-            {email && (
-              <p className="text-sm font-medium" data-testid="confirm-email-address">
-                {email}
-              </p>
-            )}
+            <p className="text-sm text-muted-foreground">
+              {t('beta.confirmEmailBody', { email: email || '…' })}
+            </p>
           </div>
 
           {resendSuccess ? (
-            <p className="text-sm text-green-600" data-testid="resend-success">
+            <p className="text-center text-sm text-green-600" data-testid="resend-success">
               {t('beta.resentConfirmation')}
             </p>
           ) : (
@@ -64,12 +69,12 @@ export default function ConfirmEmailPage() {
                 {isResending ? '…' : t('beta.resendConfirmation')}
               </Button>
               {isRateLimited && (
-                <p className="text-sm text-amber-600" data-testid="resend-rate-limited">
+                <p className="text-center text-sm text-amber-600" data-testid="resend-rate-limited">
                   {t('errors.rateLimited', { ns: 'common' })}
                 </p>
               )}
               {resendError && (
-                <p className="text-sm text-destructive" data-testid="resend-error">
+                <p className="text-center text-sm text-destructive" data-testid="resend-error">
                   {resendError}
                 </p>
               )}

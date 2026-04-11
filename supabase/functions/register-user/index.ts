@@ -58,11 +58,12 @@ Deno.serve(async (req) => {
       email?: string;
       password?: string;
       role?: string;
+      locale?: string;
       website?: string;
       cfToken?: string;
     };
 
-    const { name, email, password, role, website, cfToken } = body;
+    const { name, email, password, role, locale, website, cfToken } = body;
 
     // 1. Honeypot — bots fill this, real browsers leave it empty
     if (website) {
@@ -142,24 +143,26 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 6. Create user (unconfirmed — Supabase will send a confirmation email)
+    // 6. Create user + send confirmation email via generateLink
+    //    admin.createUser() alone does NOT send an email — generateLink(type:'signup') does both.
     const appUrl = Deno.env.get('APP_URL') ?? 'http://localhost:5173';
-    const { data: createData, error: createError } = await supabase.auth.admin.createUser({
+    const { data: createData, error: createError } = await supabase.auth.admin.generateLink({
+      type: 'signup',
       email,
       password,
-      // email_confirm intentionally omitted — accounts are unconfirmed until link is clicked
-      user_metadata: { name, role },
       options: {
-        emailRedirectTo: `${appUrl}/auth/callback`,
+        data: { name, role, language: locale ?? 'en' },
+        redirectTo: `${appUrl}/auth/callback`,
       },
     });
 
     if (createError) {
       if (
         createError.message?.includes('already been registered') ||
-        createError.message?.includes('already exists')
+        createError.message?.includes('already exists') ||
+        createError.message?.includes('email address has already been registered')
       ) {
-        // Edge Case 2: check if the existing account is unconfirmed
+        // Edge Case: check if the existing account is unconfirmed
         const { data: existingUsers } = await supabase.auth.admin.listUsers();
         const existing = existingUsers?.users?.find((u) => u.email === email);
 

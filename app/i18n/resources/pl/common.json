@@ -76,6 +76,7 @@
     "404": "Nie odnaleziono żądanej strony.",
     "error": "Błąd",
     "turnstileFailed": "Weryfikacja anty-bot nie powiodła się. Odśwież stronę i spróbuj ponownie.",
+    "turnstileVerifying": "Trwa weryfikacja bezpieczeństwa…",
     "rateLimited": "Zbyt wiele prób. Poczekaj kilka minut i spróbuj ponownie."
   },
   "auth": {
