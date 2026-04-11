@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
@@ -19,7 +19,21 @@ export default function ConfirmEmailPage() {
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendError, setResendError] = useState<string | null>(null);
-  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [rateLimitSeconds, setRateLimitSeconds] = useState(0);
+
+  useEffect(() => {
+    if (rateLimitSeconds <= 0) return;
+    const id = setInterval(() => {
+      setRateLimitSeconds((s) => {
+        if (s <= 1) {
+          clearInterval(id);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [rateLimitSeconds > 0]);
 
   async function handleResend() {
     setIsResending(true);
@@ -29,7 +43,7 @@ export default function ConfirmEmailPage() {
       setResendSuccess(true);
     } catch (err) {
       if (err instanceof Error && err.message === 'rate_limited') {
-        setIsRateLimited(true);
+        setRateLimitSeconds(60);
       } else {
         setResendError(t('beta.resendError'));
       }
@@ -61,14 +75,18 @@ export default function ConfirmEmailPage() {
             <div className="space-y-2">
               <Button
                 onClick={handleResend}
-                disabled={isResending || !email || isRateLimited}
+                disabled={isResending || !email || rateLimitSeconds > 0}
                 variant="outline"
                 className="w-full"
                 data-testid="resend-button"
               >
-                {isResending ? '…' : t('beta.resendConfirmation')}
+                {isResending
+                  ? '…'
+                  : rateLimitSeconds > 0
+                    ? t('beta.resendCooldown', { seconds: rateLimitSeconds })
+                    : t('beta.resendConfirmation')}
               </Button>
-              {isRateLimited && (
+              {rateLimitSeconds > 0 && (
                 <p className="text-center text-sm text-amber-600" data-testid="resend-rate-limited">
                   {t('errors.rateLimited', { ns: 'common' })}
                 </p>

@@ -97,6 +97,7 @@
     "confirmEmailTitle": "Check your inbox",
     "confirmEmailBody": "We've sent a confirmation link to {{email}}. Click it to activate your account.",
     "resendConfirmation": "Resend confirmation email",
+    "resendCooldown": "Try again in {{seconds}}s",
     "resentConfirmation": "Email resent! Check your inbox.",
     "resendError": "Failed to resend. Please try again.",
     "backToLogin": "Back to sign in",

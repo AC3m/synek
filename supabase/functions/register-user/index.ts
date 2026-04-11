@@ -15,7 +15,7 @@ const RESEND_RATE_LIMIT_WINDOW_MINUTES = 60;
 const RESEND_RATE_LIMIT_MAX_ATTEMPTS = 3;
 
 // Required env vars:
-//   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY — injected by Supabase runtime
+//   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY — injected by Supabase runtime
 //   TURNSTILE_SECRET_KEY — set via: supabase secrets set TURNSTILE_SECRET_KEY=...
 //   APP_URL — set via: supabase secrets set APP_URL=https://<your-domain>
 
@@ -143,9 +143,18 @@ Deno.serve(async (req) => {
       );
     }
 
-    // 6. Create user + send confirmation email via generateLink
-    //    admin.createUser() alone does NOT send an email — generateLink(type:'signup') does both.
-    const appUrl = Deno.env.get('APP_URL') ?? 'http://localhost:5173';
+    // 6. Create user via generateLink, then send confirmation email via auth.resend().
+    //    NOTE: admin.generateLink() creates the user but does NOT send an email — it only
+    //    returns the link. auth.resend() is required to trigger Supabase's built-in delivery.
+    const appUrl =
+      Deno.env.get('APP_URL') ?? 'https://synek-619tdcw60-arturs-projects-dc508db2.vercel.app';
+
+    // Anon client needed for public auth endpoints (email sending via resend)
+    const anonSupabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+    );
+
     const { data: createData, error: createError } = await supabase.auth.admin.generateLink({
       type: 'signup',
       email,
@@ -162,18 +171,14 @@ Deno.serve(async (req) => {
         createError.message?.includes('already exists') ||
         createError.message?.includes('email address has already been registered')
       ) {
-        // Edge Case: check if the existing account is unconfirmed
+        // Edge case: check if the existing account is unconfirmed
         const { data: existingUsers } = await supabase.auth.admin.listUsers();
         const existing = existingUsers?.users?.find((u) => u.email === email);
 
         if (existing && !existing.email_confirmed_at) {
-          // Resend confirmation to the unconfirmed account
+          // Resend confirmation email for the unconfirmed account
           try {
-            await supabase.auth.admin.generateLink({
-              type: 'signup',
-              email,
-              options: { redirectTo: `${appUrl}/auth/callback` },
-            });
+            await anonSupabase.auth.resend({ type: 'signup', email });
             console.log('[register] confirmation_resent for unconfirmed account', { email });
             return json({ success: true, status: 'confirmation_resent' });
           } catch {
@@ -185,6 +190,9 @@ Deno.serve(async (req) => {
       }
       return json({ error: 'internal_error' }, 500);
     }
+
+    // Send the confirmation email now that the user exists
+    await anonSupabase.auth.resend({ type: 'signup', email });
 
     console.log('[register] account_created', { email, role, userId: createData.user?.id });
     return json({ success: true });

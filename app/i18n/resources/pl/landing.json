@@ -97,6 +97,7 @@
     "confirmEmailTitle": "Sprawdź skrzynkę",
     "confirmEmailBody": "Wysłaliśmy link potwierdzający na {{email}}. Kliknij go, aby aktywować konto.",
     "resendConfirmation": "Wyślij ponownie email potwierdzający",
+    "resendCooldown": "Spróbuj za {{seconds}}s",
     "resentConfirmation": "Email wysłany! Sprawdź skrzynkę.",
     "resendError": "Nie udało się wysłać. Spróbuj ponownie.",
     "backToLogin": "Wróć do logowania",
