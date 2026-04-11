@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { LogIn, Menu, X } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router';
 import { cn } from '~/lib/utils';
+import { Button } from '~/components/ui/button';
 import { ThemeToggle } from '~/components/layout/ThemeToggle';
 import { LanguageToggle } from '~/components/layout/LanguageToggle';
 import { Logo } from '~/components/layout/Logo';
@@ -44,7 +45,7 @@ export function LandingNav({ className }: LandingNavProps) {
   }
 
   function resolveHref(href: string): string {
-    return isLanding ? href : `/${href}`;
+    return isLanding ? href : `/${locale}${href}`;
   }
 
   function renderMarketingLink(link: NavLink, mobile = false) {
@@ -118,7 +119,9 @@ export function LandingNav({ className }: LandingNavProps) {
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center px-4">
         {/* Logo */}
-        <Logo size="sm" />
+        <Link to={`/${locale}`} onClick={() => setMenuOpen(false)}>
+          <Logo size="sm" />
+        </Link>
 
         {/* Desktop: marketing links centred (landing only), auth links + controls on far right */}
         <div className="hidden flex-1 items-center md:flex">
@@ -140,10 +143,15 @@ export function LandingNav({ className }: LandingNavProps) {
           </div>
         </div>
 
-        {/* Mobile: toggles + hamburger */}
+        {/* Mobile: toggles + log in + hamburger */}
         <div className="ml-auto flex items-center gap-1 md:hidden">
           <ThemeToggle />
           <LanguageToggle />
+          <Button variant="ghost" size="icon" asChild>
+            <Link to={`/${locale}/login`} aria-label={t('nav.logIn')}>
+              <LogIn className="h-4 w-4" />
+            </Link>
+          </Button>
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -159,7 +167,7 @@ export function LandingNav({ className }: LandingNavProps) {
       {menuOpen && (
         <div className="border-t border-[color:var(--separator)] bg-surface-1 px-4 pb-4 md:hidden">
           <nav className="flex flex-col divide-y divide-[color:var(--separator)]">
-            {isLanding && MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
+            {MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
             {/* Auth links in their own group with a heavier divider */}
             <div className="flex flex-col gap-0 pt-2">
               {AUTH_LINKS.map((link) => renderAuthLink(link as RouteLink, true))}
