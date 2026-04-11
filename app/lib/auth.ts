@@ -7,7 +7,7 @@ export type UserRole = 'coach' | 'athlete';
 export interface AuthUser {
   id: string;
   email: string;
-  role: UserRole;
+  role: UserRole | null; // null for Google users who haven't selected a role yet
   name: string;
   avatarUrl: string | null;
 }

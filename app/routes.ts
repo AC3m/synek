@@ -15,6 +15,11 @@ export default [
     route('register', 'routes/register.tsx'),
     route('privacy-policy', 'routes/privacy-policy.tsx'),
     route('terms', 'routes/terms.tsx'),
+    route('auth/callback', 'routes/auth-callback.tsx'),
+    route('confirm-email', 'routes/confirm-email.tsx'),
+    route('forgot-password', 'routes/forgot-password.tsx'),
+    route('reset-password', 'routes/reset-password.tsx'),
+    route('select-role', 'routes/select-role.tsx'),
 
     // App pages — wrapped with Header + BottomNav
     layout('routes/locale-layout.tsx', [

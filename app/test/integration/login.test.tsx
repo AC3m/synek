@@ -16,12 +16,15 @@ vi.mock('~/components/landing/LandingNav', () => ({
 // ---------------------------------------------------------------------------
 
 const mockLoginFn = vi.fn();
+const mockLoginWithGoogleFn = vi.fn();
 const mockNavigate = vi.fn();
 
 vi.mock('~/lib/context/AuthContext', () => ({
   useAuth: () => ({
     user: null,
     login: mockLoginFn,
+    loginWithGoogle: mockLoginWithGoogleFn,
+    needsRoleSelection: false,
     effectiveAthleteId: null,
     selectedAthleteId: null,
     athletes: [],
@@ -30,6 +33,7 @@ vi.mock('~/lib/context/AuthContext', () => ({
     selectAthlete: vi.fn(),
     clearSelectedAthlete: vi.fn(),
     updateProfile: vi.fn(),
+    confirmRole: vi.fn(),
   }),
 }));
 
@@ -55,6 +59,7 @@ function renderLogin() {
 describe('LoginPage', () => {
   beforeEach(() => {
     mockLoginFn.mockReset();
+    mockLoginWithGoogleFn.mockReset();
     mockNavigate.mockReset();
   });
 
@@ -104,5 +109,44 @@ describe('LoginPage', () => {
     renderLogin();
     // No name field should exist — register form is on /register
     expect(screen.queryByPlaceholderText('Jane Smith')).not.toBeInTheDocument();
+  });
+
+  it('renders "Continue with Google" button', () => {
+    renderLogin();
+    expect(screen.getByTestId('google-signin-btn')).toBeInTheDocument();
+  });
+
+  it('clicking "Continue with Google" calls loginWithGoogle()', async () => {
+    mockLoginWithGoogleFn.mockResolvedValueOnce(undefined);
+    renderLogin();
+    const user = userEvent.setup();
+
+    await user.click(screen.getByTestId('google-signin-btn'));
+
+    await waitFor(() => {
+      expect(mockLoginWithGoogleFn).toHaveBeenCalled();
+    });
+  });
+
+  it('renders "Forgot password?" link pointing to /pl/forgot-password', () => {
+    renderLogin();
+    const link = screen.getByRole('link', { name: 'auth.forgotPassword' });
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute('href', '/pl/forgot-password');
+  });
+
+  it('shows email_not_confirmed UI when login throws email_not_confirmed', async () => {
+    mockLoginFn.mockRejectedValueOnce(new Error('email_not_confirmed'));
+    renderLogin();
+    const user = userEvent.setup();
+
+    await user.type(screen.getByPlaceholderText('you@example.com'), 'coach@synek.app');
+    await user.type(screen.getByPlaceholderText('••••••••'), 'coach123');
+    await user.click(screen.getByRole('button', { name: 'auth.signIn' }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent('auth.emailNotConfirmed');
+    });
   });
 });

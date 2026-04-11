@@ -9,7 +9,8 @@ import { Button } from '~/components/ui/button';
 import { Switch } from '~/components/ui/switch';
 
 export default function CoachLayout() {
-  const { user, isLoading, selectedAthleteId, athletes, clearSelectedAthlete } = useAuth();
+  const { user, isLoading, selectedAthleteId, athletes, clearSelectedAthlete, needsRoleSelection } =
+    useAuth();
   const { t } = useTranslation('coach');
   const { locale = 'pl' } = useParams<{ locale?: string }>();
 
@@ -24,6 +25,8 @@ export default function CoachLayout() {
   if (isLoading) return <AppLoader />;
 
   if (!user) return <Navigate to="/login" replace />;
+
+  if (needsRoleSelection) return <Navigate to={`/${locale}/select-role`} replace />;
 
   if (user.role !== 'coach') return <Navigate to={`/${locale}/athlete`} replace />;
 

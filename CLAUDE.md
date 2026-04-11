@@ -62,4 +62,11 @@ These are the rules most likely to cause bugs or failed type checks if missed:
 
 ## Active Technologies
 
+- TypeScript 5 (strict), Deno (Edge Functions) + React 19, React Router 7 (SPA), Supabase JS 2, TanStack Query 5, Zod 4, i18nex (017-secure-registration)
+- Supabase Postgres — `profiles` (existing), `auth_rate_limits` (new) (017-secure-registration)
+
 TypeScript 5 (strict), React 19, React Router 7 (SPA), TanStack Query 5, shadcn/ui (New York), Supabase JS 2, i18next, date-fns 4, Zod 4
+
+## Recent Changes
+
+- 017-secure-registration: Added TypeScript 5 (strict), Deno (Edge Functions) + React 19, React Router 7 (SPA), Supabase JS 2, TanStack Query 5, Zod 4, i18nex

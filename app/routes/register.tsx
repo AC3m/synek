@@ -3,6 +3,7 @@ import { useNavigate, Link, useParams } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { isMockMode } from '~/lib/supabase';
 import { mockRegisterUser, mockLogin } from '~/lib/auth';
@@ -28,7 +29,7 @@ const registerSchema = z.object({
 
 export default function RegisterPage() {
   const { t } = useTranslation('landing');
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { locale = 'pl' } = useParams<{ locale: string }>();
 
@@ -37,6 +38,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [honeypot, setHoneypot] = useState('');
+  const [cfToken, setCfToken] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -75,54 +77,54 @@ export default function RegisterPage() {
           role,
         );
         await mockLogin(registered.email, result.data.password);
-        await login(registered.email, result.data.password);
-      } else {
-        const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/register-user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
-            name: result.data.name,
-            email: result.data.email,
-            password: result.data.password,
-            role,
-            website: honeypot,
-          }),
-        });
-        const payload = (await res.json()) as { success?: boolean; error?: string };
-
-        if (!res.ok) {
-          if (payload.error === 'email_taken') {
-            // User may already exist from a previous attempt where sign-in failed.
-            // Try to sign in — if it works, recover silently.
-            try {
-              await login(result.data.email, result.data.password);
-              navigate(`/${locale}/${role}`, { replace: true });
-              return;
-            } catch {
-              // sign-in failed — email is genuinely taken by someone else
-            }
-            setFieldErrors({ email: t('beta.emailAlreadyRegistered') });
-            setIsPending(false);
-            return;
-          }
-          if (
-            payload.error === 'coach_limit_reached' ||
-            payload.error === 'athlete_limit_reached'
-          ) {
-            setError(t('beta.registrationLimitReached'));
-            setIsPending(false);
-            return;
-          }
-          throw new Error(payload.error ?? 'internal_error');
-        }
-
-        await login(result.data.email, result.data.password);
+        // Mock mode: skip email confirmation, navigate directly
+        navigate(`/${locale}/${role}`, { replace: true });
+        return;
       }
 
-      navigate(`/${locale}/${role}`, { replace: true });
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/register-user`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          name: result.data.name,
+          email: result.data.email,
+          password: result.data.password,
+          role,
+          website: honeypot,
+          cfToken,
+        }),
+      });
+      const payload = (await res.json()) as { success?: boolean; status?: string; error?: string };
+
+      if (!res.ok) {
+        if (payload.error === 'email_taken') {
+          setFieldErrors({ email: t('beta.emailAlreadyRegistered') });
+          setIsPending(false);
+          return;
+        }
+        if (payload.error === 'coach_limit_reached' || payload.error === 'athlete_limit_reached') {
+          setError(t('beta.registrationLimitReached'));
+          setIsPending(false);
+          return;
+        }
+        if (payload.error === 'turnstile_failed') {
+          setError(t('errors.turnstileFailed', { ns: 'common' }));
+          setIsPending(false);
+          return;
+        }
+        if (payload.error === 'rate_limited') {
+          setError(t('errors.rateLimited', { ns: 'common' }));
+          setIsPending(false);
+          return;
+        }
+        throw new Error(payload.error ?? 'internal_error');
+      }
+
+      // Both fresh registration and confirmation_resent lead to the confirm-email screen
+      navigate(`/${locale}/confirm-email`, { state: { email: result.data.email } });
     } catch {
       setError(t('beta.registrationError'));
       setIsPending(false);
@@ -244,10 +246,44 @@ export default function RegisterPage() {
               onChange={(e) => setHoneypot(e.target.value)}
             />
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {/* Turnstile — invisible bot check; fires onSuccess once validated */}
+            <Turnstile
+              siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY ?? ''}
+              onSuccess={setCfToken}
+            />
 
-            <Button type="submit" className="w-full" disabled={isPending || !role}>
+            {error && (
+              <p className="text-sm text-destructive" role="alert">
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isPending || !role || !cfToken}>
               {isPending ? '…' : t('beta.submit')}
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={async () => {
+                try {
+                  await loginWithGoogle();
+                } catch {
+                  // error handled by Google OAuth redirect
+                }
+              }}
+            >
+              {t('beta.continueWithGoogle')}
             </Button>
 
             <p className="text-center text-xs text-muted-foreground">

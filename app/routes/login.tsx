@@ -14,7 +14,7 @@ export function meta() {
 }
 
 export default function LoginPage() {
-  const { login, user } = useAuth();
+  const { login, loginWithGoogle, user } = useAuth();
   const navigate = useNavigate();
   const { locale = 'pl' } = useParams<{ locale: string }>();
   const { t } = useTranslation('common');
@@ -22,6 +22,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [googleError, setGoogleError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -39,7 +40,11 @@ export default function LoginPage() {
     try {
       await login(email.trim(), password);
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('auth.invalidCredentials'));
+      if (err instanceof Error && err.message === 'email_not_confirmed') {
+        setError('email_not_confirmed');
+      } else {
+        setError(err instanceof Error ? err.message : t('auth.invalidCredentials'));
+      }
       setIsPending(false);
     }
   }
@@ -98,15 +103,69 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {error && (
+            {error === 'email_not_confirmed' ? (
+              <div
+                className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm"
+                role="alert"
+              >
+                <p className="text-amber-800">{t('auth.emailNotConfirmed')}</p>
+                <Link
+                  to={`/${locale}/confirm-email`}
+                  className="mt-1 block font-medium text-primary hover:underline"
+                >
+                  {t('auth.resendConfirmationEmail')}
+                </Link>
+              </div>
+            ) : error ? (
               <p className="text-sm text-destructive" role="alert">
                 {error}
               </p>
-            )}
+            ) : null}
 
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? t('auth.signingIn') : t('auth.signIn')}
             </Button>
+
+            <p className="text-center text-xs text-muted-foreground">
+              <Link
+                to={`/${locale}/forgot-password`}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                {t('auth.forgotPassword')}
+              </Link>
+            </p>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">or</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              data-testid="google-signin-btn"
+              onClick={async () => {
+                setGoogleError(null);
+                try {
+                  await loginWithGoogle();
+                } catch (err) {
+                  setGoogleError(
+                    err instanceof Error && err.message === 'google_not_available_in_demo'
+                      ? t('auth.googleNotAvailableInDemo')
+                      : t('errors.generic'),
+                  );
+                }
+              }}
+            >
+              {t('auth.continueWithGoogle')}
+            </Button>
+
+            {googleError && <p className="text-center text-sm text-destructive">{googleError}</p>}
 
             <p className="text-center text-sm text-muted-foreground">
               <Link to={`/${locale}/register`} className="underline hover:text-foreground">

@@ -156,7 +156,7 @@ export default function CoachWeekView() {
                   onToggleComplete={isViewingSelf ? handleToggleComplete : undefined}
                   onUpdateNotes={isViewingSelf ? handleUpdateNotes : undefined}
                   onUpdatePerformance={isViewingSelf ? handleUpdatePerformance : undefined}
-                  userRole={user?.role}
+                  userRole={user?.role ?? undefined}
                   showAthleteControls={isViewingSelf}
                 />
               </div>
