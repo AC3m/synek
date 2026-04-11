@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
@@ -20,20 +20,29 @@ export default function ConfirmEmailPage() {
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendError, setResendError] = useState<string | null>(null);
   const [rateLimitSeconds, setRateLimitSeconds] = useState(0);
+  const cooldownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  useEffect(() => {
-    if (rateLimitSeconds <= 0) return;
-    const id = setInterval(() => {
+  function startCooldown(seconds: number) {
+    if (cooldownRef.current) clearInterval(cooldownRef.current);
+    setRateLimitSeconds(seconds);
+    cooldownRef.current = setInterval(() => {
       setRateLimitSeconds((s) => {
         if (s <= 1) {
-          clearInterval(id);
+          clearInterval(cooldownRef.current!);
+          cooldownRef.current = null;
           return 0;
         }
         return s - 1;
       });
     }, 1000);
-    return () => clearInterval(id);
-  }, [rateLimitSeconds > 0]);
+  }
+
+  useEffect(
+    () => () => {
+      if (cooldownRef.current) clearInterval(cooldownRef.current);
+    },
+    [],
+  );
 
   async function handleResend() {
     setIsResending(true);
@@ -43,7 +52,7 @@ export default function ConfirmEmailPage() {
       setResendSuccess(true);
     } catch (err) {
       if (err instanceof Error && err.message === 'rate_limited') {
-        setRateLimitSeconds(60);
+        startCooldown(60);
       } else {
         setResendError(t('beta.resendError'));
       }
