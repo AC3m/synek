@@ -13,7 +13,15 @@ export function HeroSection({ className }: HeroSectionProps) {
 
   return (
     <section id="get-started" className={cn('relative min-h-dvh overflow-hidden', className)}>
-      <div className="absolute inset-0">
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage:
+            'url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAZACgDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAMCBAUB/8QAIhABAAICAgEEAwAAAAAAAAAAAQACAxESIQQTMUFhFCJR/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/8QAFxEBAQEBAAAAAAAAAAAAAAAAAAEREv/aAAwDAQACEQMRAD8Ay/SNbZMwibPaLv8AqbXr5jS9gOBsZvqM8UnPWtaOnuVjF1uO8gB6+ZzGKJM26ZMJ9J/kI9eSB1CRJvnbGozH5OqhaVYQO1p4vxstFvfi/cXkzY6HGiP3KUCQTbLfe4SNfeEU/9k=)',
+          backgroundSize: 'cover',
+          backgroundPosition: '25% center',
+        }}
+      >
         <img
           src="/hero-split.png"
           alt="Athlete checking her watch on the track, coach reviewing Synek on screen"

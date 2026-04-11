@@ -45,7 +45,7 @@ export function LandingNav({ className }: LandingNavProps) {
   }
 
   function resolveHref(href: string): string {
-    return isLanding ? href : `/${href}`;
+    return isLanding ? href : `/${locale}${href}`;
   }
 
   function renderMarketingLink(link: NavLink, mobile = false) {
@@ -119,7 +119,9 @@ export function LandingNav({ className }: LandingNavProps) {
     >
       <div className="mx-auto flex h-14 max-w-6xl items-center px-4">
         {/* Logo */}
-        <Logo size="sm" />
+        <Link to={`/${locale}`} onClick={() => setMenuOpen(false)}>
+          <Logo size="sm" />
+        </Link>
 
         {/* Desktop: marketing links centred (landing only), auth links + controls on far right */}
         <div className="hidden flex-1 items-center md:flex">
@@ -165,7 +167,7 @@ export function LandingNav({ className }: LandingNavProps) {
       {menuOpen && (
         <div className="border-t border-[color:var(--separator)] bg-surface-1 px-4 pb-4 md:hidden">
           <nav className="flex flex-col divide-y divide-[color:var(--separator)]">
-            {isLanding && MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
+            {MARKETING_LINKS.map((link) => renderMarketingLink(link, true))}
             {/* Auth links in their own group with a heavier divider */}
             <div className="flex flex-col gap-0 pt-2">
               {AUTH_LINKS.map((link) => renderAuthLink(link as RouteLink, true))}
