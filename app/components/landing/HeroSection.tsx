@@ -12,19 +12,20 @@ export function HeroSection({ className }: HeroSectionProps) {
   const { locale = 'pl' } = useParams<{ locale: string }>();
 
   return (
-    <section id="get-started" className={cn('relative min-h-screen overflow-hidden', className)}>
+    <section id="get-started" className={cn('relative min-h-dvh overflow-hidden', className)}>
       <div className="absolute inset-0">
         <img
           src="/hero-split.png"
           alt="Athlete checking her watch on the track, coach reviewing Synek on screen"
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-[25%_center] sm:object-center"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
+        {/* Mobile: more uniform overlay since athlete scene is lighter than the dark gym side */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/65 to-black/45 sm:from-black/85 sm:via-black/55 sm:to-black/10" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      <div className="relative z-10 flex min-h-screen flex-col justify-center px-4 pt-24 pb-28">
+      <div className="relative z-10 flex min-h-dvh flex-col justify-center px-4 pt-24 pb-28">
         <div className="mx-auto w-full max-w-6xl">
           <div className="max-w-lg space-y-8">
             <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold tracking-[0.2em] text-white uppercase backdrop-blur-sm">
