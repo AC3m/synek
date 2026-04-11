@@ -22,8 +22,6 @@ export function HeroSection({ className }: HeroSectionProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/10" />
         <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background to-transparent" />
-        {/* Covers the AI watermark in the bottom-right corner of the source image */}
-        <div className="absolute right-0 bottom-0 h-[12%] w-[7%] bg-gradient-to-tl from-[oklch(0.04_0_0)] to-transparent" />
       </div>
 
       <div className="relative z-10 flex min-h-screen flex-col justify-center px-4 pt-24 pb-28">
