@@ -115,7 +115,8 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
     expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(80);
   });
 
-  it('applies pre-fill when prefillData arrives after initial render (race condition fix)', () => {
+  it('applies pre-fill when prefillData arrives after initial render (race condition fix)', async () => {
+    const user = userEvent.setup();
     // Simulate: component mounts with no data, then prefill query resolves
     const { rerender } = renderLogger([]);
 
@@ -124,7 +125,7 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
       null,
     );
 
-    // prefillData arrives — prefill has progression=up, increment=2.5, load=80 → expect 82.5
+    // prefillData arrives — Fill from previous button becomes available
     rerender(
       <SessionExerciseLogger
         exercises={[exercise]}
@@ -135,6 +136,9 @@ describe('SessionExerciseLogger — hydration from async logged data', () => {
       />,
     );
 
+    await user.click(screen.getByRole('button', { name: /fill from previous/i }));
+
+    // prefill has progression=up, increment=2.5, load=80 → expect 82.5
     expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
       82.5,
     );
@@ -228,23 +232,29 @@ describe('SessionExerciseLogger — previous session summary', () => {
 });
 
 describe('SessionExerciseLogger — pre-fill applied to inputs', () => {
-  it('applies computed values to load inputs when no logged data exists', () => {
+  it('applies computed values to load inputs when no logged data exists', async () => {
+    const user = userEvent.setup();
     // prefill has progression=up, increment=2.5, load=80 → expected 82.5
     renderLogger([], {
       prefillData: { ex1: prefillExercise },
       prefillDate: '2024-03-24',
     });
 
+    await user.click(screen.getByRole('button', { name: /fill from previous/i }));
+
     expect(screen.getByRole('spinbutton', { name: /set 1 load for bench press/i })).toHaveValue(
       82.5,
     );
   });
 
-  it('applies correct reps from prior session per set', () => {
+  it('applies correct reps from prior session per set', async () => {
+    const user = userEvent.setup();
     renderLogger([], {
       prefillData: { ex1: prefillExercise },
       prefillDate: '2024-03-24',
     });
+
+    await user.click(screen.getByRole('button', { name: /fill from previous/i }));
 
     expect(screen.getByRole('spinbutton', { name: /set 1 reps for bench press/i })).toHaveValue(10);
     expect(screen.getByRole('spinbutton', { name: /set 2 reps for bench press/i })).toHaveValue(9);
@@ -281,6 +291,8 @@ describe('SessionExerciseLogger — pre-fill applied to inputs', () => {
       prefillData: { ex1: prefillExercise },
       prefillDate: '2024-03-24',
     });
+
+    await user.click(screen.getByRole('button', { name: /fill from previous/i }));
 
     const set1Load = screen.getByRole('spinbutton', { name: /set 1 load for bench press/i });
     await user.clear(set1Load);

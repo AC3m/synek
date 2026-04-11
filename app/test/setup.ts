@@ -30,7 +30,14 @@ if (!i18n.isInitialized) {
         common: {},
         coach: {},
         athlete: {},
-        training: {},
+        training: {
+          strength: {
+            logger: {
+              notesAdd: 'Add note',
+              fillFromPrevious: 'Fill from previous',
+            },
+          },
+        },
       },
     },
     interpolation: { escapeValue: false },
