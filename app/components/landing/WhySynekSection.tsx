@@ -1,8 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Zap, Eye, Users, MessageSquare } from 'lucide-react';
 import { cn } from '~/lib/utils';
-
-const CARD_ICONS = [Zap, Eye, Users, MessageSquare];
 
 interface WhySynekSectionProps {
   className?: string;
@@ -13,37 +10,37 @@ export function WhySynekSection({ className }: WhySynekSectionProps) {
 
   const cards = ([1, 2, 3, 4] as const).map((n) => ({
     n,
-    Icon: CARD_ICONS[n - 1],
+    ordinal: String(n).padStart(2, '0'),
     title: t(`whySynek.card${n}.title` as never),
     desc: t(`whySynek.card${n}.desc` as never),
   }));
 
   return (
-    <section
-      id="why-synek"
-      className={cn('border-y border-border/40 bg-surface-2/50 px-4 py-20 sm:py-32', className)}
-    >
+    <section id="why-synek" className={cn('px-4 py-24 sm:py-32', className)}>
       <div className="mx-auto max-w-6xl">
-        <div className="mb-16 text-center">
+        <div className="mb-20 max-w-2xl">
           <h2 className="text-3xl font-black tracking-tighter uppercase italic sm:text-5xl lg:text-6xl">
             {t('whySynek.title')}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg font-medium text-muted-foreground/80">
+          <p className="mt-5 text-lg font-medium text-muted-foreground/80">
             {t('whySynek.subtitle')}
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {cards.map(({ n, Icon, title, desc }) => (
+        {/* Editorial grid — 1px gap lines act as dividers */}
+        <div className="grid gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map(({ n, ordinal, title, desc }) => (
             <div
               key={n}
-              className="group flex flex-col items-center rounded-xl border border-border/50 bg-surface-1 p-8 text-center shadow-sm transition-all hover:border-primary/20 hover:shadow-md"
+              className="group flex flex-col gap-8 bg-background px-8 py-10 transition-colors hover:bg-surface-2/60"
             >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/5 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                <Icon className="h-6 w-6" />
+              <span className="font-mono text-5xl font-black text-foreground/8 tabular-nums transition-colors group-hover:text-foreground/14">
+                {ordinal}
+              </span>
+              <div className="flex flex-col gap-2.5">
+                <h3 className="text-sm font-bold tracking-widest uppercase">{title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground/80">{desc}</p>
               </div>
-              <h3 className="mb-3 text-lg font-bold tracking-tight uppercase">{title}</h3>
-              <p className="text-sm leading-relaxed text-muted-foreground/90">{desc}</p>
             </div>
           ))}
         </div>

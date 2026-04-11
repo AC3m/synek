@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Menu, X } from 'lucide-react';
+import { LogIn, Menu, X } from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router';
 import { cn } from '~/lib/utils';
+import { Button } from '~/components/ui/button';
 import { ThemeToggle } from '~/components/layout/ThemeToggle';
 import { LanguageToggle } from '~/components/layout/LanguageToggle';
 import { Logo } from '~/components/layout/Logo';
@@ -140,10 +141,15 @@ export function LandingNav({ className }: LandingNavProps) {
           </div>
         </div>
 
-        {/* Mobile: toggles + hamburger */}
+        {/* Mobile: toggles + log in + hamburger */}
         <div className="ml-auto flex items-center gap-1 md:hidden">
           <ThemeToggle />
           <LanguageToggle />
+          <Button variant="ghost" size="icon" asChild>
+            <Link to={`/${locale}/login`} aria-label={t('nav.logIn')}>
+              <LogIn className="h-4 w-4" />
+            </Link>
+          </Button>
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
