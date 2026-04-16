@@ -77,7 +77,10 @@
     "error": "Error",
     "turnstileFailed": "Bot check failed. Please refresh and try again.",
     "turnstileVerifying": "Completing security check…",
-    "rateLimited": "Too many attempts. Please wait a few minutes and try again."
+    "rateLimited": "Too many attempts. Please wait a few minutes and try again.",
+    "weakPassword": "Password must be at least 8 characters with an uppercase letter and a number.",
+    "samePassword": "New password must be different from your current password.",
+    "resetRateLimited": "Too many reset requests. Please wait a few minutes and try again."
   },
   "auth": {
     "signIn": "Sign in",

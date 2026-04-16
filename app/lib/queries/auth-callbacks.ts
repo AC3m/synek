@@ -79,13 +79,27 @@ export async function requestPasswordReset(email: string): Promise<void> {
   }
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
-  if (error) throw error;
+  if (error) {
+    if (error.message?.toLowerCase().includes('rate') || error.status === 429) {
+      throw new Error('reset_rate_limited');
+    }
+    throw error;
+  }
 }
 
 export async function updatePassword(newPassword: string): Promise<void> {
   if (isMockMode) return mockUpdatePassword(newPassword);
   const { error } = await supabase.auth.updateUser({ password: newPassword });
-  if (error) throw error;
+  if (error) {
+    const msg = error.message?.toLowerCase() ?? '';
+    if (msg.includes('weak') || msg.includes('password strength')) {
+      throw new Error('weak_password');
+    }
+    if (msg.includes('different') || msg.includes('same password')) {
+      throw new Error('same_password');
+    }
+    throw error;
+  }
 }
 
 export async function signInWithGoogle(): Promise<void> {

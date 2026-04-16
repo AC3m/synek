@@ -48,8 +48,14 @@ export default function ResetPasswordPage() {
       await updatePassword(result.data.password);
       const role = user?.role ?? 'athlete';
       navigate(`/${locale}/${role}`, { replace: true });
-    } catch {
-      setError(t('errors.generic'));
+    } catch (err) {
+      if (err instanceof Error && err.message === 'weak_password') {
+        setError(t('errors.weakPassword'));
+      } else if (err instanceof Error && err.message === 'same_password') {
+        setError(t('errors.samePassword'));
+      } else {
+        setError(t('errors.generic'));
+      }
     } finally {
       setIsPending(false);
     }
@@ -64,7 +70,7 @@ export default function ResetPasswordPage() {
             <h1 className="text-2xl font-bold tracking-tight">{t('auth.resetPasswordTitle')}</h1>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="reset-password" className="text-sm font-medium">
                 {t('auth.password')}

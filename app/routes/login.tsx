@@ -60,7 +60,7 @@ export default function LoginPage() {
             <p className="text-sm text-muted-foreground">{t('auth.signInSubtitle')}</p>
           </div>
 
-          <form onSubmit={handleLoginSubmit} className="space-y-4">
+          <form onSubmit={handleLoginSubmit} noValidate className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm leading-none font-medium">
                 {t('auth.email')}
@@ -103,12 +103,12 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {error === 'email_not_confirmed' ? (
+            {error === 'email_not_confirmed' && (
               <div
-                className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm"
+                className="rounded-md border border-primary/20 bg-primary/5 p-3 text-sm"
                 role="alert"
               >
-                <p className="text-amber-800">{t('auth.emailNotConfirmed')}</p>
+                <p className="text-foreground">{t('auth.emailNotConfirmed')}</p>
                 <Link
                   to={`/${locale}/confirm-email`}
                   className="mt-1 block font-medium text-primary hover:underline"
@@ -116,11 +116,13 @@ export default function LoginPage() {
                   {t('auth.resendConfirmationEmail')}
                 </Link>
               </div>
-            ) : error ? (
+            )}
+
+            {error && error !== 'email_not_confirmed' && (
               <p className="text-sm text-destructive" role="alert">
                 {error}
               </p>
-            ) : null}
+            )}
 
             <Button type="submit" className="w-full" disabled={isPending}>
               {isPending ? t('auth.signingIn') : t('auth.signIn')}

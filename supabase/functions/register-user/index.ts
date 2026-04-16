@@ -72,7 +72,9 @@ Deno.serve(async (req) => {
     }
 
     // 2. Turnstile token verification
-    const ip = req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown';
+    const ip = (req.headers.get('x-forwarded-for') ?? req.headers.get('x-real-ip') ?? 'unknown')
+      .split(',')[0]
+      .trim();
     if (!cfToken) {
       console.log('[register] turnstile_failed: missing cfToken', { ip });
       return json({ error: 'turnstile_failed' }, 400);
@@ -103,10 +105,17 @@ Deno.serve(async (req) => {
 
     // 4. Input validation
     if (!name || !email || !password) {
+      console.log('[register] missing_params', {
+        ip,
+        hasName: !!name,
+        hasEmail: !!email,
+        hasPassword: !!password,
+      });
       return json({ error: 'missing_params' }, 400);
     }
 
     if (role !== 'coach' && role !== 'athlete') {
+      console.log('[register] invalid_role', { ip, role });
       return json({ error: 'invalid_role' }, 400);
     }
 
@@ -116,6 +125,7 @@ Deno.serve(async (req) => {
       !PASSWORD_UPPERCASE.test(password) ||
       !PASSWORD_DIGIT.test(password)
     ) {
+      console.log('[register] weak_password', { ip });
       return json({ error: 'weak_password' }, 400);
     }
 
@@ -133,70 +143,96 @@ Deno.serve(async (req) => {
       .gte('created_at', utcMidnight.toISOString());
 
     if (countError) {
+      console.log('[register] profiles count error', {
+        error: countError.message,
+        code: countError.code,
+      });
       return json({ error: 'internal_error' }, 500);
     }
 
     if ((count ?? 0) >= limit) {
+      console.log('[register] slot_limit_reached', { ip, role, count, limit });
       return json(
         { error: role === 'coach' ? 'coach_limit_reached' : 'athlete_limit_reached' },
         429,
       );
     }
 
-    // 6. Create user via generateLink, then send confirmation email via auth.resend().
-    //    NOTE: admin.generateLink() creates the user but does NOT send an email — it only
-    //    returns the link. auth.resend() is required to trigger Supabase's built-in delivery.
+    // 6. Pre-check for existing email so we can return a clear error.
+    //    Then create the user via auth.signUp() which atomically creates the account
+    //    AND sends the confirmation email in one operation — unlike generateLink() which
+    //    sets the rate-limit timestamp without sending any email, causing the follow-up
+    //    resend() to be rejected with 429 immediately.
     const appUrl =
       Deno.env.get('APP_URL') ?? 'https://synek-619tdcw60-arturs-projects-dc508db2.vercel.app';
 
-    // Anon client needed for public auth endpoints (email sending via resend)
+    // Check for existing email before attempting signUp
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find((u) => u.email === email);
+
+    if (existing) {
+      if (!existing.email_confirmed_at) {
+        // Unconfirmed account — resend the confirmation email
+        const anonSupabase = createClient(
+          Deno.env.get('SUPABASE_URL')!,
+          Deno.env.get('SUPABASE_ANON_KEY')!,
+        );
+        try {
+          await anonSupabase.auth.resend({ type: 'signup', email });
+          console.log('[register] confirmation_resent for unconfirmed account', { email });
+          return json({ success: true, status: 'confirmation_resent' });
+        } catch {
+          // Fall through to email_taken if resend fails
+        }
+      }
+      console.log('[register] email_taken', { ip, email });
+      return json({ error: 'email_taken' }, 400);
+    }
+
+    // Anon client: auth.signUp() must be called with the anon key (public endpoint)
     const anonSupabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_ANON_KEY')!,
     );
 
-    const { data: createData, error: createError } = await supabase.auth.admin.generateLink({
-      type: 'signup',
+    // auth.signUp() creates the user AND sends the confirmation email atomically
+    const { data: signUpData, error: signUpError } = await anonSupabase.auth.signUp({
       email,
       password,
       options: {
         data: { name, role, language: locale ?? 'en' },
-        redirectTo: `${appUrl}/auth/callback`,
+        emailRedirectTo: `${appUrl}/auth/callback`,
       },
     });
 
-    if (createError) {
+    if (signUpError) {
+      console.log('[register] signUp error', {
+        email,
+        error: signUpError.message,
+        status: signUpError.status,
+      });
+      const msg = signUpError.message?.toLowerCase() ?? '';
       if (
-        createError.message?.includes('already been registered') ||
-        createError.message?.includes('already exists') ||
-        createError.message?.includes('email address has already been registered')
+        msg.includes('already been registered') ||
+        msg.includes('already exists') ||
+        msg.includes('email address has already been registered') ||
+        msg.includes('user already registered')
       ) {
-        // Edge case: check if the existing account is unconfirmed
-        const { data: existingUsers } = await supabase.auth.admin.listUsers();
-        const existing = existingUsers?.users?.find((u) => u.email === email);
-
-        if (existing && !existing.email_confirmed_at) {
-          // Resend confirmation email for the unconfirmed account
-          try {
-            await anonSupabase.auth.resend({ type: 'signup', email });
-            console.log('[register] confirmation_resent for unconfirmed account', { email });
-            return json({ success: true, status: 'confirmation_resent' });
-          } catch {
-            // Fall through to email_taken if resend fails
-          }
-        }
-
         return json({ error: 'email_taken' }, 400);
+      }
+      if (signUpError.status === 429 || msg.includes('rate limit') || msg.includes('over_email')) {
+        return json({ error: 'rate_limited' }, 429);
+      }
+      if (signUpError.status === 400 && (msg.includes('invalid') || msg.includes('email'))) {
+        return json({ error: 'invalid_email' }, 400);
       }
       return json({ error: 'internal_error' }, 500);
     }
 
-    // Send the confirmation email now that the user exists
-    await anonSupabase.auth.resend({ type: 'signup', email });
-
-    console.log('[register] account_created', { email, role, userId: createData.user?.id });
+    console.log('[register] account_created', { email, role, userId: signUpData.user?.id });
     return json({ success: true });
-  } catch {
+  } catch (err) {
+    console.log('[register] unhandled exception', { error: String(err) });
     return json({ error: 'internal_error' }, 500);
   }
 });

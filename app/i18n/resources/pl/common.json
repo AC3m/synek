@@ -77,7 +77,10 @@
     "error": "Błąd",
     "turnstileFailed": "Weryfikacja anty-bot nie powiodła się. Odśwież stronę i spróbuj ponownie.",
     "turnstileVerifying": "Trwa weryfikacja bezpieczeństwa…",
-    "rateLimited": "Zbyt wiele prób. Poczekaj kilka minut i spróbuj ponownie."
+    "rateLimited": "Zbyt wiele prób. Poczekaj kilka minut i spróbuj ponownie.",
+    "weakPassword": "Hasło musi mieć co najmniej 8 znaków, wielką literę i cyfrę.",
+    "samePassword": "Nowe hasło musi różnić się od obecnego.",
+    "resetRateLimited": "Zbyt wiele żądań resetowania. Poczekaj kilka minut i spróbuj ponownie."
   },
   "auth": {
     "signIn": "Zaloguj się",

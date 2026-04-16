@@ -61,6 +61,12 @@ export default function ConfirmEmailPage() {
     }
   }
 
+  function resendButtonLabel(): string {
+    if (isResending) return '…';
+    if (rateLimitSeconds > 0) return t('beta.resendCooldown', { seconds: rateLimitSeconds });
+    return t('beta.resendConfirmation');
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <LandingNav />
@@ -77,7 +83,7 @@ export default function ConfirmEmailPage() {
           </div>
 
           {resendSuccess ? (
-            <p className="text-center text-sm text-green-600" data-testid="resend-success">
+            <p className="text-center text-sm text-primary" data-testid="resend-success">
               {t('beta.resentConfirmation')}
             </p>
           ) : (
@@ -89,14 +95,13 @@ export default function ConfirmEmailPage() {
                 className="w-full"
                 data-testid="resend-button"
               >
-                {isResending
-                  ? '…'
-                  : rateLimitSeconds > 0
-                    ? t('beta.resendCooldown', { seconds: rateLimitSeconds })
-                    : t('beta.resendConfirmation')}
+                {resendButtonLabel()}
               </Button>
               {rateLimitSeconds > 0 && (
-                <p className="text-center text-sm text-amber-600" data-testid="resend-rate-limited">
+                <p
+                  className="text-center text-sm text-muted-foreground"
+                  data-testid="resend-rate-limited"
+                >
                   {t('errors.rateLimited', { ns: 'common' })}
                 </p>
               )}

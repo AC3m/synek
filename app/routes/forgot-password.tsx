@@ -38,6 +38,8 @@ export default function ForgotPasswordPage() {
     } catch (err) {
       if (err instanceof Error && err.message === 'google_only_account') {
         setGoogleOnly(true);
+      } else if (err instanceof Error && err.message === 'reset_rate_limited') {
+        setError(t('errors.resetRateLimited'));
       } else {
         setError(t('errors.generic'));
       }
@@ -64,7 +66,7 @@ export default function ForgotPasswordPage() {
               {t('auth.resetLinkSent')}
             </p>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="forgot-email" className="text-sm font-medium">
                   {t('auth.email')}

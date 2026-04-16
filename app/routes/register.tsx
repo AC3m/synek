@@ -1,9 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate, Link, useParams } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
-import { Turnstile } from '@marsidev/react-turnstile';
+import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import { useAuth } from '~/lib/context/AuthContext';
 import { isMockMode } from '~/lib/supabase';
 import { mockRegisterUser, mockLogin } from '~/lib/auth';
@@ -11,21 +10,12 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
 import { LandingNav } from '~/components/landing/LandingNav';
+import { registrationSchema } from '~/lib/schemas/auth';
 import type { UserRole } from '~/lib/auth';
 
 export function meta() {
   return [{ title: 'Register — Synek' }];
 }
-
-const registerSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Invalid email'),
-  password: z
-    .string()
-    .min(8, 'Min 8 characters')
-    .regex(/[A-Z]/, 'Must contain uppercase')
-    .regex(/[0-9]/, 'Must contain a number'),
-});
 
 export default function RegisterPage() {
   const { t } = useTranslation('landing');
@@ -39,6 +29,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState('');
   const [honeypot, setHoneypot] = useState('');
   const [cfToken, setCfToken] = useState('');
+  const turnstileRef = useRef<TurnstileInstance>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -53,7 +44,13 @@ export default function RegisterPage() {
       return;
     }
 
-    const result = registerSchema.safeParse({ name: name.trim(), email: email.trim(), password });
+    const result = registrationSchema.safeParse({
+      name: name.trim(),
+      email: email.trim(),
+      password,
+      role,
+      cfToken,
+    });
     if (!result.success) {
       const errs: Record<string, string> = {};
       for (const issue of result.error.issues) {
@@ -101,27 +98,28 @@ export default function RegisterPage() {
       const payload = (await res.json()) as { success?: boolean; status?: string; error?: string };
 
       if (!res.ok) {
-        if (payload.error === 'email_taken') {
+        const apiError = payload.error;
+
+        if (apiError === 'email_taken') {
           setFieldErrors({ email: t('beta.emailAlreadyRegistered') });
-          setIsPending(false);
-          return;
-        }
-        if (payload.error === 'coach_limit_reached' || payload.error === 'athlete_limit_reached') {
+        } else if (apiError === 'invalid_email') {
+          setFieldErrors({ email: t('beta.invalidEmail') });
+        } else if (apiError === 'coach_limit_reached' || apiError === 'athlete_limit_reached') {
           setError(t('beta.registrationLimitReached'));
-          setIsPending(false);
-          return;
-        }
-        if (payload.error === 'turnstile_failed') {
+        } else if (apiError === 'turnstile_failed') {
           setError(t('errors.turnstileFailed', { ns: 'common' }));
-          setIsPending(false);
-          return;
-        }
-        if (payload.error === 'rate_limited') {
+          setCfToken('');
+          turnstileRef.current?.reset();
+        } else if (apiError === 'rate_limited') {
           setError(t('errors.rateLimited', { ns: 'common' }));
-          setIsPending(false);
-          return;
+        } else if (apiError === 'weak_password') {
+          setError(t('errors.weakPassword', { ns: 'common' }));
+        } else {
+          throw new Error(apiError ?? 'internal_error');
         }
-        throw new Error(payload.error ?? 'internal_error');
+
+        setIsPending(false);
+        return;
       }
 
       // Both fresh registration and confirmation_resent lead to the confirm-email screen
@@ -147,6 +145,7 @@ export default function RegisterPage() {
 
           <form
             onSubmit={handleSubmit}
+            noValidate
             className="space-y-5 rounded-xl border bg-background p-6 shadow-sm sm:p-8"
           >
             {/* Beta note */}
@@ -249,6 +248,7 @@ export default function RegisterPage() {
 
             {/* Turnstile — invisible bot check; fires onSuccess once validated */}
             <Turnstile
+              ref={turnstileRef}
               siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY ?? ''}
               onSuccess={setCfToken}
               onError={() => setError(t('errors.turnstileFailed', { ns: 'common' }))}
