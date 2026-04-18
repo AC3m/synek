@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1](https://github.com/AC3m/synek/compare/v0.7.0...v0.7.1) (2026-04-18)
+
+### Bug Fixes
+
+- include locale in auth redirect URLs and handle hash errors ([2811bae](https://github.com/AC3m/synek/commit/2811baed98dc9a991081d3b556b225836c854042))
+- resolve auth callback UX race and unify locale helpers ([aec821d](https://github.com/AC3m/synek/commit/aec821d3eca44a57ffdd71a157bbf0846e168aee))
+
 ## [0.7.0](https://github.com/AC3m/synek/compare/v0.6.3...v0.7.0) (2026-04-18)
 
 ### Features
