@@ -111,16 +111,19 @@ describe('LandingNav — marketing links on non-landing page (/pl/login)', () =>
     mockParams.locale = 'pl';
   });
 
-  it('renders marketing items as router Links with full paths', () => {
+  it('renders marketing items as router Links with full paths', async () => {
+    const user = userEvent.setup();
     renderNav();
-    // resolveHref prepends "/" to the anchor href
+    // Marketing links on non-landing pages are only in the mobile dropdown
+    await user.click(screen.getByRole('button', { name: 'Open menu' }));
+    // resolveHref prepends /${locale} to the anchor href
     expect(screen.getByRole('link', { name: 'nav.getStarted' })).toHaveAttribute(
       'href',
-      '/#get-started',
+      '/pl#get-started',
     );
     expect(screen.getByRole('link', { name: 'nav.whySynek' })).toHaveAttribute(
       'href',
-      '/#why-synek',
+      '/pl#why-synek',
     );
   });
 
@@ -141,10 +144,10 @@ describe('LandingNav — mobile hamburger menu', () => {
 
   it('mobile menu is hidden by default', () => {
     renderNav();
-    // Mobile dropdown only renders when menuOpen === true
-    // Auth links appear twice when open (desktop + mobile); once when closed
+    // Desktop nav has one auth link; mobile header always renders a second icon login link
+    // Mobile dropdown is not rendered until menuOpen === true
     const loginLinks = screen.getAllByRole('link', { name: 'nav.logIn' });
-    expect(loginLinks).toHaveLength(1);
+    expect(loginLinks).toHaveLength(2);
   });
 
   it('opens mobile menu on hamburger click and shows all links', async () => {
@@ -168,7 +171,7 @@ describe('LandingNav — mobile hamburger menu', () => {
     await user.click(screen.getByRole('button', { name: 'Open menu' }));
     await user.click(screen.getByRole('button', { name: 'Close menu' }));
 
-    // Back to single (desktop only)
-    expect(screen.getAllByRole('link', { name: 'nav.logIn' })).toHaveLength(1);
+    // Back to desktop + mobile icon (mobile dropdown closed)
+    expect(screen.getAllByRole('link', { name: 'nav.logIn' })).toHaveLength(2);
   });
 });

@@ -245,7 +245,7 @@ export default function AthleteWeekView() {
                     junctionConnected={junctionConnected}
                     onSyncStrava={handleSyncStrava}
                     onConfirmStrava={handleConfirmStrava}
-                    userRole={user?.role}
+                    userRole={user?.role ?? undefined}
                     selectedDay={selectedDay}
                     onSelectDay={setSelectedDay}
                     {...(canSelfPlan && {

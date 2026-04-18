@@ -3,6 +3,7 @@ import { isMockMode, supabase } from '~/lib/supabase';
 import {
   type AuthUser,
   type MockAthlete,
+  type UserRole,
   mockLogin,
   getUserById,
   getAthletesForCoach,
@@ -12,6 +13,7 @@ import {
   getPersistedSelectedAthleteId,
   clearPersistedAuth,
 } from '~/lib/auth';
+import { signInWithGoogle, saveUserRole } from '~/lib/queries/auth-callbacks';
 
 // ============================================================
 // Context types
@@ -30,6 +32,12 @@ interface AuthContextValue {
   selectAthlete: (athleteId: string) => void;
   clearSelectedAthlete: () => void;
   updateProfile: (name: string, avatarUrl: string | null) => void;
+  /** Initiates Google OAuth sign-in flow */
+  loginWithGoogle: () => Promise<void>;
+  /** True when user is authenticated but has no role (first-time Google sign-in) */
+  needsRoleSelection: boolean;
+  /** Saves the selected role for a Google user and updates local state */
+  confirmRole: (role: UserRole) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -177,7 +185,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password,
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      if (error.message?.includes('Email not confirmed')) {
+        throw new Error('email_not_confirmed');
+      }
+      throw new Error(error.message);
+    }
 
     if (data.user) {
       const { data: profile } = await supabase
@@ -218,6 +231,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser((prev) => (prev ? { ...prev, name, avatarUrl } : prev));
   }, []);
 
+  const loginWithGoogle = useCallback(async () => {
+    await signInWithGoogle();
+  }, []);
+
+  // True when the user is authenticated but hasn't selected a role yet
+  // (only possible for first-time Google sign-in users)
+  const needsRoleSelection = user !== null && user.role === null;
+
+  const confirmRole = useCallback(
+    async (role: UserRole) => {
+      if (!user) return;
+      await saveUserRole(user.id, role);
+      setUser((prev) => (prev ? { ...prev, role } : prev));
+    },
+    [user],
+  );
+
   const selectAthlete = useCallback((athleteId: string) => {
     setSelectedAthleteId(athleteId);
     persistSelectedAthleteId(athleteId);
@@ -243,6 +273,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         selectAthlete,
         clearSelectedAthlete,
         updateProfile,
+        loginWithGoogle,
+        needsRoleSelection,
+        confirmRole,
       }}
     >
       {children}
