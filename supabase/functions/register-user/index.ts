@@ -200,7 +200,7 @@ Deno.serve(async (req) => {
       password,
       options: {
         data: { name, role, language: locale ?? 'en' },
-        emailRedirectTo: `${appUrl}/auth/callback`,
+        emailRedirectTo: `${appUrl}/${locale ?? 'pl'}/auth/callback`,
       },
     });
 

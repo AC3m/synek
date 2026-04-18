@@ -58,7 +58,8 @@ export async function verifyEmailToken(tokenHash: string, type: 'email' | 'recov
 
 export async function requestPasswordReset(email: string): Promise<void> {
   if (isMockMode) return mockRequestPasswordReset(email);
-  const redirectTo = `${window.location.origin}/auth/callback`;
+  const locale = window.location.pathname.split('/')[1] || 'pl';
+  const redirectTo = `${window.location.origin}/${locale}/auth/callback`;
 
   // FR-018: detect Google-only accounts before sending a reset link.
   // We fetch the user's identity providers via getUser (returns null for unauthenticated callers
@@ -105,7 +106,8 @@ export async function updatePassword(newPassword: string): Promise<void> {
 
 export async function signInWithGoogle(): Promise<void> {
   if (isMockMode) return mockSignInWithGoogle();
-  const redirectTo = `${window.location.origin}/auth/callback`;
+  const locale = window.location.pathname.split('/')[1] || 'pl';
+  const redirectTo = `${window.location.origin}/${locale}/auth/callback`;
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo },

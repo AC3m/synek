@@ -50,7 +50,26 @@ export default function AuthCallbackPage() {
   const type = searchParams.get('type') as 'email' | 'recovery' | null;
   const loginPath = `/${locale}/login`;
 
+  // Supabase puts errors in the hash fragment on verification failure
   useEffect(() => {
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const hashParams = new URLSearchParams(hash);
+      const errorCode = hashParams.get('error_code');
+      if (errorCode === 'otp_expired') {
+        setCard('expired');
+        return;
+      }
+      if (hashParams.get('error')) {
+        setCard('error');
+        return;
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (card !== 'loading') return;
+
     if (type === 'recovery' && tokenHash) {
       sessionStorage.setItem('auth_callback_type', 'recovery');
       navigate(`/${locale}/reset-password`, { replace: true });
