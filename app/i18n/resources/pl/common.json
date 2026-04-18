@@ -129,7 +129,8 @@
     "alreadyConfirmedTitle": "Już potwierdzone",
     "alreadyConfirmedBody": "Twój adres email jest już potwierdzony. Zaloguj się, aby kontynuować.",
     "oauthTimeoutBody": "Logowanie trwa dłużej niż oczekiwano. Spróbuj ponownie.",
-    "completingSignIn": "Kończenie logowania…"
+    "completingSignIn": "Kończenie logowania…",
+    "or": "lub"
   },
   "invite": {
     "invalidTitle": "To zaproszenie jest nieprawidłowe",

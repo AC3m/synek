@@ -1,8 +1,8 @@
 // checkAndIncrementRateLimit — atomically records an attempt and returns whether it is allowed.
 //
-// Uses an upsert on auth_rate_limits: on insert the row is created with attempt_count = 1;
-// on conflict the count is incremented. Returns true if the attempt is within the allowed
-// limit, false if it should be rejected.
+// Delegates to the `upsert_rate_limit` Postgres function which performs a single
+// INSERT ... ON CONFLICT DO UPDATE ... RETURNING, guaranteeing atomicity even under
+// concurrent requests (no TOCTOU race).
 
 export async function checkAndIncrementRateLimit(
   // deno-lint-ignore no-explicit-any
@@ -12,54 +12,22 @@ export async function checkAndIncrementRateLimit(
   windowMinutes: number,
   maxAttempts: number,
 ): Promise<boolean> {
-  // Truncate current time to window bucket
   const now = new Date();
   const bucket = new Date(
     Math.floor(now.getTime() / (windowMinutes * 60 * 1000)) * (windowMinutes * 60 * 1000),
   );
 
-  const { data, error } = await supabase
-    .from('auth_rate_limits')
-    .upsert(
-      {
-        ip_address: ip,
-        action,
-        window_start: bucket.toISOString(),
-        attempt_count: 1,
-      },
-      {
-        onConflict: 'ip_address,action,window_start',
-        ignoreDuplicates: false,
-      },
-    )
-    .select('attempt_count')
-    .single();
+  const { data, error } = await supabase.rpc('upsert_rate_limit', {
+    p_ip_address: ip,
+    p_action: action,
+    p_window_start: bucket.toISOString(),
+    p_max_attempts: maxAttempts,
+  });
 
   if (error) {
-    // On upsert conflict, Supabase JS may not return the row. Re-fetch it.
-    const { data: existing } = await supabase
-      .from('auth_rate_limits')
-      .select('attempt_count')
-      .eq('ip_address', ip)
-      .eq('action', action)
-      .eq('window_start', bucket.toISOString())
-      .single();
-
-    if (existing) {
-      // Increment separately
-      await supabase
-        .from('auth_rate_limits')
-        .update({ attempt_count: existing.attempt_count + 1 })
-        .eq('ip_address', ip)
-        .eq('action', action)
-        .eq('window_start', bucket.toISOString());
-
-      return existing.attempt_count < maxAttempts;
-    }
-    // If we can't read the count, fail open (allow) to avoid blocking legitimate users
+    console.log('[rate-limit] RPC error, failing open', { error: error.message });
     return true;
   }
 
-  const count = (data as { attempt_count: number } | null)?.attempt_count ?? 1;
-  return count <= maxAttempts;
+  return data as boolean;
 }

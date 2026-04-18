@@ -59,8 +59,8 @@ export default function AuthCallbackPage() {
 
     if (type === 'email' && tokenHash) {
       verifyEmailToken(tokenHash, 'email')
-        .then(() => {
-          const role = user?.role;
+        .then((data) => {
+          const role = data?.user?.user_metadata?.role as string | undefined;
           const target = role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
           navigate(target, { replace: true });
         })

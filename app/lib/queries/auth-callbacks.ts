@@ -46,13 +46,14 @@ export async function mockResendConfirmationEmail(_email: string): Promise<void>
 // Real implementations
 // ============================================================
 
-export async function verifyEmailToken(
-  tokenHash: string,
-  type: 'email' | 'recovery',
-): Promise<void> {
-  if (isMockMode) return mockVerifyEmailToken(tokenHash, type);
-  const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
+export async function verifyEmailToken(tokenHash: string, type: 'email' | 'recovery') {
+  if (isMockMode) {
+    await mockVerifyEmailToken(tokenHash, type);
+    return { user: null, session: null };
+  }
+  const { data, error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type });
   if (error) throw error;
+  return data;
 }
 
 export async function requestPasswordReset(email: string): Promise<void> {

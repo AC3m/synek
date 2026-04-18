@@ -129,7 +129,8 @@
     "alreadyConfirmedTitle": "Already confirmed",
     "alreadyConfirmedBody": "Your email address is already confirmed. Sign in to continue.",
     "oauthTimeoutBody": "Sign-in is taking longer than expected. Please try again.",
-    "completingSignIn": "Completing sign-in…"
+    "completingSignIn": "Completing sign-in…",
+    "or": "or"
   },
   "invite": {
     "invalidTitle": "This invite is not valid",
