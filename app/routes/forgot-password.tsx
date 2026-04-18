@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { z } from 'zod';
 import { LandingNav } from '~/components/landing/LandingNav';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
@@ -59,12 +58,13 @@ export default function ForgotPasswordPage() {
           </div>
 
           {success ? (
-            <p
-              className="rounded-lg bg-green-50 p-4 text-sm text-green-700"
+            <div
+              className="rounded-md border border-primary/20 bg-primary/5 p-3 text-sm"
+              role="status"
               data-testid="forgot-success"
             >
-              {t('auth.resetLinkSent')}
-            </p>
+              <p className="text-foreground">{t('auth.resetLinkSent')}</p>
+            </div>
           ) : (
             <form onSubmit={handleSubmit} noValidate className="space-y-4">
               <div className="space-y-2">
@@ -84,7 +84,7 @@ export default function ForgotPasswordPage() {
               </div>
 
               {googleOnly && (
-                <p className="text-sm text-amber-700" data-testid="forgot-google-only">
+                <p className="text-sm text-muted-foreground" data-testid="forgot-google-only">
                   {t('auth.googleOnlyAccount')}
                 </p>
               )}

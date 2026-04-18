@@ -92,7 +92,7 @@
     "registrationLimitReached": "Rejestracje są tymczasowo wstrzymane. Spróbuj ponownie jutro.",
     "registrationError": "Coś poszło nie tak. Spróbuj ponownie.",
     "alreadyHaveAccount": "Masz już konto?",
-    "alreadyHaveAccountCta": "Zaloguj się →",
+    "alreadyHaveAccountCta": "Zaloguj się",
     "cta": "Dołącz do bety",
     "confirmEmailTitle": "Sprawdź skrzynkę",
     "confirmEmailBody": "Wysłaliśmy link potwierdzający na {{email}}. Kliknij go, aby aktywować konto.",
@@ -107,7 +107,8 @@
       "terms": "Regulamin",
       "and": "i",
       "privacy": "Politykę prywatności"
-    }
+    },
+    "invalidEmail": "Nieprawidłowy adres email"
   },
   "footer": {
     "privacyPolicy": "Polityka prywatności",

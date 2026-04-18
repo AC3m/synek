@@ -93,7 +93,10 @@ describe('AuthCallbackPage', () => {
 
   describe('type=email', () => {
     it('calls verifyEmailToken and navigates to coach dashboard on success', async () => {
-      mockVerifyEmailTokenFn.mockResolvedValueOnce(undefined);
+      mockVerifyEmailTokenFn.mockResolvedValueOnce({
+        user: { user_metadata: { role: 'coach' } },
+        session: null,
+      });
       renderWithParams('?type=email&token_hash=abc123');
 
       await waitFor(() => {

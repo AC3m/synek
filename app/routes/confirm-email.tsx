@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
 import { LandingNav } from '~/components/landing/LandingNav';
@@ -78,8 +78,15 @@ export default function ConfirmEmailPage() {
             </div>
             <h1 className="text-xl font-bold">{t('beta.confirmEmailTitle')}</h1>
             <p className="text-sm text-muted-foreground">
-              {t('beta.confirmEmailBody', { email: email || '…' })}
+              {t('beta.confirmEmailBody', {
+                email: email || '…',
+              })}
             </p>
+            {email && (
+              <p className="text-sm font-medium" data-testid="confirm-email-address">
+                {email}
+              </p>
+            )}
           </div>
 
           {resendSuccess ? (
@@ -114,9 +121,9 @@ export default function ConfirmEmailPage() {
           )}
 
           <p className="text-center text-sm text-muted-foreground">
-            <a href={`/${locale}/login`} className="text-primary hover:underline">
+            <Link to={`/${locale}/login`} className="text-primary hover:underline">
               {t('beta.backToLogin')}
-            </a>
+            </Link>
           </p>
         </div>
       </main>

@@ -11,8 +11,6 @@ const PASSWORD_DIGIT = /[0-9]/;
 // Rate limit constants
 const RATE_LIMIT_WINDOW_MINUTES = 10;
 const RATE_LIMIT_MAX_ATTEMPTS = 5;
-const RESEND_RATE_LIMIT_WINDOW_MINUTES = 60;
-const RESEND_RATE_LIMIT_MAX_ATTEMPTS = 3;
 
 // Required env vars:
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY — injected by Supabase runtime
@@ -166,9 +164,10 @@ Deno.serve(async (req) => {
     const appUrl =
       Deno.env.get('APP_URL') ?? 'https://synek-619tdcw60-arturs-projects-dc508db2.vercel.app';
 
-    // Check for existing email before attempting signUp
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    const existing = existingUsers?.users?.find((u) => u.email === email);
+    // Indexed lookup instead of loading all users
+    const { data: existing } = await supabase.rpc('lookup_user_by_email', {
+      lookup_email: email,
+    });
 
     if (existing) {
       if (!existing.email_confirmed_at) {

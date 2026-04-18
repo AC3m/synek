@@ -28,7 +28,8 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (!isLoading && user) {
-      navigate(`/${locale}/${user.role}`, { replace: true });
+      const target = user.role ? `/${locale}/${user.role}` : `/${locale}/select-role`;
+      navigate(target, { replace: true });
     }
   }, [user, isLoading, navigate, locale]);
 
