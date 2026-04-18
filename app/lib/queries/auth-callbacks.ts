@@ -46,6 +46,16 @@ export async function mockResendConfirmationEmail(_email: string): Promise<void>
 // Real implementations
 // ============================================================
 
+/** Extracts the locale segment from the current URL path (e.g. '/pl/login' → 'pl'). */
+function getLocaleFromPath(): string {
+  return window.location.pathname.split('/')[1] || 'pl';
+}
+
+/** Builds the auth callback redirect URL for the current locale. */
+function getAuthCallbackUrl(): string {
+  return `${window.location.origin}/${getLocaleFromPath()}/auth/callback`;
+}
+
 export async function verifyEmailToken(tokenHash: string, type: 'email' | 'recovery') {
   if (isMockMode) {
     await mockVerifyEmailToken(tokenHash, type);
@@ -58,8 +68,7 @@ export async function verifyEmailToken(tokenHash: string, type: 'email' | 'recov
 
 export async function requestPasswordReset(email: string): Promise<void> {
   if (isMockMode) return mockRequestPasswordReset(email);
-  const locale = window.location.pathname.split('/')[1] || 'pl';
-  const redirectTo = `${window.location.origin}/${locale}/auth/callback`;
+  const redirectTo = getAuthCallbackUrl();
 
   // FR-018: detect Google-only accounts before sending a reset link.
   // We fetch the user's identity providers via getUser (returns null for unauthenticated callers
@@ -106,8 +115,7 @@ export async function updatePassword(newPassword: string): Promise<void> {
 
 export async function signInWithGoogle(): Promise<void> {
   if (isMockMode) return mockSignInWithGoogle();
-  const locale = window.location.pathname.split('/')[1] || 'pl';
-  const redirectTo = `${window.location.origin}/${locale}/auth/callback`;
+  const redirectTo = getAuthCallbackUrl();
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo },

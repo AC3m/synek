@@ -50,8 +50,8 @@ export default function AuthCallbackPage() {
   const type = searchParams.get('type') as 'email' | 'recovery' | null;
   const loginPath = `/${locale}/login`;
 
-  // Supabase puts errors in the hash fragment on verification failure
   useEffect(() => {
+    // Supabase puts errors in the hash fragment on verification failure
     const hash = window.location.hash.substring(1);
     if (hash) {
       const hashParams = new URLSearchParams(hash);
@@ -65,10 +65,6 @@ export default function AuthCallbackPage() {
         return;
       }
     }
-  }, []);
-
-  useEffect(() => {
-    if (card !== 'loading') return;
 
     if (type === 'recovery' && tokenHash) {
       sessionStorage.setItem('auth_callback_type', 'recovery');
