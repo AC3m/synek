@@ -51,6 +51,21 @@ export default function AuthCallbackPage() {
   const loginPath = `/${locale}/login`;
 
   useEffect(() => {
+    // Supabase puts errors in the hash fragment on verification failure
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+      const hashParams = new URLSearchParams(hash);
+      const errorCode = hashParams.get('error_code');
+      if (errorCode === 'otp_expired') {
+        setCard('expired');
+        return;
+      }
+      if (hashParams.get('error')) {
+        setCard('error');
+        return;
+      }
+    }
+
     if (type === 'recovery' && tokenHash) {
       sessionStorage.setItem('auth_callback_type', 'recovery');
       navigate(`/${locale}/reset-password`, { replace: true });
