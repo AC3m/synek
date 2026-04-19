@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate, useSearchParams, useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '~/lib/context/AuthContext';
 import {
   verifyEmailToken,
@@ -221,7 +222,7 @@ export default function AuthCallbackPage() {
       className="flex min-h-screen items-center justify-center px-4"
       data-testid="completing-signin-spinner"
     >
-      <p className="text-sm text-muted-foreground">{t('auth.completingSignIn')}</p>
+      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
     </main>
   );
 }
