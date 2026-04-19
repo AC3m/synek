@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3](https://github.com/AC3m/synek/compare/v0.7.2...v0.7.3) (2026-04-19)
+
+### Bug Fixes
+
+- replace 'Completing sign-in' text with generic Loader2 spinner ([72e5580](https://github.com/AC3m/synek/commit/72e55802b7d894dbb26bea0c08d207b9ddf172ac))
+- show 'already confirmed' instead of 'expired' when session exists ([70cdbea](https://github.com/AC3m/synek/commit/70cdbeaca3362a76a9a367b5e5bba6b5ed8eae18))
+
 ## [0.7.2](https://github.com/AC3m/synek/compare/v0.7.1...v0.7.2) (2026-04-19)
 
 ### Bug Fixes
