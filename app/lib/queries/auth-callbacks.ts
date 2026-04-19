@@ -7,7 +7,7 @@ import type { UserRole } from '~/lib/auth';
 
 export async function mockVerifyEmailToken(
   _tokenHash: string,
-  _type: 'email' | 'recovery',
+  _type: 'email' | 'signup' | 'recovery',
 ): Promise<void> {
   await new Promise((r) => setTimeout(r, 100));
   // Mock: always succeeds for any token
@@ -56,7 +56,7 @@ function getAuthCallbackUrl(): string {
   return `${window.location.origin}/${getLocaleFromPath()}/auth/callback`;
 }
 
-export async function verifyEmailToken(tokenHash: string, type: 'email' | 'recovery') {
+export async function verifyEmailToken(tokenHash: string, type: 'email' | 'signup' | 'recovery') {
   if (isMockMode) {
     await mockVerifyEmailToken(tokenHash, type);
     return { user: null, session: null };

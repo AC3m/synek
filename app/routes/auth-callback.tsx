@@ -47,14 +47,23 @@ export default function AuthCallbackPage() {
   const oauthTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const tokenHash = searchParams.get('token_hash');
-  const type = searchParams.get('type') as 'email' | 'recovery' | null;
+  const queryType = searchParams.get('type') as 'email' | 'signup' | 'recovery' | null;
   const loginPath = `/${locale}/login`;
+
+  // Parse hash fragment once — Supabase uses it for errors and implicit-flow sessions
+  const hashParams = (() => {
+    const h = window.location.hash.substring(1);
+    return h ? new URLSearchParams(h) : null;
+  })();
+  const hashType = hashParams?.get('type') as 'recovery' | null;
+
+  // Effective type: query params (PKCE) take priority, then hash fragment (implicit)
+  const type = queryType ?? hashType;
+  const isRecovery = type === 'recovery';
 
   useEffect(() => {
     // Supabase puts errors in the hash fragment on verification failure
-    const hash = window.location.hash.substring(1);
-    if (hash) {
-      const hashParams = new URLSearchParams(hash);
+    if (hashParams) {
       const errorCode = hashParams.get('error_code');
       if (errorCode === 'otp_expired') {
         setCard('expired');
@@ -66,14 +75,27 @@ export default function AuthCallbackPage() {
       }
     }
 
-    if (type === 'recovery' && tokenHash) {
-      sessionStorage.setItem('auth_callback_type', 'recovery');
-      navigate(`/${locale}/reset-password`, { replace: true });
+    if (isRecovery) {
+      if (tokenHash) {
+        // PKCE: exchange token hash for session, then redirect to reset form
+        verifyEmailToken(tokenHash, 'recovery')
+          .then(() => {
+            sessionStorage.setItem('auth_callback_type', 'recovery');
+            navigate(`/${locale}/reset-password`, { replace: true });
+          })
+          .catch(() => {
+            setCard('expired');
+          });
+      } else {
+        // Implicit flow: session already in hash fragment
+        sessionStorage.setItem('auth_callback_type', 'recovery');
+        navigate(`/${locale}/reset-password`, { replace: true });
+      }
       return;
     }
 
-    if (type === 'email' && tokenHash) {
-      verifyEmailToken(tokenHash, 'email')
+    if ((queryType === 'email' || queryType === 'signup') && tokenHash) {
+      verifyEmailToken(tokenHash, queryType === 'signup' ? 'signup' : 'email')
         .then((data) => {
           const role = data?.user?.user_metadata?.role as string | undefined;
           const target = role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
@@ -106,13 +128,14 @@ export default function AuthCallbackPage() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When the user context arrives (OAuth session), navigate to the dashboard.
+  // Skip if this is a recovery callback — the main effect handles navigation.
   useEffect(() => {
-    if (!type && user && card === 'loading') {
+    if (!isRecovery && user && card === 'loading') {
       if (oauthTimeoutRef.current) clearTimeout(oauthTimeoutRef.current);
       const target = user.role ? `/${locale}/${user.role}` : `/${locale}/select-role`;
       navigate(target, { replace: true });
     }
-  }, [user, card, type, locale, navigate]);
+  }, [user, card, isRecovery, locale, navigate]);
 
   async function handleResend(email?: string) {
     if (!email) return;

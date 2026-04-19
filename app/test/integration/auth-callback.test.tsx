@@ -141,11 +141,12 @@ describe('AuthCallbackPage', () => {
   });
 
   describe('type=recovery', () => {
-    it('sets sessionStorage and navigates to reset-password (does not call verifyEmailToken)', async () => {
+    it('calls verifyEmailToken with recovery type and navigates to reset-password', async () => {
+      mockVerifyEmailTokenFn.mockResolvedValueOnce({ user: null, session: null });
       renderWithParams('?type=recovery&token_hash=rec123');
 
       await waitFor(() => {
-        expect(mockVerifyEmailTokenFn).not.toHaveBeenCalled();
+        expect(mockVerifyEmailTokenFn).toHaveBeenCalledWith('rec123', 'recovery');
         expect(sessionStorage.getItem('auth_callback_type')).toBe('recovery');
         expect(mockNavigate).toHaveBeenCalledWith(
           expect.stringContaining('/reset-password'),
