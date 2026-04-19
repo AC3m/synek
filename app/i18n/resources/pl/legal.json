@@ -23,7 +23,7 @@
 
     "section4": {
       "title": "4. Integracja ze Strava i prywatność danych",
-      "body": "Po upoważnieniu Synek do połączenia z Twoim kontem Strava:\n\n- Pobieramy dane o Twojej aktywności wyłącznie w celu ich wyświetlenia w Twoim planie treningowym.\n- Dane są przechowywane w naszej bazie danych powiązanej z Twoim kontem użytkownika.\n- Nie używamy danych Strava do trenowania, dostrajania ani testowania jakichkolwiek modeli sztucznej inteligencji, uczenia maszynowego ani dużych modeli językowych.\n- Nie udostępniamy danych o Twojej aktywności Strava żadnym stronom trzecim.\n- Na każdej zsynchronizowanej aktywności wyświetlamy atrybucję Strava (\"Powered by Strava\") i link \"View on Strava\", zgodnie z wytycznymi marki Strava."
+      "body": "Po upoważnieniu Synek do połączenia z Twoim kontem Strava:\n\n- Pobieramy dane o Twojej aktywności wyłącznie w celu ich wyświetlenia w Twoim planie treningowym.\n- Dane są przechowywane w naszej bazie danych powiązanej z Twoim kontem użytkownika.\n- Nie używamy danych Strava do trenowania, dostrajania ani testowania jakichkolwiek modeli sztucznej inteligencji, uczenia maszynowego ani dużych modeli językowych.\n- Nie udostępniamy danych o Twojej aktywności Strava żadnym stronom trzecim.\n- Wyświetlamy atrybucję Strava (\"Powered by Strava\") i link \"View on Strava\" Tobie przy zsynchronizowanych aktywnościach, a trenerowi dopiero po potwierdzeniu udostępnienia danej aktywności."
     },
 
     "section5": {
@@ -33,12 +33,12 @@
 
     "section6": {
       "title": "6. Przechowywanie i usuwanie danych",
-      "body": "Przechowujemy Twoje dane przez cały czas aktywności konta. Możesz usunąć konto w dowolnym momencie bezpośrednio z poziomu Ustawień — spowoduje to trwałe usunięcie wszystkich Twoich danych z naszych systemów.\n\nJeśli cofniesz dostęp Synek do Twojego konta Strava, otrzymamy powiadomienie webhook od Strava i automatycznie usuniemy wszystkie dane o aktywności Strava oraz tokeny OAuth powiązane z Twoim kontem. Usunięcie jest trwałe i natychmiastowe."
+      "body": "Przechowujemy Twoje dane przez cały czas aktywności konta. Możesz usunąć konto w dowolnym momencie bezpośrednio z poziomu Ustawień — spowoduje to trwałe usunięcie wszystkich Twoich danych z naszych systemów.\n\nJeśli rozłączysz Stravę w Synek albo cofniesz dostęp Synek z poziomu konta Strava, automatycznie usuniemy wszystkie dane o aktywności Strava oraz tokeny OAuth powiązane z Twoim kontem. Usunięcie jest trwałe i natychmiastowe."
     },
 
     "section7": {
       "title": "7. Twoje prawa",
-      "body": "Przysługuje Ci prawo do:\n\n- Dostępu do przechowywanych przez nas danych osobowych.\n- Poprawienia błędnych danych.\n- Usunięcia konta i wszystkich powiązanych danych bezpośrednio z poziomu Ustawień.\n- Cofnięcia autoryzacji Strava w dowolnym momencie za pośrednictwem ustawień konta Strava.\n\nW przypadku innych żądań dotyczących prywatności skontaktuj się z nami pod adresem podanym poniżej."
+      "body": "Przysługuje Ci prawo do:\n\n- Dostępu do przechowywanych przez nas danych osobowych.\n- Poprawienia błędnych danych.\n- Usunięcia konta i wszystkich powiązanych danych bezpośrednio z poziomu Ustawień.\n- Rozłączenia Stravy w Synek albo cofnięcia autoryzacji Strava w dowolnym momencie za pośrednictwem ustawień konta Strava.\n\nW przypadku innych żądań dotyczących prywatności skontaktuj się z nami pod adresem podanym poniżej."
     },
 
     "section8": {

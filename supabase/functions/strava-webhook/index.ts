@@ -78,6 +78,34 @@ serve(async (req) => {
     return new Response("OK", { status: 200 });
   }
 
+  const { data: weekPlans, error: weekPlansError } = await supabaseAdmin
+    .from('week_plans')
+    .select('id')
+    .eq('athlete_id', userId);
+
+  if (weekPlansError) {
+    console.error("Failed to load week plans:", weekPlansError.message);
+    return new Response("Week plan lookup failed", { status: 500 });
+  }
+
+  const weekPlanIds = (weekPlans ?? []).map((row) => row.id as string);
+  if (weekPlanIds.length > 0) {
+    const { error: sessionsResetError } = await supabaseAdmin
+      .from('training_sessions')
+      .update({
+        strava_activity_id: null,
+        strava_synced_at: null,
+        calories: null,
+      })
+      .in('week_plan_id', weekPlanIds)
+      .not('strava_activity_id', 'is', null);
+
+    if (sessionsResetError) {
+      console.error("Failed to clear Strava training session links:", sessionsResetError.message);
+      return new Response("Training session cleanup failed", { status: 500 });
+    }
+  }
+
   const { error: activitiesDeleteError } = await supabaseAdmin
     .from('strava_activities')
     .delete()

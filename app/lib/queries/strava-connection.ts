@@ -80,15 +80,34 @@ export async function mockConnectStrava(code: string): Promise<{ stravaAthleteNa
 
 export async function connectStrava(
   code: string,
-  userId: string,
 ): Promise<{ stravaAthleteName: string }> {
   if (isMockMode) return mockConnectStrava(code);
 
-  const res = await supabase.functions.invoke('strava-auth', {
-    body: { code, userId },
+  const accessToken = await getValidAccessToken();
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+  const res = await fetch(`${supabaseUrl}/functions/v1/strava-auth`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({ code }),
   });
-  if (res.error) throw res.error;
-  return res.data as { stravaAthleteName: string };
+
+  const payload = (await res.json().catch(() => null)) as
+    | { stravaAthleteName?: string; error?: string; message?: string }
+    | null;
+
+  if (!res.ok) {
+    throw new Error(payload?.message ?? payload?.error ?? `strava-auth failed (${res.status})`);
+  }
+
+  return {
+    stravaAthleteName: payload?.stravaAthleteName ?? '',
+  };
 }
 
 // ============================================================
@@ -156,11 +175,30 @@ export async function mockDisconnectStrava(): Promise<void> {
   mockLastSyncedAt = null;
 }
 
-export async function disconnectStrava(userId: string): Promise<void> {
+export async function disconnectStrava(): Promise<void> {
   if (isMockMode) return mockDisconnectStrava();
 
-  const res = await supabase.functions.invoke('strava-disconnect', {
-    body: { userId },
+  const accessToken = await getValidAccessToken();
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+  const res = await fetch(`${supabaseUrl}/functions/v1/strava-disconnect`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      apikey: supabaseAnonKey,
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify({}),
   });
-  if (res.error) throw res.error;
+
+  const payload = (await res.json().catch(() => null)) as
+    | { disconnected?: boolean; error?: string; message?: string }
+    | null;
+
+  if (!res.ok) {
+    throw new Error(
+      payload?.message ?? payload?.error ?? `strava-disconnect failed (${res.status})`,
+    );
+  }
 }

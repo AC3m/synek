@@ -147,6 +147,21 @@ Deno.serve(async (req) => {
       return json({ error: 'no_strava_activity' }, 404);
     }
 
+    const { data: activityRow, error: activityError } = await supabase
+      .from('strava_activities')
+      .select('is_confirmed')
+      .eq('strava_id', stravaId)
+      .maybeSingle();
+
+    if (activityError) {
+      return json({ error: 'forbidden' }, 403);
+    }
+
+    const isConfirmed = activityRow?.is_confirmed === true;
+    if (!isAthlete && !isConfirmed) {
+      return json({ laps: [] });
+    }
+
     const { data: cachedLaps, error: cacheErr } = await supabase
       .from('strava_laps')
       .select(

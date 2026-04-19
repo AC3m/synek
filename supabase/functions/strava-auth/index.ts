@@ -20,9 +20,25 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { code, userId } = await req.json() as { code: string; userId: string };
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return json({ error: 'unauthorized' }, 401);
+    }
 
-    if (!code || !userId) {
+    const jwt = authHeader.slice(7);
+    const anonClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!
+    );
+    const { data: userData, error: userError } = await anonClient.auth.getUser(jwt);
+    if (userError || !userData.user) {
+      return json({ error: 'unauthorized' }, 401);
+    }
+    const userId = userData.user.id;
+
+    const { code } = await req.json() as { code: string };
+
+    if (!code) {
       return json({ error: 'missing_params' }, 400);
     }
 
@@ -55,12 +71,12 @@ Deno.serve(async (req) => {
 
     const athleteName = `${tokenData.athlete.firstname} ${tokenData.athlete.lastname}`.trim();
 
-    const supabase = createClient(
+    const adminClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    const { error } = await supabase.from('strava_tokens').upsert(
+    const { error } = await adminClient.from('strava_tokens').upsert(
       {
         user_id: userId,
         access_token: tokenData.access_token,

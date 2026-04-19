@@ -23,7 +23,7 @@
 
     "section4": {
       "title": "4. Strava Integration and Data Privacy",
-      "body": "When you authorise Synek to connect to your Strava account:\n\n- We fetch your activity data solely to display it within your training plan.\n- Data is stored in our database associated with your user account.\n- We do not use Strava data to train, fine-tune, or test any Artificial Intelligence, Machine Learning, or Large Language Models.\n- We do not share your Strava activity data with any third party.\n- We display Strava attribution (\"Powered by Strava\") and include a \"View on Strava\" link on every synced activity, as required by Strava's brand guidelines."
+      "body": "When you authorise Synek to connect to your Strava account:\n\n- We fetch your activity data solely to display it within your training plan.\n- Data is stored in our database associated with your user account.\n- We do not use Strava data to train, fine-tune, or test any Artificial Intelligence, Machine Learning, or Large Language Models.\n- We do not share your Strava activity data with any third party.\n- We display Strava attribution (\"Powered by Strava\") and include a \"View on Strava\" link for you on synced activities, and for your coach only after you confirm sharing that activity."
     },
 
     "section5": {
@@ -33,12 +33,12 @@
 
     "section6": {
       "title": "6. Data Retention and Deletion",
-      "body": "We retain your data for as long as your account is active. You may delete your account at any time from the Settings page — this permanently removes all your data from our systems.\n\nIf you revoke Synek's access to your Strava account, we receive a webhook notification from Strava and automatically delete all Strava activity data and OAuth tokens associated with your account. This deletion is permanent and immediate."
+      "body": "We retain your data for as long as your account is active. You may delete your account at any time from the Settings page — this permanently removes all your data from our systems.\n\nIf you disconnect Strava in Synek or revoke Synek's access from your Strava account, we automatically delete all Strava activity data and OAuth tokens associated with your account. This deletion is permanent and immediate."
     },
 
     "section7": {
       "title": "7. Your Rights",
-      "body": "You have the right to:\n\n- Access the personal data we hold about you.\n- Correct inaccurate data.\n- Delete your account and all associated data directly from the Settings page.\n- Revoke Strava authorisation at any time via your Strava account settings.\n\nFor any other privacy requests, contact us using the details below."
+      "body": "You have the right to:\n\n- Access the personal data we hold about you.\n- Correct inaccurate data.\n- Delete your account and all associated data directly from the Settings page.\n- Disconnect Strava from within Synek or revoke Strava authorisation at any time via your Strava account settings.\n\nFor any other privacy requests, contact us using the details below."
     },
 
     "section8": {

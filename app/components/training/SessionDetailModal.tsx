@@ -128,6 +128,7 @@ export function SessionDetailModal({
 
   const isMasked =
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const shouldShowStravaAttribution = session.stravaActivityId != null && !isMasked;
 
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
 
@@ -499,7 +500,7 @@ export function SessionDetailModal({
           />
 
           {/* Strava link + logo */}
-          {session.stravaActivityId != null && (
+          {shouldShowStravaAttribution && (
             <div className="mt-3 flex items-center justify-between border-t border-dashed border-[color:var(--separator)] pt-3">
               <a
                 href={`https://www.strava.com/activities/${session.stravaActivityId}`}

@@ -19,7 +19,7 @@ export function useStravaConnectionStatus(userId: string) {
 export function useConnectStrava() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ code, userId }: { code: string; userId: string }) => connectStrava(code, userId),
+    mutationFn: ({ code }: { code: string; userId: string }) => connectStrava(code),
     onSuccess: (_data, { userId }) => {
       qc.invalidateQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
     },
@@ -62,7 +62,7 @@ export function useStravaSync() {
 export function useStravaDisconnect() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (userId: string) => disconnectStrava(userId),
+    mutationFn: (_userId: string) => disconnectStrava(),
     onMutate: async (userId) => {
       await qc.cancelQueries({ queryKey: queryKeys.stravaConnection.byUser(userId) });
       const prev = qc.getQueryData<StravaConnectionStatus>(
