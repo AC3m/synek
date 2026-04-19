@@ -13,10 +13,12 @@ vi.mock('~/components/landing/LandingNav', () => ({
 // ---------------------------------------------------------------------------
 
 const mockVerifyEmailTokenFn = vi.fn();
+const mockHasActiveSessionFn = vi.fn().mockResolvedValue(false);
 
 vi.mock('~/lib/queries/auth-callbacks', () => ({
   verifyEmailToken: (...args: unknown[]) => mockVerifyEmailTokenFn(...args),
   resendConfirmationEmail: vi.fn().mockResolvedValue(undefined),
+  hasActiveSession: () => mockHasActiveSessionFn(),
 }));
 
 // ---------------------------------------------------------------------------
@@ -86,6 +88,7 @@ beforeAll(async () => {
 describe('AuthCallbackPage', () => {
   beforeEach(() => {
     mockVerifyEmailTokenFn.mockReset();
+    mockHasActiveSessionFn.mockReset().mockResolvedValue(false);
     mockNavigate.mockReset();
     sessionStorage.clear();
     mockUser = { role: 'coach' };
@@ -117,6 +120,17 @@ describe('AuthCallbackPage', () => {
 
       await waitFor(() => {
         expect(screen.getByTestId('expired-link-card')).toBeInTheDocument();
+      });
+    });
+
+    it('shows already-confirmed card when otp_expired but session exists', async () => {
+      const error = { code: 'otp_expired', message: 'OTP expired' };
+      mockVerifyEmailTokenFn.mockRejectedValueOnce(error);
+      mockHasActiveSessionFn.mockResolvedValueOnce(true);
+      renderWithParams('?type=email&token_hash=used');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('already-confirmed-card')).toBeInTheDocument();
       });
     });
 

@@ -1,6 +1,17 @@
 import { supabase, isMockMode } from '~/lib/supabase';
 import type { UserRole } from '~/lib/auth';
 
+/**
+ * Checks whether the current browser has an active authenticated session.
+ * Used to distinguish "link expired" from "already confirmed" when an
+ * OTP token has been consumed (e.g. mobile preview consumed it first).
+ */
+export async function hasActiveSession(): Promise<boolean> {
+  if (isMockMode) return false;
+  const { data } = await supabase.auth.getSession();
+  return !!data.session;
+}
+
 // ============================================================
 // Mock implementations
 // ============================================================
