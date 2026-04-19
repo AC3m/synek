@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useNavigate, useSearchParams, useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '~/lib/context/AuthContext';
-import { verifyEmailToken, resendConfirmationEmail } from '~/lib/queries/auth-callbacks';
+import {
+  verifyEmailToken,
+  resendConfirmationEmail,
+  hasActiveSession,
+} from '~/lib/queries/auth-callbacks';
 import { Button } from '~/components/ui/button';
 
 type CardState = 'loading' | 'expired' | 'already-confirmed' | 'error' | 'oauth-timeout';
@@ -66,7 +71,11 @@ export default function AuthCallbackPage() {
     if (hashParams) {
       const errorCode = hashParams.get('error_code');
       if (errorCode === 'otp_expired') {
-        setCard('expired');
+        // Token consumed — check if the account was already confirmed
+        // (e.g. mobile preview consumed the link before desktop opened it)
+        hasActiveSession().then((active) => {
+          setCard(active ? 'already-confirmed' : 'expired');
+        });
         return;
       }
       if (hashParams.get('error')) {
@@ -101,10 +110,11 @@ export default function AuthCallbackPage() {
           const target = role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
           navigate(target, { replace: true });
         })
-        .catch((err: { code?: string; message?: string } | Error) => {
+        .catch(async (err: { code?: string; message?: string } | Error) => {
           const code = (err as { code?: string }).code ?? '';
           if (code === 'otp_expired') {
-            setCard('expired');
+            const active = await hasActiveSession();
+            setCard(active ? 'already-confirmed' : 'expired');
           } else if (
             code === 'otp_disabled' ||
             (err as Error).message?.includes('already confirmed')
@@ -212,7 +222,7 @@ export default function AuthCallbackPage() {
       className="flex min-h-screen items-center justify-center px-4"
       data-testid="completing-signin-spinner"
     >
-      <p className="text-sm text-muted-foreground">{t('auth.completingSignIn')}</p>
+      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
     </main>
   );
 }
