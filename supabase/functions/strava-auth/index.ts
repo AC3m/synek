@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { AuthError, extractUserId } from '../_shared/auth.ts';
 
 const STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token';
 
@@ -20,23 +21,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return json({ error: 'unauthorized' }, 401);
-    }
-
-    const jwt = authHeader.slice(7);
-    const anonClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!
-    );
-    const { data: userData, error: userError } = await anonClient.auth.getUser(jwt);
-    if (userError || !userData.user) {
-      return json({ error: 'unauthorized' }, 401);
-    }
-    const userId = userData.user.id;
-
-    const { code } = await req.json() as { code: string };
+    const userId = await extractUserId(req);
+    const { code } = (await req.json()) as { code: string };
 
     if (!code) {
       return json({ error: 'missing_params' }, 400);
@@ -62,7 +48,7 @@ Deno.serve(async (req) => {
       return json({ error: 'exchange_failed', detail: errBody, status: tokenRes.status }, 400);
     }
 
-    const tokenData = await tokenRes.json() as {
+    const tokenData = (await tokenRes.json()) as {
       access_token: string;
       refresh_token: string;
       expires_at: number;
@@ -73,7 +59,7 @@ Deno.serve(async (req) => {
 
     const adminClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
     const { error } = await adminClient.from('strava_tokens').upsert(
@@ -86,7 +72,7 @@ Deno.serve(async (req) => {
         strava_athlete_name: athleteName,
         connected_at: new Date().toISOString(),
       },
-      { onConflict: 'user_id' }
+      { onConflict: 'user_id' },
     );
 
     if (error) return json({ error: 'db_error' }, 500);
@@ -96,7 +82,8 @@ Deno.serve(async (req) => {
       stravaAthleteName: athleteName,
       stravaAthleteId: tokenData.athlete.id,
     });
-  } catch {
+  } catch (err) {
+    if (err instanceof AuthError) return json({ error: 'unauthorized' }, 401);
     return json({ error: 'exchange_failed' }, 500);
   }
 });

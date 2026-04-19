@@ -78,9 +78,7 @@ export async function mockConnectStrava(code: string): Promise<{ stravaAthleteNa
   return { stravaAthleteName: 'Alice Strava' };
 }
 
-export async function connectStrava(
-  code: string,
-): Promise<{ stravaAthleteName: string }> {
+export async function connectStrava(code: string): Promise<{ stravaAthleteName: string }> {
   if (isMockMode) return mockConnectStrava(code);
 
   const accessToken = await getValidAccessToken();
@@ -97,9 +95,11 @@ export async function connectStrava(
     body: JSON.stringify({ code }),
   });
 
-  const payload = (await res.json().catch(() => null)) as
-    | { stravaAthleteName?: string; error?: string; message?: string }
-    | null;
+  const payload = (await res.json().catch(() => null)) as {
+    stravaAthleteName?: string;
+    error?: string;
+    message?: string;
+  } | null;
 
   if (!res.ok) {
     throw new Error(payload?.message ?? payload?.error ?? `strava-auth failed (${res.status})`);
@@ -189,12 +189,13 @@ export async function disconnectStrava(): Promise<void> {
       apikey: supabaseAnonKey,
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify({}),
   });
 
-  const payload = (await res.json().catch(() => null)) as
-    | { disconnected?: boolean; error?: string; message?: string }
-    | null;
+  const payload = (await res.json().catch(() => null)) as {
+    disconnected?: boolean;
+    error?: string;
+    message?: string;
+  } | null;
 
   if (!res.ok) {
     throw new Error(
