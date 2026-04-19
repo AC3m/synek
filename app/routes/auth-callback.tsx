@@ -47,7 +47,7 @@ export default function AuthCallbackPage() {
   const oauthTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const tokenHash = searchParams.get('token_hash');
-  const queryType = searchParams.get('type') as 'email' | 'recovery' | null;
+  const queryType = searchParams.get('type') as 'email' | 'signup' | 'recovery' | null;
   const loginPath = `/${locale}/login`;
 
   // Parse hash fragment once — Supabase uses it for errors and implicit-flow sessions
@@ -76,14 +76,26 @@ export default function AuthCallbackPage() {
     }
 
     if (isRecovery) {
-      // Recovery from either PKCE (query params) or implicit flow (hash fragment)
-      sessionStorage.setItem('auth_callback_type', 'recovery');
-      navigate(`/${locale}/reset-password`, { replace: true });
+      if (tokenHash) {
+        // PKCE: exchange token hash for session, then redirect to reset form
+        verifyEmailToken(tokenHash, 'recovery')
+          .then(() => {
+            sessionStorage.setItem('auth_callback_type', 'recovery');
+            navigate(`/${locale}/reset-password`, { replace: true });
+          })
+          .catch(() => {
+            setCard('expired');
+          });
+      } else {
+        // Implicit flow: session already in hash fragment
+        sessionStorage.setItem('auth_callback_type', 'recovery');
+        navigate(`/${locale}/reset-password`, { replace: true });
+      }
       return;
     }
 
-    if (queryType === 'email' && tokenHash) {
-      verifyEmailToken(tokenHash, 'email')
+    if ((queryType === 'email' || queryType === 'signup') && tokenHash) {
+      verifyEmailToken(tokenHash, queryType === 'signup' ? 'signup' : 'email')
         .then((data) => {
           const role = data?.user?.user_metadata?.role as string | undefined;
           const target = role === 'coach' ? `/${locale}/coach` : `/${locale}/athlete`;
