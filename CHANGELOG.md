@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2](https://github.com/AC3m/synek/compare/v0.7.1...v0.7.2) (2026-04-19)
+
+### Bug Fixes
+
+- detect recovery type from hash fragment in auth callback ([d511c8a](https://github.com/AC3m/synek/commit/d511c8a1a3f97b72f64aff3e15c02d1767c61380))
+- switch email templates to PKCE flow to prevent link scanner token consumption ([b352c23](https://github.com/AC3m/synek/commit/b352c233c686c2376292411302b0851aac02e759))
+
 ## [0.7.1](https://github.com/AC3m/synek/compare/v0.7.0...v0.7.1) (2026-04-18)
 
 ### Bug Fixes
