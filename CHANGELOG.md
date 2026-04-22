@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.1](https://github.com/AC3m/synek/compare/v0.8.0...v0.8.1) (2026-04-22)
+
+### Bug Fixes
+
+- add safe-area top padding to Header for iOS notch ([f25a679](https://github.com/AC3m/synek/commit/f25a679d6e24ce791398ff2930390b9762dc4b2b))
+
 ## [0.8.0](https://github.com/AC3m/synek/compare/v0.7.3...v0.8.0) (2026-04-22)
 
 ### Features
