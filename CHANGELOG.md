@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.8.0](https://github.com/AC3m/synek/compare/v0.7.3...v0.8.0) (2026-04-22)
+
+### Features
+
+- add PWA support and iOS home screen icon ([132c186](https://github.com/AC3m/synek/commit/132c186a690c92172ff8f2a0e0748856893bc580))
+
+### Bug Fixes
+
+- exclude scripts/ from typecheck ([a8aafab](https://github.com/AC3m/synek/commit/a8aafabe7d1e2b3ddee56e43904ed6d6df9ce426))
+
 ## [0.7.3](https://github.com/AC3m/synek/compare/v0.7.2...v0.7.3) (2026-04-19)
 
 ### Bug Fixes
