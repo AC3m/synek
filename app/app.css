@@ -154,6 +154,10 @@ html.dark {
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent pull-to-refresh and overscroll bounce on iOS */
+    overscroll-behavior: none;
+    /* Disable tap highlight on iOS */
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
