@@ -1,13 +1,6 @@
 {
-  "include": [
-    "**/*",
-    "**/.server/**/*",
-    "**/.client/**/*",
-    ".react-router/types/**/*"
-  ],
-  "exclude": [
-    "supabase/functions/**/*"
-  ],
+  "include": ["**/*", "**/.server/**/*", "**/.client/**/*", ".react-router/types/**/*"],
+  "exclude": ["scripts/**/*", "supabase/functions/**/*"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "types": ["node", "vite/client", "vitest/globals"],
