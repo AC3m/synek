@@ -113,7 +113,7 @@ export function LandingNav({ className }: LandingNavProps) {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 top-0 z-50 border-b border-[color:var(--separator)] bg-surface-1/80 backdrop-blur-md',
+        'pt-safe fixed inset-x-0 top-0 z-50 border-b border-[color:var(--separator)] bg-surface-1/80 backdrop-blur-md',
         className,
       )}
     >

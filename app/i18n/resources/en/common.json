@@ -215,6 +215,12 @@
       "noData": "No Garmin data for this session"
     }
   },
+  "install": {
+    "ariaLabel": "Install app prompt",
+    "title": "Add Synek to Home Screen",
+    "instructionPre": "Tap",
+    "instructionPost": "then \"Add to Home Screen\""
+  },
   "strava": {
     "connect": "Connect with Strava",
     "connected": "Connected",

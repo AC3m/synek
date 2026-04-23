@@ -19,7 +19,7 @@ import { useSelfPlanPermission } from '~/lib/hooks/useProfile';
 import { useGoals } from '~/lib/hooks/useGoals';
 import { useAuth } from '~/lib/context/AuthContext';
 import { queryKeys } from '~/lib/queries/keys';
-import { weekIdToMonday, getTodayDayOfWeek } from '~/lib/utils/date';
+import { weekIdToMonday, getTodayDayOfWeek, getCurrentWeekId } from '~/lib/utils/date';
 import { isCompetitionWeek } from '~/lib/utils/goals';
 import { computeWeekStats, groupSessionsByDay } from '~/lib/utils/week-view';
 import { augmentSessionsWithGarmin } from '~/lib/utils/junction-poc';
@@ -27,12 +27,20 @@ import { computeSportBreakdown } from '~/lib/utils/analytics';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
+import { isStandaloneMode } from '~/lib/utils/pwa';
 import type { DayOfWeek } from '~/types/training';
-import { useParams, useLocation } from 'react-router';
+import { Navigate, useParams, useLocation } from 'react-router';
 
 export default function AthleteWeekView() {
-  const { weekId } = useParams();
+  const { weekId, locale } = useParams<{ weekId?: string; locale?: string }>();
   const location = useLocation();
+
+  // When launched from the home screen bookmark (standalone PWA), the saved URL
+  // may contain a stale week ID. Redirect to the current week automatically.
+  const todayWeekId = getCurrentWeekId();
+  if (isStandaloneMode() && weekId && weekId !== todayWeekId) {
+    return <Navigate to={`/${locale ?? 'pl'}/athlete/week/${todayWeekId}`} replace />;
+  }
   const { t } = useTranslation('athlete');
   const { user } = useAuth();
   const qc = useQueryClient();
