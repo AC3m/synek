@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.0](https://github.com/AC3m/synek/compare/v0.8.1...v0.9.0) (2026-04-23)
+
+### Features
+
+- iOS PWA install prompt + stale week redirect + landing nav safe area ([b79b53d](https://github.com/AC3m/synek/commit/b79b53d6020e2ecc945888f8ad241a0fae37f893))
+
 ## [0.8.1](https://github.com/AC3m/synek/compare/v0.8.0...v0.8.1) (2026-04-22)
 
 ### Bug Fixes
