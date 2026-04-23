@@ -27,7 +27,7 @@ import { computeSportBreakdown } from '~/lib/utils/analytics';
 import { StravaActionsBar } from '~/components/calendar/StravaActionsBar';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
-import { isStandaloneMode } from '~/lib/utils/pwa';
+import { isStaleBookmarkLoad } from '~/lib/utils/pwa';
 import type { DayOfWeek } from '~/types/training';
 import { Navigate, useParams, useLocation } from 'react-router';
 
@@ -38,7 +38,7 @@ export default function AthleteWeekView() {
   // When launched from the home screen bookmark (standalone PWA), the saved URL
   // may contain a stale week ID. Redirect to the current week automatically.
   const todayWeekId = getCurrentWeekId();
-  if (isStandaloneMode() && weekId && weekId !== todayWeekId) {
+  if (isStaleBookmarkLoad() && weekId && weekId !== todayWeekId) {
     return <Navigate to={`/${locale ?? 'pl'}/athlete/week/${todayWeekId}`} replace />;
   }
   const { t } = useTranslation('athlete');
