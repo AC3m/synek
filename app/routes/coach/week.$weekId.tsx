@@ -16,7 +16,7 @@ import { isCompetitionWeek } from '~/lib/utils/goals';
 import { Navigate, useParams } from 'react-router';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
-import { isStandaloneMode } from '~/lib/utils/pwa';
+import { isStaleBookmarkLoad } from '~/lib/utils/pwa';
 import type { WeekPlan, SessionsByDay } from '~/types/training';
 
 export default function CoachWeekView() {
@@ -26,7 +26,7 @@ export default function CoachWeekView() {
 
   // Redirect stale bookmarked week to current week when opened from home screen
   const todayWeekId = getCurrentWeekId();
-  if (isStandaloneMode() && weekId && weekId !== todayWeekId) {
+  if (isStaleBookmarkLoad() && weekId && weekId !== todayWeekId) {
     return <Navigate to={`/${locale ?? 'pl'}/coach/week/${todayWeekId}`} replace />;
   }
   const updateWeek = useUpdateWeekPlan();
