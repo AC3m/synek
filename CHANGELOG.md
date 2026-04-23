@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.1](https://github.com/AC3m/synek/compare/v0.9.0...v0.9.1) (2026-04-23)
+
+### Bug Fixes
+
+- prevent PWA week navigation from bouncing back to current week ([27a3476](https://github.com/AC3m/synek/commit/27a34764a9c9b5575f42b974451bdcee33308cc7))
+
 ## [0.9.0](https://github.com/AC3m/synek/compare/v0.8.1...v0.9.0) (2026-04-23)
 
 ### Features
