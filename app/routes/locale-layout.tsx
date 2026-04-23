@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router';
 import { Header } from '~/components/layout/Header';
 import { BottomNav } from '~/components/layout/BottomNav';
+import { InstallPrompt } from '~/components/layout/InstallPrompt';
 
 export default function LocaleLayout() {
   return (
@@ -10,6 +11,7 @@ export default function LocaleLayout() {
         <Outlet />
       </main>
       <BottomNav />
+      <InstallPrompt />
     </>
   );
 }

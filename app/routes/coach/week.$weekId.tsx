@@ -11,15 +11,24 @@ import { DeleteConfirmationDialog } from '~/components/training/DeleteConfirmati
 import { useUpdateWeekPlan } from '~/lib/hooks/useWeekPlan';
 import { useGoals } from '~/lib/hooks/useGoals';
 import { useAuth } from '~/lib/context/AuthContext';
-import { getTodayDayOfWeek } from '~/lib/utils/date';
+import { getTodayDayOfWeek, getCurrentWeekId } from '~/lib/utils/date';
 import { isCompetitionWeek } from '~/lib/utils/goals';
+import { Navigate, useParams } from 'react-router';
 import { useWeekView } from '~/lib/hooks/useWeekView';
 import { cn } from '~/lib/utils';
+import { isStandaloneMode } from '~/lib/utils/pwa';
 import type { WeekPlan, SessionsByDay } from '~/types/training';
 
 export default function CoachWeekView() {
   const { t } = useTranslation('coach');
+  const { weekId, locale } = useParams<{ weekId?: string; locale?: string }>();
   const { user, effectiveAthleteId } = useAuth();
+
+  // Redirect stale bookmarked week to current week when opened from home screen
+  const todayWeekId = getCurrentWeekId();
+  if (isStandaloneMode() && weekId && weekId !== todayWeekId) {
+    return <Navigate to={`/${locale ?? 'pl'}/coach/week/${todayWeekId}`} replace />;
+  }
   const updateWeek = useUpdateWeekPlan();
 
   const weekView = useWeekView({ canAutoCreate: true });
@@ -48,7 +57,7 @@ export default function CoachWeekView() {
   if (!weekView) return null;
 
   const {
-    weekId,
+    weekId: currentWeekId,
     weekStart,
     weekPlan,
     sessions,
@@ -101,7 +110,7 @@ export default function CoachWeekView() {
   return (
     <>
       {showSkeleton && <AppLoader />}
-      <div key={weekId} className="animate-in space-y-6 duration-200 fade-in">
+      <div key={currentWeekId} className="animate-in space-y-6 duration-200 fade-in">
         {!showSkeleton && weekPlan && (
           <>
             {/* Header with navigation */}
@@ -111,7 +120,7 @@ export default function CoachWeekView() {
                   {t('title')}
                 </h1>
                 <WeekNavigation
-                  weekId={weekId}
+                  weekId={currentWeekId}
                   basePath="coach"
                   selectedDay={selectedDay}
                   isLoading={weekFetching}
@@ -145,7 +154,7 @@ export default function CoachWeekView() {
                 className={cn('transition-opacity duration-300', showStaleContent && 'opacity-0')}
               >
                 <MultiWeekView
-                  currentWeekId={weekId}
+                  currentWeekId={currentWeekId}
                   currentWeekPlan={showStaleContent ? null : weekPlan}
                   currentSessions={showStaleContent ? [] : sessions}
                   currentSessionsByDay={showStaleContent ? ({} as SessionsByDay) : sessionsByDay}

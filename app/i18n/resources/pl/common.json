@@ -215,6 +215,12 @@
       "noData": "Brak danych Garmin dla tego treningu"
     }
   },
+  "install": {
+    "ariaLabel": "Monit instalacji aplikacji",
+    "title": "Dodaj Synek do ekranu głównego",
+    "instructionPre": "Stuknij",
+    "instructionPost": "a następnie \"Dodaj do ekranu początkowego\""
+  },
   "strava": {
     "connect": "Połącz ze Stravą",
     "connected": "Połączono",
