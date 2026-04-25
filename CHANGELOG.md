@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1](https://github.com/AC3m/synek/compare/v0.10.0...v0.10.1) (2026-04-25)
+
+### Bug Fixes
+
+- **support:** disable verify_jwt for submit-support edge function ([bfdfc1d](https://github.com/AC3m/synek/commit/bfdfc1d7c40f107420cb69cd62a70234907e2408))
+- **support:** use dedicated success subtitle instead of form intro ([64b0407](https://github.com/AC3m/synek/commit/64b0407b82726df1be3afbcad3b10a3a8972b055))
+
 ## [0.10.0](https://github.com/AC3m/synek/compare/v0.9.2...v0.10.0) (2026-04-25)
 
 ### Features
