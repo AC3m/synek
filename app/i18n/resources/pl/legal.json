@@ -4,11 +4,11 @@
 
   "privacy": {
     "title": "Polityka prywatności",
-    "intro": "Synek (\"my\", \"nasze\") to platforma do zarządzania treningiem, łącząca trenerów i zawodników. Niniejsza Polityka prywatności wyjaśnia, jakie dane osobowe zbieramy, jak je wykorzystujemy i jakie prawa Ci przysługują. Tworząc konto lub łącząc profil Strava, wyrażasz zgodę na niniejszą politykę.",
+    "intro": "SYNEK (\"my\", \"nasze\") to platforma do zarządzania treningiem, łącząca trenerów i zawodników. Niniejsza Polityka prywatności wyjaśnia, jakie dane osobowe zbieramy, jak je wykorzystujemy i jakie prawa Ci przysługują. Tworząc konto lub łącząc profil Strava, wyrażasz zgodę na niniejszą politykę.",
 
     "section1": {
       "title": "1. Kim jesteśmy",
-      "body": "Synek jest eksploatowany w fazie publicznej bety. W sprawie wszelkich kwestii związanych z prywatnością prosimy o kontakt pod adresem podanym na dole tej strony."
+      "body": "SYNEK jest eksploatowany w fazie publicznej bety. W sprawie wszelkich kwestii związanych z prywatnością prosimy o kontakt pod adresem podanym na dole tej strony."
     },
 
     "section2": {
@@ -18,27 +18,27 @@
 
     "section3": {
       "title": "3. Jak wykorzystujemy Twoje dane",
-      "body": "Zebrane dane wykorzystujemy wyłącznie w celu świadczenia usługi Synek:\n\n- Wyświetlania Twojego tygodniowego planu treningowego i zarejestrowanych sesji.\n- Synchronizowania danych treningowych ze Strava, aby Twój trener mógł porównać planowane i wykonane treningi.\n- Automatycznego odświeżania tokenu dostępowego Strava za pomocą zadania działającego w tle.\n- Wysyłania e-maili administracyjnych (np. linków z zaproszeniami).\n\nNie sprzedajemy Twoich danych, nie używamy ich do celów reklamowych ani nie udostępniamy ich stronom trzecim poza przypadkami opisanymi w sekcji 4."
+      "body": "Zebrane dane wykorzystujemy wyłącznie w celu świadczenia usługi SYNEK:\n\n- Wyświetlania Twojego tygodniowego planu treningowego i zarejestrowanych sesji.\n- Synchronizowania danych treningowych ze Strava, aby Twój trener mógł porównać planowane i wykonane treningi.\n- Automatycznego odświeżania tokenu dostępowego Strava za pomocą zadania działającego w tle.\n- Wysyłania e-maili administracyjnych (np. linków z zaproszeniami).\n\nNie sprzedajemy Twoich danych, nie używamy ich do celów reklamowych ani nie udostępniamy ich stronom trzecim poza przypadkami opisanymi w sekcji 4."
     },
 
     "section4": {
       "title": "4. Integracja ze Strava i prywatność danych",
-      "body": "Po upoważnieniu Synek do połączenia z Twoim kontem Strava:\n\n- Pobieramy dane o Twojej aktywności wyłącznie w celu ich wyświetlenia w Twoim planie treningowym.\n- Dane są przechowywane w naszej bazie danych powiązanej z Twoim kontem użytkownika.\n- Nie używamy danych Strava do trenowania, dostrajania ani testowania jakichkolwiek modeli sztucznej inteligencji, uczenia maszynowego ani dużych modeli językowych.\n- Nie udostępniamy danych o Twojej aktywności Strava żadnym stronom trzecim.\n- Na każdej zsynchronizowanej aktywności wyświetlamy atrybucję Strava (\"Powered by Strava\") i link \"View on Strava\", zgodnie z wytycznymi marki Strava."
+      "body": "Po upoważnieniu SYNEK do połączenia z Twoim kontem Strava:\n\n- Pobieramy dane o Twojej aktywności wyłącznie w celu ich wyświetlenia w Twoim planie treningowym.\n- Dane są przechowywane w naszej bazie danych powiązanej z Twoim kontem użytkownika.\n- Nie używamy danych Strava do trenowania, dostrajania ani testowania jakichkolwiek modeli sztucznej inteligencji, uczenia maszynowego ani dużych modeli językowych.\n- Nie udostępniamy danych o Twojej aktywności Strava żadnym stronom trzecim.\n- Wyświetlamy atrybucję Strava (\"Powered by Strava\") i link \"View on Strava\" Tobie przy zsynchronizowanych aktywnościach, a trenerowi dopiero po potwierdzeniu udostępnienia danej aktywności."
     },
 
     "section5": {
       "title": "5. Zgoda zawodnika i maskowanie danych",
-      "body": "Treningi Strava zsynchronizowane z Synek są domyślnie prywatne. Po synchronizacji treningu jego dane wydajnościowe są ukryte przed trenerem, dopóki nie zdecydujesz się ich udostępnić.\n\nUdostępniasz trening, klikając \"Potwierdź i udostępnij trenerowi\" w aplikacji. Ta czynność aktualizuje status aktywności, umożliwiając trenerowi wgląd w pełne dane. Masz pełną kontrolę — trener widzi tylko te aktywności, które potwierdzisz."
+      "body": "Treningi Strava zsynchronizowane z SYNEK są domyślnie prywatne. Po synchronizacji treningu jego dane wydajnościowe są ukryte przed trenerem, dopóki nie zdecydujesz się ich udostępnić.\n\nUdostępniasz trening, klikając \"Potwierdź i udostępnij trenerowi\" w aplikacji. Ta czynność aktualizuje status aktywności, umożliwiając trenerowi wgląd w pełne dane. Masz pełną kontrolę — trener widzi tylko te aktywności, które potwierdzisz."
     },
 
     "section6": {
       "title": "6. Przechowywanie i usuwanie danych",
-      "body": "Przechowujemy Twoje dane przez cały czas aktywności konta. Możesz usunąć konto w dowolnym momencie bezpośrednio z poziomu Ustawień — spowoduje to trwałe usunięcie wszystkich Twoich danych z naszych systemów.\n\nJeśli cofniesz dostęp Synek do Twojego konta Strava, otrzymamy powiadomienie webhook od Strava i automatycznie usuniemy wszystkie dane o aktywności Strava oraz tokeny OAuth powiązane z Twoim kontem. Usunięcie jest trwałe i natychmiastowe."
+      "body": "Przechowujemy Twoje dane przez cały czas aktywności konta. Możesz usunąć konto w dowolnym momencie bezpośrednio z poziomu Ustawień — spowoduje to trwałe usunięcie wszystkich Twoich danych z naszych systemów.\n\nJeśli rozłączysz Stravę w SYNEK albo cofniesz dostęp SYNEK z poziomu konta Strava, automatycznie usuniemy wszystkie dane o aktywności Strava oraz tokeny OAuth powiązane z Twoim kontem. Usunięcie jest trwałe i natychmiastowe."
     },
 
     "section7": {
       "title": "7. Twoje prawa",
-      "body": "Przysługuje Ci prawo do:\n\n- Dostępu do przechowywanych przez nas danych osobowych.\n- Poprawienia błędnych danych.\n- Usunięcia konta i wszystkich powiązanych danych bezpośrednio z poziomu Ustawień.\n- Cofnięcia autoryzacji Strava w dowolnym momencie za pośrednictwem ustawień konta Strava.\n\nW przypadku innych żądań dotyczących prywatności skontaktuj się z nami pod adresem podanym poniżej."
+      "body": "Przysługuje Ci prawo do:\n\n- Dostępu do przechowywanych przez nas danych osobowych.\n- Poprawienia błędnych danych.\n- Usunięcia konta i wszystkich powiązanych danych bezpośrednio z poziomu Ustawień.\n- Rozłączenia Stravy w SYNEK albo cofnięcia autoryzacji Strava w dowolnym momencie za pośrednictwem ustawień konta Strava.\n\nW przypadku innych żądań dotyczących prywatności skontaktuj się z nami pod adresem podanym poniżej."
     },
 
     "section8": {
@@ -59,11 +59,11 @@
 
   "terms": {
     "title": "Regulamin",
-    "intro": "Niniejszy Regulamin (\"Regulamin\") określa zasady dostępu do usługi Synek (\"Usługa\") i korzystania z niej. Tworząc konto, akceptujesz niniejszy Regulamin.",
+    "intro": "Niniejszy Regulamin (\"Regulamin\") określa zasady dostępu do usługi SYNEK (\"Usługa\") i korzystania z niej. Tworząc konto, akceptujesz niniejszy Regulamin.",
 
     "section1": {
       "title": "1. Faza beta",
-      "body": "Synek jest obecnie w fazie publicznej bety. Usługa jest w tym czasie bezpłatna. Funkcje mogą ulec zmianie, zostać usunięte lub niedostępne bez wcześniejszego powiadomienia. Nie gwarantujemy dostępności, przechowywania danych ani stabilności funkcji w trakcie bety."
+      "body": "SYNEK jest obecnie w fazie publicznej bety. Usługa jest w tym czasie bezpłatna. Funkcje mogą ulec zmianie, zostać usunięte lub niedostępne bez wcześniejszego powiadomienia. Nie gwarantujemy dostępności, przechowywania danych ani stabilności funkcji w trakcie bety."
     },
 
     "section2": {
@@ -73,12 +73,12 @@
 
     "section3": {
       "title": "3. Trenerzy i zawodnicy",
-      "body": "Trenerzy mogą zapraszać zawodników do swojej grupy. Akceptując zaproszenie, zawodnik przyznaje trenerowi wgląd w swoje potwierdzone dane treningowe w Synek. Zawodnik zachowuje kontrolę nad tym, które treningi ze Strava są udostępniane trenerowi (zob. Politykę prywatności, sekcja 5)."
+      "body": "Trenerzy mogą zapraszać zawodników do swojej grupy. Akceptując zaproszenie, zawodnik przyznaje trenerowi wgląd w swoje potwierdzone dane treningowe w SYNEK. Zawodnik zachowuje kontrolę nad tym, które treningi ze Strava są udostępniane trenerowi (zob. Politykę prywatności, sekcja 5)."
     },
 
     "section4": {
       "title": "4. Integracja ze Strava",
-      "body": "Połączenie konta Strava jest opcjonalne. Łącząc Strava, upoważniasz Synek do dostępu do danych o Twojej aktywności zgodnie z Umową API Strava i naszą Polityką prywatności. Możesz cofnąć tę autoryzację w dowolnym momencie w ustawieniach konta Strava, co spowoduje również usunięcie Twoich danych Strava z Synek."
+      "body": "Połączenie konta Strava jest opcjonalne. Łącząc Strava, upoważniasz SYNEK do dostępu do danych o Twojej aktywności zgodnie z Umową API Strava i naszą Polityką prywatności. Możesz cofnąć tę autoryzację w dowolnym momencie w ustawieniach konta Strava, co spowoduje również usunięcie Twoich danych Strava z SYNEK."
     },
 
     "section5": {
@@ -88,7 +88,7 @@
 
     "section6": {
       "title": "6. Własność intelektualna",
-      "body": "Wszelkie treści, projekt i kod w Synek stanowią własność zespołu Synek. Nie możesz kopiować, reprodukować ani dystrybuować żadnej części Usługi bez naszej pisemnej zgody."
+      "body": "Wszelkie treści, projekt i kod w SYNEK stanowią własność zespołu SYNEK. Nie możesz kopiować, reprodukować ani dystrybuować żadnej części Usługi bez naszej pisemnej zgody."
     },
 
     "section7": {
@@ -98,7 +98,7 @@
 
     "section8": {
       "title": "8. Ograniczenie odpowiedzialności",
-      "body": "W maksymalnym zakresie dopuszczonym przez obowiązujące prawo, Synek nie ponosi odpowiedzialności za żadne pośrednie, przypadkowe, szczególne ani wynikowe szkody wynikające z korzystania z Usługi, nawet jeśli zostaliśmy poinformowani o możliwości wystąpienia takich szkód."
+      "body": "W maksymalnym zakresie dopuszczonym przez obowiązujące prawo, SYNEK nie ponosi odpowiedzialności za żadne pośrednie, przypadkowe, szczególne ani wynikowe szkody wynikające z korzystania z Usługi, nawet jeśli zostaliśmy poinformowani o możliwości wystąpienia takich szkód."
     },
 
     "section9": {

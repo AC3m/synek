@@ -82,6 +82,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
 
   const isMasked =
     session.stravaActivityId != null && !session.isStravaConfirmed && userRole === 'coach';
+  const shouldShowStravaAttribution = session.stravaActivityId != null && !isMasked;
 
   const hasActualPerformance = sessionHasActualPerformance(session);
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
@@ -205,7 +206,7 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
             size="compact"
             animate={animatePerformance}
           />
-          {session.stravaActivityId != null && (
+          {shouldShowStravaAttribution && (
             <div
               className={cn(
                 animatePerformance && 'animate-in delay-[200ms] duration-200 fade-in',

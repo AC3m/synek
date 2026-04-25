@@ -10,17 +10,17 @@
   "hero": {
     "badge": "Publiczna beta — darmowy dostęp",
     "headline": "Koniec z excelem. Płynna współpraca na linii trener-zawodnik.",
-    "subheadline": "Porzuć chaotyczne arkusze i ręczne aktualizacje. Synek to proste narzędzie, które łączy plan trenera z wykonaniem zawodnika. Sprawdź naszą darmową betę.",
+    "subheadline": "Porzuć chaotyczne arkusze i ręczne aktualizacje. SYNEK to proste narzędzie, które łączy plan trenera z wykonaniem zawodnika. Sprawdź naszą darmową betę.",
     "ctaJoinBeta": "Załóż darmowe konto",
     "ctaLogIn": "Masz już konto?",
     "betaNote": "Projektujemy tę aplikację razem z Wami. Każda opinia się liczy."
   },
   "whySynek": {
-    "title": "Dlaczego Synek?",
+    "title": "Dlaczego SYNEK?",
     "subtitle": "Bo planowanie treningów w arkuszach po prostu męczy.",
     "card1": {
       "title": "Koniec z przepisywaniem",
-      "desc": "Zapomnij o ręcznym aktualizowaniu wyników po każdym treningu. Synek i Strava zrobią to za Was."
+      "desc": "Zapomnij o ręcznym aktualizowaniu wyników po każdym treningu. SYNEK i Strava zrobią to za Was."
     },
     "card2": {
       "title": "Wszystko w jednym miejscu",
@@ -65,7 +65,7 @@
     }
   },
   "login": {
-    "title": "Zaloguj się do Synek",
+    "title": "Zaloguj się do SYNEK",
     "subtitle": "Wróć tam, gdzie skończyłeś.",
     "email": "E-mail",
     "password": "Hasło",

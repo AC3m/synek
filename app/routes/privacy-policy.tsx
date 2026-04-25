@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { LandingNav } from '~/components/landing/LandingNav';
 
 export function meta() {
-  return [{ title: 'Privacy Policy — Synek' }];
+  return [{ title: 'Privacy Policy — SYNEK' }];
 }
 
 const SECTIONS = [

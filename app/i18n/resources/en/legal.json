@@ -4,11 +4,11 @@
 
   "privacy": {
     "title": "Privacy Policy",
-    "intro": "Synek (the app, \"we\", \"our\", \"us\") is a training management platform that connects coaches and athletes. This Privacy Policy explains what personal data we collect, how we use it, and the rights you have over it. By creating an account or connecting your Strava profile, you agree to this policy.",
+    "intro": "SYNEK (the app, \"we\", \"our\", \"us\") is a training management platform that connects coaches and athletes. This Privacy Policy explains what personal data we collect, how we use it, and the rights you have over it. By creating an account or connecting your Strava profile, you agree to this policy.",
 
     "section1": {
       "title": "1. Who We Are",
-      "body": "Synek is operated during a public beta phase. For any privacy-related inquiries, please contact us at the address provided at the bottom of this page."
+      "body": "SYNEK is operated during a public beta phase. For any privacy-related inquiries, please contact us at the address provided at the bottom of this page."
     },
 
     "section2": {
@@ -18,27 +18,27 @@
 
     "section3": {
       "title": "3. How We Use Your Data",
-      "body": "We use the data we collect exclusively to provide the Synek service:\n\n- To display your weekly training plan and logged sessions.\n- To sync workout data from Strava so your coach can compare planned versus executed training.\n- To refresh your Strava access token automatically via a background job so the integration remains active.\n- To send administrative emails (e.g. invite links).\n\nWe do not sell your data, use it for advertising, or share it with any third party except as described in section 4."
+      "body": "We use the data we collect exclusively to provide the SYNEK service:\n\n- To display your weekly training plan and logged sessions.\n- To sync workout data from Strava so your coach can compare planned versus executed training.\n- To refresh your Strava access token automatically via a background job so the integration remains active.\n- To send administrative emails (e.g. invite links).\n\nWe do not sell your data, use it for advertising, or share it with any third party except as described in section 4."
     },
 
     "section4": {
       "title": "4. Strava Integration and Data Privacy",
-      "body": "When you authorise Synek to connect to your Strava account:\n\n- We fetch your activity data solely to display it within your training plan.\n- Data is stored in our database associated with your user account.\n- We do not use Strava data to train, fine-tune, or test any Artificial Intelligence, Machine Learning, or Large Language Models.\n- We do not share your Strava activity data with any third party.\n- We display Strava attribution (\"Powered by Strava\") and include a \"View on Strava\" link on every synced activity, as required by Strava's brand guidelines."
+      "body": "When you authorise SYNEK to connect to your Strava account:\n\n- We fetch your activity data solely to display it within your training plan.\n- Data is stored in our database associated with your user account.\n- We do not use Strava data to train, fine-tune, or test any Artificial Intelligence, Machine Learning, or Large Language Models.\n- We do not share your Strava activity data with any third party.\n- We display Strava attribution (\"Powered by Strava\") and include a \"View on Strava\" link for you on synced activities, and for your coach only after you confirm sharing that activity."
     },
 
     "section5": {
       "title": "5. Athlete Consent and Data Masking",
-      "body": "Strava workouts synced into Synek are private by default. When a workout is synced, its performance metrics are hidden from your coach until you explicitly choose to share them.\n\nYou share a workout by tapping \"Confirm & Share with Coach\" in the app. This action updates the activity status so your coach can see the full performance data. You remain in control — only the activities you confirm are visible to your coach."
+      "body": "Strava workouts synced into SYNEK are private by default. When a workout is synced, its performance metrics are hidden from your coach until you explicitly choose to share them.\n\nYou share a workout by tapping \"Confirm & Share with Coach\" in the app. This action updates the activity status so your coach can see the full performance data. You remain in control — only the activities you confirm are visible to your coach."
     },
 
     "section6": {
       "title": "6. Data Retention and Deletion",
-      "body": "We retain your data for as long as your account is active. You may delete your account at any time from the Settings page — this permanently removes all your data from our systems.\n\nIf you revoke Synek's access to your Strava account, we receive a webhook notification from Strava and automatically delete all Strava activity data and OAuth tokens associated with your account. This deletion is permanent and immediate."
+      "body": "We retain your data for as long as your account is active. You may delete your account at any time from the Settings page — this permanently removes all your data from our systems.\n\nIf you disconnect Strava in SYNEK or revoke SYNEK's access from your Strava account, we automatically delete all Strava activity data and OAuth tokens associated with your account. This deletion is permanent and immediate."
     },
 
     "section7": {
       "title": "7. Your Rights",
-      "body": "You have the right to:\n\n- Access the personal data we hold about you.\n- Correct inaccurate data.\n- Delete your account and all associated data directly from the Settings page.\n- Revoke Strava authorisation at any time via your Strava account settings.\n\nFor any other privacy requests, contact us using the details below."
+      "body": "You have the right to:\n\n- Access the personal data we hold about you.\n- Correct inaccurate data.\n- Delete your account and all associated data directly from the Settings page.\n- Disconnect Strava from within SYNEK or revoke Strava authorisation at any time via your Strava account settings.\n\nFor any other privacy requests, contact us using the details below."
     },
 
     "section8": {
@@ -59,11 +59,11 @@
 
   "terms": {
     "title": "Terms & Conditions",
-    "intro": "These Terms & Conditions (\"Terms\") govern your access to and use of Synek (\"the Service\"). By creating an account you agree to be bound by these Terms.",
+    "intro": "These Terms & Conditions (\"Terms\") govern your access to and use of SYNEK (\"the Service\"). By creating an account you agree to be bound by these Terms.",
 
     "section1": {
       "title": "1. Beta Service",
-      "body": "Synek is currently in a public beta phase. The Service is provided free of charge during this period. Features may change, be removed, or be interrupted without prior notice. We make no guarantees regarding uptime, data retention, or feature availability during the beta."
+      "body": "SYNEK is currently in a public beta phase. The Service is provided free of charge during this period. Features may change, be removed, or be interrupted without prior notice. We make no guarantees regarding uptime, data retention, or feature availability during the beta."
     },
 
     "section2": {
@@ -73,12 +73,12 @@
 
     "section3": {
       "title": "3. Coaches and Athletes",
-      "body": "Coaches may invite athletes to their group. By accepting an invitation, an athlete grants their coach visibility into their confirmed training data within Synek. Athletes retain control over which Strava workouts are shared with their coach (see our Privacy Policy, section 5)."
+      "body": "Coaches may invite athletes to their group. By accepting an invitation, an athlete grants their coach visibility into their confirmed training data within SYNEK. Athletes retain control over which Strava workouts are shared with their coach (see our Privacy Policy, section 5)."
     },
 
     "section4": {
       "title": "4. Strava Integration",
-      "body": "Connecting your Strava account is optional. By connecting Strava, you authorise Synek to access your activity data in accordance with Strava's API Agreement and our Privacy Policy. You can revoke this authorisation at any time through your Strava account settings, which will also trigger deletion of your Strava data from Synek."
+      "body": "Connecting your Strava account is optional. By connecting Strava, you authorise SYNEK to access your activity data in accordance with Strava's API Agreement and our Privacy Policy. You can revoke this authorisation at any time through your Strava account settings, which will also trigger deletion of your Strava data from SYNEK."
     },
 
     "section5": {
@@ -88,7 +88,7 @@
 
     "section6": {
       "title": "6. Intellectual Property",
-      "body": "All content, design, and code in Synek are the property of the Synek team. You may not copy, reproduce, or distribute any part of the Service without our written permission."
+      "body": "All content, design, and code in SYNEK are the property of the SYNEK team. You may not copy, reproduce, or distribute any part of the Service without our written permission."
     },
 
     "section7": {
@@ -98,7 +98,7 @@
 
     "section8": {
       "title": "8. Limitation of Liability",
-      "body": "To the maximum extent permitted by applicable law, Synek shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, even if we have been advised of the possibility of such damages."
+      "body": "To the maximum extent permitted by applicable law, SYNEK shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of the Service, even if we have been advised of the possibility of such damages."
     },
 
     "section9": {

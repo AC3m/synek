@@ -8,7 +8,7 @@ import { requestPasswordReset } from '~/lib/queries/auth-callbacks';
 import { forgotPasswordSchema } from '~/lib/schemas/auth';
 
 export function meta() {
-  return [{ title: 'Forgot Password — Synek' }];
+  return [{ title: 'Forgot Password — SYNEK' }];
 }
 
 export default function ForgotPasswordPage() {

@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { AuthError, extractUserId } from '../_shared/auth.ts';
 
 const STRAVA_TOKEN_URL = 'https://www.strava.com/oauth/token';
 
@@ -20,9 +21,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { code, userId } = await req.json() as { code: string; userId: string };
+    const userId = await extractUserId(req);
+    const { code } = (await req.json()) as { code: string };
 
-    if (!code || !userId) {
+    if (!code) {
       return json({ error: 'missing_params' }, 400);
     }
 
@@ -46,7 +48,7 @@ Deno.serve(async (req) => {
       return json({ error: 'exchange_failed', detail: errBody, status: tokenRes.status }, 400);
     }
 
-    const tokenData = await tokenRes.json() as {
+    const tokenData = (await tokenRes.json()) as {
       access_token: string;
       refresh_token: string;
       expires_at: number;
@@ -55,12 +57,12 @@ Deno.serve(async (req) => {
 
     const athleteName = `${tokenData.athlete.firstname} ${tokenData.athlete.lastname}`.trim();
 
-    const supabase = createClient(
+    const adminClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    const { error } = await supabase.from('strava_tokens').upsert(
+    const { error } = await adminClient.from('strava_tokens').upsert(
       {
         user_id: userId,
         access_token: tokenData.access_token,
@@ -70,7 +72,7 @@ Deno.serve(async (req) => {
         strava_athlete_name: athleteName,
         connected_at: new Date().toISOString(),
       },
-      { onConflict: 'user_id' }
+      { onConflict: 'user_id' },
     );
 
     if (error) return json({ error: 'db_error' }, 500);
@@ -80,7 +82,8 @@ Deno.serve(async (req) => {
       stravaAthleteName: athleteName,
       stravaAthleteId: tokenData.athlete.id,
     });
-  } catch {
+  } catch (err) {
+    if (err instanceof AuthError) return json({ error: 'unauthorized' }, 401);
     return json({ error: 'exchange_failed' }, 500);
   }
 });

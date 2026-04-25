@@ -10,7 +10,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 
 export function meta() {
-  return [{ title: 'Join Synek' }];
+  return [{ title: 'Join SYNEK' }];
 }
 
 const registerSchema = z.object({

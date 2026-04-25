@@ -24,7 +24,7 @@ export function HeroSection({ className }: HeroSectionProps) {
       >
         <img
           src="/hero-split.png"
-          alt="Athlete checking her watch on the track, coach reviewing Synek on screen"
+          alt="Athlete checking her watch on the track, coach reviewing SYNEK on screen"
           className="h-full w-full object-cover object-[25%_center] sm:object-center"
           loading="eager"
         />

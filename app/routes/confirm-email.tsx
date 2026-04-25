@@ -7,7 +7,7 @@ import { Button } from '~/components/ui/button';
 import { resendConfirmationEmail } from '~/lib/queries/auth-callbacks';
 
 export function meta() {
-  return [{ title: 'Check your inbox — Synek' }];
+  return [{ title: 'Check your inbox — SYNEK' }];
 }
 
 export default function ConfirmEmailPage() {

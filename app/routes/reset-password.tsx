@@ -10,7 +10,7 @@ import { updatePassword } from '~/lib/queries/auth-callbacks';
 import { resetPasswordSchema } from '~/lib/schemas/auth';
 
 export function meta() {
-  return [{ title: 'Reset Password — Synek' }];
+  return [{ title: 'Reset Password — SYNEK' }];
 }
 
 export default function ResetPasswordPage() {

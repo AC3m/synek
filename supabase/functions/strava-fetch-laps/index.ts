@@ -33,7 +33,9 @@ interface StravaRawLap {
   pace_zone?: number;
 }
 
-function classifyLaps(rawLaps: StravaRawLap[]): Array<StravaRawLap & { segment_type: SegmentType }> {
+function classifyLaps(
+  rawLaps: StravaRawLap[],
+): Array<StravaRawLap & { segment_type: SegmentType }> {
   if (rawLaps.length === 0) return [];
 
   const nameClassified = rawLaps.map((lap) => {
@@ -97,14 +99,14 @@ Deno.serve(async (req) => {
     }
     const userId = claimsData.claims.sub as string;
 
-    const { sessionId } = await req.json() as { sessionId?: string };
+    const { sessionId } = (await req.json()) as { sessionId?: string };
     if (!sessionId) {
       return json({ error: 'missing_session_id' }, 400);
     }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
     const { data: sessionRow, error: sessionErr } = await supabase
@@ -147,10 +149,25 @@ Deno.serve(async (req) => {
       return json({ error: 'no_strava_activity' }, 404);
     }
 
+    const { data: activityRow, error: activityError } = await supabase
+      .from('strava_activities')
+      .select('is_confirmed')
+      .eq('strava_id', stravaId)
+      .maybeSingle();
+
+    if (activityError) {
+      return json({ error: 'db_error' }, 500);
+    }
+
+    const isConfirmed = activityRow?.is_confirmed === true;
+    if (!isAthlete && !isConfirmed) {
+      return json({ laps: [] });
+    }
+
     const { data: cachedLaps, error: cacheErr } = await supabase
       .from('strava_laps')
       .select(
-        'lap_index, name, intensity, segment_type, distance_meters, elapsed_time_seconds, moving_time_seconds, average_speed, average_heartrate, max_heartrate, average_cadence, pace_zone'
+        'lap_index, name, intensity, segment_type, distance_meters, elapsed_time_seconds, moving_time_seconds, average_speed, average_heartrate, max_heartrate, average_cadence, pace_zone',
       )
       .eq('strava_activity_id', stravaId)
       .order('lap_index', { ascending: true });
@@ -191,7 +208,7 @@ Deno.serve(async (req) => {
         return json({ error: 'strava_api_error', detail: 'token refresh failed' }, 502);
       }
 
-      const refreshData = await refreshRes.json() as {
+      const refreshData = (await refreshRes.json()) as {
         access_token: string;
         refresh_token: string;
         expires_at: number;
@@ -208,10 +225,9 @@ Deno.serve(async (req) => {
         .eq('user_id', userId);
     }
 
-    const activityRes = await fetch(
-      `${STRAVA_ACTIVITY_URL}/${stravaId}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    const activityRes = await fetch(`${STRAVA_ACTIVITY_URL}/${stravaId}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
 
     if (activityRes.status === 429) {
       return json({ error: 'strava_rate_limited' }, 429);
@@ -221,31 +237,29 @@ Deno.serve(async (req) => {
       return json({ error: 'strava_api_error', detail }, 502);
     }
 
-    const activity = await activityRes.json() as { laps?: StravaRawLap[] };
+    const activity = (await activityRes.json()) as { laps?: StravaRawLap[] };
     const classified = classifyLaps(activity.laps ?? []);
 
     if (classified.length > 0) {
-      await supabase
-        .from('strava_laps')
-        .upsert(
-          classified.map((lap) => ({
-            strava_activity_id: stravaId,
-            user_id: userId,
-            lap_index: lap.lap_index,
-            name: lap.name ?? null,
-            intensity: lap.intensity ?? null,
-            segment_type: lap.segment_type,
-            distance_meters: lap.distance ?? null,
-            elapsed_time_seconds: lap.elapsed_time ?? null,
-            moving_time_seconds: lap.moving_time ?? null,
-            average_speed: lap.average_speed ?? null,
-            average_heartrate: lap.average_heartrate ?? null,
-            max_heartrate: lap.max_heartrate ?? null,
-            average_cadence: lap.average_cadence ?? null,
-            pace_zone: lap.pace_zone ?? null,
-          })),
-          { onConflict: 'strava_activity_id,lap_index' }
-        );
+      await supabase.from('strava_laps').upsert(
+        classified.map((lap) => ({
+          strava_activity_id: stravaId,
+          user_id: userId,
+          lap_index: lap.lap_index,
+          name: lap.name ?? null,
+          intensity: lap.intensity ?? null,
+          segment_type: lap.segment_type,
+          distance_meters: lap.distance ?? null,
+          elapsed_time_seconds: lap.elapsed_time ?? null,
+          moving_time_seconds: lap.moving_time ?? null,
+          average_speed: lap.average_speed ?? null,
+          average_heartrate: lap.average_heartrate ?? null,
+          max_heartrate: lap.max_heartrate ?? null,
+          average_cadence: lap.average_cadence ?? null,
+          pace_zone: lap.pace_zone ?? null,
+        })),
+        { onConflict: 'strava_activity_id,lap_index' },
+      );
     }
 
     return json({

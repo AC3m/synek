@@ -12,8 +12,8 @@ This document provides the exact technical details and architectural context req
 
 **Implementation:**
 - **Connection Flow:** The settings page (`/settings?tab=integrations`) uses the official SVG asset `btn_strava_connect_with_orange.svg` with an exact height of 48px to initiate the OAuth flow.
-- **Attribution:** Any workout synced from Strava displays the official "Powered by Strava" logo (horizontal SVG, adjusting to orange or white based on dark mode) directly below the performance metrics.
-- **Link Back:** Every synced workout includes a "View on Strava" link, formatted in the mandatory `#FC5200` hex color and bold font, which opens the original activity on Strava (`https://www.strava.com/activities/[id]`). This text remains in English across all localizations of the app to comply with trademark rules.
+- **Attribution:** Athlete views of synced workouts display the official "Powered by Strava" logo (horizontal SVG, adjusting to orange or white based on dark mode) directly below the performance metrics. Coach views only show that attribution after the athlete confirms sharing.
+- **Link Back:** Athlete views of synced workouts include a "View on Strava" link, formatted in the mandatory `#FC5200` hex color and bold font, which opens the original activity on Strava (`https://www.strava.com/activities/[id]`). Coach views only receive that link after athlete confirmation. This text remains in English across all localizations of the app to comply with trademark rules.
 
 ## 3. Data Privacy and Consent
 *(Requirement: Data cannot be shared with third parties without explicit user action/consent).*
@@ -30,7 +30,7 @@ This document provides the exact technical details and architectural context req
 - **Webhook Endpoint:** We deploy a Deno Edge Function at `https://[project].supabase.co/functions/v1/strava-webhook`.
 - **Validation:** GET handshake validates `hub.verify_token`; POST events require a callback URL `verify_token` query secret.
 - **Revocation Handling:** The POST handler listens for `object_type: "athlete"`, `aspect_type: "update"`, and `updates.authorized === "false"`.
-- **Data Deletion:** Upon receiving a revocation payload, the Edge Function extracts the user ID and performs a hard delete on all records in the `strava_activities` table associated with that user, followed by deleting their OAuth tokens from the `strava_tokens` table. This ensures complete data erasure in compliance with Strava's retention policies.
+- **Data Deletion:** Upon receiving a revocation payload, the Edge Function extracts the user ID, clears all linked Strava references from the athlete's training sessions, deletes records from the `strava_activities` table associated with that user, and then deletes their OAuth tokens from the `strava_tokens` table. The in-app disconnect flow performs the same cleanup and attempts Strava deauthorization. This ensures complete data erasure in compliance with Strava's retention policies.
 
 ## 5. Background Token Refresh
 - **Implementation:** We utilize a PostgreSQL background job (`pg_cron`) that runs hourly to scan the database for tokens expiring in the next 60 minutes. It triggers an Edge Function to hit the `oauth/token` endpoint with the `refresh_token` and silently updates the credentials in the database.

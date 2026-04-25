@@ -4,7 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { LandingNav } from '~/components/landing/LandingNav';
 
 export function meta() {
-  return [{ title: 'Terms & Conditions — Synek' }];
+  return [{ title: 'Terms & Conditions — SYNEK' }];
 }
 
 const SECTIONS = [

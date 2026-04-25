@@ -134,10 +134,18 @@ export function IntegrationsTab({
             >
               {t('strava.disconnect')}
             </Button>
+            <p className="text-xs leading-5 text-muted-foreground">
+              {t('strava.disconnectNotice')}
+            </p>
           </div>
         ) : (
           <div className="space-y-3">
             <p className="text-sm text-muted-foreground">{t('strava.description')}</p>
+            <div className="space-y-1 text-xs leading-5 text-muted-foreground">
+              <p>{t('strava.syncNotice')}</p>
+              <p>{t('strava.privacyNotice')}</p>
+              <p>{t('strava.revokeNotice')}</p>
+            </div>
             <button
               onClick={onConnectStrava}
               className="border-0 bg-transparent p-0 transition-opacity hover:opacity-90"
