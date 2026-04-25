@@ -145,6 +145,7 @@
     "submit": "Wyślij do wsparcia",
     "submitAnother": "Wyślij kolejne zgłoszenie",
     "submitSuccess": "Mamy Twoje zgłoszenie — dziękujemy! Wrócimy do Ciebie wkrótce.",
+    "submitSuccessSubtitle": "Przejrzymy Twoje zgłoszenie i odpowiemy na e-mail w najbliższym czasie.",
     "submitError": "Coś poszło nie tak. Spróbuj ponownie.",
     "invalidEmail": "Nieprawidłowy adres email"
   }

@@ -53,3 +53,15 @@ verify_jwt = false
 [functions.junction-webhook]
 verify_jwt = false
 
+[functions.register-user]
+verify_jwt = false
+
+[functions.claim-invite]
+verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = false
+
+[functions.submit-support]
+verify_jwt = false
+

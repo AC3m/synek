@@ -120,7 +120,7 @@ export function SupportSection({ className }: SupportSectionProps) {
             </div>
             <div className="space-y-1">
               <p className="font-bold tracking-tight uppercase">{t('support.submitSuccess')}</p>
-              <p className="text-xs text-muted-foreground">{t('support.subtitle')}</p>
+              <p className="text-xs text-muted-foreground">{t('support.submitSuccessSubtitle')}</p>
             </div>
             <Button
               variant="ghost"
