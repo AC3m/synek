@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.10.0](https://github.com/AC3m/synek/compare/v0.9.2...v0.10.0) (2026-04-25)
+
+### Features
+
+- add support page with Turnstile, Resend email, and DB persistence ([35c580d](https://github.com/AC3m/synek/commit/35c580d691779e57b721e1043a617e988378d0eb))
+
+### Bug Fixes
+
+- **support:** add onSettled handler to useSubmitSupport mutation ([e6d4fd6](https://github.com/AC3m/synek/commit/e6d4fd6bf75764db2c0454701070769b99c57afb))
+
 ## [0.9.2](https://github.com/AC3m/synek/compare/v0.9.1...v0.9.2) (2026-04-25)
 
 ### Bug Fixes
