@@ -20,6 +20,7 @@ export default [
     route('forgot-password', 'routes/forgot-password.tsx'),
     route('reset-password', 'routes/reset-password.tsx'),
     route('select-role', 'routes/select-role.tsx'),
+    route('support', 'routes/support.tsx'),
 
     // App pages — wrapped with Header + BottomNav
     layout('routes/locale-layout.tsx', [
