@@ -145,6 +145,7 @@
     "submit": "Send to support",
     "submitAnother": "Send another request",
     "submitSuccess": "We got it — thank you! Our team will get back to you soon.",
+    "submitSuccessSubtitle": "We'll review your request and reply by email shortly.",
     "submitError": "Something went wrong. Please try again.",
     "invalidEmail": "Invalid email address"
   }
