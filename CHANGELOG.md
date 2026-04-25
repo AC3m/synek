@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.9.2](https://github.com/AC3m/synek/compare/v0.9.1...v0.9.2) (2026-04-25)
+
+### Bug Fixes
+
+- harden strava review compliance flows ([172b48c](https://github.com/AC3m/synek/commit/172b48c9f76b0e269e265b610928eb79e89a17f3))
+
 ## [0.9.1](https://github.com/AC3m/synek/compare/v0.9.0...v0.9.1) (2026-04-23)
 
 ### Bug Fixes
