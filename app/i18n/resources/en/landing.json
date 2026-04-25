@@ -112,7 +112,8 @@
   },
   "footer": {
     "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions"
+    "terms": "Terms & Conditions",
+    "support": "Support"
   },
   "contact": {
     "title": "Write to us",
@@ -125,5 +126,26 @@
     "submit": "Send message",
     "submitSuccess": "Message sent — thank you! We'll get back to you soon.",
     "submitError": "Something went wrong. Please try again."
+  },
+  "support": {
+    "title": "Need help?",
+    "subtitle": "Tell us what's going wrong and we'll get you back on track.",
+    "responseNote": "We aim to reply within one business day",
+    "categoryLabel": "What's this about?",
+    "category": {
+      "general": "General",
+      "bug": "Bug",
+      "strava": "Strava sync",
+      "account": "Account"
+    },
+    "name": "Your name",
+    "email": "Your email",
+    "message": "Describe your issue",
+    "messagePlaceholder": "What happened, what you expected, and any steps to reproduce...",
+    "submit": "Send to support",
+    "submitAnother": "Send another request",
+    "submitSuccess": "We got it — thank you! Our team will get back to you soon.",
+    "submitError": "Something went wrong. Please try again.",
+    "invalidEmail": "Invalid email address"
   }
 }

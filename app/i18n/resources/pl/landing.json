@@ -112,7 +112,8 @@
   },
   "footer": {
     "privacyPolicy": "Polityka prywatności",
-    "terms": "Regulamin"
+    "terms": "Regulamin",
+    "support": "Pomoc"
   },
   "contact": {
     "title": "Napisz do nas",
@@ -125,5 +126,26 @@
     "submit": "Wyślij wiadomość",
     "submitSuccess": "Wiadomość wysłana — dziękujemy! Odezwiemy się wkrótce.",
     "submitError": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "support": {
+    "title": "Potrzebujesz pomocy?",
+    "subtitle": "Opisz problem, a pomożemy Ci wrócić na właściwe tory.",
+    "responseNote": "Odpowiadamy w ciągu jednego dnia roboczego",
+    "categoryLabel": "Czego dotyczy zgłoszenie?",
+    "category": {
+      "general": "Ogólne",
+      "bug": "Błąd",
+      "strava": "Synchronizacja Strava",
+      "account": "Konto"
+    },
+    "name": "Imię i nazwisko",
+    "email": "Twój e-mail",
+    "message": "Opisz problem",
+    "messagePlaceholder": "Co się stało, czego oczekiwałeś i kroki do odtworzenia...",
+    "submit": "Wyślij do wsparcia",
+    "submitAnother": "Wyślij kolejne zgłoszenie",
+    "submitSuccess": "Mamy Twoje zgłoszenie — dziękujemy! Wrócimy do Ciebie wkrótce.",
+    "submitError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "invalidEmail": "Nieprawidłowy adres email"
   }
 }

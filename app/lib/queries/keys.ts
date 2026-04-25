@@ -29,6 +29,9 @@ export const queryKeys = {
   feedback: {
     all: ['feedback'] as const,
   },
+  support: {
+    all: ['support'] as const,
+  },
   sessionLaps: {
     all: ['sessionLaps'] as const,
     bySession: (sessionId: string) => ['sessionLaps', sessionId] as const,
