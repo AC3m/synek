@@ -10,7 +10,7 @@ import { Input } from '~/components/ui/input';
 import { isMockMode } from '~/lib/supabase';
 
 export function meta() {
-  return [{ title: 'Login — Synek' }];
+  return [{ title: 'Login — SYNEK' }];
 }
 
 export default function LoginPage() {

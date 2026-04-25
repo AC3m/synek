@@ -1,7 +1,7 @@
 {
   "nav": {
     "getStarted": "Get Started",
-    "whySynek": "Why Synek",
+    "whySynek": "Why SYNEK",
     "features": "Features",
     "logIn": "Log In",
     "joinBeta": "Join Beta",
@@ -10,17 +10,17 @@
   "hero": {
     "badge": "Public beta — free access",
     "headline": "No more spreadsheets. Smooth collaboration between coach and athlete.",
-    "subheadline": "Ditch the chaotic sheets and manual updates. Synek is a simple tool that connects the coach's plan with the athlete's execution. Try our free beta.",
+    "subheadline": "Ditch the chaotic sheets and manual updates. SYNEK is a simple tool that connects the coach's plan with the athlete's execution. Try our free beta.",
     "ctaJoinBeta": "Create your free account",
     "ctaLogIn": "Already have an account?",
     "betaNote": "Your feedback shapes what we build next."
   },
   "whySynek": {
-    "title": "Why Synek?",
+    "title": "Why SYNEK?",
     "subtitle": "Because planning training in spreadsheets is exhausting.",
     "card1": {
       "title": "No more manual entry",
-      "desc": "Forget about typing in results after every session. Synek and Strava do it for you."
+      "desc": "Forget about typing in results after every session. SYNEK and Strava do it for you."
     },
     "card2": {
       "title": "Everything in one place",
@@ -65,7 +65,7 @@
     }
   },
   "login": {
-    "title": "Log in to Synek",
+    "title": "Log in to SYNEK",
     "subtitle": "Pick up where you left off.",
     "email": "Email",
     "password": "Password",

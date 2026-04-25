@@ -12,11 +12,11 @@ import { AppLoader } from '~/components/ui/app-loader';
 
 export function meta() {
   return [
-    { title: 'Synek — Training planning for coaches and athletes' },
+    { title: 'SYNEK — Training planning for coaches and athletes' },
     {
       name: 'description',
       content:
-        "Synek gives coaches a structured way to plan weekly training and gives athletes full visibility into what's ahead. Free during public beta.",
+        "SYNEK gives coaches a structured way to plan weekly training and gives athletes full visibility into what's ahead. Free during public beta.",
     },
   ];
 }

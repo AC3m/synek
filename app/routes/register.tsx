@@ -14,7 +14,7 @@ import { registrationSchema } from '~/lib/schemas/auth';
 import type { UserRole } from '~/lib/auth';
 
 export function meta() {
-  return [{ title: 'Register — Synek' }];
+  return [{ title: 'Register — SYNEK' }];
 }
 
 export default function RegisterPage() {
