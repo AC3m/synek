@@ -244,8 +244,16 @@ describe('augmentSessionsWithGarmin', () => {
       plannedDurationMinutes: 45,
     });
     // Two distinct rides: 64 min (closer to A) and 47 min (closer to B)
-    const workoutLong = makeWorkout({ id: 'w-long', movingTimeSeconds: 3840, distanceMeters: 28070 }); // 64 min
-    const workoutShort = makeWorkout({ id: 'w-short', movingTimeSeconds: 2820, distanceMeters: 19330 }); // 47 min
+    const workoutLong = makeWorkout({
+      id: 'w-long',
+      movingTimeSeconds: 3840,
+      distanceMeters: 28070,
+    }); // 64 min
+    const workoutShort = makeWorkout({
+      id: 'w-short',
+      movingTimeSeconds: 2820,
+      distanceMeters: 19330,
+    }); // 47 min
 
     const result = augmentSessionsWithGarmin(
       [sessionA, sessionB],
@@ -262,8 +270,16 @@ describe('augmentSessionsWithGarmin', () => {
   });
 
   it('leaves a session unmatched when workouts are exhausted', () => {
-    const sessionA = makeSession({ id: 'session-a', trainingType: 'cycling', plannedDurationMinutes: 60 });
-    const sessionB = makeSession({ id: 'session-b', trainingType: 'cycling', plannedDurationMinutes: 45 });
+    const sessionA = makeSession({
+      id: 'session-a',
+      trainingType: 'cycling',
+      plannedDurationMinutes: 60,
+    });
+    const sessionB = makeSession({
+      id: 'session-b',
+      trainingType: 'cycling',
+      plannedDurationMinutes: 45,
+    });
     // Only one workout available — second session stays unmatched
     const workout = makeWorkout({ id: 'w-only', movingTimeSeconds: 3600 });
 

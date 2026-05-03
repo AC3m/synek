@@ -102,4 +102,3 @@ export function sessionHasActualPerformance(session: TrainingSession): boolean {
     session.rpe != null
   );
 }
-

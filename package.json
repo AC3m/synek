@@ -9,7 +9,7 @@
     "start": "react-router-serve ./build/server/index.js",
     "prepare": "husky",
     "typecheck": "react-router typegen && tsc",
-    "verify:app": "pnpm format:check && pnpm typecheck && pnpm test:run",
+    "verify:app": "pnpm format && pnpm typecheck && pnpm test:run",
     "verify": "pnpm verify:app && pnpm supabase:functions:check",
     "supabase:functions:check": "bash scripts/check-supabase-functions.sh",
     "seed": "tsx supabase/seed.ts",

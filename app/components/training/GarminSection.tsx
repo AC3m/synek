@@ -51,7 +51,14 @@ function buildChips(
   avgHr: number | null,
   maxHr: number | null,
   calories: number | null,
-  labels: { duration: string; distance: string; pace: string; avgHr: string; maxHr: string; kcal: string },
+  labels: {
+    duration: string;
+    distance: string;
+    pace: string;
+    avgHr: string;
+    maxHr: string;
+    kcal: string;
+  },
   units: { min: string; km: string; perKm: string; bpm: string },
 ): ChipData[] {
   const chips: ChipData[] = [];
@@ -59,8 +66,7 @@ function buildChips(
     chips.push({ label: labels.duration, value: `${durationMin} ${units.min}` });
   if (distanceKm != null)
     chips.push({ label: labels.distance, value: `${distanceKm} ${units.km}` });
-  if (pace != null)
-    chips.push({ label: labels.pace, value: `${pace}${units.perKm}` });
+  if (pace != null) chips.push({ label: labels.pace, value: `${pace}${units.perKm}` });
   if (avgHr != null)
     chips.push({ label: labels.avgHr, value: `${Math.round(avgHr)} ${units.bpm}` });
   if (maxHr != null)
@@ -124,7 +130,12 @@ export function GarminSection({
   }
 
   const hasAnyData =
-    durationMin != null || distanceKm != null || pace != null || avgHr != null || maxHr != null || calories != null;
+    durationMin != null ||
+    distanceKm != null ||
+    pace != null ||
+    avgHr != null ||
+    maxHr != null ||
+    calories != null;
 
   if (!hasAnyData) return null;
 
