@@ -5,8 +5,8 @@ Synek is a coaching and training management platform. Coaches create ISO-week tr
 ## Read This First (in order)
 
 1. `docs/constitution.md` — non-negotiable principles, locked tech stack, quality gates, governance
-2. `CLAUDE.md` — quick commands, directory map, critical rules, documentation pointer table
-3. `docs/architecture/overview.md` — system architecture, data model, Strava integration data flow
+2. `docs/architecture/overview.md` — system architecture, data model, Strava integration data flow
+3. Task-specific docs from the table below
 
 ## I Want To…
 

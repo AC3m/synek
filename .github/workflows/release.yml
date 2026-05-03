@@ -1,11 +1,64 @@
-name: Release
+name: CI and Release
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      edge_functions: ${{ steps.filter.outputs.edge_functions }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            edge_functions:
+              - 'deno.lock'
+              - 'supabase/functions/**'
+              - 'scripts/check-supabase-functions.sh'
+
+  quality:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+
+  typecheck:
+    name: Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -19,12 +72,36 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
       - run: pnpm test:run
+
+  edge-functions:
+    name: Supabase Edge Functions
+    needs: changes
+    if: github.event_name == 'push' || needs.changes.outputs.edge_functions == 'true'
+    runs-on: ubuntu-latest
+    env:
+      DENO_DIR: ~/.cache/deno
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/deno
+          key: deno-${{ runner.os }}-${{ hashFiles('deno.lock', 'supabase/functions/**/*.ts') }}
+          restore-keys: |
+            deno-${{ runner.os }}-
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - run: bash scripts/check-supabase-functions.sh
 
   release:
     name: Release
-    needs: test
+    needs:
+      - quality
+      - typecheck
+      - test
+      - edge-functions
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write

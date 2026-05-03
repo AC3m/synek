@@ -7,6 +7,9 @@ import {
 } from '~/lib/mock-data';
 import type { WeekPlan, CreateWeekPlanInput, UpdateWeekPlanInput } from '~/types/training';
 
+const WEEK_PLAN_COLUMNS =
+  'id, athlete_id, week_start, year, week_number, load_type, total_planned_km, description, coach_comments, actual_total_km, created_at, updated_at';
+
 // DB row → app type mapper
 export function toWeekPlan(row: Record<string, unknown>): WeekPlan {
   return {
@@ -32,7 +35,7 @@ export async function fetchWeekPlanByDate(
   if (isMockMode) return mockFetchWeekPlanByDate(weekStart, athleteId);
   const { data, error } = await supabase
     .from('week_plans')
-    .select('*')
+    .select(WEEK_PLAN_COLUMNS)
     .eq('week_start', weekStart)
     .eq('athlete_id', athleteId)
     .maybeSingle();
@@ -55,7 +58,7 @@ export async function createWeekPlan(input: CreateWeekPlanInput): Promise<WeekPl
       description: input.description ?? null,
       coach_comments: input.coachComments ?? null,
     })
-    .select()
+    .select(WEEK_PLAN_COLUMNS)
     .single();
 
   if (error) throw error;
@@ -75,7 +78,7 @@ export async function updateWeekPlan(input: UpdateWeekPlanInput): Promise<WeekPl
     .from('week_plans')
     .update(updates)
     .eq('id', input.id)
-    .select()
+    .select(WEEK_PLAN_COLUMNS)
     .single();
 
   if (error) throw error;
