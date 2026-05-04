@@ -21,6 +21,9 @@ import type {
   CopyDayInput,
 } from '~/types/training';
 
+const SESSION_COLUMNS =
+  'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, calories, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, is_strava_confirmed, created_at, updated_at';
+
 export function toSession(row: Record<string, unknown>): TrainingSession {
   return {
     id: row.id as string,
@@ -82,9 +85,7 @@ export async function fetchSessionByGoalId(goalId: string): Promise<TrainingSess
   if (isMockMode) return mockFetchSessionByGoalId(goalId);
   const { data, error } = await supabase
     .from('training_sessions')
-    .select(
-      'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, calories, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace, is_strava_confirmed, created_at, updated_at',
-    )
+    .select(SESSION_COLUMNS)
     .eq('goal_id', goalId)
     .maybeSingle();
 
@@ -96,7 +97,7 @@ export async function fetchSessionsByWeekPlan(weekPlanId: string): Promise<Train
   if (isMockMode) return mockFetchSessionsByWeekPlan(weekPlanId);
   const { data, error } = await supabase
     .from('secure_training_sessions')
-    .select('*')
+    .select(SESSION_COLUMNS)
     .eq('week_plan_id', weekPlanId)
     .order('sort_order', { ascending: true });
 
@@ -131,7 +132,7 @@ export async function createSession(input: CreateSessionInput): Promise<Training
       trainee_notes: input.athleteNotes ?? null,
       goal_id: input.goalId ?? null,
     })
-    .select()
+    .select(SESSION_COLUMNS)
     .single();
 
   if (error) throw error;
@@ -164,7 +165,7 @@ export async function updateSession(input: UpdateSessionInput): Promise<Training
     .from('training_sessions')
     .update(updates)
     .eq('id', input.id)
-    .select()
+    .select(SESSION_COLUMNS)
     .single();
 
   if (error) throw error;
@@ -221,7 +222,7 @@ export async function updateAthleteSession(input: AthleteSessionUpdate): Promise
     .from('training_sessions')
     .update(updates)
     .eq('id', input.id)
-    .select()
+    .select(SESSION_COLUMNS)
     .single();
 
   if (error) throw error;

@@ -20,8 +20,9 @@ Athlete training planning platform with coach and athlete roles. Coaches create 
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+
 - pnpm
+- Deno 2+ (for Supabase Edge Function checks)
 - Supabase CLI (for migrations/functions deploy)
 
 ### Install
@@ -35,7 +36,7 @@ pnpm supabase:install
 
 ### Environment
 
-Copy `.env.example` to `.env` and fill in your Supabase credentials:
+Copy `.env.example` to `.env.local` and fill in your Supabase credentials:
 
 ```
 VITE_SUPABASE_URL=https://<project>.supabase.co
@@ -63,10 +64,13 @@ pnpm build      # production bundle → ./build/
 pnpm start      # serve the production build
 ```
 
-### Type check
+### Type check and verification
 
 ```bash
-pnpm typecheck  # react-router typegen + tsc
+pnpm typecheck                   # react-router typegen + tsc
+pnpm verify:app                  # format, typecheck, tests
+pnpm supabase:functions:check    # Deno check for Supabase Edge Functions
+pnpm verify                      # verify:app + Edge Function checks
 ```
 
 ### Tests
