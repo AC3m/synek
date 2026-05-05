@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.4](https://github.com/AC3m/synek/compare/v0.10.3...v0.10.4) (2026-05-05)
+
+### Bug Fixes
+
+- reduce route navigation lag ([733ae46](https://github.com/AC3m/synek/commit/733ae4695d90ae84169f6f0627841dd78a777388))
+
 ## [0.10.3](https://github.com/AC3m/synek/compare/v0.10.2...v0.10.3) (2026-05-05)
 
 ### Bug Fixes
