@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.10.3](https://github.com/AC3m/synek/compare/v0.10.2...v0.10.3) (2026-05-05)
+
+### Bug Fixes
+
+- align session mutations with secure view ([c1141b4](https://github.com/AC3m/synek/commit/c1141b48747647bd2aafe4e633468bc39a15a218))
+
 ## [0.10.2](https://github.com/AC3m/synek/compare/v0.10.1...v0.10.2) (2026-05-04)
 
 ## [0.10.1](https://github.com/AC3m/synek/compare/v0.10.0...v0.10.1) (2026-04-25)
