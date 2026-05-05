@@ -35,7 +35,7 @@ export function GoalListView({ athleteId, createdBy, canManage, className }: Goa
   if (isLoading) return <AppLoader />;
 
   return (
-    <div className={cn('mx-auto max-w-2xl space-y-6 px-4 py-6', className)}>
+    <div className={cn('mx-auto max-w-2xl space-y-6', className)}>
       <div className="flex items-center justify-between gap-4">
         <h1 className="text-2xl font-bold">{t('goal.library')}</h1>
         {canManage && (
