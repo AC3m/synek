@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.5](https://github.com/AC3m/synek/compare/v0.10.4...v0.10.5) (2026-05-05)
+
+### Bug Fixes
+
+- route PWA launch through home ([f4b0126](https://github.com/AC3m/synek/commit/f4b01266a83c7307e58de10c16ac375eafcafd4e))
+- stabilize PWA bottom navigation height ([421e4ed](https://github.com/AC3m/synek/commit/421e4edbea859abc44c35a5b6f749654d4b5a424))
+
 ## [0.10.4](https://github.com/AC3m/synek/compare/v0.10.3...v0.10.4) (2026-05-05)
 
 ### Bug Fixes
