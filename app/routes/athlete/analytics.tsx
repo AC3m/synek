@@ -8,7 +8,7 @@ export default function AthleteAnalytics() {
   const { data: goals = [] } = useGoals(athleteId);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <div className="space-y-6">
       <AnalyticsView namespace="athlete" athleteId={athleteId} goals={goals} />
     </div>
   );
