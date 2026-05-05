@@ -28,6 +28,7 @@ export function Header() {
             <nav className="hidden items-center gap-1 md:flex">
               <NavLink
                 to={localePath(`/${user.role}/strength`)}
+                prefetch="intent"
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
@@ -42,6 +43,7 @@ export function Header() {
               </NavLink>
               <NavLink
                 to={localePath(`/${user.role}/goals`)}
+                prefetch="intent"
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
@@ -56,6 +58,7 @@ export function Header() {
               </NavLink>
               <NavLink
                 to={localePath(`/${user.role}/analytics`)}
+                prefetch="intent"
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',

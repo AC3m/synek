@@ -1,9 +1,12 @@
-import { Outlet } from 'react-router';
+import { Outlet, useNavigation } from 'react-router';
 import { Header } from '~/components/layout/Header';
 import { BottomNav } from '~/components/layout/BottomNav';
 import { InstallPrompt } from '~/components/layout/InstallPrompt';
+import { AppLoader } from '~/components/ui/app-loader';
 
 export default function LocaleLayout() {
+  const navigation = useNavigation();
+
   return (
     <>
       <Header />
@@ -12,6 +15,7 @@ export default function LocaleLayout() {
       </main>
       <BottomNav />
       <InstallPrompt />
+      {navigation.state === 'loading' && <AppLoader />}
     </>
   );
 }
