@@ -17,6 +17,7 @@ function NavItem({ to, icon: Icon, label, isActive, onClick }: NavItemProps) {
   return (
     <NavLink
       to={to}
+      prefetch="render"
       onClick={onClick}
       className="flex min-h-[44px] flex-1 flex-col items-center justify-center gap-1 py-2"
     >
