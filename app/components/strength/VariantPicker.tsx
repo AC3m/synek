@@ -80,7 +80,7 @@ export function VariantPicker({
           placeholder="Search…"
           className="pl-9"
           aria-label="Search variants"
-          autoFocus
+          autoFocus={!isMobile}
         />
       </div>
 
