@@ -79,7 +79,9 @@
       "plan": "Plan",
       "details": "Szczegóły",
       "results": "Wyniki"
-    }
+    },
+    "searchTypePlaceholder": "Szukaj typów treningu…",
+    "searchTypeEmpty": "Brak pasującego typu treningu"
   },
   "athletePicker": {
     "title": "Wybierz zawodnika",

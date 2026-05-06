@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
@@ -14,6 +15,7 @@ import { RestDayFields } from './type-fields/RestDayFields';
 import { WalkHikeFields } from './type-fields/WalkHikeFields';
 import { PilatesFields } from './type-fields/PilatesFields';
 import { EllipticalFields } from './type-fields/EllipticalFields';
+import { matchesTrainingType } from '~/lib/utils/training-types';
 import {
   TRAINING_TYPES,
   type TrainingType,
@@ -79,6 +81,7 @@ export function SessionFormFields({
 }: SessionFormFieldsProps) {
   const { t } = useTranslation(['coach', 'common', 'training']);
   const distanceBased = isDistanceBased(trainingType);
+  const [typeSearch, setTypeSearch] = useState('');
 
   const renderTypeFields = () => {
     switch (trainingType) {
@@ -160,8 +163,16 @@ export function SessionFormFields({
             <label className="text-xs font-semibold tracking-[0.08em] text-muted-foreground uppercase">
               {t('coach:session.type')}
             </label>
+            <Input
+              value={typeSearch}
+              onChange={(e) => setTypeSearch(e.target.value)}
+              placeholder={t('coach:session.searchTypePlaceholder')}
+              className="h-8 text-sm"
+            />
             <div className="flex flex-wrap gap-2">
-              {TRAINING_TYPES.map((tt) => {
+              {TRAINING_TYPES.filter((tt) =>
+                matchesTrainingType(typeSearch, tt, t(`common:trainingTypes.${tt}`)),
+              ).map((tt) => {
                 const config = trainingTypeConfig[tt];
                 const isSelected = trainingType === tt;
                 return (
@@ -178,6 +189,13 @@ export function SessionFormFields({
                   </Badge>
                 );
               })}
+              {TRAINING_TYPES.filter((tt) =>
+                matchesTrainingType(typeSearch, tt, t(`common:trainingTypes.${tt}`)),
+              ).length === 0 && (
+                <p className="text-sm text-muted-foreground">
+                  {t('coach:session.searchTypeEmpty')}
+                </p>
+              )}
             </div>
           </div>
 

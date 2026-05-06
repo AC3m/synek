@@ -62,14 +62,17 @@ export function StrengthLibraryView({ userId, canManage, baseRoute }: StrengthLi
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold">{t('strength.variant.library')}</h1>
-        {canManage && (
-          <Button onClick={() => setModalOpen(true)}>
-            <Plus className="mr-1.5 size-4" />
-            {t('strength.variant.new')}
-          </Button>
-        )}
+      <div>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-bold">{t('strength.variant.library')}</h1>
+          {canManage && (
+            <Button onClick={() => setModalOpen(true)}>
+              <Plus className="mr-1.5 size-4" />
+              {t('strength.variant.new')}
+            </Button>
+          )}
+        </div>
+        <p className="mt-1 text-sm text-muted-foreground">{t('strength.library.subtitle')}</p>
       </div>
 
       {showSearch && (

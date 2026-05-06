@@ -101,6 +101,28 @@ export const trainingTypeConfig: Record<
   },
 };
 
+export const TRAINING_TYPE_ALIASES: Record<TrainingType, string[]> = {
+  strength: ['gym', 'weights', 'lifting', 'siłownia', 'silownia'],
+  run: ['running', 'jog', 'bieganie'],
+  cycling: ['bike', 'ride', 'rower', 'kolarstwo'],
+  swimming: ['swim', 'pływanie', 'plywanie'],
+  walk: ['walking', 'spacer'],
+  hike: ['hiking', 'wędrówka', 'wedrowka'],
+  yoga: ['joga'],
+  mobility: ['mobilność', 'mobilnosc', 'stretching'],
+  pilates: [],
+  elliptical: ['orbiter', 'orbitrek'],
+  rest_day: ['rest', 'recovery', 'odpoczynek'],
+  other: [],
+};
+
+export function matchesTrainingType(query: string, type: TrainingType, label: string): boolean {
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  if (label.toLowerCase().includes(q)) return true;
+  return TRAINING_TYPE_ALIASES[type].some((alias) => alias.includes(q));
+}
+
 export const DISTANCE_BASED_TYPES = [
   'run',
   'cycling',
