@@ -14,7 +14,7 @@
 
 **Purpose**: Confirm baseline before touching anything.
 
-- [ ] T001 Run `pnpm typecheck` and confirm it passes clean on rebased branch
+- [x] T001 Run `pnpm typecheck` and confirm it passes clean on rebased branch
 
 ---
 
@@ -24,7 +24,7 @@
 
 **Independent Test**: Open variant picker on iOS Safari — full list scrollable, search input visible above toolbar.
 
-- [ ] T002 [US3] Add `pb-[env(safe-area-inset-bottom)]` to SheetContent in `app/components/strength/VariantPicker.tsx`
+- [x] T002 [US3] Add `pb-[env(safe-area-inset-bottom)]` to SheetContent in `app/components/strength/VariantPicker.tsx`
 
 **Checkpoint**: Typecheck passes. Single-file change, ready for its own PR.
 
@@ -36,9 +36,9 @@
 
 **Independent Test**: Session form type picker — search "gym" → only Strength badge shown; clear → all types shown.
 
-- [ ] T003 [P] [US10] Add `TRAINING_TYPE_ALIASES: Record<TrainingType, string[]>` and `matchesTrainingType(query, type, label)` to `app/lib/utils/training-types.ts`
-- [ ] T004 [P] [US10] Add `session.searchTypePlaceholder` i18n key to `app/i18n/resources/en/coach.json` and `app/i18n/resources/pl/coach.json` (or `common.json` if coach namespace absent — check existing namespace files)
-- [ ] T005 [US10] Add search `Input` above training type badge list in `app/components/training/SessionFormFields.tsx`; filter `TRAINING_TYPES` via `matchesTrainingType()`; show muted "No matching type" when results empty (depends T003, T004)
+- [x] T003 [P] [US10] Add `TRAINING_TYPE_ALIASES: Record<TrainingType, string[]>` and `matchesTrainingType(query, type, label)` to `app/lib/utils/training-types.ts`
+- [x] T004 [P] [US10] Add `session.searchTypePlaceholder` i18n key to `app/i18n/resources/en/coach.json` and `app/i18n/resources/pl/coach.json` (or `common.json` if coach namespace absent — check existing namespace files)
+- [x] T005 [US10] Add search `Input` above training type badge list in `app/components/training/SessionFormFields.tsx`; filter `TRAINING_TYPES` via `matchesTrainingType()`; show muted "No matching type" when results empty (depends T003, T004)
 
 **Checkpoint**: Typecheck passes. Frontend-only, no DB touch.
 
@@ -50,11 +50,11 @@
 
 **Independent Test**: Open strength session logger → two ⓘ icons visible → each opens correct popover copy → closes on outside click.
 
-- [ ] T006 [US2] Create `app/components/ui/InfoPopover.tsx` — wraps shadcn `Popover` with lucide `Info` icon (`size-3.5`, `text-muted-foreground`), 44×44px touch target, accepts `content: ReactNode`
-- [ ] T007 [P] [US2] Add popover copy i18n keys (`strength.logger.setsRepsInfo`, `strength.logger.nextSessionInfo`) to `app/i18n/resources/en/training.json`
-- [ ] T008 [P] [US2] Add same keys (Polish translation) to `app/i18n/resources/pl/training.json`
-- [ ] T009 [US2] Place `InfoPopover` next to sets/reps target line in `ExerciseCard` header inside `app/components/strength/SessionExerciseLogger.tsx` (depends T006, T007, T008)
-- [ ] T010 [US2] Place `InfoPopover` next to "Next session" label above `ProgressionToggle` in `app/components/strength/SessionExerciseLogger.tsx` (depends T006, T007, T008)
+- [x] T006 [US2] Create `app/components/ui/InfoPopover.tsx` — wraps shadcn `Popover` with lucide `Info` icon (`size-3.5`, `text-muted-foreground`), 44×44px touch target, accepts `content: ReactNode`
+- [x] T007 [P] [US2] Add popover copy i18n keys (`strength.logger.setsRepsInfo`, `strength.logger.nextSessionInfo`) to `app/i18n/resources/en/training.json`
+- [x] T008 [P] [US2] Add same keys (Polish translation) to `app/i18n/resources/pl/training.json`
+- [x] T009 [US2] Place `InfoPopover` next to sets/reps target line in `ExerciseCard` header inside `app/components/strength/SessionExerciseLogger.tsx` (depends T006, T007, T008)
+- [x] T010 [US2] Place `InfoPopover` next to "Next session" label above `ProgressionToggle` in `app/components/strength/SessionExerciseLogger.tsx` (depends T006, T007, T008)
 
 **Checkpoint**: Typecheck passes. New reusable component + two wiring points.
 
@@ -66,15 +66,15 @@
 
 **Independent Test**: (1) Library page shows subtitle. (2) Save a variant → callout appears with "Go to this week" link. (3) Strength session with no variantId shows dashed CTA → tapping opens VariantPicker.
 
-- [ ] T011 [P] [US1] Add i18n keys for all 3 layers to `app/i18n/resources/en/training.json`:
+- [x] T011 [P] [US1] Add i18n keys for all 3 layers to `app/i18n/resources/en/training.json`:
   - `strength.library.subtitle`
   - `strength.variant.savedNudge`
   - `strength.variant.goToWeek`
   - `strength.session.noTemplateHint`
-- [ ] T012 [P] [US1] Add same keys (Polish) to `app/i18n/resources/pl/training.json`
-- [ ] T013 [P] [US1] Add persistent subtitle paragraph below `<h1>` in `app/components/strength/StrengthLibraryView.tsx` (Layer 1 — always visible, no state needed) (depends T011, T012)
-- [ ] T014 [US1] Add dismissible post-save callout (component state, resets on reopen) with "Go to this week →" link in `app/components/strength/VariantForm.tsx` or `VariantFormModal.tsx` — link to `/${locale}/athlete/week/${getCurrentWeekId()}` (Layer 2) (depends T011, T012)
-- [ ] T015 [US1] Add dashed-border CTA to strength session rendering in `app/components/calendar/SessionCard.tsx` when `!typeSpecificData?.variantId`; tap triggers existing VariantPicker open flow (Layer 3) (depends T011, T012)
+- [x] T012 [P] [US1] Add same keys (Polish) to `app/i18n/resources/pl/training.json`
+- [x] T013 [P] [US1] Add persistent subtitle paragraph below `<h1>` in `app/components/strength/StrengthLibraryView.tsx` (Layer 1 — always visible, no state needed) (depends T011, T012)
+- [x] T014 [US1] Add dismissible post-save callout (component state, resets on reopen) with "Go to this week →" link in `app/components/strength/VariantForm.tsx` or `VariantFormModal.tsx` — link to `/${locale}/athlete/week/${getCurrentWeekId()}` (Layer 2) (depends T011, T012)
+- [x] T015 [US1] Add dashed-border CTA to strength session rendering in `app/components/calendar/SessionCard.tsx` when `!typeSpecificData?.variantId`; tap triggers existing VariantPicker open flow (Layer 3) (depends T011, T012)
 
 **Checkpoint**: Typecheck passes. All 3 hints render and link correctly.
 
@@ -86,17 +86,17 @@
 
 **Independent Test**: (1) Settings → Training tab visible for athletes; toggle persists to DB. (2) ExerciseCard shows +/− buttons when preference ON; hidden when OFF or readOnly. (3) "Remove set" disabled at 1 set.
 
-- [ ] T016 [US4] Create `app/types/preferences.ts` — export `TrainingPreferences` interface (`allowSetAdjustment: boolean`) and `DEFAULT_TRAINING_PREFERENCES`
-- [ ] T017 [P] [US4] Write Supabase migration `supabase/migrations/$(date +%Y%m%d%H%M%S)_add_training_preferences_to_profiles.sql` — `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS training_preferences JSONB NOT NULL DEFAULT '{"allowSetAdjustment": true}'::jsonb`
-- [ ] T018 [US4] Extend `app/lib/queries/profile.ts` — include `training_preferences` in profile select; add `updateTrainingPreferences(input: Partial<TrainingPreferences>)` mutation with JSONB merge update (depends T016)
-- [ ] T019 [P] [US4] Add i18n keys to `app/i18n/resources/en/training.json` and `app/i18n/resources/en/common.json`:
+- [x] T016 [US4] Create `app/types/preferences.ts` — export `TrainingPreferences` interface (`allowSetAdjustment: boolean`) and `DEFAULT_TRAINING_PREFERENCES`
+- [x] T017 [P] [US4] Write Supabase migration `supabase/migrations/$(date +%Y%m%d%H%M%S)_add_training_preferences_to_profiles.sql` — `ALTER TABLE profiles ADD COLUMN IF NOT EXISTS training_preferences JSONB NOT NULL DEFAULT '{"allowSetAdjustment": true}'::jsonb`
+- [x] T018 [US4] Extend `app/lib/queries/profile.ts` — include `training_preferences` in profile select; add `updateTrainingPreferences(input: Partial<TrainingPreferences>)` mutation with JSONB merge update (depends T016)
+- [x] T019 [P] [US4] Add i18n keys to `app/i18n/resources/en/training.json` and `app/i18n/resources/en/common.json`:
   - `strength.logger.addSet`, `strength.logger.removeSet` (training.json)
   - `settings.tabs.training`, `settings.training.adjustSets`, `settings.training.adjustSetsSub` (common.json)
-- [ ] T020 [P] [US4] Add same keys (Polish) to `app/i18n/resources/pl/training.json` and `app/i18n/resources/pl/common.json`
-- [ ] T021 [US4] Create `app/lib/hooks/useTrainingPreferences.ts` — reads `profile.data?.trainingPreferences ?? DEFAULT_TRAINING_PREFERENCES`; exposes `preferences` and `update` mutation (depends T016, T018)
-- [ ] T022 [US4] Create `app/components/settings/TrainingTab.tsx` — "Strength training" section header; single toggle row for `allowSetAdjustment` bound to `useTrainingPreferences` (depends T021, T019, T020)
-- [ ] T023 [US4] Register Training tab in `app/routes/settings.tsx` — `TabsTrigger value="training"` and `TabsContent` (athlete only); import `TrainingTab` (depends T022)
-- [ ] T024 [US4] Wire `useTrainingPreferences` in `SessionExerciseLogger` in `app/components/strength/SessionExerciseLogger.tsx`; pass `allowSetAdjustment` prop to `ExerciseCard`; add `+ Add set` / `− Remove set` buttons below set grid — state-only (`sets[]` push/pop), disabled at length 1 (depends T021, T019, T020)
+- [x] T020 [P] [US4] Add same keys (Polish) to `app/i18n/resources/pl/training.json` and `app/i18n/resources/pl/common.json`
+- [x] T021 [US4] Create `app/lib/hooks/useTrainingPreferences.ts` — reads `profile.data?.trainingPreferences ?? DEFAULT_TRAINING_PREFERENCES`; exposes `preferences` and `update` mutation (depends T016, T018)
+- [x] T022 [US4] Create `app/components/settings/TrainingTab.tsx` — "Strength training" section header; single toggle row for `allowSetAdjustment` bound to `useTrainingPreferences` (depends T021, T019, T020)
+- [x] T023 [US4] Register Training tab in `app/routes/settings.tsx` — `TabsTrigger value="training"` and `TabsContent` (athlete only); import `TrainingTab` (depends T022)
+- [x] T024 [US4] Wire `useTrainingPreferences` in `SessionExerciseLogger` in `app/components/strength/SessionExerciseLogger.tsx`; pass `allowSetAdjustment` prop to `ExerciseCard`; add `+ Add set` / `− Remove set` buttons below set grid — state-only (`sets[]` push/pop), disabled at length 1 (depends T021, T019, T020)
 
 **Checkpoint**: Migration runs; existing rows get default. Toggle round-trips through Supabase. Buttons show/hide per preference and readOnly flag. Typecheck passes.
 
@@ -104,8 +104,8 @@
 
 ## Phase 7: Polish
 
-- [ ] T025 Run `pnpm typecheck` — fix any remaining type errors across all changed files
-- [ ] T026 [P] Docs update check — new `InfoPopover` reusable pattern → consider adding to `docs/how-to/`; no ADR needed (no architectural decision); no convention change needed → state in PR description
+- [x] T025 Run `pnpm typecheck` — fix any remaining type errors across all changed files
+- [x] T026 [P] Docs update check — new `InfoPopover` reusable pattern → consider adding to `docs/how-to/`; no ADR needed (no architectural decision); no convention change needed → state in PR description
 
 ---
 
