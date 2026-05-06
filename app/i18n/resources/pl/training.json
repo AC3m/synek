@@ -89,7 +89,15 @@
       "useTemplate": "Użyj wariantu",
       "recentlyUsed": "Ostatnio używane",
       "changeVariant": "Zmień",
-      "manageVariants": "Utwórz szablony"
+      "manageVariants": "Utwórz szablony",
+      "savedNudge": "Szablon zapisany. Aby zalogować trening z tym szablonem, dodaj sesję Siłową do tygodniowego planu.",
+      "goToWeek": "Przejdź do tego tygodnia →"
+    },
+    "library": {
+      "subtitle": "Szablony określają ćwiczenia, serie i cele powtórzeń. Aby zalogować trening, dodaj sesję Siłową do tygodniowego planu i wybierz tam szablon."
+    },
+    "session": {
+      "noTemplateHint": "Nie wybrano szablonu — wybierz, aby śledzić serie"
     },
     "superset": {
       "label": "Superseria",
@@ -137,7 +145,11 @@
       "prefillMaintain": "= tak samo jak {{date}}",
       "firstSession": "Pierwsza sesja — ustal punkt odniesienia",
       "setIncrementHint": "Ustaw progres w konfiguracji wariantu, aby auto-postępować",
-      "floorReached": "Osiągnięto minimum — dostosuj progres"
+      "floorReached": "Osiągnięto minimum — dostosuj progres",
+      "addSet": "Dodaj serię",
+      "removeSet": "Usuń serię",
+      "setsRepsInfo": "Trener ustalił docelowy zakres powtórzeń. Wpisz rzeczywistą liczbę powtórzeń w każdej serii — nie musisz trafiać w dokładną liczbę, po prostu zapisz co zrobiłeś.",
+      "nextSessionInfo": "Powiedz trenerowi, czy chcesz zwiększyć obciążenie (↑), utrzymać je (=) czy zmniejszyć (↓). To wskazówka dla szablonu następnej sesji."
     },
     "progression": {
       "up": "Zwiększ obciążenie",

@@ -142,7 +142,10 @@ export function VariantPicker({
       <>
         {trigger}
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto">
+          <SheetContent
+            side="bottom"
+            className="max-h-[80vh] overflow-y-auto pb-[env(safe-area-inset-bottom)]"
+          >
             <SheetHeader>
               <SheetTitle>{t('strength.variant.selectVariant')}</SheetTitle>
             </SheetHeader>

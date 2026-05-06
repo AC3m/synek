@@ -154,8 +154,14 @@
     "back": "Wróć do pulpitu",
     "tabs": {
       "user": "Użytkownik",
+      "training": "Trening",
       "integrations": "Integracje",
       "athletes": "Zawodnicy"
+    },
+    "training": {
+      "strengthSection": "Trening siłowy",
+      "adjustSets": "Dostosuj serie podczas sesji",
+      "adjustSetsSub": "Dodaj lub usuń serie podczas logowania treningu"
     },
     "deleteAccount": {
       "dangerZone": "Strefa niebezpieczeństwa",

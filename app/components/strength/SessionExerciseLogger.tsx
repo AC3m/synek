@@ -18,6 +18,8 @@ import { CopySetButton } from '~/components/strength/CopySetButton';
 import { PrefillBadge } from '~/components/strength/PrefillBadge';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
+import { InfoPopover } from '~/components/ui/InfoPopover';
+import { useTrainingPreferences } from '~/lib/hooks/useTrainingPreferences';
 import type {
   SetEntry,
   StrengthVariantExercise,
@@ -246,6 +248,7 @@ interface ExerciseCardProps {
   prefill: StrengthSessionExercise | undefined;
   prefillDate?: string | null;
   readOnly: boolean;
+  allowSetAdjustment?: boolean;
   isInSuperset?: boolean;
   onChange: (change: LogRowChange) => void;
 }
@@ -256,6 +259,7 @@ const ExerciseCard = memo(function ExerciseCard({
   prefill,
   prefillDate,
   readOnly,
+  allowSetAdjustment = true,
   isInSuperset = false,
   onChange,
 }: ExerciseCardProps) {
@@ -365,6 +369,19 @@ const ExerciseCard = memo(function ExerciseCard({
     });
   }
 
+  function addSet() {
+    setSets((prev) => [...prev, { reps: '', load: '', isPreFilled: false }]);
+  }
+
+  function removeLastSet() {
+    setSets((prev) => {
+      if (prev.length <= 1) return prev;
+      const next = prev.slice(0, -1);
+      commit(next, progression);
+      return next;
+    });
+  }
+
   const { loadKg: currentTopLoad } = deriveTopSet(sets);
 
   const filledSetCount = sets.filter((s) => s.reps !== '' && s.load !== '').length;
@@ -407,13 +424,16 @@ const ExerciseCard = memo(function ExerciseCard({
               </a>
             )}
           </div>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {exercise.sets} {t('strength.logger.sets')} · {t('strength.logger.target')}:{' '}
-            {exercise.perSetReps
-              ? exercise.perSetReps.map((r) => formatRepsTarget(r.repsMin, r.repsMax)).join('/')
-              : formatRepsTarget(exercise.repsMin, exercise.repsMax)}{' '}
-            {t('strength.logger.reps')}
-          </p>
+          <div className="mt-0.5 flex items-center gap-0.5">
+            <p className="text-xs text-muted-foreground">
+              {exercise.sets} {t('strength.logger.sets')} · {t('strength.logger.target')}:{' '}
+              {exercise.perSetReps
+                ? exercise.perSetReps.map((r) => formatRepsTarget(r.repsMin, r.repsMax)).join('/')
+                : formatRepsTarget(exercise.repsMin, exercise.repsMax)}{' '}
+              {t('strength.logger.reps')}
+            </p>
+            <InfoPopover content={t('strength.logger.setsRepsInfo')} />
+          </div>
           {prefillDate && prefill && (
             <PrefillBadge
               data-testid="prefill-badge"
@@ -565,6 +585,30 @@ const ExerciseCard = memo(function ExerciseCard({
         </div>
       </div>
 
+      {!readOnly && allowSetAdjustment && (
+        <div className="flex gap-2 px-3 pb-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="flex-1 text-xs"
+            disabled={sets.length <= 1}
+            onClick={removeLastSet}
+          >
+            − {t('strength.logger.removeSet')}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="flex-1 text-xs"
+            onClick={addSet}
+          >
+            + {t('strength.logger.addSet')}
+          </Button>
+        </div>
+      )}
+
       {(!readOnly || notes) && (
         <NotesSection
           notes={notes}
@@ -586,9 +630,12 @@ const ExerciseCard = memo(function ExerciseCard({
             !readOnly && 'justify-between',
           )}
         >
-          <span className="text-[10px] tracking-widest text-muted-foreground uppercase">
-            {t('strength.logger.nextSession')}
-          </span>
+          <div className="flex items-center gap-0.5">
+            <span className="text-[10px] tracking-widest text-muted-foreground uppercase">
+              {t('strength.logger.nextSession')}
+            </span>
+            <InfoPopover content={t('strength.logger.nextSessionInfo')} />
+          </div>
           <ProgressionToggle
             value={progression}
             onChange={readOnly ? () => {} : handleProgressionChange}
@@ -679,6 +726,7 @@ export function SessionExerciseLogger({
   className,
 }: SessionExerciseLoggerProps) {
   const { t } = useTranslation('training');
+  const { preferences } = useTrainingPreferences();
 
   const logMap = useMemo<Record<string, StrengthSessionExercise>>(() => {
     const map: Record<string, StrengthSessionExercise> = {};
@@ -748,6 +796,7 @@ export function SessionExerciseLogger({
                 prefill={prefillData?.[ex.id]}
                 prefillDate={prefillDate}
                 readOnly={readOnly}
+                allowSetAdjustment={preferences.allowSetAdjustment}
                 onChange={handleRowChange}
               />
             );
@@ -776,6 +825,7 @@ export function SessionExerciseLogger({
                     prefill={prefillData?.[ex.id]}
                     prefillDate={prefillDate}
                     readOnly={readOnly}
+                    allowSetAdjustment={preferences.allowSetAdjustment}
                     isInSuperset
                     onChange={handleRowChange}
                   />

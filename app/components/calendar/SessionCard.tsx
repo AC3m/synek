@@ -21,7 +21,7 @@ import {
 import { getSessionCalendarDate } from '~/lib/utils/date';
 import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
-import { type TrainingSession, type RunData } from '~/types/training';
+import { type TrainingSession, type RunData, type StrengthData } from '~/types/training';
 
 interface SessionCardProps {
   session: TrainingSession;
@@ -170,6 +170,22 @@ export function SessionCard({ session, weekStart, draggable = false, onCopy }: S
           {session.coachComments}
         </p>
       )}
+
+      {session.trainingType === 'strength' &&
+        !session.isCompleted &&
+        !readonly &&
+        !(session.typeSpecificData as StrengthData)?.variantId && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDetailOpen(true);
+            }}
+            className="mt-2 w-full rounded-md border border-dashed border-border px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+          >
+            {t('training:strength.session.noTemplateHint')}
+          </button>
+        )}
 
       <div className="mt-1.5 flex flex-wrap gap-2">
         {session.plannedDurationMinutes != null && (
