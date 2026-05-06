@@ -19,7 +19,6 @@ import { PrefillBadge } from '~/components/strength/PrefillBadge';
 import { Input } from '~/components/ui/input';
 import { Textarea } from '~/components/ui/textarea';
 import { InfoPopover } from '~/components/ui/InfoPopover';
-import { useTrainingPreferences } from '~/lib/hooks/useTrainingPreferences';
 import type {
   SetEntry,
   StrengthVariantExercise,
@@ -710,6 +709,7 @@ interface SessionExerciseLoggerProps {
   prefillData?: Record<string, StrengthSessionExercise>;
   prefillDate?: string | null;
   readOnly?: boolean;
+  allowSetAdjustment?: boolean;
   variantName?: string;
   onChange: (changes: LogRowChange[]) => void;
   className?: string;
@@ -721,12 +721,12 @@ export function SessionExerciseLogger({
   prefillData,
   prefillDate,
   readOnly = false,
+  allowSetAdjustment = true,
   variantName,
   onChange,
   className,
 }: SessionExerciseLoggerProps) {
   const { t } = useTranslation('training');
-  const { preferences } = useTrainingPreferences();
 
   const logMap = useMemo<Record<string, StrengthSessionExercise>>(() => {
     const map: Record<string, StrengthSessionExercise> = {};
@@ -796,7 +796,7 @@ export function SessionExerciseLogger({
                 prefill={prefillData?.[ex.id]}
                 prefillDate={prefillDate}
                 readOnly={readOnly}
-                allowSetAdjustment={preferences.allowSetAdjustment}
+                allowSetAdjustment={allowSetAdjustment}
                 onChange={handleRowChange}
               />
             );
@@ -825,7 +825,7 @@ export function SessionExerciseLogger({
                     prefill={prefillData?.[ex.id]}
                     prefillDate={prefillDate}
                     readOnly={readOnly}
-                    allowSetAdjustment={preferences.allowSetAdjustment}
+                    allowSetAdjustment={allowSetAdjustment}
                     isInSuperset
                     onChange={handleRowChange}
                   />

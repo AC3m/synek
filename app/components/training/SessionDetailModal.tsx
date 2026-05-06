@@ -34,6 +34,7 @@ import {
   useLastSessionExercises,
   useUpsertSessionExercises,
 } from '~/lib/hooks/useStrengthVariants';
+import { useTrainingPreferences } from '~/lib/hooks/useTrainingPreferences';
 import type {
   TrainingSession,
   RunData,
@@ -97,6 +98,7 @@ export function SessionDetailModal({
   const { t } = useTranslation(['training', 'common']);
   const isMobile = useIsMobile();
   const { user, effectiveAthleteId } = useAuth();
+  const { preferences: trainingPreferences } = useTrainingPreferences();
   const {
     readonly,
     athleteMode,
@@ -478,6 +480,7 @@ export function SessionDetailModal({
               prefillData={prefillResult?.date !== calendarDate ? prefillResult?.data : undefined}
               prefillDate={prefillResult?.date !== calendarDate ? prefillResult?.date : null}
               readOnly={userRole === 'coach' && !showAthleteControls}
+              allowSetAdjustment={trainingPreferences.allowSetAdjustment}
               variantName={strengthVariant.name}
               onChange={handleStrengthLogChange}
             />
