@@ -82,7 +82,8 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "@tailwindcss/oxide",
-      "supabase"
+      "supabase",
+      "msw"
     ]
   },
   "lint-staged": {
