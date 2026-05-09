@@ -27,9 +27,10 @@ export function useTrainingPreferences() {
       return { prev };
     },
     onError: (_err, _vars, ctx) => {
-      if (ctx?.prev !== undefined) {
-        qc.setQueryData(queryKeys.trainingPreferences.byUser(user?.id ?? ''), ctx.prev);
-      }
+      qc.setQueryData(
+        queryKeys.trainingPreferences.byUser(user?.id ?? ''),
+        ctx?.prev ?? DEFAULT_TRAINING_PREFERENCES,
+      );
     },
     onSettled: () => {
       qc.invalidateQueries({
