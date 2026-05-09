@@ -72,7 +72,9 @@ export function StrengthLibraryView({ userId, canManage, baseRoute }: StrengthLi
             </Button>
           )}
         </div>
-        <p className="mt-1 text-sm text-muted-foreground">{t('strength.library.subtitle')}</p>
+        <p className="mt-2 max-w-prose text-xs text-muted-foreground">
+          {t('strength.library.subtitle')}
+        </p>
       </div>
 
       {showSearch && (
