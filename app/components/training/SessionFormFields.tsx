@@ -82,6 +82,9 @@ export function SessionFormFields({
   const { t } = useTranslation(['coach', 'common', 'training']);
   const distanceBased = isDistanceBased(trainingType);
   const [typeSearch, setTypeSearch] = useState('');
+  const filteredTypes = TRAINING_TYPES.filter((tt) =>
+    matchesTrainingType(typeSearch, tt, t(`common:trainingTypes.${tt}`)),
+  );
 
   const renderTypeFields = () => {
     switch (trainingType) {
@@ -170,9 +173,7 @@ export function SessionFormFields({
               className="h-8 text-sm"
             />
             <div className="flex flex-wrap gap-2">
-              {TRAINING_TYPES.filter((tt) =>
-                matchesTrainingType(typeSearch, tt, t(`common:trainingTypes.${tt}`)),
-              ).map((tt) => {
+              {filteredTypes.map((tt) => {
                 const config = trainingTypeConfig[tt];
                 const isSelected = trainingType === tt;
                 return (
@@ -189,9 +190,7 @@ export function SessionFormFields({
                   </Badge>
                 );
               })}
-              {TRAINING_TYPES.filter((tt) =>
-                matchesTrainingType(typeSearch, tt, t(`common:trainingTypes.${tt}`)),
-              ).length === 0 && (
+              {filteredTypes.length === 0 && (
                 <p className="text-sm text-muted-foreground">
                   {t('coach:session.searchTypeEmpty')}
                 </p>

@@ -373,12 +373,10 @@ const ExerciseCard = memo(function ExerciseCard({
   }
 
   function removeLastSet() {
-    setSets((prev) => {
-      if (prev.length <= 1) return prev;
-      const next = prev.slice(0, -1);
-      commit(next, progression);
-      return next;
-    });
+    if (sets.length <= 1) return;
+    const next = sets.slice(0, -1);
+    setSets(next);
+    commit(next, progression);
   }
 
   const { loadKg: currentTopLoad } = deriveTopSet(sets);
