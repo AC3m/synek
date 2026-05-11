@@ -28,6 +28,21 @@ vi.mock('~/lib/queries/goals', async () => {
   };
 });
 
+vi.mock('~/lib/queries/weeks', async () => {
+  const { mockGetOrCreateWeekPlan } = await import('~/lib/mock-data/weeks');
+  return { getOrCreateWeekPlan: mockGetOrCreateWeekPlan };
+});
+
+vi.mock('~/lib/queries/sessions', async () => {
+  const { mockCreateSession, mockFetchSessionByGoalId, mockUpdateSession } =
+    await import('~/lib/mock-data/sessions');
+  return {
+    createSession: mockCreateSession,
+    fetchSessionByGoalId: mockFetchSessionByGoalId,
+    updateSession: mockUpdateSession,
+  };
+});
+
 const ATHLETE_ID = 'athlete-1';
 
 function makeWrapper() {
