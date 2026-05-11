@@ -1,4 +1,5 @@
 import { supabase, isMockMode } from '~/lib/supabase';
+import type { TrainingPreferences } from '~/types/preferences';
 
 // ============================================================
 // Mock state (in-memory, keyed by userId)
@@ -121,6 +122,55 @@ export async function updateSelfPlanPermission(athleteId: string, value: boolean
     .from('profiles')
     .update({ can_self_plan: value })
     .eq('id', athleteId);
+  if (error) throw error;
+}
+
+// ============================================================
+// Training preferences
+// ============================================================
+
+let mockTrainingPreferences: Record<string, TrainingPreferences> = {};
+
+export function resetMockTrainingPreferences(): void {
+  mockTrainingPreferences = {};
+}
+
+export async function mockFetchTrainingPreferences(userId: string): Promise<TrainingPreferences> {
+  await new Promise((r) => setTimeout(r, 100));
+  return mockTrainingPreferences[userId] ?? { allowSetAdjustment: true };
+}
+
+export async function fetchTrainingPreferences(userId: string): Promise<TrainingPreferences> {
+  if (isMockMode) return mockFetchTrainingPreferences(userId);
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('training_preferences')
+    .eq('id', userId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data?.training_preferences as TrainingPreferences) ?? { allowSetAdjustment: true };
+}
+
+export async function mockUpdateTrainingPreferences(
+  userId: string,
+  input: Partial<TrainingPreferences>,
+): Promise<void> {
+  await new Promise((r) => setTimeout(r, 150));
+  mockTrainingPreferences[userId] = {
+    ...(mockTrainingPreferences[userId] ?? { allowSetAdjustment: true }),
+    ...input,
+  };
+}
+
+export async function updateTrainingPreferences(
+  userId: string,
+  input: Partial<TrainingPreferences>,
+): Promise<void> {
+  if (isMockMode) return mockUpdateTrainingPreferences(userId, input);
+  const { error } = await supabase
+    .from('profiles')
+    .update({ training_preferences: input })
+    .eq('id', userId);
   if (error) throw error;
 }
 

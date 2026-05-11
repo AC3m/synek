@@ -21,6 +21,7 @@ supabase/seed.sql
 # Agent-specific
 .claude/
 .gemini/
+.superpowers/
 
 # Husky generated runtime files
 .husky/_/

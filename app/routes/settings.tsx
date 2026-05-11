@@ -9,6 +9,7 @@ import { queryKeys } from '~/lib/queries/keys';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { Button } from '~/components/ui/button';
 import { UserTab } from '~/components/settings/UserTab';
+import { TrainingTab } from '~/components/settings/TrainingTab';
 import { IntegrationsTab } from '~/components/settings/IntegrationsTab';
 import { AthletesTab } from '~/components/settings/AthletesTab';
 import { getCurrentWeekId, weekIdToMonday } from '~/lib/utils/date';
@@ -172,6 +173,9 @@ export default function SettingsPage() {
         <TabsList className="mb-6">
           <TabsTrigger value="user">{t('settings.tabs.user')}</TabsTrigger>
           {user?.role === 'athlete' && (
+            <TabsTrigger value="training">{t('settings.tabs.training')}</TabsTrigger>
+          )}
+          {user?.role === 'athlete' && (
             <TabsTrigger value="integrations">{t('settings.tabs.integrations')}</TabsTrigger>
           )}
           {user?.role === 'coach' && (
@@ -182,6 +186,12 @@ export default function SettingsPage() {
         <TabsContent value="user">
           <UserTab />
         </TabsContent>
+
+        {user?.role === 'athlete' && (
+          <TabsContent value="training">
+            <TrainingTab />
+          </TabsContent>
+        )}
 
         {user?.role === 'athlete' && (
           <TabsContent value="integrations">

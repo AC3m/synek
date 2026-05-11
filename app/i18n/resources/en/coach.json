@@ -75,7 +75,9 @@
       "plan": "Plan",
       "details": "Details",
       "results": "Results"
-    }
+    },
+    "searchTypePlaceholder": "Search training types…",
+    "searchTypeEmpty": "No matching training type"
   },
   "athletePicker": {
     "title": "Select an athlete",

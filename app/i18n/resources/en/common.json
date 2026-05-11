@@ -154,8 +154,14 @@
     "back": "Back to dashboard",
     "tabs": {
       "user": "User",
+      "training": "Training",
       "integrations": "Integrations",
       "athletes": "Athletes"
+    },
+    "training": {
+      "strengthSection": "Strength training",
+      "adjustSets": "Adjust sets mid-session",
+      "adjustSetsSub": "Add or remove sets while logging a workout"
     },
     "deleteAccount": {
       "dangerZone": "Danger Zone",

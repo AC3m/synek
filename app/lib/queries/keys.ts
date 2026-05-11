@@ -53,6 +53,9 @@ export const queryKeys = {
     byAthlete: (athleteId: string) => ['goals', 'athlete', athleteId] as const,
     byId: (goalId: string) => ['goals', goalId] as const,
   },
+  trainingPreferences: {
+    byUser: (userId: string) => ['trainingPreferences', userId] as const,
+  },
   analytics: {
     all: ['analytics'] as const,
     byParams: (params: AnalyticsParams) => ['analytics', params] as const,

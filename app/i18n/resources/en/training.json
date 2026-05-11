@@ -89,7 +89,15 @@
       "useTemplate": "Use template",
       "recentlyUsed": "Recently used",
       "changeVariant": "Change",
-      "manageVariants": "Create templates"
+      "manageVariants": "Create templates",
+      "savedNudge": "Template saved. To log a workout with this template, add a Strength session to your week plan.",
+      "goToWeek": "Go to this week →"
+    },
+    "library": {
+      "subtitle": "Templates define your exercises, sets and rep targets. To log a workout, add a Strength session to your week plan and select a template there."
+    },
+    "session": {
+      "noTemplateHint": "No template selected — pick one to track your sets"
     },
     "superset": {
       "label": "Superset",
@@ -137,7 +145,11 @@
       "prefillMaintain": "= same as {{date}}",
       "firstSession": "First session — establish your baseline",
       "setIncrementHint": "Set an increment in variant config to auto-progress",
-      "floorReached": "Floor reached — adjust increment"
+      "floorReached": "Floor reached — adjust increment",
+      "addSet": "Add set",
+      "removeSet": "Remove set",
+      "setsRepsInfo": "The coach set a rep target range. Fill in your actual reps per set — don't aim to hit the exact number, just log what you did.",
+      "nextSessionInfo": "Tell your coach whether to increase the load next time (↑), keep it the same (=), or reduce it (↓). This guides the next session's template."
     },
     "progression": {
       "up": "Increase load",
