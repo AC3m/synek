@@ -1,82 +1,312 @@
 {
   "nav": {
-    "getStarted": "Start",
-    "whySynek": "Dlaczego my",
+    "why": "Dlaczego",
     "features": "Funkcje",
-    "logIn": "Zaloguj się",
-    "joinBeta": "Dołącz do bety",
-    "contact": "Kontakt"
+    "perspectives": "Trener i zawodnik",
+    "contact": "Kontakt",
+    "signin": "Zaloguj się",
+    "getStarted": "Zacznij",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu"
   },
   "hero": {
-    "badge": "Publiczna beta — darmowy dostęp",
-    "headline": "Koniec z excelem. Płynna współpraca na linii trener-zawodnik.",
-    "subheadline": "Porzuć chaotyczne arkusze i ręczne aktualizacje. SYNEK to proste narzędzie, które łączy plan trenera z wykonaniem zawodnika. Sprawdź naszą darmową betę.",
-    "ctaJoinBeta": "Załóż darmowe konto",
-    "ctaLogIn": "Masz już konto?",
-    "betaNote": "Projektujemy tę aplikację razem z Wami. Każda opinia się liczy."
+    "pill": "v0.9 · publiczna beta",
+    "h1a": "Trenuj z głową.",
+    "h1b": "Razem.",
+    "lede": "Jeden tygodniowy widok. Trener planuje, zawodnik wykonuje. Bez arkuszy, bez czatów.",
+    "coach": "Jestem trenerem",
+    "athlete": "Jestem zawodnikiem",
+    "meta1": "Beta bez karty",
+    "meta2": "Hosting w UE",
+    "meta3": "Synchronizacja ze Stravą"
   },
-  "whySynek": {
-    "title": "Dlaczego SYNEK?",
-    "subtitle": "Bo planowanie treningów w arkuszach po prostu męczy.",
-    "card1": {
-      "title": "Koniec z przepisywaniem",
-      "desc": "Zapomnij o ręcznym aktualizowaniu wyników po każdym treningu. SYNEK i Strava zrobią to za Was."
+  "why": {
+    "eyebrow": "Dlaczego SYNEK",
+    "h2a": "Koniec z Excelem.",
+    "h2b": "Zrobiony pod to, jak trenerzy naprawdę pracują.",
+    "lede": "Plany treningowe żyją w arkuszach, czatach grupowych i siedmiu różnych aplikacjach. Zebraliśmy je w jeden tygodniowy widok — reszta nie była potrzebna.",
+    "rows": {
+      "stopLogging": {
+        "title": "Przestań logować. Zacznij trenować.",
+        "body": "Aktywności wpadają do planu automatycznie — tempo, dystans, tętno, wszystko. Zawodnik nie przepisuje sesji ręcznie. Trener widzi to, co naprawdę się wydarzyło — nie to, co ktoś pamiętał wpisać."
+      },
+      "oneView": {
+        "title": "Jeden widok tygodnia. Trener i zawodnik.",
+        "body": "Trener przeciąga sesję. Zawodnik widzi ją w tym samym wierszu, tym samym tygodniu, o tej samej godzinie. Żadnych eksportów, PDF-ów, żadnego „dostałeś plan?\"."
+      },
+      "fullControl": {
+        "title": "Pełna kontrola. Zero chaosu.",
+        "body": "Zmień jeden wtorek albo przebuduj cały blok. Szablony, ulubione, kopiuj-wklej między zawodnikami. Plan jest uporządkowany — ale nigdy sztywny."
+      },
+      "builtWith": {
+        "title": "Budujemy go z trenerami i zawodnikami.",
+        "body": "Każda funkcja w apce powstała z prośby trenera lub zawodnika. Publiczne plany rozwoju. Bezpośredni kontakt z zespołem. Szybko pracujemy nad tym, co dla ciebie ważne."
+      }
     },
-    "card2": {
-      "title": "Wszystko w jednym miejscu",
-      "desc": "Zamiast dziesiątek wiadomości i linków do dokumentów – jeden, zawsze aktualny widok tygodnia."
-    },
-    "card3": {
-      "title": "Pełna kontrola, zero chaosu",
-      "desc": "Trener widzi postępy całego zespołu na jednym ekranie, a zawodnik skupia się wyłącznie na dzisiejszym zadaniu."
-    },
-    "card4": {
-      "title": "Tworzymy to razem",
-      "desc": "Jesteśmy w darmowej becie. Słuchamy trenerów i zawodników, by budować dokładnie to, czego potrzebujecie."
-    }
+    "rowBadge": "{{n}} / {{total}}"
   },
   "features": {
-    "title": "Proste narzędzia, konkretne efekty",
-    "subtitle": "Zaprojektowane, by oszczędzać czas – Twój i Twoich podopiecznych. Żadnych zbędnych bajerów.",
-    "item1": {
-      "title": "Przejrzysty tydzień",
-      "desc": "Szybki podgląd obciążeń, notatek i sesji. Zbudowane wokół naturalnego cyklu treningowego."
+    "eyebrow": "Funkcje",
+    "h2": "Sześć funkcji. Każda dopracowana.",
+    "lede": "Bez przeładowania funkcjami. Każdy ekran ma sens — i dla trenera planującego tydzień, i dla zawodnika, który go realizuje.",
+    "synced": "ZSYNCHR.",
+    "week": {
+      "title": "Widok tygodnia",
+      "body": "Pn–Nd, rano/po południu, każdy zawodnik. Przeciągnij, kliknij, najedź — i zobacz, co naprawdę pobiegł. Cały plan na jednej stronie."
     },
-    "item2": {
-      "title": "Dopasowane dyscypliny",
-      "desc": "Bieg, rower, siłownia czy regeneracja – każda aktywność z dedykowanymi parametrami."
+    "sport": {
+      "title": "Sesje pod sport",
+      "body": "Bieg, rower, pływanie, siłownia, mobilność. Każda dyscyplina ze swoimi metrykami — tempo, waty, RPE, serie. Bez wciskania na siłę."
     },
-    "item3": {
-      "title": "Dwie perspektywy",
-      "desc": "Panel trenera do zarządzania całą grupą i czysty widok zawodnika skupiony na wykonaniu pracy."
+    "dual": {
+      "title": "Widoki trenera i zawodnika",
+      "body": "Te same dane, dwie perspektywy. Trener widzi grupę i blok. Zawodnik widzi dziś, ten tydzień, co dalej."
     },
-    "item4": {
-      "title": "Tryb samodzielny",
-      "desc": "Daj wolną rękę doświadczonym zawodnikom. Ty weryfikujesz, oni sami układają swój plan."
+    "self": {
+      "title": "Tryb własnego planu",
+      "body": "Bez trenera? Spoko. Zbuduj swój blok, ustaw strefy, działaj solo. Przełączysz się na pracę z trenerem, gdy go znajdziesz."
     },
-    "item5": {
-      "title": "Powered by Strava (Oczekuje na zatwierdzenie)",
-      "approvalBadge": "(Oczekuje na zatwierdzenie)",
-      "desc": "Integracja jest obecnie w fazie ograniczonej bety. Złożyliśmy wniosek do Strava o zwiększenie limitów API, aby wkrótce udostępnić automatyczną synchronizację wszystkim użytkownikom."
+    "templates": {
+      "title": "Szablony i ulubione",
+      "body": "Zbuduj sesję raz. Użyj jej u różnych zawodników, w różnych blokach. Skopiuj cały wtorek do kolejnego tygodnia — zachowaj to, co działa."
     },
-    "item6": {
-      "title": "Pełna Prywatność Danych",
-      "desc": "Masz pełną kontrolę nad swoimi danymi. Treningi pobrane ze Strava są ukryte przed trenerem, dopóki wyraźnie nie zdecydujesz się ich udostępnić."
+    "privacy": {
+      "title": "Ścisła prywatność danych",
+      "body": "Twoje dane treningowe należą do ciebie. Hosting w UE, szyfrowanie w spoczynku. Nigdy nie sprzedajemy. Nigdy nie używamy do trenowania modeli AI. Eksport albo usunięcie — kiedy chcesz."
+    },
+    "sportTags": {
+      "run": "Bieg",
+      "bike": "Rower",
+      "swim": "Pływanie",
+      "gym": "Siłownia",
+      "mobility": "Mobilność"
     }
   },
-  "login": {
-    "title": "Zaloguj się do SYNEK",
-    "subtitle": "Wróć tam, gdzie skończyłeś.",
+  "perspectives": {
+    "eyebrow": "Dwie perspektywy, jedno źródło",
+    "h2a": "Planuj na desktopie.",
+    "h2b": "Trenuj w telefonie.",
+    "lede": "Trener buduje tydzień na tablicy. Zawodnik otwiera apkę i widzi dzisiejszą sesję, jej cel i cele tygodnia. Te same dane, zawsze zsynchronizowane.",
+    "bullets": {
+      "drag": {
+        "title": "Przeciągnij i upuść tydzień",
+        "body": "Zbuduj szablony raz. Przypisz jednemu zawodnikowi — albo dwudziestu."
+      },
+      "notes": {
+        "title": "Notatki przy sesji",
+        "body": "Kontekst trenera ląduje wprost na karcie sesji."
+      },
+      "status": {
+        "title": "Status na żywo",
+        "body": "Wykonane · pominięte · zmodyfikowane — widzisz w sekundę po zapisie zawodnika."
+      },
+      "mobile": {
+        "title": "Wykonanie z telefonu",
+        "body": "Zawodnik widzi wszystko od razu. Dziś u góry, reszta zwinięta."
+      }
+    }
+  },
+  "joinBeta": {
+    "eyebrow": "Dołącz do bety",
+    "h2a": "Trenuj z głową.",
+    "h2b": "Razem.",
+    "lede": "W publicznej becie wszystko za darmo. Bez karty. Bez limitów wielkości grupy. Zaproś zawodników — albo trenera.",
+    "coach": "Jestem trenerem",
+    "athlete": "Jestem zawodnikiem",
+    "fp1": "W becie za darmo",
+    "fp2": "Hosting w UE",
+    "fp3": "Anuluj kiedy chcesz"
+  },
+  "contactSection": {
+    "eyebrow": "Skontaktuj się",
+    "h2": "Porozmawiaj z prawdziwą osobą.",
+    "lede": "Opowiedz nam o swojej grupie, dyscyplinie, czego ci dziś brakuje. Czytamy wszystko.",
+    "roles": {
+      "coach": "Trener",
+      "athlete": "Zawodnik",
+      "other": "Inne"
+    },
+    "name": "Imię i nazwisko",
+    "namePh": "Sara Kowalska",
     "email": "E-mail",
-    "password": "Hasło",
-    "submit": "Zaloguj się",
-    "forgotPassword": "Nie pamiętasz hasła?",
-    "noAccount": "Nowy tutaj?",
-    "noAccountCta": "Dołącz do bety →"
+    "emailPh": "sara@przyklad.pl",
+    "msg": "Wiadomość",
+    "msgPhCoach": "Trenuję 14 biegaczy. Teraz używamy Excela i WhatsAppa.",
+    "msgPhAth": "Biegam 6× w tygodniu — chcę widzieć plan trenera w telefonie.",
+    "msgPhOther": "Co masz na myśli?",
+    "send": "Wyślij wiadomość",
+    "sent": "Mamy! Odpowiemy w ciągu 24h.",
+    "roleLabel": "Jestem"
+  },
+  "landingFooter": {
+    "meta": "© 2026 · v0.9 beta",
+    "product": "Produkt",
+    "features": "Funkcje",
+    "perspectives": "Trener i zawodnik",
+    "beta": "Dołącz do bety",
+    "contact": "Kontakt",
+    "privacy": "Prywatność",
+    "terms": "Regulamin"
+  },
+  "mock": {
+    "appBar": {
+      "training": "Trening",
+      "goals": "Cele",
+      "analytics": "Analityka",
+      "search": "Szukaj",
+      "notifications": "Powiadomienia",
+      "avatar": "Awatar",
+      "avatarInitials": "JK"
+    },
+    "weekNav": {
+      "week": "Tydzień",
+      "today": "Dziś",
+      "previousWeek": "Poprzedni tydzień",
+      "nextWeek": "Następny tydzień"
+    },
+    "weekSummary": {
+      "title": "Podsumowanie tygodnia",
+      "cumulative": "Łącznie",
+      "bySport": "Wg sportu",
+      "plan": "PLAN",
+      "performance": "WYKONANIE",
+      "distance": "Dystans",
+      "time": "Czas",
+      "sessions": "Sesje",
+      "load": "Obciążenie",
+      "completion": "Ukończenie",
+      "ofPlan": "z planu"
+    },
+    "sport": {
+      "run": "Bieg",
+      "cycling": "Rower",
+      "swimming": "Pływanie",
+      "strength": "Siła",
+      "mobility": "Mobilność",
+      "rest": "Regeneracja"
+    },
+    "session": {
+      "markComplete": "Oznacz jako ukończone",
+      "addSession": "Dodaj sesję"
+    },
+    "athleteView": {
+      "title": "Widok zawodnika",
+      "subtitle": "Jan Kowalski",
+      "dateRange": "20 – 26 kwi",
+      "loadMedium": "Średnie"
+    },
+    "days": {
+      "mon": "PON",
+      "tue": "WT",
+      "wed": "ŚR",
+      "thu": "CZW",
+      "fri": "PT",
+      "sat": "SOB",
+      "sun": "ND"
+    },
+    "mobile": {
+      "hi": "Cześć,",
+      "athleteFirstName": "Artur",
+      "week": "Tydzień 17",
+      "dateRange": "20–26 kwi",
+      "yourPlan": "Twój plan",
+      "todayDate": "Dziś, sob 25 kwi",
+      "sessionsPlanned": "2 sesje zaplanowane",
+      "weekProgress": "Postęp tyg."
+    },
+    "plan": {
+      "mon20": {
+        "title": "Spokojne tlenowe + 4×100 m wstawki"
+      },
+      "tue21Strength": {
+        "title": "FBW A — siła ogólna"
+      },
+      "tue21Swim": {
+        "title": "Pływanie — technika"
+      },
+      "wed22Run": {
+        "title": "Easy + 6× wstawki ~20\""
+      },
+      "wed22Strength": {
+        "title": "FBW B"
+      },
+      "thu23Rest": {
+        "title": "Dzień regeneracyjny"
+      },
+      "fri24Mobility": {
+        "title": "Mobilność 30 min + foam"
+      },
+      "sat25Threshold": {
+        "title": "Próg 5×1km / 1' marsz"
+      },
+      "sat25Cycling": {
+        "title": "Z2 trener domowy"
+      },
+      "sun26Long": {
+        "title": "Długi bieg — Z2, równo"
+      },
+      "mobileSat25Threshold": {
+        "title": "WU 3km + próg 5×1km/1' marsz + CD 2km"
+      },
+      "mobileSat25Cycling": {
+        "title": "Z2 trener domowy 90 min"
+      },
+      "mobileSat25Swim": {
+        "title": "Pływanie — technika 45 min"
+      }
+    },
+    "coachBoard": {
+      "weekTitle": "Tablica trenera · Tydzień 17",
+      "athletesCount": "8 zawodników · 56 sesji",
+      "athleteHeader": "Zawodnik"
+    },
+    "athletePhone": {
+      "today": "Dziś",
+      "sessionTitle": "Próg 5×1km",
+      "plan": "Plan",
+      "planDetail": "WU 3 km · 5×1 km @ 3:54/km · CD 2 km",
+      "tomorrow": "Jutro · Z2 trener domowy"
+    },
+    "fragSync": {
+      "blockTitle": "Blok 3 z 8 · Budowa",
+      "blockSubtitle": "Edytowano 2 min temu · Trenerka Sara",
+      "live": "Na żywo",
+      "action1": "Skopiuj wtorek → 14 zawodników",
+      "action2": "Edytuj sobotę dla Mateusza",
+      "action3": "Oznacz piątek jako potwierdzony"
+    },
+    "fragAuto": {
+      "title": "Auto-import aktywności",
+      "subtitle": "Importuje bieg, rower, pływanie · zawsze aktywne",
+      "status": "ON",
+      "row1Title": "Spokojne tlenowe",
+      "row2Title": "Próg 5×1k",
+      "row3Title": "Długi bieg — Z2"
+    },
+    "fragCoDesign": {
+      "title": "Publiczne plany rozwoju",
+      "version": "v0.9 · publiczna beta",
+      "shipped": "Wydane",
+      "inProgress": "W trakcie",
+      "nextUp": "Wkrótce",
+      "item1": "Tryb własnego planu dla solowych zawodników",
+      "item2": "Szablony wielotygodniowe · kopiuj-wklej",
+      "item3": "Notatki trenera przy sesji",
+      "item4": "Planner bloku mobilności",
+      "item5": "Strefy tętna dla zawodnika"
+    },
+    "fragColumn": {
+      "mon": "PN",
+      "tue": "WT",
+      "wed": "ŚR",
+      "easy": "Easy",
+      "threshold": "Próg",
+      "rest": "REST"
+    }
   },
   "beta": {
     "title": "Załóż darmowe konto",
-    "subtitle": "Bezpłatnie przez cały czas trwania bety. Bez karty kredytowej. Bez wygasania.",
+    "subtitle": "Bezpłatne przez całą betę. Bez karty kredytowej. Konto nie wygasa.",
     "badge": "Publiczna beta",
     "betaNote": "Dołączasz do publicznej bety. Bezpłatny dostęp i bezpośredni kontakt z zespołem — czytamy każdą opinię.",
     "roleLabel": "Jestem...",
@@ -87,7 +317,7 @@
     "password": "Hasło",
     "passwordHint": "Co najmniej 8 znaków, jedna wielka litera, jedna cyfra",
     "submit": "Utwórz darmowe konto",
-    "selectRole": "Wybierz Trener lub Zawodnik, żeby kontynuować",
+    "selectRole": "Wybierz Trenera lub Zawodnika, żeby kontynuować",
     "emailAlreadyRegistered": "Ten e-mail jest już zarejestrowany. Spróbuj się zalogować.",
     "registrationLimitReached": "Rejestracje są tymczasowo wstrzymane. Spróbuj ponownie jutro.",
     "registrationError": "Coś poszło nie tak. Spróbuj ponownie.",
@@ -96,7 +326,7 @@
     "cta": "Dołącz do bety",
     "confirmEmailTitle": "Sprawdź skrzynkę",
     "confirmEmailBody": "Wysłaliśmy link potwierdzający na {{email}}. Kliknij go, aby aktywować konto.",
-    "resendConfirmation": "Wyślij ponownie email potwierdzający",
+    "resendConfirmation": "Wyślij link jeszcze raz",
     "resendCooldown": "Spróbuj za {{seconds}}s",
     "resentConfirmation": "Email wysłany! Sprawdź skrzynkę.",
     "resendError": "Nie udało się wysłać. Spróbuj ponownie.",
@@ -110,26 +340,9 @@
     },
     "invalidEmail": "Nieprawidłowy adres email"
   },
-  "footer": {
-    "privacyPolicy": "Polityka prywatności",
-    "terms": "Regulamin",
-    "support": "Pomoc"
-  },
-  "contact": {
-    "title": "Napisz do nas",
-    "subtitle": "Masz feedback, pytanie lub pomysł? Jesteśmy małym zespołem i czytamy wszystko.",
-    "betaNote": "To najszybszy sposób, żeby wpłynąć na to, co budujemy.",
-    "name": "Twoje imię",
-    "email": "Twój e-mail",
-    "message": "Twoja wiadomość",
-    "messagePlaceholder": "Powiedz nam co brakuje, co nie działa, albo co możemy zrobić lepiej...",
-    "submit": "Wyślij wiadomość",
-    "submitSuccess": "Wiadomość wysłana — dziękujemy! Odezwiemy się wkrótce.",
-    "submitError": "Coś poszło nie tak. Spróbuj ponownie."
-  },
   "support": {
     "title": "Potrzebujesz pomocy?",
-    "subtitle": "Opisz problem, a pomożemy Ci wrócić na właściwe tory.",
+    "subtitle": "Napisz, co się dzieje — pomożemy wrócić do treningu.",
     "responseNote": "Odpowiadamy w ciągu jednego dnia roboczego",
     "categoryLabel": "Czego dotyczy zgłoszenie?",
     "category": {
@@ -142,10 +355,10 @@
     "email": "Twój e-mail",
     "message": "Opisz problem",
     "messagePlaceholder": "Co się stało, czego oczekiwałeś i kroki do odtworzenia...",
-    "submit": "Wyślij do wsparcia",
+    "submit": "Wyślij zgłoszenie",
     "submitAnother": "Wyślij kolejne zgłoszenie",
     "submitSuccess": "Mamy Twoje zgłoszenie — dziękujemy! Wrócimy do Ciebie wkrótce.",
-    "submitSuccessSubtitle": "Przejrzymy Twoje zgłoszenie i odpowiemy na e-mail w najbliższym czasie.",
+    "submitSuccessSubtitle": "Przejrzymy zgłoszenie i odpowiemy mailem w ciągu dnia.",
     "submitError": "Coś poszło nie tak. Spróbuj ponownie.",
     "invalidEmail": "Nieprawidłowy adres email"
   }
