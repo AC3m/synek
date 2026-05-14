@@ -66,6 +66,19 @@ html.dark {
 }
 
 :root {
+  --grad-a: #10b981;
+  --grad-b: #059669;
+  --grad-c: #047857;
+  --grad-a-rgb: 16, 185, 129;
+  --grad-b-rgb: 5, 150, 105;
+  --grad-c-rgb: 4, 120, 87;
+  --grad: linear-gradient(120deg, var(--grad-a) 0%, var(--grad-b) 50%, var(--grad-c) 100%);
+  --grad-soft: linear-gradient(
+    120deg,
+    rgb(var(--grad-a-rgb) / 0.2),
+    rgb(var(--grad-b-rgb) / 0.2),
+    rgb(var(--grad-c-rgb) / 0.2)
+  );
   --radius: 0.75rem;
   --background: oklch(0.96 0 0);
   --foreground: oklch(0.08 0 0);

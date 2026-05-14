@@ -1,62 +1,88 @@
 import { useTranslation } from 'react-i18next';
-import { cn } from '~/lib/utils';
-import { StravaLogo } from '~/components/training/StravaLogo';
+import { Activity, Calendar, Compass, Copy, Users } from 'lucide-react';
+import { LandingSection } from './shared/LandingSection';
+import { SectionHead } from './shared/SectionHead';
+import { BentoCard } from './features/BentoCard';
+import { WeekBoardMini } from './features/WeekBoardMini';
+import { PrivacyStrip } from './features/PrivacyStrip';
 
-interface FeaturesSectionProps {
-  className?: string;
-}
+const SPORT_TAG_KEYS = ['run', 'bike', 'swim', 'gym', 'mobility'] as const;
 
-export function FeaturesSection({ className }: FeaturesSectionProps) {
+export function FeaturesSection() {
   const { t } = useTranslation('landing');
 
-  const items = ([1, 2, 3, 4, 5, 6] as const).map((n) => ({
-    n,
-    ordinal: String(n).padStart(2, '0'),
-    title: t(`features.item${n}.title` as never) as string,
-    desc: t(`features.item${n}.desc` as never) as string,
-  }));
-
   return (
-    <section
-      id="features"
-      className={cn('border-t border-border/40 bg-surface-2/40 px-4 py-24 sm:py-32', className)}
-    >
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-20 max-w-2xl">
-          <h2 className="text-3xl font-black tracking-tighter uppercase italic sm:text-5xl lg:text-6xl">
-            {t('features.title')}
-          </h2>
-          <p className="mt-5 text-lg font-medium text-muted-foreground/80">
-            {t('features.subtitle')}
-          </p>
-        </div>
+    <LandingSection id="features">
+      <SectionHead
+        eyebrow={t('features.eyebrow')}
+        heading={t('features.h2')}
+        lede={t('features.lede')}
+      />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3">
-          {items.map(({ n, ordinal, title, desc }) => (
-            <div key={n} className="border-t border-border/60 py-10 pr-12">
-              <span className="font-mono text-xs font-bold tracking-widest text-muted-foreground/35 uppercase tabular-nums">
-                {ordinal}
-              </span>
-              <h3 className="mt-4 text-base leading-snug font-bold tracking-tight uppercase">
-                {n === 5 ? (
-                  <div className="space-y-1.5">
-                    <StravaLogo />
-                    <span
-                      style={{ color: '#FC5200' }}
-                      className="block text-[10px] font-black italic"
-                    >
-                      {t('features.item5.approvalBadge')}
-                    </span>
-                  </div>
-                ) : (
-                  title
-                )}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground/80">{desc}</p>
+      <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-6">
+        <BentoCard
+          icon={<Calendar size={16} aria-hidden="true" />}
+          title={t('features.week.title')}
+          body={t('features.week.body')}
+          span={4}
+          rows={2}
+          spotlight={<WeekBoardMini />}
+        />
+
+        <BentoCard
+          icon={<Activity size={16} aria-hidden="true" />}
+          title={t('features.sport.title')}
+          body={t('features.sport.body')}
+          span={2}
+          footer={
+            <div className="flex flex-wrap gap-1.5">
+              {SPORT_TAG_KEYS.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10.5px] opacity-80"
+                >
+                  {t(`features.sportTags.${tag}` as never)}
+                </span>
+              ))}
             </div>
-          ))}
+          }
+        />
+
+        <BentoCard
+          icon={<Users size={16} aria-hidden="true" />}
+          title={t('features.dual.title')}
+          body={t('features.dual.body')}
+          span={2}
+          footer={
+            <div className="flex items-center gap-2">
+              <span
+                className="h-1.5 flex-1 rounded-full opacity-80"
+                style={{ background: 'var(--grad)' }}
+                aria-hidden="true"
+              />
+              <span className="landing-mono text-[10.5px] opacity-60">{t('features.synced')}</span>
+            </div>
+          }
+        />
+
+        <BentoCard
+          icon={<Compass size={16} aria-hidden="true" />}
+          title={t('features.self.title')}
+          body={t('features.self.body')}
+          span={3}
+        />
+
+        <BentoCard
+          icon={<Copy size={16} aria-hidden="true" />}
+          title={t('features.templates.title')}
+          body={t('features.templates.body')}
+          span={3}
+        />
+
+        <div className="md:col-span-6">
+          <PrivacyStrip title={t('features.privacy.title')} body={t('features.privacy.body')} />
         </div>
       </div>
-    </section>
+    </LandingSection>
   );
 }

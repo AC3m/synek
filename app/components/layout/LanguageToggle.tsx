@@ -1,7 +1,13 @@
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Button } from '~/components/ui/button';
-import { Languages } from 'lucide-react';
+import { SegmentedToggle } from '~/components/landing/shared/SegmentedToggle';
+
+type Locale = 'en' | 'pl';
+
+const LOCALE_OPTIONS = [
+  { value: 'en' as const, label: 'EN' },
+  { value: 'pl' as const, label: 'PL' },
+] as const;
 
 export function LanguageToggle() {
   const navigate = useNavigate();
@@ -9,25 +15,25 @@ export function LanguageToggle() {
   const { pathname } = useLocation();
   const { i18n } = useTranslation();
 
-  const currentLocale = locale ?? localStorage.getItem('locale') ?? 'pl';
-  const newLocale = currentLocale === 'en' ? 'pl' : 'en';
+  const current: Locale =
+    (locale as Locale | undefined) ?? (localStorage.getItem('locale') as Locale | null) ?? 'pl';
 
-  const toggleLanguage = () => {
-    localStorage.setItem('locale', newLocale);
+  const handleChange = (next: Locale) => {
+    localStorage.setItem('locale', next);
     if (locale) {
-      // Inside a locale route — navigate by replacing the locale segment
-      const newPath = pathname.replace(/^\/[^/]+/, `/${newLocale}`);
-      navigate(newPath);
+      navigate(pathname.replace(/^\/[^/]+/, `/${next}`));
     } else {
-      // Outside locale routes (e.g. login page) — just change i18n language
-      i18n.changeLanguage(newLocale);
+      void i18n.changeLanguage(next);
     }
   };
 
   return (
-    <Button variant="ghost" size="sm" onClick={toggleLanguage} className="gap-1.5">
-      <Languages className="h-4 w-4" />
-      {currentLocale === 'en' ? 'PL' : 'EN'}
-    </Button>
+    <SegmentedToggle
+      options={LOCALE_OPTIONS}
+      value={current}
+      onChange={handleChange}
+      label="Language"
+      variant="auto"
+    />
   );
 }

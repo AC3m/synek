@@ -24,14 +24,14 @@ function NavItem({ to, icon: Icon, label, isActive, onClick }: NavItemProps) {
       <Icon
         className={cn(
           'h-5 w-5 transition-colors',
-          isActive ? 'text-foreground' : 'text-[color:var(--foreground-tertiary)]',
+          isActive ? 'text-emerald-500 dark:text-emerald-400' : 'text-muted-foreground',
         )}
         strokeWidth={isActive ? 2 : 1.5}
       />
       <span
         className={cn(
           'text-[10px] font-medium transition-colors',
-          isActive ? 'text-foreground' : 'text-[color:var(--foreground-tertiary)]',
+          isActive ? 'text-emerald-500 dark:text-emerald-400' : 'text-muted-foreground',
         )}
       >
         {label}
@@ -57,7 +57,7 @@ export function BottomNav() {
   const isSettingsActive = pathname.includes('/settings');
 
   return (
-    <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--separator)] bg-surface-1/90 backdrop-blur-md md:hidden">
+    <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-border/50 bg-background/90 backdrop-blur-md md:hidden">
       <div className="flex h-14 items-stretch">
         <NavItem
           to={localePath(`/${user.role}`)}

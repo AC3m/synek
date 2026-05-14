@@ -1,78 +1,308 @@
 {
   "nav": {
-    "getStarted": "Get Started",
-    "whySynek": "Why SYNEK",
+    "why": "Why",
     "features": "Features",
-    "logIn": "Log In",
-    "joinBeta": "Join Beta",
-    "contact": "Contact"
+    "perspectives": "Coach & Athlete",
+    "contact": "Contact",
+    "signin": "Sign in",
+    "getStarted": "Get started",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "hero": {
-    "badge": "Public beta — free access",
-    "headline": "No more spreadsheets. Smooth collaboration between coach and athlete.",
-    "subheadline": "Ditch the chaotic sheets and manual updates. SYNEK is a simple tool that connects the coach's plan with the athlete's execution. Try our free beta.",
-    "ctaJoinBeta": "Create your free account",
-    "ctaLogIn": "Already have an account?",
-    "betaNote": "Your feedback shapes what we build next."
+    "pill": "v0.9 · public beta",
+    "h1a": "Train with intent.",
+    "h1b": "Together.",
+    "lede": "One weekly view. Coach plans, athlete executes. No more chasing spreadsheets.",
+    "coach": "I'm a coach",
+    "athlete": "I'm an athlete",
+    "meta1": "No card during beta",
+    "meta2": "EU-hosted",
+    "meta3": "Sync-ready"
   },
-  "whySynek": {
-    "title": "Why SYNEK?",
-    "subtitle": "Because planning training in spreadsheets is exhausting.",
-    "card1": {
-      "title": "No more manual entry",
-      "desc": "Forget about typing in results after every session. SYNEK and Strava do it for you."
+  "why": {
+    "eyebrow": "Why SYNEK",
+    "h2a": "The anti-spreadsheet.",
+    "h2b": "Built for the way coaches actually coach.",
+    "lede": "Training plans live in shared docs, group chats, and seven different apps. We pulled them into one weekly view — and let everything else fall away.",
+    "rows": {
+      "stopLogging": {
+        "title": "Stop logging. Start training.",
+        "body": "Activities flow back into the plan automatically — pace, distance, heart rate, all of it. Athletes never re-type a session. Coaches see what actually happened, not what someone remembered to log."
+      },
+      "oneView": {
+        "title": "One weekly view. Both sides.",
+        "body": "Coach drags a session in. Athlete sees it on the same row, same week, same hour. No exports, no PDFs, no \"did you get my plan?\"."
+      },
+      "fullControl": {
+        "title": "Full control. Zero chaos.",
+        "body": "Edit a single Tuesday or rebuild a whole block. Templates, favorites, copy-paste across athletes. The plan is structured — but never rigid."
+      },
+      "builtWith": {
+        "title": "Built with the people using it.",
+        "body": "Every shipped feature came from a real coach or athlete request. Public roadmap. Direct line to the team. We move fast on what matters to you."
+      }
     },
-    "card2": {
-      "title": "Everything in one place",
-      "desc": "Instead of scattered messages and document links — one, always up-to-date weekly view."
-    },
-    "card3": {
-      "title": "Full control, zero chaos",
-      "desc": "Coaches see the whole team's progress on one screen, while athletes focus solely on today's workout."
-    },
-    "card4": {
-      "title": "We're building this together",
-      "desc": "We're in a free beta. We listen to coaches and athletes to build exactly what you need."
-    }
+    "rowBadge": "{{n}} / {{total}}"
   },
   "features": {
-    "title": "Simple tools, real results",
-    "subtitle": "Designed to save time — yours and your athletes'. No unnecessary fluff.",
-    "item1": {
-      "title": "Clear weekly view",
-      "desc": "Quick overview of load, notes, and sessions. Built around the natural training cycle."
+    "eyebrow": "Features",
+    "h2": "Six things, done sharp.",
+    "lede": "No feature dump. Each surface earns its place — for the coach planning the week, and the athlete running it.",
+    "synced": "SYNCED",
+    "week": {
+      "title": "Weekly view",
+      "body": "Mon–Sun, AM/PM, every athlete. Drag to move, click to edit, hover to see the actual run. The plan is the page."
     },
-    "item2": {
+    "sport": {
       "title": "Sport-specific sessions",
-      "desc": "Run, bike, strength, or recovery — every activity has its dedicated parameters."
+      "body": "Run, bike, swim, gym, mobility. Each with its own metrics — pace, watts, RPE, sets. No square-peg fields."
     },
-    "item3": {
-      "title": "Two perspectives",
-      "desc": "A coach panel to manage the whole group, and a clean athlete view focused on getting the work done."
+    "dual": {
+      "title": "Coach & athlete views",
+      "body": "Same data, two lenses. Coach sees the squad and the block. Athlete sees today, this week, what's next."
     },
-    "item4": {
+    "self": {
       "title": "Self-planning mode",
-      "desc": "Give experienced athletes free rein. You review, they build their own plan."
+      "body": "No coach? No problem. Build your own block, set your zones, follow it solo. Switch to coached when you find one."
     },
-    "item5": {
-      "title": "Powered by Strava (Pending Approval)",
-      "approvalBadge": "(Pending Approval)",
-      "desc": "Integration is currently in a restricted beta. We've applied for an API limit extension from Strava to roll out automatic performance syncing to all users soon."
+    "templates": {
+      "title": "Templates & favorites",
+      "body": "Build a session once. Re-use it across athletes and blocks. Copy a whole Tuesday into next week — keep what worked."
     },
-    "item6": {
-      "title": "Strict Data Privacy",
-      "desc": "You are in full control of your data. Workouts synced from Strava are masked from your coach until you explicitly choose to share them."
+    "privacy": {
+      "title": "Strict data privacy",
+      "body": "Your training data is yours. EU-hosted, encrypted at rest, never sold, never used to train models. Export or delete anything, any time."
+    },
+    "sportTags": {
+      "run": "Run",
+      "bike": "Bike",
+      "swim": "Swim",
+      "gym": "Gym",
+      "mobility": "Mobility"
     }
   },
-  "login": {
-    "title": "Log in to SYNEK",
-    "subtitle": "Pick up where you left off.",
+  "perspectives": {
+    "eyebrow": "Two perspectives, one source",
+    "h2a": "Plan on desktop.",
+    "h2b": "Run on phone.",
+    "lede": "Coach builds the week from the board. Athlete opens the app and sees today's session, today's intent, today's targets. Same data, never out of sync.",
+    "bullets": {
+      "drag": {
+        "title": "Drag-and-drop the week",
+        "body": "Build templates once. Apply to one athlete or twenty."
+      },
+      "notes": {
+        "title": "Inline notes per session",
+        "body": "Coach context lands directly on the session card."
+      },
+      "status": {
+        "title": "Live status",
+        "body": "Done · skipped · modified — you see it the second they log it."
+      },
+      "mobile": {
+        "title": "Mobile-first execution",
+        "body": "Athlete UI is glanceable. Today first, the rest collapsed."
+      }
+    }
+  },
+  "joinBeta": {
+    "eyebrow": "Join the beta",
+    "h2a": "Train with intent.",
+    "h2b": "Together.",
+    "lede": "Free during public beta. No card. No team-size limit. Bring your athletes — or your coach.",
+    "coach": "I'm a coach",
+    "athlete": "I'm an athlete",
+    "fp1": "Free during beta",
+    "fp2": "EU-hosted",
+    "fp3": "Cancel any time"
+  },
+  "contactSection": {
+    "eyebrow": "Get in touch",
+    "h2": "Talk to a real person.",
+    "lede": "Tell us about your squad, your sport, what you're missing today. We read everything.",
+    "roles": {
+      "coach": "Coach",
+      "athlete": "Athlete",
+      "other": "Other"
+    },
+    "name": "Name",
+    "namePh": "Sara Holmberg",
     "email": "Email",
-    "password": "Password",
-    "submit": "Log In",
-    "forgotPassword": "Forgot password?",
-    "noAccount": "New here?",
-    "noAccountCta": "Join the beta →"
+    "emailPh": "sara@example.com",
+    "msg": "Message",
+    "msgPhCoach": "I coach 14 runners. We currently use Sheets + WhatsApp.",
+    "msgPhAth": "I run 6×/week and want a coach view I can follow on phone.",
+    "msgPhOther": "What's on your mind?",
+    "send": "Send message",
+    "sent": "Got it — we'll reply within 24h.",
+    "roleLabel": "I am a"
+  },
+  "landingFooter": {
+    "meta": "© 2026 · v0.9 beta",
+    "product": "Product",
+    "features": "Features",
+    "perspectives": "Coach & Athlete",
+    "beta": "Join beta",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "mock": {
+    "appBar": {
+      "training": "Training",
+      "goals": "Goals",
+      "analytics": "Analytics",
+      "search": "Search",
+      "notifications": "Notifications",
+      "avatar": "Avatar",
+      "avatarInitials": "JS"
+    },
+    "weekNav": {
+      "week": "Week",
+      "today": "Today",
+      "previousWeek": "Previous week",
+      "nextWeek": "Next week"
+    },
+    "weekSummary": {
+      "title": "Week summary",
+      "cumulative": "Cumulative",
+      "bySport": "By sport",
+      "plan": "PLAN",
+      "performance": "PERFORMANCE",
+      "distance": "Distance",
+      "time": "Time",
+      "sessions": "Sessions",
+      "load": "Load",
+      "completion": "Completion",
+      "ofPlan": "of plan"
+    },
+    "sport": {
+      "run": "Run",
+      "cycling": "Cycling",
+      "swimming": "Swimming",
+      "strength": "Strength",
+      "mobility": "Mobility",
+      "rest": "Rest"
+    },
+    "session": {
+      "markComplete": "Mark complete",
+      "addSession": "Add session"
+    },
+    "athleteView": {
+      "title": "Athlete View",
+      "subtitle": "John Smith",
+      "dateRange": "Apr 20 – 26",
+      "loadMedium": "Medium"
+    },
+    "days": {
+      "mon": "MON",
+      "tue": "TUE",
+      "wed": "WED",
+      "thu": "THU",
+      "fri": "FRI",
+      "sat": "SAT",
+      "sun": "SUN"
+    },
+    "mobile": {
+      "hi": "Hi,",
+      "athleteFirstName": "Artur",
+      "week": "Week 17",
+      "dateRange": "Apr 20–26",
+      "yourPlan": "Your plan",
+      "todayDate": "Today, Sat Apr 25",
+      "sessionsPlanned": "2 sessions planned",
+      "weekProgress": "Week progress"
+    },
+    "plan": {
+      "mon20": {
+        "title": "Easy aerobic + 4×100 m strides"
+      },
+      "tue21Strength": {
+        "title": "FBW A — full body"
+      },
+      "tue21Swim": {
+        "title": "Swim — technique"
+      },
+      "wed22Run": {
+        "title": "Easy + 6× ~20\" strides"
+      },
+      "wed22Strength": {
+        "title": "FBW B"
+      },
+      "thu23Rest": {
+        "title": "Rest day"
+      },
+      "fri24Mobility": {
+        "title": "Mobility 30m + foam"
+      },
+      "sat25Threshold": {
+        "title": "Threshold 5×1km / 1' walk"
+      },
+      "sat25Cycling": {
+        "title": "Z2 indoor bike"
+      },
+      "sun26Long": {
+        "title": "Long run — Z2, even"
+      },
+      "mobileSat25Threshold": {
+        "title": "WU 3km + threshold 5×1km/1' walk + CD 2km"
+      },
+      "mobileSat25Cycling": {
+        "title": "Z2 indoor bike 90 min"
+      },
+      "mobileSat25Swim": {
+        "title": "Swim — technique 45 min"
+      }
+    },
+    "coachBoard": {
+      "weekTitle": "Coach board · Week 17",
+      "athletesCount": "8 athletes · 56 sessions",
+      "athleteHeader": "Athlete"
+    },
+    "athletePhone": {
+      "today": "Today",
+      "sessionTitle": "Threshold 5×1km",
+      "plan": "Plan",
+      "planDetail": "WU 3 km · 5×1 km @ 3:54/km · CD 2 km",
+      "tomorrow": "Tomorrow · Z2 indoor bike"
+    },
+    "fragSync": {
+      "blockTitle": "Block 3 of 8 · Build",
+      "blockSubtitle": "Edited 2 min ago · Coach Sara",
+      "live": "Live",
+      "action1": "Copy Tuesday → 14 athletes",
+      "action2": "Edit Saturday for Mateusz",
+      "action3": "Mark Friday as confirmed"
+    },
+    "fragAuto": {
+      "title": "Auto-import activities",
+      "subtitle": "Imports run, ride, swim · always on",
+      "status": "ON",
+      "row1Title": "Easy aerobic",
+      "row2Title": "Threshold 5×1k",
+      "row3Title": "Long run — Z2"
+    },
+    "fragCoDesign": {
+      "title": "Public roadmap",
+      "version": "v0.9 · public beta",
+      "shipped": "Shipped",
+      "inProgress": "In progress",
+      "nextUp": "Next up",
+      "item1": "Self-planning mode for solo athletes",
+      "item2": "Multi-week templates · copy-paste",
+      "item3": "Coach notes per session",
+      "item4": "Mobility-block planner",
+      "item5": "Heart-rate zones per athlete"
+    },
+    "fragColumn": {
+      "mon": "MON",
+      "tue": "TUE",
+      "wed": "WED",
+      "easy": "Easy",
+      "threshold": "Threshold",
+      "rest": "REST"
+    }
   },
   "beta": {
     "title": "Create your free account",
@@ -109,23 +339,6 @@
       "privacy": "Privacy Policy"
     },
     "invalidEmail": "Invalid email address"
-  },
-  "footer": {
-    "privacyPolicy": "Privacy Policy",
-    "terms": "Terms & Conditions",
-    "support": "Support"
-  },
-  "contact": {
-    "title": "Write to us",
-    "subtitle": "Got feedback, a question, or an idea? We're a small team and we read everything.",
-    "betaNote": "This is the fastest way to shape what we build next.",
-    "name": "Your name",
-    "email": "Your email",
-    "message": "Your message",
-    "messagePlaceholder": "Tell us what's missing, what's broken, or what could be better...",
-    "submit": "Send message",
-    "submitSuccess": "Message sent — thank you! We'll get back to you soon.",
-    "submitError": "Something went wrong. Please try again."
   },
   "support": {
     "title": "Need help?",

@@ -13,6 +13,15 @@ importers:
       '@dnd-kit/sortable':
         specifier: ^10.0.0
         version: 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)
+      '@fontsource-variable/inter':
+        specifier: ^5.2.8
+        version: 5.2.8
+      '@fontsource-variable/inter-tight':
+        specifier: ^5.2.7
+        version: 5.2.7
+      '@fontsource-variable/jetbrains-mono':
+        specifier: ^5.2.8
+        version: 5.2.8
       '@marsidev/react-turnstile':
         specifier: ^1.5.0
         version: 1.5.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -841,6 +850,24 @@ packages:
     resolution:
       {
         integrity: sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==,
+      }
+
+  '@fontsource-variable/inter-tight@5.2.7':
+    resolution:
+      {
+        integrity: sha512-uU0qW9vlzVQQv8GVrhn8SlNl2A44C0CE9IC6N9P0D9mwhmJcg8UF/fxvmdRayDPlMAnYqxlXtYENDIeZyVvxkg==,
+      }
+
+  '@fontsource-variable/inter@5.2.8':
+    resolution:
+      {
+        integrity: sha512-kOfP2D+ykbcX/P3IFnokOhVRNoTozo5/JxhAIVYLpea/UBmCQ/YWPBfWIDuBImXX/15KH+eKh4xpEUyS2sQQGQ==,
+      }
+
+  '@fontsource-variable/jetbrains-mono@5.2.8':
+    resolution:
+      {
+        integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==,
       }
 
   '@hono/node-server@1.19.9':
@@ -2278,6 +2305,7 @@ packages:
       }
     cpu: [arm]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm-musleabihf@4.59.0':
     resolution:
@@ -2286,6 +2314,7 @@ packages:
       }
     cpu: [arm]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-arm64-gnu@4.59.0':
     resolution:
@@ -2294,6 +2323,7 @@ packages:
       }
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-arm64-musl@4.59.0':
     resolution:
@@ -2302,6 +2332,7 @@ packages:
       }
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-loong64-gnu@4.59.0':
     resolution:
@@ -2310,6 +2341,7 @@ packages:
       }
     cpu: [loong64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-loong64-musl@4.59.0':
     resolution:
@@ -2318,6 +2350,7 @@ packages:
       }
     cpu: [loong64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-ppc64-gnu@4.59.0':
     resolution:
@@ -2326,6 +2359,7 @@ packages:
       }
     cpu: [ppc64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-ppc64-musl@4.59.0':
     resolution:
@@ -2334,6 +2368,7 @@ packages:
       }
     cpu: [ppc64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-riscv64-gnu@4.59.0':
     resolution:
@@ -2342,6 +2377,7 @@ packages:
       }
     cpu: [riscv64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-riscv64-musl@4.59.0':
     resolution:
@@ -2350,6 +2386,7 @@ packages:
       }
     cpu: [riscv64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-linux-s390x-gnu@4.59.0':
     resolution:
@@ -2358,6 +2395,7 @@ packages:
       }
     cpu: [s390x]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-gnu@4.59.0':
     resolution:
@@ -2366,6 +2404,7 @@ packages:
       }
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@rollup/rollup-linux-x64-musl@4.59.0':
     resolution:
@@ -2374,6 +2413,7 @@ packages:
       }
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@rollup/rollup-openbsd-x64@4.59.0':
     resolution:
@@ -2564,6 +2604,7 @@ packages:
     engines: { node: '>= 20' }
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   '@tailwindcss/oxide-linux-arm64-musl@4.2.1':
     resolution:
@@ -2573,6 +2614,7 @@ packages:
     engines: { node: '>= 20' }
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   '@tailwindcss/oxide-linux-x64-gnu@4.2.1':
     resolution:
@@ -2582,6 +2624,7 @@ packages:
     engines: { node: '>= 20' }
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   '@tailwindcss/oxide-linux-x64-musl@4.2.1':
     resolution:
@@ -2591,6 +2634,7 @@ packages:
     engines: { node: '>= 20' }
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   '@tailwindcss/oxide-wasm32-wasi@4.2.1':
     resolution:
@@ -5071,6 +5115,7 @@ packages:
     engines: { node: '>= 12.0.0' }
     cpu: [arm64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-arm64-musl@1.31.1:
     resolution:
@@ -5080,6 +5125,7 @@ packages:
     engines: { node: '>= 12.0.0' }
     cpu: [arm64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-linux-x64-gnu@1.31.1:
     resolution:
@@ -5089,6 +5135,7 @@ packages:
     engines: { node: '>= 12.0.0' }
     cpu: [x64]
     os: [linux]
+    libc: [glibc]
 
   lightningcss-linux-x64-musl@1.31.1:
     resolution:
@@ -5098,6 +5145,7 @@ packages:
     engines: { node: '>= 12.0.0' }
     cpu: [x64]
     os: [linux]
+    libc: [musl]
 
   lightningcss-win32-arm64-msvc@1.31.1:
     resolution:
@@ -7943,6 +7991,12 @@ snapshots:
       react-dom: 19.2.4(react@19.2.4)
 
   '@floating-ui/utils@0.2.10': {}
+
+  '@fontsource-variable/inter-tight@5.2.7': {}
+
+  '@fontsource-variable/inter@5.2.8': {}
+
+  '@fontsource-variable/jetbrains-mono@5.2.8': {}
 
   '@hono/node-server@1.19.9(hono@4.12.3)':
     dependencies:

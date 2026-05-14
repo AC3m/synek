@@ -6,8 +6,8 @@ import { useAuth } from '~/lib/context/AuthContext';
 import { useSubmitSupport } from '~/lib/hooks/useSupport';
 import { SupportSubmissionError } from '~/lib/queries/support';
 import { SUPPORT_CATEGORIES, supportSchema, type SupportCategory } from '~/lib/schemas/support';
-import { Button } from '~/components/ui/button';
-import { Input } from '~/components/ui/input';
+import { GradientButton } from './shared/GradientButton';
+import { LandingField } from './shared/LandingField';
 import { cn } from '~/lib/utils';
 
 const CATEGORY_ICONS: Record<SupportCategory, React.ElementType> = {
@@ -96,36 +96,33 @@ export function SupportSection({ className }: SupportSectionProps) {
     <section
       id="support"
       className={cn(
-        'border-t border-border/40 bg-surface-2/50 px-4 pt-28 pb-24 sm:pt-36 sm:pb-32',
+        'border-t border-white/[0.06] px-5 pt-28 pb-24 sm:px-8 sm:pt-36 sm:pb-32',
         className,
       )}
     >
       <div className="mx-auto max-w-md">
         {!isSuccess && (
           <div className="mb-12 text-center">
-            <h1 className="text-3xl font-black tracking-tighter uppercase italic sm:text-5xl">
-              {t('support.title')}
-            </h1>
-            <p className="mt-4 font-medium text-muted-foreground">{t('support.subtitle')}</p>
-            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-3 py-1 text-[10px] font-bold tracking-[0.2em] text-primary uppercase">
+            <h1 className="landing-display text-3xl sm:text-5xl">{t('support.title')}</h1>
+            <p className="mt-4 text-[15px] opacity-70">{t('support.subtitle')}</p>
+            <span className="landing-mono mt-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/[0.06] px-3 py-1 text-[10px] tracking-[0.2em] text-emerald-400 uppercase">
               {t('support.responseNote')}
-            </p>
+            </span>
           </div>
         )}
 
         {isSuccess ? (
-          <div className="flex flex-col items-center gap-5 rounded-xl border border-border/50 bg-surface-1 p-12 text-center shadow-sm">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-500/10 text-green-600">
+          <div className="flex flex-col items-center gap-5 rounded-2xl border border-white/10 bg-white/[0.025] p-12 text-center">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
               <CheckCircle2 className="h-7 w-7" />
             </div>
             <div className="space-y-1">
-              <p className="font-bold tracking-tight uppercase">{t('support.submitSuccess')}</p>
-              <p className="text-xs text-muted-foreground">{t('support.submitSuccessSubtitle')}</p>
+              <p className="font-semibold tracking-tight">{t('support.submitSuccess')}</p>
+              <p className="text-[13px] opacity-60">{t('support.submitSuccessSubtitle')}</p>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="mt-2 text-xs text-muted-foreground"
+            <button
+              type="button"
+              className="mt-2 text-[12.5px] opacity-50 transition-opacity hover:opacity-80"
               onClick={() => {
                 reset();
                 setCfToken('');
@@ -133,18 +130,18 @@ export function SupportSection({ className }: SupportSectionProps) {
               }}
             >
               {t('support.submitAnother')}
-            </Button>
+            </button>
           </div>
         ) : (
           <form
             onSubmit={handleSubmit}
             noValidate
             aria-label="Support request form"
-            className="space-y-5 rounded-xl border border-border/50 bg-surface-1 p-8 shadow-sm"
+            className="space-y-5 rounded-2xl border border-white/10 bg-white/[0.025] p-8"
           >
             {/* Category */}
             <fieldset>
-              <legend className="mb-3 block text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase">
+              <legend className="landing-mono mb-3 block text-[10px] tracking-wider uppercase opacity-50">
                 {t('support.categoryLabel')}
               </legend>
               <div className="grid grid-cols-2 gap-2">
@@ -157,10 +154,10 @@ export function SupportSection({ className }: SupportSectionProps) {
                       onClick={() => setCategory(c)}
                       aria-pressed={category === c}
                       className={cn(
-                        'flex items-center gap-2 rounded-md border px-3 py-2.5 text-xs font-semibold tracking-wide transition-colors',
+                        'flex items-center gap-2 rounded-lg border px-3 py-2.5 text-[12.5px] font-medium transition-colors',
                         category === c
-                          ? 'border-primary bg-primary text-primary-foreground'
-                          : 'border-border bg-background text-foreground hover:bg-muted',
+                          ? 'border-emerald-500/40 bg-emerald-500/[0.08] text-emerald-400'
+                          : 'border-white/10 bg-white/[0.03] opacity-70 hover:opacity-100',
                       )}
                     >
                       <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
@@ -171,70 +168,36 @@ export function SupportSection({ className }: SupportSectionProps) {
               </div>
             </fieldset>
 
-            {/* Name */}
-            <div className="space-y-2">
-              <label
-                htmlFor="support-name"
-                className="block text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase"
-              >
-                {t('support.name')}
-              </label>
-              <Input
-                id="support-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                autoComplete="name"
-                required
-                aria-required="true"
-                className="h-11 bg-background/50 transition-colors focus:bg-background"
-              />
-              {fieldErrors.name && (
-                <p className="text-xs font-medium text-destructive" role="alert">
-                  {fieldErrors.name}
-                </p>
-              )}
-            </div>
+            <LandingField
+              id="support-name"
+              label={t('support.name')}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              autoComplete="name"
+              required
+              error={fieldErrors.name}
+            />
 
-            {/* Email */}
-            <div className="space-y-2">
-              <label
-                htmlFor="support-email"
-                className="block text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase"
-              >
-                {t('support.email')}
-              </label>
-              <Input
-                id="support-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-                required
-                aria-required="true"
-                className="h-11 bg-background/50 transition-colors focus:bg-background"
-              />
-              {fieldErrors.email && (
-                <p className="text-xs font-medium text-destructive" role="alert">
-                  {fieldErrors.email}
-                </p>
-              )}
-            </div>
+            <LandingField
+              id="support-email"
+              label={t('support.email')}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              required
+              error={fieldErrors.email}
+            />
 
-            {/* Message */}
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <div className="flex items-baseline justify-between">
-                <label
-                  htmlFor="support-message"
-                  className="block text-[10px] font-bold tracking-wider text-muted-foreground/80 uppercase"
-                >
+                <label htmlFor="support-message" className="text-[12.5px] opacity-70">
                   {t('support.message')}
                 </label>
                 <span
                   className={cn(
                     'text-[10px] tabular-nums',
-                    message.length > MAX_MESSAGE * 0.9
-                      ? 'text-destructive'
-                      : 'text-muted-foreground/40',
+                    message.length > MAX_MESSAGE * 0.9 ? 'text-destructive' : 'opacity-40',
                   )}
                 >
                   {message.length}/{MAX_MESSAGE}
@@ -249,10 +212,10 @@ export function SupportSection({ className }: SupportSectionProps) {
                 aria-required="true"
                 maxLength={MAX_MESSAGE}
                 rows={6}
-                className="w-full resize-none rounded-md border border-input bg-background/50 px-3 py-2 text-sm ring-offset-background transition-colors placeholder:text-muted-foreground/50 focus:bg-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full resize-none rounded-lg border border-white/12 bg-white/[0.03] px-3 py-2.5 text-[14px] transition-colors outline-none placeholder:opacity-40 focus:border-emerald-400/40"
               />
               {fieldErrors.message && (
-                <p className="text-xs font-medium text-destructive" role="alert">
+                <p className="text-[12px] text-destructive" role="alert">
                   {fieldErrors.message}
                 </p>
               )}
@@ -277,24 +240,25 @@ export function SupportSection({ className }: SupportSectionProps) {
             />
 
             {errorMsg && (
-              <p className="text-xs font-medium text-destructive" role="alert" aria-live="polite">
+              <p className="text-[12px] text-destructive" role="alert" aria-live="polite">
                 {errorMsg}
               </p>
             )}
 
             {!cfToken && !errorMsg && (
-              <p className="text-center text-xs text-muted-foreground">
+              <p className="text-center text-[12px] opacity-50">
                 {t('errors.turnstileVerifying', { ns: 'common' })}
               </p>
             )}
 
-            <Button
+            <GradientButton
               type="submit"
-              className="h-12 w-full text-sm font-bold tracking-widest uppercase italic"
+              size="lg"
+              className="w-full"
               disabled={isPending || !cfToken}
             >
               {isPending ? '…' : t('support.submit')}
-            </Button>
+            </GradientButton>
           </form>
         )}
       </div>

@@ -1,70 +1,79 @@
 import { useTranslation } from 'react-i18next';
+import { Check, Lock, RefreshCcw } from 'lucide-react';
+import { useParams } from 'react-router';
+import { GradText } from './shared/GradText';
+import { CtaButtonPair } from './shared/CtaButtonPair';
+import { HeroBetaPill } from './hero/HeroBetaPill';
+import { HeroBackground, type HeroBackgroundKind } from './hero/HeroBackground';
+import { useIsCompactViewport } from './hero/useIsCompactViewport';
+import { WeekGridMock } from './mock/WeekGridMock';
+import { MobileWeekViewMock } from './mock/MobileWeekViewMock';
 import { cn } from '~/lib/utils';
-import { Button } from '~/components/ui/button';
-import { Link, useParams } from 'react-router';
 
 interface HeroSectionProps {
+  background?: HeroBackgroundKind;
   className?: string;
 }
 
-export function HeroSection({ className }: HeroSectionProps) {
+export function HeroSection({ background = 'route', className }: HeroSectionProps) {
   const { t } = useTranslation('landing');
+  const isCompact = useIsCompactViewport();
   const { locale = 'pl' } = useParams<{ locale: string }>();
 
+  const meta = (
+    <ul
+      data-testid="hero-meta"
+      className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] opacity-70"
+    >
+      <li className="inline-flex items-center gap-1.5">
+        <Check size={14} aria-hidden="true" />
+        {t('hero.meta1')}
+      </li>
+      <li className="inline-flex items-center gap-1.5">
+        <Lock size={14} aria-hidden="true" />
+        {t('hero.meta2')}
+      </li>
+      <li className="inline-flex items-center gap-1.5">
+        <RefreshCcw size={14} aria-hidden="true" />
+        {t('hero.meta3')}
+      </li>
+    </ul>
+  );
+
   return (
-    <section id="get-started" className={cn('relative min-h-dvh overflow-hidden', className)}>
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT/wAARCAAZACgDASIAAhEBAxEB/8QAGQAAAgMBAAAAAAAAAAAAAAAAAAMCBAUB/8QAIhABAAICAgEEAwAAAAAAAAAAAQACAxESIQQTMUFhFCJR/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQAC/8QAFxEBAQEBAAAAAAAAAAAAAAAAAAEREv/aAAwDAQACEQMRAD8Ay/SNbZMwibPaLv8AqbXr5jS9gOBsZvqM8UnPWtaOnuVjF1uO8gB6+ZzGKJM26ZMJ9J/kI9eSB1CRJvnbGozH5OqhaVYQO1p4vxstFvfi/cXkzY6HGiP3KUCQTbLfe4SNfeEU/9k=)',
-          backgroundSize: 'cover',
-          backgroundPosition: '25% center',
-        }}
-      >
-        <img
-          src="/hero-split.png"
-          alt="Athlete checking her watch on the track, coach reviewing SYNEK on screen"
-          className="h-full w-full object-cover object-[25%_center] sm:object-center"
-          loading="eager"
-        />
-        {/* Mobile: more uniform overlay since athlete scene is lighter than the dark gym side */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/65 to-black/45 sm:from-black/85 sm:via-black/55 sm:to-black/10" />
-        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-background to-transparent" />
-      </div>
+    <section
+      id="hero"
+      className={cn(
+        'relative flex min-h-dvh flex-col overflow-hidden',
+        'pt-24 sm:pt-28',
+        className,
+      )}
+    >
+      <HeroBackground kind={background} />
 
-      <div className="relative z-10 flex min-h-dvh flex-col justify-center px-4 pt-24 pb-28">
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="max-w-lg space-y-8">
-            <span className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold tracking-[0.2em] text-white uppercase backdrop-blur-sm">
-              {t('hero.badge')}
-            </span>
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col items-center px-5 text-center sm:px-8">
+        <HeroBetaPill>{t('hero.pill')}</HeroBetaPill>
 
-            <h1 className="text-5xl leading-[1.05] font-black tracking-tight text-white uppercase italic sm:text-6xl lg:text-7xl">
-              {t('hero.headline')}
-            </h1>
+        <h1 className="landing-display mt-6 text-[clamp(40px,7vw,64px)] leading-[1.05] tracking-tight text-balance">
+          <span>{t('hero.h1a')}</span> <GradText>{t('hero.h1b')}</GradText>
+        </h1>
 
-            <p className="max-w-sm text-base leading-relaxed text-white/70 sm:text-lg">
-              {t('hero.subheadline')}
-            </p>
+        <p className="mt-4 max-w-xl text-base text-balance opacity-70 sm:text-lg">
+          {t('hero.lede')}
+        </p>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button
-                asChild
-                size="lg"
-                className="h-14 bg-white px-8 text-sm font-bold tracking-wider text-black uppercase hover:bg-white/90"
-              >
-                <Link to={`/${locale}/register`}>{t('beta.cta')}</Link>
-              </Button>
-              <Link
-                to={`/${locale}/login`}
-                className="flex h-14 items-center justify-center rounded-lg border border-white/25 bg-white/10 px-8 text-sm font-bold tracking-wider text-white uppercase backdrop-blur-sm transition-colors hover:border-white/40 hover:bg-white/20"
-              >
-                {t('hero.ctaLogIn')}
-              </Link>
-            </div>
+        <div className="mt-6">
+          <CtaButtonPair
+            primary={{ label: t('hero.coach'), to: `/${locale}/register` }}
+            secondary={{ label: t('hero.athlete'), to: `/${locale}/register` }}
+          />
+        </div>
 
-            <p className="text-sm text-white/60">{t('hero.betaNote')}</p>
+        {meta}
+
+        <div className="relative mt-10 flex w-full flex-1 items-end justify-center pb-0">
+          <div className="w-full max-w-5xl">
+            {isCompact ? <MobileWeekViewMock /> : <WeekGridMock />}
           </div>
         </div>
       </div>

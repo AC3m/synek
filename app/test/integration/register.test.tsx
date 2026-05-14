@@ -89,13 +89,13 @@ function renderRegister() {
 async function fillAndSubmit(overrides?: { email?: string; password?: string }) {
   const user = userEvent.setup();
   // Select role
-  await user.click(screen.getByRole('button', { name: 'beta.roleCoach' }));
+  await user.click(screen.getByRole('button', { name: /coach/i }));
   // Fill fields
-  await user.type(screen.getByLabelText(/beta.name/i), 'Jane Smith');
-  await user.type(screen.getByLabelText(/beta.email/i), overrides?.email ?? 'jane@example.com');
-  await user.type(screen.getByLabelText(/beta.password/i), overrides?.password ?? 'Password1');
+  await user.type(screen.getByLabelText(/full name/i), 'Jane Smith');
+  await user.type(screen.getByLabelText(/^email$/i), overrides?.email ?? 'jane@example.com');
+  await user.type(screen.getByLabelText(/password/i), overrides?.password ?? 'Password1');
   // Submit
-  await user.click(screen.getByRole('button', { name: 'beta.submit' }));
+  await user.click(screen.getByRole('button', { name: /create free account/i }));
 }
 
 // ---------------------------------------------------------------------------
@@ -114,23 +114,23 @@ describe('RegisterPage', () => {
 
   it('renders the registration form', () => {
     renderRegister();
-    expect(screen.getByLabelText(/beta.name/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/beta.email/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/full name/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^email$/i)).toBeInTheDocument();
   });
 
   it('Turnstile widget fires onSuccess and cfToken is set (submit button enabled after token)', async () => {
     renderRegister();
     // After Turnstile fires, submit button should not be disabled due to missing token
-    const submitBtn = screen.getByRole('button', { name: 'beta.submit' });
+    const submitBtn = screen.getByRole('button', { name: /create free account/i });
     // Select role to satisfy role check
     const user = userEvent.setup();
-    await user.click(screen.getByRole('button', { name: 'beta.roleCoach' }));
+    await user.click(screen.getByRole('button', { name: /coach/i }));
     expect(submitBtn).not.toBeDisabled();
   });
 
   it('submit button is disabled until role is selected', () => {
     renderRegister();
-    const submitBtn = screen.getByRole('button', { name: 'beta.submit' });
+    const submitBtn = screen.getByRole('button', { name: /create free account/i });
     expect(submitBtn).toBeDisabled();
   });
 

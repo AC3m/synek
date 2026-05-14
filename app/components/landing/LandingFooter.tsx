@@ -1,44 +1,38 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
+import { LogoLink } from './LogoLink';
+import { useSmoothScroll } from './shared/useSmoothScroll';
+
+const FOOTER_ANCHORS = [
+  { href: '#why', labelKey: 'landingFooter.product' },
+  { href: '#features', labelKey: 'landingFooter.features' },
+  { href: '#perspectives', labelKey: 'landingFooter.perspectives' },
+  { href: '#join', labelKey: 'landingFooter.beta' },
+  { href: '#contact', labelKey: 'landingFooter.contact' },
+] as const;
 
 export function LandingFooter() {
   const { t } = useTranslation('landing');
   const { locale = 'pl' } = useParams<{ locale: string }>();
+  const smoothScroll = useSmoothScroll();
 
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-8">
-        <div className="flex flex-col items-center gap-6 sm:flex-row sm:justify-between">
-          <p className="text-xs font-medium tracking-widest text-muted-foreground/50 uppercase">
-            © {new Date().getFullYear()} SYNEK
-          </p>
-          <nav className="flex items-center gap-6">
-            <Link
-              to={`/${locale}/support`}
-              className="text-xs font-medium tracking-wider text-muted-foreground/60 uppercase transition-colors hover:text-foreground"
-            >
-              {t('footer.support')}
-            </Link>
-            <span className="text-border" aria-hidden>
-              ·
-            </span>
-            <Link
-              to={`/${locale}/privacy-policy`}
-              className="text-xs font-medium tracking-wider text-muted-foreground/60 uppercase transition-colors hover:text-foreground"
-            >
-              {t('footer.privacyPolicy')}
-            </Link>
-            <span className="text-border" aria-hidden>
-              ·
-            </span>
-            <Link
-              to={`/${locale}/terms`}
-              className="text-xs font-medium tracking-wider text-muted-foreground/60 uppercase transition-colors hover:text-foreground"
-            >
-              {t('footer.terms')}
-            </Link>
-          </nav>
+    <footer className="border-t border-white/10 px-5 py-8 sm:px-8">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
+        <div className="flex items-center gap-3 text-[13px]">
+          <LogoLink size={20} />
+          <span className="font-semibold">SYNEK</span>
+          <span className="landing-mono text-[11px] opacity-50">{t('landingFooter.meta')}</span>
         </div>
+        <nav className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[12.5px] opacity-70">
+          {FOOTER_ANCHORS.map(({ href, labelKey }) => (
+            <a key={href} href={href} onClick={(e) => smoothScroll(e, href)}>
+              {t(labelKey as never)}
+            </a>
+          ))}
+          <Link to={`/${locale}/privacy-policy`}>{t('landingFooter.privacy')}</Link>
+          <Link to={`/${locale}/terms`}>{t('landingFooter.terms')}</Link>
+        </nav>
       </div>
     </footer>
   );
