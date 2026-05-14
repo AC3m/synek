@@ -40,8 +40,8 @@ export function JoinBetaSection({ className }: JoinBetaSectionProps) {
 
           <div className="mt-2">
             <CtaButtonPair
-              primary={{ label: t('joinBeta.coach'), to: `/${locale}/register` }}
-              secondary={{ label: t('joinBeta.athlete'), to: `/${locale}/register` }}
+              primary={{ label: t('joinBeta.coach'), to: `/${locale}/register?role=coach` }}
+              secondary={{ label: t('joinBeta.athlete'), to: `/${locale}/register?role=athlete` }}
             />
           </div>
 

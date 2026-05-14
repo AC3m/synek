@@ -64,8 +64,8 @@ export function HeroSection({ background = 'route', className }: HeroSectionProp
 
         <div className="mt-6">
           <CtaButtonPair
-            primary={{ label: t('hero.coach'), to: `/${locale}/register` }}
-            secondary={{ label: t('hero.athlete'), to: `/${locale}/register` }}
+            primary={{ label: t('hero.coach'), to: `/${locale}/register?role=coach` }}
+            secondary={{ label: t('hero.athlete'), to: `/${locale}/register?role=athlete` }}
           />
         </div>
 
