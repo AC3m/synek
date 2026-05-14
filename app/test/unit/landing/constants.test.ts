@@ -3,7 +3,7 @@ import {
   LANDING_ACCENT,
   LANDING_ACCENT_RGB,
   LANDING_BREAKPOINTS,
-} from '~/components/landing/landing.constants';
+} from '~/components/landing/constants';
 
 function hexToRgbString(hex: string): string {
   const h = hex.replace('#', '');

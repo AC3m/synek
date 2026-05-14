@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { LogoLink } from '~/components/landing/LogoLink';
+import { LogoLink } from '~/components/landing/layout/LogoLink';
 
 describe('LogoLink', () => {
   it('exposes the SYNEK accessible name', () => {

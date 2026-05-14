@@ -1,6 +1,6 @@
 import { useNavigate, useParams, useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { SegmentedToggle } from '~/components/landing/shared/SegmentedToggle';
+import { SegmentedToggle } from '~/components/landing/primitives/SegmentedToggle';
 
 type Locale = 'en' | 'pl';
 

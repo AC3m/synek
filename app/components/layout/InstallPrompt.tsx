@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Share } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { LogoLink } from '~/components/landing/LogoLink';
+import { LogoLink } from '~/components/landing/layout/LogoLink';
 import { cn } from '~/lib/utils';
 import { isStandaloneMode } from '~/lib/utils/pwa';
 

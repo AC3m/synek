@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { LandingField } from '~/components/landing/shared/LandingField';
+import { LandingField } from '~/components/landing/primitives/LandingField';
 
 describe('LandingField', () => {
   it('renders label text', () => {

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
-import { LogoLink } from '~/components/landing/LogoLink';
+import { LogoLink } from '~/components/landing/layout/LogoLink';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
 import { cn } from '~/lib/utils';

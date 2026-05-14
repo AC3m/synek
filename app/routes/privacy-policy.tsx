@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
 import { ArrowLeft } from 'lucide-react';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/landing/layout/LandingNav';
 
 export function meta() {
   return [{ title: 'Privacy Policy — SYNEK' }];

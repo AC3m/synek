@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
-import { WhyRow } from '~/components/landing/why/WhyRow';
-import { FragAuto } from '~/components/landing/why/fragments/FragAuto';
-import { FragColumn } from '~/components/landing/why/fragments/FragColumn';
-import { FragSync } from '~/components/landing/why/fragments/FragSync';
-import { FragCoDesign } from '~/components/landing/why/fragments/FragCoDesign';
-import { WhySection } from '~/components/landing/WhySection';
+import { WhyRow } from '~/components/landing/sections/why/WhyRow';
+import { FragAuto } from '~/components/landing/sections/why/fragments/FragAuto';
+import { FragColumn } from '~/components/landing/sections/why/fragments/FragColumn';
+import { FragSync } from '~/components/landing/sections/why/fragments/FragSync';
+import { FragCoDesign } from '~/components/landing/sections/why/fragments/FragCoDesign';
+import { WhySection } from '~/components/landing/sections/why/WhySection';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 let restore: (() => Promise<void>) | null = null;

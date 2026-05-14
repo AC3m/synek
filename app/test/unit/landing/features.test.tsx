@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BentoCard } from '~/components/landing/features/BentoCard';
-import { WeekBoardMini } from '~/components/landing/features/WeekBoardMini';
-import { PrivacyStrip } from '~/components/landing/features/PrivacyStrip';
-import { FeaturesSection } from '~/components/landing/FeaturesSection';
+import { BentoCard } from '~/components/landing/sections/features/BentoCard';
+import { WeekBoardMini } from '~/components/landing/sections/features/WeekBoardMini';
+import { PrivacyStrip } from '~/components/landing/sections/features/PrivacyStrip';
+import { FeaturesSection } from '~/components/landing/sections/features/FeaturesSection';
 import { Check } from 'lucide-react';
 import { useLocale } from '~/test/utils/landing-i18n';
 

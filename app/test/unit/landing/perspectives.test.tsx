@@ -1,9 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { CoachBoard } from '~/components/landing/perspectives/CoachBoard';
-import { AthletePhone } from '~/components/landing/perspectives/AthletePhone';
-import { SyncLine } from '~/components/landing/perspectives/SyncLine';
-import { PerspectivesSection } from '~/components/landing/PerspectivesSection';
+import { CoachBoard } from '~/components/landing/sections/perspectives/CoachBoard';
+import { AthletePhone } from '~/components/landing/sections/perspectives/AthletePhone';
+import { SyncLine } from '~/components/landing/sections/perspectives/SyncLine';
+import { PerspectivesSection } from '~/components/landing/sections/perspectives/PerspectivesSection';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 let restore: (() => Promise<void>) | null = null;

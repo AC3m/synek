@@ -1,7 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook } from '@testing-library/react';
-import { SECTIONS } from '~/components/landing/shared/section-anchors';
-import { useSmoothScroll } from '~/components/landing/shared/useSmoothScroll';
+import { SECTIONS } from '~/components/landing/constants';
+import { useSmoothScroll } from '~/components/landing/hooks/useSmoothScroll';
 
 describe('SECTIONS constant', () => {
   it('has expected section keys', () => {

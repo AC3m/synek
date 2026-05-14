@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { HeroBetaPill } from '~/components/landing/hero/HeroBetaPill';
-import { HeroBackground } from '~/components/landing/hero/HeroBackground';
-import { HeroSection } from '~/components/landing/HeroSection';
+import { HeroBetaPill } from '~/components/landing/sections/hero/HeroBetaPill';
+import { HeroBackground } from '~/components/landing/sections/hero/HeroBackground';
+import { HeroSection } from '~/components/landing/sections/hero/HeroSection';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 function withRouter(node: React.ReactNode) {

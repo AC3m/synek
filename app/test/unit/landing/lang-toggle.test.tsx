@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router';
-import { LandingLangToggle } from '~/components/landing/LandingLangToggle';
+import { LandingLangToggle } from '~/components/landing/layout/LandingLangToggle';
 
 function PathProbe() {
   const { pathname } = useLocation();

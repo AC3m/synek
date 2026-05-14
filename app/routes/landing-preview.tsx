@@ -1,24 +1,24 @@
 import { useParams, Link } from 'react-router';
 import '~/components/landing/landing.css';
-import { Eyebrow } from '~/components/landing/shared/Eyebrow';
-import { GradText } from '~/components/landing/shared/GradText';
-import { SectionHead } from '~/components/landing/shared/SectionHead';
-import { useReveal } from '~/components/landing/shared/useReveal';
-import { LogoLink } from '~/components/landing/LogoLink';
-import { SportPill } from '~/components/landing/mock/SportPill';
-import { SessionCard } from '~/components/landing/mock/SessionCard';
-import { MockAppBar } from '~/components/landing/mock/MockAppBar';
-import { WeekNav } from '~/components/landing/mock/WeekNav';
-import { WeekSummary } from '~/components/landing/mock/WeekSummary';
-import { WeekGridMock } from '~/components/landing/mock/WeekGridMock';
-import { MobileWeekViewMock } from '~/components/landing/mock/MobileWeekViewMock';
-import { HeroSection } from '~/components/landing/HeroSection';
-import { WhySection } from '~/components/landing/WhySection';
-import { FeaturesSection } from '~/components/landing/FeaturesSection';
-import { PerspectivesSection } from '~/components/landing/PerspectivesSection';
-import { JoinBetaSection } from '~/components/landing/JoinBetaSection';
-import { LandingContactSection } from '~/components/landing/LandingContactSection';
-import { LandingFooter } from '~/components/landing/LandingFooter';
+import { Eyebrow } from '~/components/landing/primitives/Eyebrow';
+import { GradText } from '~/components/landing/primitives/GradText';
+import { SectionHead } from '~/components/landing/primitives/SectionHead';
+import { useReveal } from '~/components/landing/hooks/useReveal';
+import { LogoLink } from '~/components/landing/layout/LogoLink';
+import { SportPill } from '~/components/landing/mock/components/SportPill';
+import { SessionCard } from '~/components/landing/mock/components/SessionCard';
+import { MockAppBar } from '~/components/landing/mock/components/MockAppBar';
+import { WeekNav } from '~/components/landing/mock/components/WeekNav';
+import { WeekSummary } from '~/components/landing/mock/components/WeekSummary';
+import { WeekGridMock } from '~/components/landing/mock/components/WeekGridMock';
+import { MobileWeekViewMock } from '~/components/landing/mock/components/MobileWeekViewMock';
+import { HeroSection } from '~/components/landing/sections/hero/HeroSection';
+import { WhySection } from '~/components/landing/sections/why/WhySection';
+import { FeaturesSection } from '~/components/landing/sections/features/FeaturesSection';
+import { PerspectivesSection } from '~/components/landing/sections/perspectives/PerspectivesSection';
+import { JoinBetaSection } from '~/components/landing/sections/join-beta/JoinBetaSection';
+import { ContactSection } from '~/components/landing/sections/contact/ContactSection';
+import { LandingFooter } from '~/components/landing/layout/LandingFooter';
 
 function RevealDemo() {
   const ref = useReveal<HTMLDivElement>();
@@ -189,10 +189,10 @@ const PREVIEW_REGISTRY: Record<string, { label: string; node: React.ReactNode }>
     ),
   },
   contact: {
-    label: 'LandingContactSection',
+    label: 'ContactSection',
     node: (
       <div className="-m-8">
-        <LandingContactSection />
+        <ContactSection />
       </div>
     ),
   },

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { PillBadge } from '~/components/landing/shared/PillBadge';
+import { PillBadge } from '~/components/landing/primitives/PillBadge';
 
 describe('PillBadge', () => {
   it('renders children as text', () => {

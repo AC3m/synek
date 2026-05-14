@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
-import { CtaButtonPair } from '~/components/landing/shared/CtaButtonPair';
+import { CtaButtonPair } from '~/components/landing/primitives/CtaButtonPair';
 
 const defaultProps = {
   primary: { label: 'I am a coach', to: '/en/register' },

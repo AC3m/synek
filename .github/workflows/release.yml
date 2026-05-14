@@ -13,8 +13,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  lockfile:
+    name: Lockfile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
+        with:
+          version: latest
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --no-frozen-lockfile
+      - run: git diff --exit-code pnpm-lock.yaml || (echo "::error::pnpm-lock.yaml is out of date. Run 'pnpm install' locally and commit the result." && exit 1)
+
   quality:
     name: Format
+    needs: lockfile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -30,6 +46,7 @@ jobs:
 
   typecheck:
     name: Typecheck
+    needs: lockfile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -45,6 +62,7 @@ jobs:
 
   test:
     name: Test
+    needs: lockfile
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -79,6 +97,7 @@ jobs:
   release:
     name: Release
     needs:
+      - lockfile
       - quality
       - typecheck
       - test

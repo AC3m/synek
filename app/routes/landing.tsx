@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useAuth } from '~/lib/context/AuthContext';
-import { LandingNav } from '~/components/landing/LandingNav';
-import { HeroSection } from '~/components/landing/HeroSection';
-import { WhySection } from '~/components/landing/WhySection';
-import { FeaturesSection } from '~/components/landing/FeaturesSection';
-import { PerspectivesSection } from '~/components/landing/PerspectivesSection';
-import { JoinBetaSection } from '~/components/landing/JoinBetaSection';
-import { LandingContactSection } from '~/components/landing/LandingContactSection';
-import { LandingFooter } from '~/components/landing/LandingFooter';
+import { LandingNav } from '~/components/landing/layout/LandingNav';
+import { HeroSection } from '~/components/landing/sections/hero/HeroSection';
+import { WhySection } from '~/components/landing/sections/why/WhySection';
+import { FeaturesSection } from '~/components/landing/sections/features/FeaturesSection';
+import { PerspectivesSection } from '~/components/landing/sections/perspectives/PerspectivesSection';
+import { JoinBetaSection } from '~/components/landing/sections/join-beta/JoinBetaSection';
+import { ContactSection } from '~/components/landing/sections/contact/ContactSection';
+import { LandingFooter } from '~/components/landing/layout/LandingFooter';
 import { AppLoader } from '~/components/ui/app-loader';
 import '~/components/landing/landing.css';
 
@@ -57,7 +57,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <PerspectivesSection />
         <JoinBetaSection />
-        <LandingContactSection />
+        <ContactSection />
       </main>
       <LandingFooter />
     </div>

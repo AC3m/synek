@@ -1,11 +1,11 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
-import { SportIcon } from '~/components/landing/mock/SportIcon';
-import { SportPill } from '~/components/landing/mock/SportPill';
-import { SessionCard } from '~/components/landing/mock/SessionCard';
-import { MockAppBar } from '~/components/landing/mock/MockAppBar';
-import { WeekNav } from '~/components/landing/mock/WeekNav';
-import { WeekSummary } from '~/components/landing/mock/WeekSummary';
+import { SportIcon } from '~/components/landing/mock/components/SportIcon';
+import { SportPill } from '~/components/landing/mock/components/SportPill';
+import { SessionCard } from '~/components/landing/mock/components/SessionCard';
+import { MockAppBar } from '~/components/landing/mock/components/MockAppBar';
+import { WeekNav } from '~/components/landing/mock/components/WeekNav';
+import { WeekSummary } from '~/components/landing/mock/components/WeekSummary';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 let restore: (() => Promise<void>) | null = null;

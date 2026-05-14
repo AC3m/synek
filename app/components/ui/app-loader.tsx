@@ -1,4 +1,4 @@
-import { LogoLink } from '~/components/landing/LogoLink'
+import { LogoLink } from '~/components/landing/layout/LogoLink'
 
 interface AppLoaderProps {
   className?: string

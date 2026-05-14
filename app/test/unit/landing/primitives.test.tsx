@@ -1,10 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
 import { useRef } from 'react';
-import { useReveal } from '~/components/landing/shared/useReveal';
-import { GradText } from '~/components/landing/shared/GradText';
-import { Eyebrow } from '~/components/landing/shared/Eyebrow';
-import { SectionHead } from '~/components/landing/shared/SectionHead';
+import { useReveal } from '~/components/landing/hooks/useReveal';
+import { GradText } from '~/components/landing/primitives/GradText';
+import { Eyebrow } from '~/components/landing/primitives/Eyebrow';
+import { SectionHead } from '~/components/landing/primitives/SectionHead';
 
 type IOCallback = (entries: Array<{ isIntersecting: boolean; target: Element }>) => void;
 

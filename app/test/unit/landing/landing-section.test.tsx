@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { LandingSection } from '~/components/landing/shared/LandingSection';
+import { LandingSection } from '~/components/landing/primitives/LandingSection';
 
 describe('LandingSection', () => {
   it('renders a <section> element by default', () => {

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router';
-import { GradientButton } from '~/components/landing/shared/GradientButton';
+import { GradientButton } from '~/components/landing/primitives/GradientButton';
 
 describe('GradientButton', () => {
   it('renders as <button> when no href/to', () => {

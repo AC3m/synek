@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
 import { RolePicker } from '~/components/ui/RolePicker';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/landing/layout/LandingNav';
 import type { UserRole } from '~/lib/auth';
 
 export default function SelectRolePage() {

@@ -5,7 +5,7 @@ import { MemoryRouter } from 'react-router';
 import RegisterPage from '~/routes/register';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
-vi.mock('~/components/landing/LandingNav', () => ({
+vi.mock('~/components/landing/layout/LandingNav', () => ({
   LandingNav: () => <nav data-testid="landing-nav" />,
 }));
 

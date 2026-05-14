@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, render, screen, within } from '@testing-library/react';
-import { WeekGridMock } from '~/components/landing/mock/WeekGridMock';
-import { MobileWeekViewMock } from '~/components/landing/mock/MobileWeekViewMock';
+import { WeekGridMock } from '~/components/landing/mock/components/WeekGridMock';
+import { MobileWeekViewMock } from '~/components/landing/mock/components/MobileWeekViewMock';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 let restore: (() => Promise<void>) | null = null;
