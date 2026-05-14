@@ -83,8 +83,9 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "esbuild",
       "@tailwindcss/oxide",
+      "esbuild",
+      "msw",
       "supabase"
     ]
   },
