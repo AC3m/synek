@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { FormModal } from '~/components/ui/form-modal';
+import { FormModal } from '~/components/shared/FormModal';
 import { VariantForm } from '~/components/strength/VariantForm';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useCreateStrengthVariant } from '~/lib/hooks/useStrengthVariants';

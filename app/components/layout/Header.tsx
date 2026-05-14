@@ -4,10 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
-import { Logo } from './Logo';
+import { Logo } from '~/components/shared/Logo';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
 import { cn } from '~/lib/utils';
+
+const NAV_ITEMS = [
+  { key: 'strength', icon: Dumbbell, path: (role: string | null) => `/${role}/strength` },
+  { key: 'goals', icon: Trophy, path: (role: string | null) => `/${role}/goals` },
+  { key: 'analytics', icon: BarChart3, path: (role: string | null) => `/${role}/analytics` },
+] as const;
 
 export function Header() {
   const { user } = useAuth();
@@ -18,59 +24,32 @@ export function Header() {
   const logoHref = user ? `/${resolvedLocale}/${user.role}` : '/';
 
   return (
-    <header className="pt-safe sticky top-0 z-40 border-b border-[color:var(--separator)] bg-surface-1/80 backdrop-blur-md">
+    <header className="pt-safe sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link to={logoHref} className="flex items-center gap-2">
+          <Link to={logoHref}>
             <Logo size="sm" />
           </Link>
           {user && (
             <nav className="hidden items-center gap-1 md:flex">
-              <NavLink
-                to={localePath(`/${user.role}/strength`)}
-                prefetch="intent"
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-orange-50 text-orange-700 dark:bg-orange-950/40 dark:text-orange-400'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-                  )
-                }
-              >
-                <Dumbbell className="h-3.5 w-3.5" />
-                {t('nav.strength')}
-              </NavLink>
-              <NavLink
-                to={localePath(`/${user.role}/goals`)}
-                prefetch="intent"
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-                  )
-                }
-              >
-                <Trophy className="h-3.5 w-3.5" />
-                {t('nav.goals')}
-              </NavLink>
-              <NavLink
-                to={localePath(`/${user.role}/analytics`)}
-                prefetch="intent"
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                    isActive
-                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400'
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground',
-                  )
-                }
-              >
-                <BarChart3 className="h-3.5 w-3.5" />
-                {t('nav.analytics')}
-              </NavLink>
+              {NAV_ITEMS.map(({ key, icon: Icon, path }) => (
+                <NavLink
+                  key={key}
+                  to={localePath(path(user.role))}
+                  prefetch="intent"
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-primary/8 text-primary'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                    )
+                  }
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {t(`nav.${key}` as never)}
+                </NavLink>
+              ))}
             </nav>
           )}
         </div>

@@ -1,5 +1,5 @@
 import { Navigate, Outlet, useParams } from 'react-router';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 import { Users, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';

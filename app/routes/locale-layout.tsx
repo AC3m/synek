@@ -2,7 +2,7 @@ import { Outlet, useNavigation } from 'react-router';
 import { Header } from '~/components/layout/Header';
 import { BottomNav } from '~/components/layout/BottomNav';
 import { InstallPrompt } from '~/components/layout/InstallPrompt';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 
 export default function LocaleLayout() {
   const navigation = useNavigation();

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { useNavigate, Link, useParams } from 'react-router';
+import { useNavigate, Link, useParams, useSearchParams } from 'react-router';
 import { Eye, EyeOff } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
@@ -8,8 +8,8 @@ import { isMockMode } from '~/lib/supabase';
 import { mockRegisterUser, mockLogin } from '~/lib/auth';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { cn } from '~/lib/utils';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
+import { RolePicker } from '~/components/shared/RolePicker';
 import { registrationSchema } from '~/lib/schemas/auth';
 import type { UserRole } from '~/lib/auth';
 
@@ -22,8 +22,12 @@ export default function RegisterPage() {
   const { login, loginWithGoogle } = useAuth();
   const navigate = useNavigate();
   const { locale = 'pl' } = useParams<{ locale: string }>();
+  const [searchParams] = useSearchParams();
 
-  const [role, setRole] = useState<UserRole | null>(null);
+  const [role, setRole] = useState<UserRole | null>(() => {
+    const r = searchParams.get('role');
+    return r === 'coach' || r === 'athlete' ? r : null;
+  });
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -156,23 +160,7 @@ export default function RegisterPage() {
             {/* Role picker */}
             <div className="space-y-2">
               <p className="text-sm font-medium">{t('beta.roleLabel')}</p>
-              <div className="grid grid-cols-2 gap-2">
-                {(['coach', 'athlete'] as const).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setRole(r)}
-                    className={cn(
-                      'rounded-lg border px-4 py-3 text-sm font-medium transition-colors',
-                      role === r
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-border bg-background hover:bg-muted',
-                    )}
-                  >
-                    {t(r === 'coach' ? 'beta.roleCoach' : 'beta.roleAthlete')}
-                  </button>
-                ))}
-              </div>
+              <RolePicker value={role} onChange={setRole} />
             </div>
 
             {/* Name */}

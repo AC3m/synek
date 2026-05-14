@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
-import { Button } from '~/components/ui/button';
-import { cn } from '~/lib/utils';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { RolePicker } from '~/components/shared/RolePicker';
+import { LandingNav } from '~/components/shared/LandingNav';
 import type { UserRole } from '~/lib/auth';
 
 export default function SelectRolePage() {
@@ -38,26 +37,7 @@ export default function SelectRolePage() {
             <p className="mt-1 text-sm text-muted-foreground">{t('auth.selectRoleBody')}</p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {(['coach', 'athlete'] as const).map((role) => (
-              <button
-                key={role}
-                type="button"
-                data-testid={`role-btn-${role}`}
-                disabled={isPending}
-                onClick={() => handleSelectRole(role)}
-                className={cn(
-                  'rounded-xl border px-4 py-6 text-sm font-medium transition-colors',
-                  selectedRole === role
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-border bg-background hover:bg-muted',
-                  isPending && 'cursor-not-allowed opacity-50',
-                )}
-              >
-                {role === 'coach' ? t('roles.coach') : t('roles.athlete')}
-              </button>
-            ))}
-          </div>
+          <RolePicker value={selectedRole} onChange={handleSelectRole} disabled={isPending} />
         </div>
       </main>
     </div>

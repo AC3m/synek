@@ -7,7 +7,7 @@ import { createTestQueryClient } from '~/test/utils/query-client';
 
 // LandingNav uses ThemeToggle/LanguageToggle which need context providers not
 // relevant to login form tests — stub it out.
-vi.mock('~/components/landing/LandingNav', () => ({
+vi.mock('~/components/shared/LandingNav', () => ({
   LandingNav: () => <nav data-testid="landing-nav" />,
 }));
 

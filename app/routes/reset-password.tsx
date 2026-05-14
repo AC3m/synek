@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from 'lucide-react';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { useAuth } from '~/lib/context/AuthContext';

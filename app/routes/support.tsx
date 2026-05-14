@@ -1,6 +1,6 @@
-import { LandingNav } from '~/components/landing/LandingNav';
-import { LandingFooter } from '~/components/landing/LandingFooter';
-import { SupportSection } from '~/components/landing/SupportSection';
+import { LandingNav } from '~/components/shared/LandingNav';
+import { LandingFooter } from '~/components/landing/layout/LandingFooter';
+import { SupportSection } from '~/components/support/SupportSection';
 
 export function meta() {
   return [{ title: 'Support — SYNEK' }];

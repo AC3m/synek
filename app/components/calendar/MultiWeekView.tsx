@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
-import { StaggerIn } from '~/components/ui/stagger-in';
+import { StaggerIn } from '~/components/shared/StaggerIn';
 import { WeekGrid } from './WeekGrid';
 import { HistoryWeekRow } from './HistoryWeekRow';
 import { useWeekHistory } from '~/lib/hooks/useWeekHistory';

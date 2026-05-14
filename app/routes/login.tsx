@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { Eye, EyeOff } from 'lucide-react';
-import { Logo } from '~/components/layout/Logo';
+import { Logo } from '~/components/shared/Logo';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
 import { Button } from '~/components/ui/button';

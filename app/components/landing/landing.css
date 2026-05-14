@@ -1,0 +1,80 @@
+/* Landing-scoped styles: fonts, accent gradient tokens, base typography.
+ * Active only under [data-landing] root wrapper to avoid leaking into the app. */
+
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/inter-tight';
+@import '@fontsource-variable/jetbrains-mono';
+
+[data-landing] {
+  --landing-font-sans: 'Inter Variable', system-ui, sans-serif;
+  --landing-font-display: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
+  --landing-font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --grad-a: #10b981;
+  --grad-b: #059669;
+  --grad-c: #047857;
+  --grad-a-rgb: 16, 185, 129;
+  --grad-b-rgb: 5, 150, 105;
+  --grad-c-rgb: 4, 120, 87;
+  --grad: linear-gradient(120deg, var(--grad-a) 0%, var(--grad-b) 50%, var(--grad-c) 100%);
+  --grad-soft: linear-gradient(
+    120deg,
+    rgb(var(--grad-a-rgb) / 0.2),
+    rgb(var(--grad-b-rgb) / 0.2),
+    rgb(var(--grad-c-rgb) / 0.2)
+  );
+
+  --landing-bg: oklch(0.14 0.005 270);
+  --landing-bg-2: oklch(0.18 0.005 270);
+  --landing-bg-3: oklch(0.22 0.005 270);
+  --landing-fg: oklch(0.96 0.005 270);
+  --landing-fg-2: oklch(0.96 0.005 270 / 0.7);
+  --landing-fg-3: oklch(0.96 0.005 270 / 0.55);
+  --landing-fg-4: oklch(0.96 0.005 270 / 0.35);
+  --landing-line: oklch(1 0 0 / 0.08);
+  --landing-line-2: oklch(1 0 0 / 0.14);
+  --landing-shadow-card: 0 24px 60px -24px rgb(0 0 0 / 0.6);
+
+  font-family: var(--landing-font-sans);
+  background: var(--landing-bg);
+  color: var(--landing-fg);
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+[data-landing] .landing-display {
+  font-family: var(--landing-font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+[data-landing] .landing-mono {
+  font-family: var(--landing-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-landing] .landing-grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+[data-landing] .landing-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 600ms ease,
+    transform 600ms ease;
+}
+[data-landing] .landing-reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-landing] .landing-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

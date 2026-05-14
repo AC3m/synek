@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { LandingNav } from '~/components/landing/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { requestPasswordReset } from '~/lib/queries/auth-callbacks';

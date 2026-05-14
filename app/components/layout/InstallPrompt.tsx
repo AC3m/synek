@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Share } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Logo } from './Logo';
+import { LogoMark } from '~/components/shared/Logo';
 import { cn } from '~/lib/utils';
 import { isStandaloneMode } from '~/lib/utils/pwa';
 
@@ -73,7 +73,7 @@ export function InstallPrompt() {
         'animate-in duration-300 ease-out fade-in slide-in-from-bottom-3',
       )}
     >
-      <Logo size="sm" showWordmark={false} className="shrink-0" />
+      <LogoMark size="sm" className="shrink-0" />
       <div className="min-w-0 flex-1">
         <p className="text-sm leading-tight font-semibold text-foreground">{t('install.title')}</p>
         <p className="mt-0.5 text-xs leading-snug text-muted-foreground">

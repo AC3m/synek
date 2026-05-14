@@ -1,18 +1,20 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { useAuth } from '~/lib/context/AuthContext';
-import { LandingNav } from '~/components/landing/LandingNav';
-import { HeroSection } from '~/components/landing/HeroSection';
-import { WhySynekSection } from '~/components/landing/WhySynekSection';
-import { FeaturesSection } from '~/components/landing/FeaturesSection';
-import { JoinBetaSection } from '~/components/landing/JoinBetaSection';
-import { ContactSection } from '~/components/landing/ContactSection';
-import { LandingFooter } from '~/components/landing/LandingFooter';
-import { AppLoader } from '~/components/ui/app-loader';
+import { LandingNav } from '~/components/shared/LandingNav';
+import { HeroSection } from '~/components/landing/sections/hero/HeroSection';
+import { WhySection } from '~/components/landing/sections/why/WhySection';
+import { FeaturesSection } from '~/components/landing/sections/features/FeaturesSection';
+import { PerspectivesSection } from '~/components/landing/sections/perspectives/PerspectivesSection';
+import { JoinBetaSection } from '~/components/landing/sections/join-beta/JoinBetaSection';
+import { ContactSection } from '~/components/landing/sections/contact/ContactSection';
+import { LandingFooter } from '~/components/landing/layout/LandingFooter';
+import { AppLoader } from '~/components/shared/AppLoader';
+import '~/components/landing/landing.css';
 
 export function meta() {
   return [
-    { title: 'SYNEK — Training planning for coaches and athletes' },
+    { title: 'SYNEK — Train with intent. Together.' },
     {
       name: 'description',
       content:
@@ -33,17 +35,27 @@ export default function LandingPage() {
     }
   }, [user, isLoading, navigate, locale]);
 
+  useEffect(() => {
+    const html = document.documentElement;
+    const hadDark = html.classList.contains('dark');
+    html.classList.add('dark');
+    return () => {
+      if (!hadDark) html.classList.remove('dark');
+    };
+  }, []);
+
   if (isLoading || user) {
     return <AppLoader />;
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div data-landing className="min-h-dvh">
       <LandingNav />
       <main>
         <HeroSection />
-        <WhySynekSection />
+        <WhySection />
         <FeaturesSection />
+        <PerspectivesSection />
         <JoinBetaSection />
         <ContactSection />
       </main>

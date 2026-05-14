@@ -22,6 +22,12 @@ export default [
     route('select-role', 'routes/select-role.tsx'),
     route('support', 'routes/support.tsx'),
 
+    // Dev-only preview harness for landing components — registry-driven.
+    route('landing-preview', 'routes/landing-preview.tsx'),
+    route('landing-preview/:component', 'routes/landing-preview.tsx', {
+      id: 'landing-preview-item',
+    }),
+
     // App pages — wrapped with Header + BottomNav
     layout('routes/locale-layout.tsx', [
       route('home', 'routes/home.tsx'),

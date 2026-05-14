@@ -4,7 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter, Route, Routes } from 'react-router';
 import { createTestQueryClient } from '~/test/utils/query-client';
 
-vi.mock('~/components/landing/LandingNav', () => ({
+vi.mock('~/components/shared/LandingNav', () => ({
   LandingNav: () => <nav data-testid="landing-nav" />,
 }));
 
