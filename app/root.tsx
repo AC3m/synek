@@ -14,6 +14,8 @@ import { AuthProvider } from '~/lib/context/AuthContext';
 import { ThemeProvider } from '~/lib/context/ThemeContext';
 import { AppLoader } from '~/components/shared/AppLoader';
 
+import { Analytics } from '@vercel/analytics/react';
+
 import type { Route } from './+types/root';
 import './app.css';
 import '~/i18n/config';
@@ -56,6 +58,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );
