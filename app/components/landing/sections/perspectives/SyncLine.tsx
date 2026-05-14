@@ -3,10 +3,16 @@ export function SyncLine() {
     <div
       data-testid="sync-line"
       aria-hidden="true"
-      className="absolute top-1/2 left-1/2 hidden h-px w-24 -translate-x-1/2 -translate-y-1/2 lg:block"
+      className="hidden lg:block"
       style={{
+        position: 'absolute',
+        left: '56%',
+        right: '22%',
+        top: '50%',
+        height: 1,
+        zIndex: 1,
         background:
-          'linear-gradient(90deg, transparent, rgb(var(--grad-b-rgb) / 0.6), transparent)',
+          'linear-gradient(90deg, transparent, rgba(var(--grad-a-rgb), 0.5), rgba(var(--grad-b-rgb), 0.5), transparent)',
       }}
     />
   );

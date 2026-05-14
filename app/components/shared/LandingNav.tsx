@@ -45,13 +45,13 @@ export function LandingNav() {
           </div>
           <Link
             to={`/${locale}/login`}
-            className="hidden h-9 items-center justify-center rounded-md px-3 text-[13px] opacity-80 hover:opacity-100 md:inline-flex"
+            className="hidden h-9 min-w-[104px] items-center justify-center rounded-md px-3 text-[13px] opacity-80 hover:opacity-100 md:inline-flex"
           >
             {t('nav.signin')}
           </Link>
           <Link
             to={`/${locale}/register`}
-            className="inline-flex h-9 items-center justify-center rounded-md bg-[image:var(--grad)] px-3.5 text-[13px] font-semibold text-white"
+            className="inline-flex h-9 min-w-[104px] items-center justify-center rounded-md bg-[image:var(--grad)] px-3.5 text-[13px] font-semibold text-white"
           >
             {t('nav.getStarted')}
           </Link>

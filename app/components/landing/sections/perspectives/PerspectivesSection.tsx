@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Check } from 'lucide-react';
 import { LandingSection } from '../../primitives/LandingSection';
 import { SectionHead } from '../../primitives/SectionHead';
-import { CoachBoard } from './CoachBoard';
-import { AthletePhone } from './AthletePhone';
-import { SyncLine } from './SyncLine';
+import { PerspectivesVisual } from './PerspectivesVisual';
+import { PerspectiveBullet } from './PerspectiveBullet';
 
 const BULLET_KEYS = ['drag', 'notes', 'status', 'mobile'] as const;
 
@@ -18,10 +16,13 @@ export function PerspectivesSection() {
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-50"
+        className="pointer-events-none absolute"
         style={{
+          inset: '-20% -10% -20% -10%',
+          zIndex: 0,
           background:
-            'radial-gradient(60% 50% at 50% 30%, rgb(var(--grad-b-rgb) / 0.18), transparent)',
+            'radial-gradient(50% 50% at 30% 50%, rgba(var(--grad-a-rgb), 0.28), transparent 70%), radial-gradient(45% 45% at 80% 40%, rgba(var(--grad-b-rgb), 0.22), transparent 70%)',
+          filter: 'blur(60px)',
         }}
       />
       <SectionHead
@@ -37,36 +38,14 @@ export function PerspectivesSection() {
       />
 
       <div className="mt-12 grid items-center gap-10 lg:grid-cols-[1.4fr_1fr] lg:gap-12">
-        <div className="relative">
-          <CoachBoard />
-          <SyncLine />
-          <div className="absolute top-1/2 -right-10 hidden -translate-y-1/2 lg:block">
-            <AthletePhone />
-          </div>
-        </div>
+        <PerspectivesVisual />
         <div className="flex flex-col gap-4">
           {BULLET_KEYS.map((key) => (
-            <div
+            <PerspectiveBullet
               key={key}
-              data-testid="perspective-bullet"
-              className="flex flex-col gap-1 border-t border-white/10 pt-4"
-            >
-              <div className="flex items-center gap-2.5">
-                <span
-                  className="inline-flex h-5 w-5 items-center justify-center rounded-sm text-white"
-                  style={{ background: 'var(--grad)' }}
-                  aria-hidden="true"
-                >
-                  <Check size={11} />
-                </span>
-                <span className="text-[15px] font-semibold">
-                  {t(`perspectives.bullets.${key}.title` as never)}
-                </span>
-              </div>
-              <p className="pl-[30px] text-[13.5px] leading-relaxed opacity-70">
-                {t(`perspectives.bullets.${key}.body` as never)}
-              </p>
-            </div>
+              title={t(`perspectives.bullets.${key}.title` as never)}
+              body={t(`perspectives.bullets.${key}.body` as never)}
+            />
           ))}
         </div>
       </div>
