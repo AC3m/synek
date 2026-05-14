@@ -29,5 +29,6 @@ supabase/seed.sql
 supabase/backup_before_strava_refactor
 
 /screenshots/
+/.tmp/
 
 .github/
