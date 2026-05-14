@@ -82,7 +82,7 @@ jobs:
             deno-${{ runner.os }}-
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.x
+          deno-version: v2.7
       - run: bash scripts/check-supabase-functions.sh
 
   release:

@@ -6,6 +6,9 @@ if ! command -v deno >/dev/null 2>&1; then
   exit 1
 fi
 
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+LOCK_FILE="$REPO_ROOT/deno.lock"
+
 files=()
 while IFS= read -r file; do
   files+=("${file}")
@@ -20,6 +23,6 @@ for file in "${files[@]}"; do
   echo "deno check ${file}"
   (
     cd "$(dirname "${file}")"
-    deno check --quiet --no-lock "$(basename "${file}")"
+    deno check --quiet --lock "$LOCK_FILE" "$(basename "${file}")"
   )
 done
