@@ -74,7 +74,7 @@ vi.mock('~/components/strength/VariantForm', () => ({
   ),
 }));
 
-vi.mock('~/components/ui/form-modal', () => ({
+vi.mock('~/components/shared/FormModal', () => ({
   FormModal: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 

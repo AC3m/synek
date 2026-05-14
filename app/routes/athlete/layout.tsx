@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useParams } from 'react-router';
 import { useAuth } from '~/lib/context/AuthContext';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 
 export default function AthleteLayout() {
   const { user, isLoading, needsRoleSelection } = useAuth();

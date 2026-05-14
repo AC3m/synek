@@ -1,10 +1,12 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
+@import '@fontsource-variable/inter-tight';
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --font-display: 'Inter Tight Variable', ui-sans-serif, system-ui, sans-serif;
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, ui-sans-serif,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';

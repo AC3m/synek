@@ -3,7 +3,7 @@ import { BarChart2, Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '~/lib/utils';
 import { Button } from '~/components/ui/button';
-import { ConfirmDialog } from '~/components/ui/confirm-dialog';
+import { ConfirmDialog } from '~/components/shared/ConfirmDialog';
 import type { StrengthVariant } from '~/types/training';
 
 interface VariantCardProps {

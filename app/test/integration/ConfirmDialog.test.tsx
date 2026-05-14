@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '~/test/utils/render';
-import { ConfirmDialog } from '~/components/ui/confirm-dialog';
+import { ConfirmDialog } from '~/components/shared/ConfirmDialog';
 
 function renderDialog(props: Partial<React.ComponentProps<typeof ConfirmDialog>> = {}) {
   const defaults = {

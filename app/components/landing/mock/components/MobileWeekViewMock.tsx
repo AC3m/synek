@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Bell } from 'lucide-react';
-import { LogoLink } from '../../layout/LogoLink';
+import { LogoMark } from '~/components/shared/Logo';
 import { SessionCard } from './SessionCard';
 import { cn } from '~/lib/utils';
 
@@ -23,7 +23,7 @@ export function MobileWeekViewMock() {
 
       <div className="flex items-center justify-between px-5 pt-2 pb-4">
         <div className="flex items-center gap-2.5">
-          <LogoLink size={22} />
+          <LogoMark size="sm" />
           <div>
             <div className="text-[11px] tracking-[0.06em] opacity-60">{t('mock.mobile.hi')}</div>
             <div className="mt-0.5 text-[14px] font-semibold">

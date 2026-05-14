@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router';
 import { Menu, X } from 'lucide-react';
-import { LogoLink } from './LogoLink';
-import { LandingLangToggle } from './LandingLangToggle';
-import { SECTIONS } from '../constants';
-import { useSmoothScroll } from '../hooks/useSmoothScroll';
+import { Logo } from '~/components/shared/Logo';
+import { LandingLangToggle } from '~/components/landing/layout/LandingLangToggle';
+import { SECTIONS } from '~/components/landing/constants';
+import { useSmoothScroll } from '~/components/landing/hooks/useSmoothScroll';
 import { cn } from '~/lib/utils';
 
 export function LandingNav() {
@@ -22,12 +22,8 @@ export function LandingNav() {
   return (
     <header className="pt-safe fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-[color-mix(in_oklab,var(--landing-bg)_75%,transparent)] backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-4 px-5 sm:px-8">
-        <Link
-          to={`/${locale}`}
-          className="inline-flex items-center gap-2 text-[14px] font-semibold"
-        >
-          <LogoLink size={22} />
-          SYNEK
+        <Link to={`/${locale}`}>
+          <Logo size="sm" />
         </Link>
 
         <nav className="ml-6 hidden items-center gap-6 md:flex">

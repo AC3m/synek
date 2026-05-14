@@ -8,8 +8,8 @@ import { isMockMode } from '~/lib/supabase';
 import { mockRegisterUser, mockLogin } from '~/lib/auth';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { LandingNav } from '~/components/landing/layout/LandingNav';
-import { RolePicker } from '~/components/ui/RolePicker';
+import { LandingNav } from '~/components/shared/LandingNav';
+import { RolePicker } from '~/components/shared/RolePicker';
 import { registrationSchema } from '~/lib/schemas/auth';
 import type { UserRole } from '~/lib/auth';
 

@@ -12,7 +12,7 @@ import { TooltipProvider } from '~/components/ui/tooltip';
 import { Toaster } from '~/components/ui/sonner';
 import { AuthProvider } from '~/lib/context/AuthContext';
 import { ThemeProvider } from '~/lib/context/ThemeContext';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 
 import type { Route } from './+types/root';
 import './app.css';

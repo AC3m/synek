@@ -1,5 +1,5 @@
 import { Navigate, useParams } from 'react-router';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 import { useAuth } from '~/lib/context/AuthContext';
 
 export function meta() {

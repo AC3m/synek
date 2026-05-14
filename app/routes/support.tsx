@@ -1,4 +1,4 @@
-import { LandingNav } from '~/components/landing/layout/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { LandingFooter } from '~/components/landing/layout/LandingFooter';
 import { SupportSection } from '~/components/support/SupportSection';
 

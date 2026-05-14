@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 import { UserMenu } from './UserMenu';
-import { LogoLink } from '~/components/landing/layout/LogoLink';
+import { Logo } from '~/components/shared/Logo';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useLocalePath } from '~/lib/hooks/useLocalePath';
 import { cn } from '~/lib/utils';
@@ -27,9 +27,8 @@ export function Header() {
     <header className="pt-safe sticky top-0 z-40 border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link to={logoHref} className="flex items-center gap-2">
-            <LogoLink size={20} />
-            <span className="text-xs font-black tracking-[0.2em] uppercase italic">SYNEK</span>
+          <Link to={logoHref}>
+            <Logo size="sm" />
           </Link>
           {user && (
             <nav className="hidden items-center gap-1 md:flex">

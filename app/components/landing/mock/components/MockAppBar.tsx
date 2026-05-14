@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Bell, Dumbbell, LineChart, Search, Target } from 'lucide-react';
-import { LogoLink } from '../../layout/LogoLink';
+import { Logo } from '~/components/shared/Logo';
 import { cn } from '~/lib/utils';
 
 export type MockTab = 'training' | 'goals' | 'analytics';
@@ -29,10 +29,7 @@ export function MockAppBar({
   return (
     <div className="flex items-center justify-between gap-4 border-b border-white/10 px-4 py-2.5">
       <div className="flex items-center gap-5">
-        <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold">
-          <LogoLink size={16} />
-          SYNEK
-        </span>
+        <Logo size="sm" />
         <div role="tablist" className="flex items-center gap-1">
           {TABS.map((tab) => {
             const Icon = TAB_ICON[tab];

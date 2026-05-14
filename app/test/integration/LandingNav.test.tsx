@@ -9,7 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router';
-import { LandingNav } from '~/components/landing/layout/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { useLocale } from '~/test/utils/landing-i18n';
 
 function renderAt(path: string) {

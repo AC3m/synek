@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Plus } from 'lucide-react';
 import { Button } from '~/components/ui/button';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 import { GoalCard } from './GoalCard';
 import { GoalDialog } from './GoalDialog';
 import { useGoals } from '~/lib/hooks/useGoals';

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router';
-import { LandingNav } from '~/components/landing/layout/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { Eye, EyeOff } from 'lucide-react';
-import { LogoLink } from '~/components/landing/layout/LogoLink';
+import { Logo } from '~/components/shared/Logo';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '~/lib/context/AuthContext';
 import { Button } from '~/components/ui/button';
@@ -56,10 +56,7 @@ export default function LoginPage() {
         <div className="w-full max-w-sm space-y-8">
           {/* Logo */}
           <div className="flex flex-col items-center gap-2">
-            <div className="flex items-center gap-2">
-              <LogoLink size={40} />
-              <span className="text-2xl font-black tracking-[0.3em] uppercase italic">SYNEK</span>
-            </div>
+            <Logo size="lg" />
             <p className="text-sm text-muted-foreground">{t('auth.signInSubtitle')}</p>
           </div>
 

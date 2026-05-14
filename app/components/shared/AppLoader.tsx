@@ -1,4 +1,4 @@
-import { LogoLink } from '~/components/landing/layout/LogoLink';
+import { Logo } from '~/components/shared/Logo';
 
 interface AppLoaderProps {
   className?: string;
@@ -16,10 +16,7 @@ export function AppLoader({ className }: AppLoaderProps) {
         }
       `}</style>
       <div style={{ animation: 'app-loader-breathe 2s ease-in-out infinite' }}>
-        <div className="flex items-center gap-2">
-          <LogoLink size={40} />
-          <span className="text-2xl font-black tracking-[0.3em] uppercase italic">SYNEK</span>
-        </div>
+        <Logo size="lg" />
       </div>
     </div>
   );

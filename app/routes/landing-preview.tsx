@@ -4,7 +4,7 @@ import { Eyebrow } from '~/components/landing/primitives/Eyebrow';
 import { GradText } from '~/components/landing/primitives/GradText';
 import { SectionHead } from '~/components/landing/primitives/SectionHead';
 import { useReveal } from '~/components/landing/hooks/useReveal';
-import { LogoLink } from '~/components/landing/layout/LogoLink';
+import { Logo, LogoMark } from '~/components/shared/Logo';
 import { SportPill } from '~/components/landing/mock/components/SportPill';
 import { SessionCard } from '~/components/landing/mock/components/SessionCard';
 import { MockAppBar } from '~/components/landing/mock/components/MockAppBar';
@@ -61,16 +61,15 @@ const PREVIEW_REGISTRY: Record<string, { label: string; node: React.ReactNode }>
     node: <RevealDemo />,
   },
   'logo-link': {
-    label: 'LogoLink (sizes 22 / 40 / 80)',
+    label: 'Logo (sm / md / lg)',
     node: (
-      <div className="flex items-center gap-10">
-        <LogoLink size={22} />
-        <LogoLink size={40} />
-        <LogoLink size={80} />
-        <span className="flex items-center gap-3 text-2xl font-semibold">
-          <LogoLink size={28} />
-          SYNEK
-        </span>
+      <div className="flex flex-wrap items-center gap-10">
+        <LogoMark size="sm" />
+        <LogoMark size="md" />
+        <LogoMark size="lg" />
+        <Logo size="sm" />
+        <Logo size="md" />
+        <Logo size="lg" />
       </div>
     ),
   },

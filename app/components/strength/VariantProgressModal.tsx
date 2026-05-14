@@ -9,7 +9,7 @@ import {
   DialogClose,
 } from '~/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '~/components/ui/sheet';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 import { Button } from '~/components/ui/button';
 import { useIsMobile } from '~/lib/hooks/useIsMobile';
 import { useStrengthVariant, useVariantProgressLogs } from '~/lib/hooks/useStrengthVariants';

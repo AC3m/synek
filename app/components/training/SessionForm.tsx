@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormModal } from '~/components/ui/form-modal';
+import { FormModal } from '~/components/shared/FormModal';
 import { SessionFormFields, type FormTab } from './SessionFormFields';
 import { useAuth } from '~/lib/context/AuthContext';
 import { useStrengthVariants, useLastSessionExercises } from '~/lib/hooks/useStrengthVariants';

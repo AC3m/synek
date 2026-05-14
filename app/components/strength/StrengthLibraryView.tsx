@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Plus, Search } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
-import { AppLoader } from '~/components/ui/app-loader';
+import { AppLoader } from '~/components/shared/AppLoader';
 import { VariantCard } from '~/components/strength/VariantCard';
 import { VariantProgressModal } from '~/components/strength/VariantProgressModal';
 import { StrengthEmptyState } from '~/components/strength/StrengthEmptyState';

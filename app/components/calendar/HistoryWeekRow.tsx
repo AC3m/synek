@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '~/components/ui/dialog';
-import { ConfirmDialog } from '~/components/ui/confirm-dialog';
+import { ConfirmDialog } from '~/components/shared/ConfirmDialog';
 import { WeekGrid } from './WeekGrid';
 import { WeekSkeleton } from './WeekSkeleton';
 import { getWeekDateRange, parseWeekId } from '~/lib/utils/date';

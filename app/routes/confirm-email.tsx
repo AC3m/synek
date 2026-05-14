@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, Link } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Mail } from 'lucide-react';
-import { LandingNav } from '~/components/landing/layout/LandingNav';
+import { LandingNav } from '~/components/shared/LandingNav';
 import { Button } from '~/components/ui/button';
 import { resendConfirmationEmail } from '~/lib/queries/auth-callbacks';
 
