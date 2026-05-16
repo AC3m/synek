@@ -12,6 +12,7 @@ import { Separator } from '~/components/ui/separator';
 import { stravaAssets } from '~/assets/strava';
 import { cn } from '~/lib/utils';
 import { JunctionGarminSection } from '~/components/settings/JunctionGarminSection';
+import { HealthKitSection } from '~/components/settings/HealthKitSection';
 import {
   mondayToWeekId,
   getPrevWeekId,
@@ -159,6 +160,10 @@ export function IntegrationsTab({
           </div>
         )}
       </div>
+
+      <Separator />
+
+      <HealthKitSection className="mt-2" />
 
       <Separator />
 

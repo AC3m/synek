@@ -18,6 +18,10 @@ export const queryKeys = {
     all: ['stravaConnection'] as const,
     byUser: (userId: string) => ['stravaConnection', userId] as const,
   },
+  healthkitSync: {
+    all: ['healthkitSync'] as const,
+    status: (userId: string) => ['healthkitSync', 'status', userId] as const,
+  },
   invites: {
     all: ['invites'] as const,
     byCoach: (coachId: string) => ['invites', coachId] as const,

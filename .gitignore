@@ -27,6 +27,7 @@ supabase/seed.sql
 
 #DB Backups
 supabase/backup_before_strava_refactor
+/backups/
 
 /screenshots/
 /.tmp/

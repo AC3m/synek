@@ -200,6 +200,22 @@
     "stravaAllShared": "All sessions data shared with coach",
     "stravaAllShareFailed": "Failed to share sessions data"
   },
+  "healthkit": {
+    "title": "Apple Watch",
+    "iosOnlyNotice": "Open Synek in the iOS app to sync workouts from your Apple Watch.",
+    "description": "Sync workouts from your Apple Watch via HealthKit. Reads workouts from the last 30 days.",
+    "permissionTitle": "HealthKit permission",
+    "permissionBody": "Synek needs read access to Workouts, Heart Rate, Distance and Active Energy.",
+    "syncButton": "Sync now",
+    "syncing": "Syncing…",
+    "syncedBadge": "Synced via Apple Watch",
+    "lastSynced": "Last synced {{time}}",
+    "synced": "Synced {{count}} workouts",
+    "matched": "Linked {{count}} to planned sessions",
+    "errorPermission": "HealthKit permission was not granted.",
+    "errorSync": "Sync failed: {{message}}",
+    "noWorkouts": "No new workouts found in the last 30 days."
+  },
   "junction": {
     "connectButton": "Connect Garmin",
     "connectedBadge": "Garmin connected",

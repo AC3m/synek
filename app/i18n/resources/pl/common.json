@@ -200,6 +200,22 @@
     "stravaAllShared": "Wszystkie dane udostępnione trenerowi",
     "stravaAllShareFailed": "Nie udało się udostępnić danych"
   },
+  "healthkit": {
+    "title": "Apple Watch",
+    "iosOnlyNotice": "Otwórz Synek w aplikacji iOS, aby synchronizować treningi z Apple Watch.",
+    "description": "Synchronizuj treningi z Apple Watch przez HealthKit. Czyta treningi z ostatnich 30 dni.",
+    "permissionTitle": "Uprawnienia HealthKit",
+    "permissionBody": "Synek potrzebuje dostępu do odczytu Treningów, Tętna, Dystansu i Aktywnej energii.",
+    "syncButton": "Synchronizuj",
+    "syncing": "Synchronizowanie…",
+    "syncedBadge": "Zsynchronizowano z Apple Watch",
+    "lastSynced": "Ostatnia synchronizacja {{time}}",
+    "synced": "Zsynchronizowano {{count}} treningów",
+    "matched": "Powiązano {{count}} z zaplanowanymi sesjami",
+    "errorPermission": "Nie udzielono uprawnień HealthKit.",
+    "errorSync": "Synchronizacja nie powiodła się: {{message}}",
+    "noWorkouts": "Brak nowych treningów z ostatnich 30 dni."
+  },
   "junction": {
     "connectButton": "Połącz z Garmin",
     "connectedBadge": "Garmin połączony",
