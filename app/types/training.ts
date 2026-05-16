@@ -313,6 +313,9 @@ export interface TrainingSession {
   stravaActivityId: number | null;
   stravaSyncedAt: string | null;
   isStravaConfirmed?: boolean;
+  healthkitWorkoutId?: string | null;
+  healthkitSyncedAt?: string | null;
+  healthkitSourceName?: string | null;
   goalId?: string | null;
   /** True when actual fields were back-filled from Garmin via augmentSessionsWithGarmin (PoC) */
   garminAugmented?: boolean;
