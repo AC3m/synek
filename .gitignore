@@ -18,6 +18,9 @@ supabase/seed.sql
 # Logs
 *.log
 
+# pnpm
+.pnpm-store/
+
 # Agent-specific
 .claude/
 .gemini/
@@ -27,6 +30,7 @@ supabase/seed.sql
 
 #DB Backups
 supabase/backup_before_strava_refactor
+/backups/
 
 /screenshots/
 /.tmp/

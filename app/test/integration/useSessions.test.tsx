@@ -16,6 +16,7 @@ import {
   mockCreateSession,
   mockDeleteSession,
   mockUpdateSession,
+  resetMockSessions,
 } from '~/lib/mock-data';
 import { createTestQueryClient } from '~/test/utils/query-client';
 import { queryKeys } from '~/lib/queries/keys';
@@ -144,6 +145,8 @@ describe('useDeleteSession', () => {
 });
 
 describe('useUpdateSession', () => {
+  beforeEach(() => resetMockSessions());
+
   it('optimistically updates a session description in the cache', async () => {
     const { queryClient, Wrapper } = makeWrapper();
 
@@ -164,6 +167,29 @@ describe('useUpdateSession', () => {
     ]);
     const updated = cached?.find((s) => s.id === target.id);
     expect(updated?.description).toBe('Updated description');
+  });
+
+  it('optimistically moves a session to a different day in the cache', async () => {
+    const { queryClient, Wrapper } = makeWrapper();
+
+    const sessions = await mockFetchSessionsByWeekPlan(ALICE_W10_PLAN_ID);
+    const target = sessions.find((s) => s.dayOfWeek === 'monday');
+    if (!target) throw new Error('Test data: no monday session found in Alice W10');
+
+    queryClient.setQueryData(['sessions', 'week', ALICE_W10_PLAN_ID], sessions);
+
+    const { result } = renderHook(() => useUpdateSession(), { wrapper: Wrapper });
+
+    await act(async () => {
+      result.current.mutate({ id: target.id, dayOfWeek: 'friday' });
+    });
+
+    const cached = queryClient.getQueryData<typeof sessions>([
+      'sessions',
+      'week',
+      ALICE_W10_PLAN_ID,
+    ]);
+    expect(cached?.find((s) => s.id === target.id)?.dayOfWeek).toBe('friday');
   });
 });
 

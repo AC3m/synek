@@ -22,7 +22,7 @@ import type {
 } from '~/types/training';
 
 const SESSION_COLUMNS_BEFORE_STRAVA_CONFIRMATION =
-  'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, calories, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, goal_id, result_distance_km, result_time_seconds, result_pace';
+  'id, week_plan_id, day_of_week, sort_order, training_type, description, coach_comments, planned_duration_minutes, planned_distance_km, type_specific_data, is_completed, completed_at, actual_duration_minutes, actual_distance_km, actual_pace, avg_heart_rate, max_heart_rate, rpe, calories, coach_post_feedback, trainee_notes, strava_activity_id, strava_synced_at, healthkit_workout_id, healthkit_synced_at, healthkit_source_name, goal_id, result_distance_km, result_time_seconds, result_pace';
 
 const SESSION_COLUMNS = `${SESSION_COLUMNS_BEFORE_STRAVA_CONFIRMATION}, is_strava_confirmed, created_at, updated_at`;
 
@@ -53,6 +53,9 @@ export function toSession(row: Record<string, unknown>): TrainingSession {
     athleteNotes: row.trainee_notes as string | null,
     stravaActivityId: row.strava_activity_id as number | null,
     stravaSyncedAt: row.strava_synced_at as string | null,
+    healthkitWorkoutId: (row.healthkit_workout_id as string | null) ?? null,
+    healthkitSyncedAt: (row.healthkit_synced_at as string | null) ?? null,
+    healthkitSourceName: (row.healthkit_source_name as string | null) ?? null,
     goalId: (row.goal_id as string | null) ?? null,
     resultDistanceKm: row.result_distance_km != null ? Number(row.result_distance_km) : null,
     resultTimeSeconds: row.result_time_seconds != null ? (row.result_time_seconds as number) : null,

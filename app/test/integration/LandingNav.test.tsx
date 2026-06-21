@@ -37,7 +37,7 @@ describe('LandingNav (v2)', () => {
     renderAt('/pl');
     expect(screen.getByText('SYNEK')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /zaloguj/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /zacznij/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /rozpocznij/i })).toBeInTheDocument();
   });
 
   it('routes Sign in to /<locale>/login', () => {

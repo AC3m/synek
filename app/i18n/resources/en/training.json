@@ -243,7 +243,9 @@
     "actual": "Actual",
     "noActualData": "No performance data recorded yet.",
     "plannedIntervals": "Planned Intervals",
-    "rest": "Rest"
+    "rest": "Rest",
+    "prevDay": "Previous day",
+    "nextDay": "Next day"
   },
   "intervals": {
     "viewButton": "Intervals",
