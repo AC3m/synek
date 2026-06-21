@@ -419,6 +419,7 @@ export function SessionDetailModal({
         className="h-8 w-8"
         disabled={!onMoveToDay || dayIdx === 0}
         onClick={() => setPendingDay(DAYS_OF_WEEK[dayIdx - 1])}
+        aria-label={t('training:sessionDetail.prevDay' as never)}
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -481,6 +482,7 @@ export function SessionDetailModal({
         className="h-8 w-8"
         disabled={!onMoveToDay || dayIdx === 6}
         onClick={() => setPendingDay(DAYS_OF_WEEK[dayIdx + 1])}
+        aria-label={t('training:sessionDetail.nextDay' as never)}
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
