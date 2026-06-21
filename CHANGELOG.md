@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.11.0](https://github.com/AC3m/synek/compare/v0.10.5...v0.11.0) (2026-06-21)
+
+### Features
+
+- add Vercel Analytics ([77afa10](https://github.com/AC3m/synek/commit/77afa10018b20baf10a2496b1ceece813e8bb1c5))
+- athlete day-swap — DnD + day navigator in session modal ([91926a1](https://github.com/AC3m/synek/commit/91926a1eef433a594ed731d949417b7fe1562c7e))
+- **healthkit:** expose HK actuals in secure_training_sessions view ([d460e9f](https://github.com/AC3m/synek/commit/d460e9fc8c6d83fe9bf54617f50ffb1a5649720c))
+- **healthkit:** web side for iOS HealthKit sync ([a2d65ce](https://github.com/AC3m/synek/commit/a2d65ce81e385e280a3cff72e3af42d78e5fc5d0))
+- landing page redesign v2 — shared primitives, new logo, mock tweaks ([6059a95](https://github.com/AC3m/synek/commit/6059a95f0b8d33c263a6f7d8b3cc0508b24b8edf))
+- **landing:** perspectives section redesign + nav layout-shift fix ([418e01d](https://github.com/AC3m/synek/commit/418e01d0dea2a78a63589e60d191f8480bce094f))
+- regenerate favicon.ico with current LogoMark design (16/32/48px) ([2327c0a](https://github.com/AC3m/synek/commit/2327c0a48f61379b28db8d9f1e78cceed0819d96))
+- shared RolePicker + pre-select role from landing CTAs ([73161ab](https://github.com/AC3m/synek/commit/73161ab7bc2d7df3d482db5e84d3727b811c839b))
+- update favicon and PWA icons to current LogoMark design ([4d1b25e](https://github.com/AC3m/synek/commit/4d1b25ee036d6a9e53e281ae3fd16726894491e1))
+
+### Bug Fixes
+
+- add @dnd-kit/utilities as explicit dep ([e40f765](https://github.com/AC3m/synek/commit/e40f7657880d916a2d0a338b662c8773135495cc))
+- **ci:** add msw to onlyBuiltDependencies for pnpm v10 strict mode ([eebebf7](https://github.com/AC3m/synek/commit/eebebf7e283fe3de4906dc95a2d668618ecbfb6f))
+- **ci:** lockfile build approvals + lockfile drift guard ([8199839](https://github.com/AC3m/synek/commit/81998395835cf65dbebe684b4024409846e84e12))
+- **ci:** pin deno.lock transitive deps and enforce lockfile in edge-function checks ([4da2530](https://github.com/AC3m/synek/commit/4da25308a665795600ed7008b97d4a9f8c913dcd))
+- regenerate favicon.ico from correct 512px source (green gradient preserved) ([2467930](https://github.com/AC3m/synek/commit/246793055a43dfb0f201dbf9568c90492111a287))
+- regenerate icon-192 and apple-touch-icon from correct 512px source ([c57c0f4](https://github.com/AC3m/synek/commit/c57c0f492485fbcd11c5d9edd17f4c507437b5dd))
+- replace old Logo with LogoMark/LogoLink across all app files ([632e8bd](https://github.com/AC3m/synek/commit/632e8bdee9c6c2e8c801c017d485f14ce25dba3a))
+- **test:** update LandingNav PL assertion to match current copy ([08b0de8](https://github.com/AC3m/synek/commit/08b0de8c8b87d439d6614e1d311034f84e56ae66)), closes [#97](https://github.com/AC3m/synek/issues/97)
+
 ## [0.10.5](https://github.com/AC3m/synek/compare/v0.10.4...v0.10.5) (2026-05-05)
 
 ### Bug Fixes
