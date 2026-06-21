@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addDays } from 'date-fns';
 import { getSessionCalendarDate } from '~/lib/utils/date';
-import { Pencil, Trash2, X, Zap } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Pencil, Trash2, X, Zap } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { Textarea } from '~/components/ui/textarea';
 import { Separator } from '~/components/ui/separator';
+import { Popover, PopoverContent, PopoverTrigger } from '~/components/ui/popover';
 import { Dialog, DialogContent, DialogTitle, DialogClose } from '~/components/ui/dialog';
 import { Sheet, SheetContent, SheetTitle, SheetClose } from '~/components/ui/sheet';
 import { useIsMobile } from '~/lib/hooks/useIsMobile';
@@ -23,6 +24,7 @@ import { PerformanceChipGroup } from './PerformanceChipGroup';
 import { trainingTypeConfig, iconMap, isDistanceBased } from '~/lib/utils/training-types';
 import { sessionHasActualPerformance } from '~/lib/utils/week-view';
 import { cn } from '~/lib/utils';
+import { DAYS_OF_WEEK } from '~/types/training';
 import {
   SessionExerciseLogger,
   StrengthLoggerSkeleton,
@@ -109,10 +111,28 @@ export function SessionDetailModal({
     onUpdateNotes,
     onUpdatePerformance,
     onUpdateCoachPostFeedback,
+    onMoveToDay,
   } = useSessionActions();
+
+  // Day navigation — tracks pending day; fires onMoveToDay on close if changed
+  const [pendingDay, setPendingDay] = useState(session.dayOfWeek);
+  const [calendarOpen, setCalendarOpen] = useState(false);
 
   const [coachFeedback, setCoachFeedback] = useState(session.coachPostFeedback ?? '');
   const coachFeedbackRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    setPendingDay(session.dayOfWeek);
+    setCalendarOpen(false);
+  }, [session.id, session.dayOfWeek]);
+
+  // Fire move mutation when modal closes with a pending day change
+  const handleOpenChange = (open: boolean) => {
+    if (!open && pendingDay !== session.dayOfWeek) {
+      onMoveToDay?.(session.id, pendingDay);
+    }
+    onOpenChange(open);
+  };
 
   useEffect(() => {
     // Don't reset while the coach is actively typing — the blur handler will save and
@@ -133,8 +153,16 @@ export function SessionDetailModal({
   const shouldShowMaskedPlaceholders = session.isCompleted && isMasked;
 
   const calendarDate = getSessionCalendarDate(weekStart, session.dayOfWeek);
-  const dayDate = calendarDate ? parseISO(calendarDate) : null;
-  const dateStr = dayDate ? format(dayDate, 'EEEE · MMM d') : null;
+
+  // Day navigator
+  const dayIdx = DAYS_OF_WEEK.indexOf(pendingDay);
+  const isDirty = !!onMoveToDay && pendingDay !== session.dayOfWeek;
+  const pendingDayDate = weekStart ? addDays(parseISO(weekStart), dayIdx) : null;
+  const dateStr = pendingDayDate
+    ? format(pendingDayDate, 'MMM d')
+    : calendarDate
+      ? format(parseISO(calendarDate), 'MMM d')
+      : null;
 
   // Strength variant logging
   const strengthData =
@@ -382,6 +410,83 @@ export function SessionDetailModal({
     }
   }
 
+  /** Day navigator strip — very top of modal */
+  const dayNavigator = (
+    <div className="flex shrink-0 items-center justify-between border-b px-3 py-1.5">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8"
+        disabled={!onMoveToDay || dayIdx === 0}
+        onClick={() => setPendingDay(DAYS_OF_WEEK[dayIdx - 1])}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            disabled={!onMoveToDay}
+            className={cn(
+              'flex flex-col items-center rounded-md px-4 py-1 text-center transition-colors',
+              onMoveToDay && 'hover:bg-muted',
+              isDirty ? 'text-primary' : 'text-foreground',
+            )}
+          >
+            <span className="text-sm font-semibold">{t(`common:days.${pendingDay}` as never)}</span>
+            {dateStr && (
+              <span
+                className={cn('text-[11px]', isDirty ? 'text-primary/80' : 'text-muted-foreground')}
+              >
+                {dateStr}
+              </span>
+            )}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-2" align="center">
+          <div className="flex gap-0.5">
+            {DAYS_OF_WEEK.map((d, i) => {
+              const dd = weekStart ? addDays(parseISO(weekStart), i) : null;
+              const isSel = d === pendingDay;
+              return (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => {
+                    setPendingDay(d);
+                    setCalendarOpen(false);
+                  }}
+                  className={cn(
+                    'flex min-w-[38px] flex-col items-center gap-0.5 rounded-lg px-1.5 py-2 transition-colors',
+                    isSel ? 'bg-foreground text-background' : 'hover:bg-muted',
+                  )}
+                >
+                  <span className="text-[10px] leading-none font-semibold uppercase">
+                    {t(`common:daysShort.${d}` as never)}
+                  </span>
+                  {dd && (
+                    <span className="text-xs leading-none tabular-nums">{format(dd, 'd')}</span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8"
+        disabled={!onMoveToDay || dayIdx === 6}
+        onClick={() => setPendingDay(DAYS_OF_WEEK[dayIdx + 1])}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+    </div>
+  );
+
   /** Top action bar shared by desktop header and mobile sheet header */
   const actionBar = (closeButton: React.ReactNode) => (
     <div className="flex items-center gap-1">
@@ -622,7 +727,7 @@ export function SessionDetailModal({
 
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
         <SheetContent
           side="bottom"
           showCloseButton={false}
@@ -632,12 +737,12 @@ export function SessionDetailModal({
           <div className="flex shrink-0 justify-center pt-3 pb-1">
             <div className="h-1 w-10 rounded-full bg-border" />
           </div>
+          {dayNavigator}
           <div className="shrink-0 border-b px-6 pt-3 pb-4">
             {actionBar(null)}
             <SheetTitle className="mt-2 text-lg leading-tight font-semibold">
               {titleText}
             </SheetTitle>
-            {dateStr && <p className="mt-0.5 text-sm text-muted-foreground">{dateStr}</p>}
           </div>
           {bodyContent}
           <div className="flex shrink-0 justify-end border-t px-6 py-4">
@@ -651,13 +756,14 @@ export function SessionDetailModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         showCloseButton={false}
         aria-describedby={undefined}
         className="flex max-h-[90vh] max-w-2xl flex-col gap-0 p-0"
       >
-        <div className="shrink-0 border-b px-6 pt-5 pb-4">
+        {dayNavigator}
+        <div className="shrink-0 border-b px-6 pt-4 pb-4">
           {actionBar(
             <DialogClose asChild>
               <Button variant="ghost" size="icon" className="h-7 w-7">
@@ -668,7 +774,6 @@ export function SessionDetailModal({
           <DialogTitle className="mt-2 text-lg leading-tight font-semibold">
             {titleText}
           </DialogTitle>
-          {dateStr && <p className="mt-0.5 text-sm text-muted-foreground">{dateStr}</p>}
         </div>
         {bodyContent}
         <div className="flex shrink-0 justify-end border-t px-6 py-4">

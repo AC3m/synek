@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { ReactNode } from 'react';
-import type { TrainingSession, AthleteSessionUpdate } from '~/types/training';
+import type { TrainingSession, AthleteSessionUpdate, DayOfWeek } from '~/types/training';
 import type { UserRole } from '~/lib/auth';
 
 export interface SessionActionsContextValue {
@@ -18,6 +18,7 @@ export interface SessionActionsContextValue {
   onUpdateCoachPostFeedback?: (sessionId: string, feedback: string | null) => void;
   onSyncStrava?: (sessionId: string) => Promise<void>;
   onConfirmStrava?: (sessionId: string) => Promise<void>;
+  onMoveToDay?: (sessionId: string, day: DayOfWeek) => void;
 }
 
 const SESSION_ACTIONS_DEFAULTS: SessionActionsContextValue = {

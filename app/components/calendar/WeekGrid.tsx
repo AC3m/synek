@@ -47,6 +47,8 @@ interface WeekGridProps {
   onCopySession?: (session: TrainingSession) => void;
   /** When provided (and readonly is false), enables drag-and-drop reordering */
   onReorderSession?: (input: ReorderSessionInput) => void;
+  /** When provided, the day navigator in SessionDetailModal becomes interactive */
+  onMoveToDay?: (sessionId: string, day: import('~/types/training').DayOfWeek) => void;
 }
 
 function getDefaultSelectedDay(weekStart: string | undefined): DayOfWeek {
@@ -141,6 +143,7 @@ export function WeekGrid({
   onCopyDay,
   onCopySession,
   onReorderSession,
+  onMoveToDay,
 }: WeekGridProps) {
   const location = useLocation();
   const [internalSelectedDay, setInternalSelectedDay] = useState<DayOfWeek>(() =>
@@ -216,6 +219,7 @@ export function WeekGrid({
       onUpdateCoachPostFeedback,
       onSyncStrava,
       onConfirmStrava,
+      onMoveToDay,
     }),
     [
       readonly,
@@ -232,6 +236,7 @@ export function WeekGrid({
       onUpdateCoachPostFeedback,
       onSyncStrava,
       onConfirmStrava,
+      onMoveToDay,
     ],
   );
 

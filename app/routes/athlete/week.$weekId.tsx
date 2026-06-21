@@ -169,6 +169,8 @@ export default function AthleteWeekView() {
     handleToggleComplete,
     handleUpdateNotes,
     handleUpdatePerformance,
+    handleReorderSession,
+    handleMoveToDay,
     deleteSessionMut,
   } = weekView;
 
@@ -256,6 +258,8 @@ export default function AthleteWeekView() {
                     userRole={user?.role ?? undefined}
                     selectedDay={selectedDay}
                     onSelectDay={setSelectedDay}
+                    onReorderSession={handleReorderSession}
+                    onMoveToDay={handleMoveToDay}
                     {...(canSelfPlan && {
                       onAddSession: handleAddSession,
                       onEditSession: handleEditSession,

@@ -20,6 +20,7 @@ import type {
   WeekPlan,
   SessionsByDay,
   DayOfWeek,
+  ReorderSessionInput,
 } from '~/types/training';
 
 export interface UseWeekViewOptions {
@@ -70,6 +71,8 @@ export interface UseWeekViewResult {
   handleToggleComplete: (sessionId: string, completed: boolean) => void;
   handleUpdateNotes: (sessionId: string, notes: string | null) => void;
   handleUpdatePerformance: (sessionId: string, update: Omit<AthleteSessionUpdate, 'id'>) => void;
+  handleReorderSession: (input: ReorderSessionInput) => void;
+  handleMoveToDay: (sessionId: string, day: DayOfWeek) => void;
 }
 
 export function useWeekView({
@@ -177,6 +180,24 @@ export function useWeekView({
     [updateAthlete],
   );
 
+  const handleReorderSession = useCallback(
+    (input: ReorderSessionInput) => {
+      updateSession.mutate({
+        id: input.sessionId,
+        dayOfWeek: input.dayOfWeek,
+        sortOrder: input.sortOrder,
+      });
+    },
+    [updateSession],
+  );
+
+  const handleMoveToDay = useCallback(
+    (sessionId: string, day: DayOfWeek) => {
+      updateSession.mutate({ id: sessionId, dayOfWeek: day });
+    },
+    [updateSession],
+  );
+
   // All hooks have been called — safe to return null for missing weekId
   if (!weekId) return null;
 
@@ -227,5 +248,7 @@ export function useWeekView({
     handleToggleComplete,
     handleUpdateNotes,
     handleUpdatePerformance,
+    handleReorderSession,
+    handleMoveToDay,
   };
 }

@@ -113,6 +113,10 @@ export function MultiWeekView({
 
   const reversedHistory = useMemo(() => [...history].reverse(), [history]);
 
+  function handleMoveToDay(sessionId: string, day: DayOfWeek) {
+    updateSessionMutation.mutate({ id: sessionId, dayOfWeek: day });
+  }
+
   function handleReorderSession(input: ReorderSessionInput) {
     updateSessionMutation.mutate({
       id: input.sessionId,
@@ -175,6 +179,7 @@ export function MultiWeekView({
           onUpdateNotes={onUpdateNotes}
           onUpdatePerformance={onUpdatePerformance}
           onReorderSession={handleReorderSession}
+          onMoveToDay={handleMoveToDay}
           userRole={userRole}
           showAthleteControls={showAthleteControls}
           selectedDay={selectedDay}
