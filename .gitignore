@@ -18,6 +18,9 @@ supabase/seed.sql
 # Logs
 *.log
 
+# pnpm
+.pnpm-store/
+
 # Agent-specific
 .claude/
 .gemini/
