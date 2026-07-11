@@ -11,23 +11,18 @@ let mockConnectedAt: string | null = null;
 let mockLastSyncedAt: string | null = null;
 
 async function getValidAccessToken(): Promise<string> {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const session = sessionData.session;
+  // Don't manually refresh here — each browser tab/window (including this OAuth
+  // popup) runs its own Supabase client with its own auto-refresh timer against the
+  // same shared session. Refresh tokens rotate on use, so a manual refresh call here
+  // can race the opener tab's refresh and fail with "Refresh Token Not Found" even
+  // though the session is perfectly valid. getSession() already returns a fresh token.
+  const { data, error } = await supabase.auth.getSession();
 
-  if (!session) {
-    throw new Error('Not authenticated');
+  if (error || !data.session) {
+    throw error ?? new Error('Not authenticated');
   }
 
-  const expiresAtMs = session.expires_at ? session.expires_at * 1000 : 0;
-  const needsRefresh = expiresAtMs !== 0 && expiresAtMs < Date.now() + 60_000;
-  if (!needsRefresh) return session.access_token;
-
-  const { data: refreshed, error: refreshError } = await supabase.auth.refreshSession();
-  if (refreshError || !refreshed.session) {
-    throw refreshError ?? new Error('Session refresh failed');
-  }
-
-  return refreshed.session.access_token;
+  return data.session.access_token;
 }
 
 // ============================================================
