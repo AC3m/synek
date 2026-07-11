@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.11.1](https://github.com/AC3m/synek/compare/v0.11.0...v0.11.1) (2026-07-11)
+
+### Bug Fixes
+
+- correct Strava connect redirect and auth-callback token routing ([edf6075](https://github.com/AC3m/synek/commit/edf607520f4d369d895e373ffdd649511eb93969))
+
 ## [0.11.0](https://github.com/AC3m/synek/compare/v0.10.5...v0.11.0) (2026-06-21)
 
 ### Features
